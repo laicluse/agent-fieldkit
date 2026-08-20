@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.55",
+			"version": "2.0.56",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 28,
 			"latestChange": {
-				"version": "v2.0.41",
+				"version": "v2.0.56",
 				"type": "Added",
-				"summary": "Machine-wide plugin changes now require explicit operator approval."
+				"summary": "A pull request can no longer be opened from a branch that is behind its base."
 			}
 		},
 		{
@@ -643,6 +643,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
+			"plugin": "dont-do-that",
+			"packageVersion": "2.0.56",
+			"detailPath": "agent-fieldkit/dont-do-that/",
+			"version": "v2.0.56",
+			"type": "Added",
+			"summary": "A pull request can no longer be opened from a branch that is behind its base.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
+		},
+		{
 			"plugin": "dibs",
 			"packageVersion": "2.0.55",
 			"detailPath": "agent-fieldkit/dibs/",
@@ -650,15 +659,6 @@
 			"type": "Fixed",
 			"summary": "Claimed Codex repositories no longer require shell rewrites when hook payloads omit workdir.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
-		},
-		{
-			"plugin": "dont-do-that",
-			"packageVersion": "2.0.55",
-			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.41",
-			"type": "Added",
-			"summary": "Machine-wide plugin changes now require explicit operator approval.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",

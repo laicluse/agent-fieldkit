@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.56]
+
+### Added
+
+- **A pull request can no longer be opened from a branch that is behind its base.** `gh pr create` and `gh pr ready` now check the head branch against the tip of its base and refuse while it lags, because a reviewer reads the diff as if it were current and GitHub reporting `MERGEABLE` or `CLEAN` answers "does it conflict", never "is it current". Honours `--base` and `--head`, stays silent without a remote or when the fetch fails, exempts `gh pr edit`, and takes `# allow-behind-default` for a deliberate exception.
+
 ## [v2.0.41]
 
 ### Added

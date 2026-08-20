@@ -1,5 +1,5 @@
 {
   "name": "dont-do-that",
   "description": "Guardrail hooks plus /duh, /just-a-question, and /not-your-monkey correction skills for Claude Code and Codex.",
-  "version": "2.0.55"
+  "version": "2.0.56"
 }

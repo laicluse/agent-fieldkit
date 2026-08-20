@@ -1,5 +1,5 @@
 #!/bin/bash
-# PreToolUse:Bash guard for gh pr create / gh pr edit. allow-comment: hook-header documenting the matchers and the operator escape, same pattern as sibling no-remote-create.sh. Blocks when the title uses a placement-verb dodge (git-discipline Rule 1 vocabulary) or the body carries fixed-section or AI-attribution template signatures (## Summary / ## Test plan headers, generated-with footer, Co-Authored-By trailer with an @anthropic.com email). PR-time enforcement closes the gap left by the git-discipline commit-subject and commit-trailers guards, which fire on git commit but never on gh pr create.
+# PreToolUse:Bash guard for gh pr create / gh pr edit. allow-comment: hook-header documenting the matchers and the operator escape, same pattern as sibling no-remote-create.sh. Blocks when the title uses a placement-verb dodge (git-discipline Rule 1 vocabulary) or the body carries fixed-section or AI-attribution template signatures (## Summary / ## Test plan headers, generated-with footer, Co-Authored-By trailer with an @anthropic.com email). Also blocks gh pr create / gh pr ready when the head branch sits behind its base, because a pull request is offered against the tip of its base and GitHub reporting MERGEABLE only means 'no conflict', not 'current'. PR-time enforcement closes the gap left by the git-discipline commit-subject and commit-trailers guards, which fire on git commit but never on gh pr create.
 
 guard_pr_discipline() {
   local input="$1"
@@ -7,10 +7,11 @@ guard_pr_discipline() {
   cmd=$(jq -r '.tool_input.command // empty' <<< "$input" 2>/dev/null)
   [ -z "$cmd" ] && return 0
 
-  local segment pr_call=""
+  local segment pr_call="" pr_verb=""
   while IFS= read -r segment; do
-    if [[ "$segment" =~ ^[[:space:]]*gh[[:space:]]+pr[[:space:]]+(create|edit)([[:space:]]|$) ]]; then
+    if [[ "$segment" =~ ^[[:space:]]*gh[[:space:]]+pr[[:space:]]+(create|edit|ready)([[:space:]]|$) ]]; then
       pr_call="$segment"
+      pr_verb="${BASH_REMATCH[1]}"
       break
     fi
   done < <(dd_command_segments "$cmd")
@@ -42,4 +43,63 @@ guard_pr_discipline() {
   if grep -qE 'Co-Authored-By:[[:space:]]+[^<]*<[^>]*@anthropic\.com>' <<< "$cmd"; then
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
+
+  # Currency check runs last: the content checks above are local and cheap,
+  # this one costs a fetch. Only offering a PR counts, so `edit` is exempt.
+  case "$pr_verb" in create|ready) ;; *) return 0 ;; esac
+  grep -q -- '# allow-behind-default' <<< "$cmd" && return 0
+  dd_pr_behind_base "$input" "$pr_call"
+}
+
+# allow-comment: a pull request is read against the tip of its base branch. When the head branch is behind that tip, the reviewer sees a diff that differs from what merging would produce, and the rebase lands on them instead of the author. GitHub's MERGEABLE/CLEAN answers "does it conflict", never "is it current", so it cannot stand in for this.
+dd_pr_behind_base() {
+  local input="$1" pr_call="$2"
+
+  local target=""
+  if [[ "$pr_call" =~ ^[[:space:]]*cd[[:space:]]+(\"[^\"]+\"|\'[^\']+\'|[^[:space:]\&]+)[[:space:]]*\&\& ]]; then
+    target="${BASH_REMATCH[1]}"
+    target="${target#\"}"; target="${target%\"}"
+    target="${target#\'}"; target="${target%\'}"
+    target="${target/#\~/$HOME}"
+  fi
+  if [ -z "$target" ]; then
+    target=$(jq -r '.cwd // .tool_input.cwd // empty' <<< "$input" 2>/dev/null)
+  fi
+  if [ -n "$target" ] && [ -d "$target" ]; then
+    cd "$target" 2>/dev/null || true
+  fi
+
+  git rev-parse --git-dir >/dev/null 2>&1 || return 0
+  git remote get-url origin >/dev/null 2>&1 || return 0
+
+  local head_ref="HEAD" named_head
+  named_head=$(dd_pr_flag_value "$pr_call" --head)
+  if [ -n "$named_head" ]; then
+    git rev-parse --verify --quiet "$named_head" >/dev/null 2>&1 || return 0
+    head_ref="$named_head"
+  fi
+
+  local base
+  base=$(dd_pr_flag_value "$pr_call" --base)
+  [ -n "$base" ] || base=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+  [ -n "$base" ] || base=$(git config --get init.defaultBranch 2>/dev/null)
+  [ -n "$base" ] || return 0
+
+  # Exact fetch: writes FETCH_HEAD only, leaving remote-tracking refs and any
+  # force-with-lease baseline untouched. Offline or unknown base: stay silent
+  # rather than block on a network failure.
+  git fetch -q origin "refs/heads/$base" >/dev/null 2>&1 || return 0
+
+  local behind
+  behind=$(git rev-list --count "$head_ref..FETCH_HEAD" 2>/dev/null) || return 0
+  [ -n "$behind" ] || return 0
+  [ "$behind" -gt 0 ] 2>/dev/null || return 0
+
+  dd_emit_deny pr-discipline "This branch is ${behind} commit(s) behind ${base}. A pull request is offered against the tip of its base, so rebase onto ${base} and resolve any conflicts before opening it; leaving that to the reviewer hands them a diff that differs from what merging would produce. GitHub reporting MERGEABLE or CLEAN answers 'does it conflict', never 'is it current'. For a deliberate exception, append '# allow-behind-default' to the command."
+}
+
+dd_pr_flag_value() {
+  grep -oE -- "$2[[:space:]]+(\"[^\"]*\"|'[^']*'|[^[:space:]]+)" <<< "$1" \
+    | head -1 \
+    | sed -E "s/^$2[[:space:]]+//; s/^[\"']//; s/[\"']\$//"
 }
