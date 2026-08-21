@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.56",
+			"version": "2.0.57",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 28,
 			"latestChange": {
-				"version": "v2.0.56",
-				"type": "Added",
-				"summary": "A pull request can no longer be opened from a branch that is behind its base."
+				"version": "v2.0.57",
+				"type": "Changed",
+				"summary": "Local Git remote configuration no longer requires repeated approval."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.56",
+			"packageVersion": "2.0.57",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.56",
-			"type": "Added",
-			"summary": "A pull request can no longer be opened from a branch that is behind its base.",
+			"version": "v2.0.57",
+			"type": "Changed",
+			"summary": "Local Git remote configuration no longer requires repeated approval.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

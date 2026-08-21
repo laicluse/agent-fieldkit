@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.57]
+
+### Changed
+
+- **Local Git remote configuration no longer requires repeated approval.** `git remote add` and `git remote set-url` only change the checkout and cannot publish by themselves, so `no-remote-create` now leaves them to the repository's push policy. Forge-side `gh repo create` and `gh repo fork` remain gated.
+
 ## [v2.0.56]
 
 ### Added

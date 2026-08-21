@@ -53,8 +53,7 @@ PreToolUse Bash denies invalid or risky command attempts before they run:
 - `no-osascript`: blocks `osascript` and common wrapper forms. Claude, Codex.
 - `no-remote`: blocks `git push` with no remote or an unknown named remote.
   Claude, Codex.
-- `no-remote-create`: blocks `gh repo create`, `gh repo fork`,
-  `git remote add`, and `git remote set-url`. Claude, Codex.
+- `no-remote-create`: blocks `gh repo create` and `gh repo fork`. Claude, Codex.
 - `no-worktree-deploy`: blocks `ansible-playbook` from a git worktree unless
   read-only flags are used. Claude, Codex.
 - `no-worktree-marketplace`: blocks any linked git worktree passed as a persistent Claude or Codex marketplace source, regardless of the command's current directory; primary checkouts and remote sources remain valid. Claude, Codex.
@@ -119,14 +118,13 @@ route, or keep the work local.
 
 ### `no-remote-create`
 
-Denies remote-creation and remote-rewire commands: `gh repo create`,
-`gh repo fork`, `git remote add`, and `git remote set-url`. Creating an
-account-bound repository, forking on a forge, or attaching a checkout to a
-remote is not reversible in the local sense: deletion cannot undo internet-visible
-names, audit events, notifications, visibility mistakes, or later accidental
-pushes. Pass condition: the latest user turn explicitly approves the same
-remote creation or remote attach action, or the operator creates the remote
-through the active host and gives the resulting URL.
+Denies forge-side remote creation through `gh repo create` and `gh repo fork`.
+Creating account-bound state cannot be fully undone because names, audit events,
+notifications, and visibility mistakes may already have existed. Pass condition:
+the latest user turn explicitly approves the same forge action, or the operator
+creates it through the active host. Local `git remote add` and `git remote
+set-url` configuration is allowed; the separate push policy still governs
+whether anything may be published.
 
 ### `no-worktree-deploy`
 

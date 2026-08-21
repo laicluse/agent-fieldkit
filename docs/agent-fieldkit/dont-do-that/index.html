@@ -52,7 +52,7 @@
 					<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.56</span>
+						<span>2.0.57</span>
 						<span>3 skills</span>
 					</div>
 				</div>
@@ -84,7 +84,7 @@
 <ul>
 <li><code>no-osascript</code>: blocks <code>osascript</code> and common wrapper forms. Claude, Codex.</li>
 <li><code>no-remote</code>: blocks <code>git push</code> with no remote or an unknown named remote. Claude, Codex.</li>
-<li><code>no-remote-create</code>: blocks <code>gh repo create</code>, <code>gh repo fork</code>, <code>git remote add</code>, and <code>git remote set-url</code>. Claude, Codex.</li>
+<li><code>no-remote-create</code>: blocks <code>gh repo create</code> and <code>gh repo fork</code>. Claude, Codex.</li>
 <li><code>no-worktree-deploy</code>: blocks <code>ansible-playbook</code> from a git worktree unless read-only flags are used. Claude, Codex.</li>
 <li><code>no-worktree-marketplace</code>: blocks any linked git worktree passed as a persistent Claude or Codex marketplace source, regardless of the command's current directory; primary checkouts and remote sources remain valid. Claude, Codex.</li>
 <li><code>plugin-mutation</code>: gates the Claude and Codex plugin commands that change which code the machine loads, being install, uninstall, disable, and marketplace add or remove. Updating or enabling an already installed plugin is ordinary agent work and stays ungated. A gated command reaches the operator through the host's own permission prompt (PreToolUse <code>permissionDecision: &quot;ask&quot;</code>, which shows the exact pending command) in the modes that still show one; in every other mode and on hosts without an ask channel it is denied, with <code>DD_PLUGIN_MUTATION=asked</code> named as the prefix to re-run with once the operator has asked for that exact change. Claude, Codex.</li>
@@ -120,7 +120,7 @@
 <h3 id="no-remote"><code>no-remote</code></h3>
 <p>Denies <code>git push</code> when the current repo has no configured remote, or when the push names a remote that is not configured. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code> before checking remotes, then falls back to the hook cwd. Pass condition: add or choose a configured remote through the operator-approved route, or keep the work local.</p>
 <h3 id="no-remote-create"><code>no-remote-create</code></h3>
-<p>Denies remote-creation and remote-rewire commands: <code>gh repo create</code>, <code>gh repo fork</code>, <code>git remote add</code>, and <code>git remote set-url</code>. Creating an account-bound repository, forking on a forge, or attaching a checkout to a remote is not reversible in the local sense: deletion cannot undo internet-visible names, audit events, notifications, visibility mistakes, or later accidental pushes. Pass condition: the latest user turn explicitly approves the same remote creation or remote attach action, or the operator creates the remote through the active host and gives the resulting URL.</p>
+<p>Denies forge-side remote creation through <code>gh repo create</code> and <code>gh repo fork</code>. Creating account-bound state cannot be fully undone because names, audit events, notifications, and visibility mistakes may already have existed. Pass condition: the latest user turn explicitly approves the same forge action, or the operator creates it through the active host. Local <code>git remote add</code> and <code>git remote set-url</code> configuration is allowed; the separate push policy still governs whether anything may be published.</p>
 <h3 id="no-worktree-deploy"><code>no-worktree-deploy</code></h3>
 <p>Denies <code>ansible-playbook</code> invocations when the cwd is a git worktree rather than the canonical checkout. The check compares <code>git rev-parse --git-dir</code> against <code>--git-common-dir</code>, so it works for any worktree layout. Read-only flags pass: <code>--check</code>, <code>--syntax-check</code>, <code>--version</code>, <code>--help</code>, <code>--list-tasks</code>, <code>--list-hosts</code>, <code>--list-tags</code>, and <code>-h</code>.</p>
 <p>Pass condition: merge the branch to the default branch first and run <code>ansible-playbook</code> from the canonical checkout, or restrict the worktree call to a read-only preview flag.</p>

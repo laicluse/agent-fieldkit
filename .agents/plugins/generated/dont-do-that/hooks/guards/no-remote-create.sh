@@ -1,5 +1,5 @@
 #!/bin/bash
-# PreToolUse:Bash guard that blocks remote-create patterns (gh repo create, gh repo fork, git remote add, git remote set-url). allow-comment: hook-header documenting the matchers and the operator escape, same pattern as sibling no-remote.sh and no-worktree-deploy.sh in this directory. Remote creation is operator territory: spinning up an account-bound repository or rewiring the local repo carries permission, billing, visibility and team implications the model cannot reason about.
+# PreToolUse:Bash guard that blocks forge-side remote creation (gh repo create, gh repo fork). allow-comment: hook-header documenting the matchers and the operator escape, same pattern as sibling no-remote.sh and no-worktree-deploy.sh in this directory. Creating account-bound forge state carries permission, billing, visibility and team implications; changing a checkout's local remote configuration does not and is intentionally outside this guard.
 
 dd_nrc_last_user_text() {
   local input="$1" direct tr
@@ -47,17 +47,8 @@ dd_nrc_operator_approved() {
 
   grep -qiE '\b(yes|yep|go ahead|do it|run it|execute|approved|approve|allow|please|can you|could you|make|create|fork|add|set|ja|doe maar|voer.{0,30}uit|uitvoeren|maak|aanmaken|voeg.{0,30}toe|zet|mag|toestemming|akkoord|goedgekeurd|graag|kan je|kun je|wil.{0,30}graag|overrul)\b' <<< "$user" || return 1
 
-  case "$kind" in
-    forge)
-      grep -qiE '\b(remotes?|repos?|repository|repositories|fork(s|en)?|github)\b' <<< "$user"
-      ;;
-    remote)
-      grep -qiE '\b(remotes?|repos?|repository|repositories|github)\b' <<< "$user"
-      ;;
-    *)
-      return 1
-      ;;
-  esac
+  [ "$kind" = forge ] || return 1
+  grep -qiE '\b(remotes?|repos?|repository|repositories|fork(s|en)?|github)\b' <<< "$user"
 }
 
 guard_no_remote_create() {
@@ -69,10 +60,5 @@ guard_no_remote_create() {
   if grep -Eq '(^|&&|;|\|\||[[:space:]])[[:space:]]*gh[[:space:]]+repo[[:space:]]+(create|fork)([[:space:]]|$)' <<< "$cmd"; then
     dd_nrc_operator_approved "$input" forge && return 0
     dd_emit_deny no-remote-create "remote creation blocked: 'gh repo create' / 'gh repo fork' creates account-bound forge state. Deleting it later is not true reversibility once the name, visibility, audit events, or notifications may have existed on the internet. Ask the operator for explicit approval in the current turn, or have them create the repo in the browser and tell you the URL."
-  fi
-
-  if grep -Eq '(^|&&|;|\|\||[[:space:]])[[:space:]]*git[[:space:]]+remote[[:space:]]+(add|set-url)([[:space:]]|$)' <<< "$cmd"; then
-    dd_nrc_operator_approved "$input" remote && return 0
-    dd_emit_deny no-remote-create "remote attach blocked: 'git remote add' / 'git remote set-url' connects local history to an external destination the operator may not have authorized. Remote wiring is the step that turns a local repo into internet-adjacent state, so it needs explicit operator approval in the current turn."
   fi
 }
