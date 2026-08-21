@@ -524,6 +524,16 @@ it('allows a corrective commit that removes a machine-local home path', () => {
   assert.equal(git(tmp, ['--git-dir', fixture.remote, 'show', 'HEAD:note.md']), '# Note\n\nRun tilt from PATH.');
 });
 
+it('syncs a staged transcript batch larger than the default subprocess buffer', () => {
+  const fixture = syncFixture('large-transcript-batch');
+  writeFileSync(join(fixture.local, 'large-transcript.md'), `# Transcript\n\n${'spoken words '.repeat(2_000_000)}\n`);
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(git(fixture.local, ['status', '--porcelain']), '');
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
 it('installs and auto-commits a local-only checkout without an upstream', () => {
   const local = createRepo('local-only');
 

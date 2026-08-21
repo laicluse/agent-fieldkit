@@ -1,5 +1,5 @@
 {
   "name": "vaultsync",
   "description": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict handling while respecting dibs locks.",
-  "version": "2.0.10"
+  "version": "2.0.11"
 }

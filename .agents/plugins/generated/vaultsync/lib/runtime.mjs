@@ -18,6 +18,7 @@ const MAX_VERIFICATION_REPAIR_STEPS = 5;
 const MAX_VERIFICATION_REPAIR_FILES = 1;
 const MAX_VERIFICATION_REPAIR_FILE_BYTES = 60000;
 const MAX_VERIFICATION_REPAIR_DETAIL_BYTES = 60000;
+const GIT_MAX_BUFFER_BYTES = 256 * 1024 * 1024;
 
 const sleepSlot = new Int32Array(new SharedArrayBuffer(4));
 
@@ -103,7 +104,7 @@ function git(cwd, args, options = {}) {
     cwd,
     input: options.input,
     encoding: 'utf8',
-    maxBuffer: 20 * 1024 * 1024,
+    maxBuffer: GIT_MAX_BUFFER_BYTES,
     env: { ...process.env, ...(options.env || {}) },
   });
   if (result.error) {
