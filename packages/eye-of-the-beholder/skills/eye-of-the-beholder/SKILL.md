@@ -38,9 +38,9 @@ The solution is not more rules. The solution is looking more often, and looking 
 
 ## Interpreting user-provided screenshots
 
-Treat a user-provided screenshot as visual feedback, not as a design comp. An uploaded image is a fat-marker sketch (a low-fidelity pointer at intent) unless the user states match-intent. Extract the complaint, target, direction, content, and topology; ignore the annotation layer (arrow colors, callout bubbles, CleanShot or Preview chrome, hand-drawn boxes, highlighter strokes). Never copy the annotation style into product UI.
+Classify an uploaded image before deciding how to use it. A captured UI with arrows, callouts, or highlights is an **annotated screenshot**, not a fat-marker sketch: the underlying product pixels are evidence and the annotation layer is commentary. An actual rough drawing or wireframe may be a **low-fidelity sketch**. Never copy screenshot-tool styling into product UI.
 
-The full reading protocol (the interpretation readback before the first edit, the extract-versus-ignore split, the reference-scope check) lives in the sister skill **fat-marker-sketch**. When a user shares any image as a design cue, that skill leads; route to it and do not re-derive the protocol here. Treat the screenshot as a literal reference only when the user names match-intent ("pixel-perfect", "match this", "precies zo", "exact zo") or points at a real product element or Figma frame, which is **visual-inspection**'s job.
+The full classification and reading protocol lives in the sister skill **fat-marker-sketch**. It uses accompanying words, visible layers, and, when exposed, the filename as a provenance hint. A name such as `CleanShot` or `Screenshot` supports screenshot provenance but never establishes annotation presence or match intent. Route stated match intent against named product or reference pixels to **visual-inspection**.
 
 ## From complaint to axis
 

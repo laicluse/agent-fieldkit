@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.1.1]
+
+### Fixed
+
+- **`/fat-marker-sketch` now distinguishes annotated screenshots from actual sketches.** The skill classifies incoming images before interpreting them, separates captured product pixels from annotation-tool pixels, and uses exposed filenames such as `CleanShot` or `Screenshot` as provenance hints rather than proof of annotations or match intent. Its readback now names the actual artifact instead of calling every upload a fat-marker sketch.
+
 ## [v2.1.0]
 
 ### Added

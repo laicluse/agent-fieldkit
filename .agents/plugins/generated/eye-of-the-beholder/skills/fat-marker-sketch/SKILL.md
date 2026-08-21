@@ -1,70 +1,86 @@
 ---
 name: fat-marker-sketch
-description: Read an uploaded screenshot or image as low-fidelity feedback, a fat-marker sketch, not a literal design to reproduce. Use when the user shares a PNG, screenshot, mockup, or capture as a design cue, and especially when annotation markup (arrows, callouts, numbered circles, highlighter strokes, boxes, CleanShot or Preview markup) is present.
+description: Classify an uploaded screenshot, annotated capture, sketch, mockup, or image before using it as design evidence; extract intent without copying annotation-tool styling.
 ---
 
-# Fat marker sketch
+# Screenshot, annotation, or fat-marker sketch
 
 ## The real problem
 
-The user uploads a PNG to show what they mean. The reflex is to treat those pixels as a specification: the arrow color becomes a UI color, the callout bubble becomes a component, the CleanShot toolbar styling bleeds into the product, the rough box the user drew around a region becomes a literal bordered container. The image was a gesture, and it got read as a blueprint.
+An uploaded image can contain several different things: product UI, a screenshot-tool annotation layer, a rough sketch, or a finished design reference. Calling all of them a *fat-marker sketch* obscures the useful distinction. It also encourages the opposite mistake this skill exists to prevent: copying a bright arrow, callout bubble, or rough box into the product as though those pixels were design decisions.
 
-Almost every image a non-designer uploads is a *fat marker sketch*: a low-fidelity pointer at intent, drawn with whatever tool was at hand, carrying a complaint and a direction but not a design. Reading it literally is the single most common way image-driven design work goes wrong. This skill exists to make the low-fidelity reading the default and the literal reading the exception that has to be earned.
+Classify the artifact first. Then decide which pixels are evidence and which are commentary. A fat-marker sketch is one possible class, not the default name for every uploaded image.
 
-The name comes from Shape Up (Basecamp): a fat marker sketch is drawn with a pen so thick that detail is impossible on purpose. The low fidelity is deliberate, and that is the point here too: the marks carry intent, not specification, even when the underlying pixels happen to be crisp.
+The term comes from Shape Up (Basecamp): a fat-marker sketch is drawn with a pen so thick that detail is deliberately impossible. That is a useful way to read an actual rough sketch. It is not an accurate label for a crisp product screenshot that happens to have annotations on top.
 
-## Default classification
+## Classify before interpreting
 
-**An uploaded image is a fat marker sketch unless the user earns the exception.** Start there, every time, before you look at a single pixel as reference.
+Use all available evidence in this order:
 
-The exception (treat the image as a literal visual reference to match) is earned only when the user names it explicitly:
+1. **Accompanying words.** Explicit statements about what the image is and what to do with it outrank every inference.
+2. **Visible layers.** Distinguish captured product pixels from arrows, callouts, highlights, boxes, labels, and screenshot-tool chrome.
+3. **Filename provenance.** When the host exposes the uploaded filename, inspect it before interpreting the image. Names containing capture conventions or tool names such as `CleanShot`, `Screenshot`, `Screen Shot`, `Schermafbeelding`, `Snip`, or `Screen Capture` are evidence that the file originated as a screenshot. Treat matching case-insensitively and expect other apps and locales. A filename is a provenance hint, never an intent verdict: it does not prove that annotations are present, that the underlying UI should or should not be matched, or that a renamed file is a design artifact.
+4. **Image metadata.** Dimensions, alpha, or embedded metadata can support a classification when the host exposes them, but do not block on unavailable metadata.
+
+Choose the narrowest fitting class:
+
+| Class | What it looks like | How to use it |
+|-------|--------------------|---------------|
+| **Annotated screenshot** | Captured app, website, or OS pixels with arrows, callouts, highlights, boxes, or labels layered over them | Treat the underlying screenshot as product evidence and the marks as commentary. Extract their target and meaning; discard their visual styling. Do not rename the image a fat-marker sketch. |
+| **Clean screenshot** | Captured UI without a visible annotation layer | Use it as evidence of current state or as a reference according to the user's words. A screenshot filename says where it came from, not whether it is feedback or a match target. |
+| **Low-fidelity sketch** | A rough drawing, wireframe, or spatial proposal whose author intentionally omitted visual detail | Read it as a fat-marker sketch: preserve complaint, content, direction, and topology, but do not reproduce incidental pixels or measurements. |
+| **Design artifact or reference** | A deliberate comp, Figma frame, brand asset, polished mockup, or named product element | Preserve the axes the user identifies. When they state match-intent, route to visual-inspection. |
+| **Unknown image** | The available evidence does not distinguish the classes above | Use the accompanying request when it supplies intent. For a wordless, unannotated image, ask one short classification question before editing. |
+
+Do not infer annotation presence from a screenshot filename alone. Confirm it visually. Conversely, a generic or renamed filename does not erase an annotation layer that is visible in the pixels.
+
+## Match intent is separate from artifact type
+
+Classification answers *what the file is*. Match intent answers *how the user wants it used*. Keep those questions separate.
+
+Treat pixels as a literal visual reference only when the user states match intent:
 
 - Match-intent words: "pixel-perfect", "match this exactly", "precies zo", "exact zo", "identiek", "1:1", "make it look like this".
 - The user names a real product element, brand asset, or Figma frame as the thing to reproduce ("our actual dashboard", "the Figma hero frame", "the real app").
 - The user says the annotation itself is the design ("use these exact colors", "this is the mockup, build it").
 
-Absent one of those, the image is feedback. This holds even when the pixels are sharp, even when the layout looks deliberate, even when the user clearly spent time on it. Effort in the sketch is not permission to copy it. When the image contains both product UI and annotation markup, split them: product pixels can be evidence, annotation pixels are commentary.
-
-The one genuinely ambiguous case is a clean image with no annotation and no accompanying words: no marks were needed, which can itself mean "this is the thing" (an actual comp), especially from a design-fluent user. Do not silently apply the sketch default there. Ask one short question before the first edit ("is this a reference to match, or a direction to take from?"), because that is the single case where a pause is cheaper than a wrong full round. A marked-up or word-accompanied image is not this case; that is feedback, and the default holds.
-
-If match-intent is present, this is not the skill. Hand off to visual-inspection, which runs the screenshot-plus-measurement loop against the named axes.
+An annotated screenshot can contain literal reference pixels underneath commentary. For example, "make this button match the existing header" can use the captured header as a reference while the red arrow remains only a pointer. If match intent is present, hand the named reference axes to visual-inspection.
 
 ## What to extract, what to ignore
 
-A fat marker sketch carries five things worth extracting. It also carries a layer of noise that has to be actively discarded.
+Annotated screenshots and low-fidelity sketches can carry five kinds of signal:
 
-**Extract (the signal):**
-
-1. **Complaint.** What feels wrong right now? The upload almost always means "this bothers me", not "build this". Name the pain.
-2. **Target area.** Where is the user pointing? The arrow, the circle, the crop boundary say *where*, even when their styling says nothing about *how*.
+1. **Complaint.** What feels wrong right now? Name the pain without translating annotation styling into product styling.
+2. **Target area.** Where is the user pointing? An arrow or box often says *where* even when it says nothing about *how*.
 3. **Direction.** Which way should it move? Bigger, calmer, tighter, warmer, more prominent, gone. A direction is a vector, not a destination.
-4. **Content.** Any real words, values, labels, or data in the sketch that must survive into the result.
-5. **Topology.** What goes near what, in what order, at what rough level of the hierarchy. This is the structural signal Shape Up says a sketch is *for*: which elements exist and roughly where they sit relative to each other, not their pixel positions.
+4. **Content.** Any real words, values, labels, or data that must survive into the result.
+5. **Topology.** What goes near what, in what order, at what rough level of the hierarchy.
 
-**Ignore (the annotation layer):**
+Discard the annotation tool's visual voice unless the user explicitly promotes it to design input:
 
 - Arrow color, weight, and style. A red arrow does not mean "add red".
-- Callout bubbles, speech balloons, numbered stickers, and their fills, borders, and shadows.
-- Highlighter strokes and their color. A yellow highlight marks *attention*, not a yellow background.
-- Hand-drawn boxes and their stroke. A scribbled rectangle marks a region, not a bordered container.
-- Screenshot-tool chrome: CleanShot toolbars, Preview markup styling, macOS window frames, drop shadows the tool added, the tool's own fonts and casing.
-- The compositional accidents of the capture: crop tightness, where the user happened to stop the screenshot, the aspect ratio of the grab.
+- Callout bubbles, speech balloons, numbered stickers, and their fills, borders, fonts, and shadows.
+- Highlighter strokes and their color. A yellow highlight marks attention, not a yellow background.
+- Hand-drawn boxes and their stroke. A box marks a region, not necessarily a bordered container.
+- Screenshot-tool chrome: CleanShot toolbars, Preview markup styling, OS window frames, and tool-added shadows.
+- Capture accidents: crop tightness, capture aspect ratio, and where the drag happened to stop.
 
-One exception on color. If the user uses two or more distinct annotation colors to separate two or more groups (a red set here, a blue set there), the color is encoding a distinction, not decorating. That is a channel-semantics question, not a color-value question: apply eye-of-the-beholder's one-meaning-per-channel read (what does this mark distinguish, if anything?) before discarding it. Blanket-ignoring color is right for a lone arrow or a single highlight; it is wrong when different colors are doing the separating.
+One color exception matters. When two or more annotation colors consistently separate distinct groups, color may encode a relationship. Preserve the distinction, not the literal hues, unless the user explicitly names those hues as design.
 
-The test for each mark: does this pixel tell me *what the user wants*, or *what tool the user drew with*? The first is signal. The second is noise, and copying it is the failure this skill prevents.
+For each mark ask: does this tell me what the user means, or what tool they drew with? Preserve the first and discard the second.
 
-## The interpretation readback (before the first edit)
+## Interpretation readback before the first edit
 
-Before writing a single line of code or CSS off an uploaded image, state your reading back. This is cheap insurance against building the wrong thing for a full round. It is the agent-side version of the question a good designer asks: "so what I am hearing is..."
-
-Write three short lists:
+Use the actual classification name. Do not announce an annotated screenshot as a fat-marker sketch.
 
 ```
-From this sketch I read:
+Reading this upload as: <annotated screenshot / clean screenshot / low-fidelity sketch / design reference>.
+Evidence: <brief visible or filename provenance; omit when obvious>.
+
+From it I read:
 - Complaint: <what feels wrong>
-- Target: <where you are pointing>
-- Direction: <which way to move it>
+- Target: <where the user is pointing>
+- Direction: <which way to move it, or "open">
 - Content to keep: <real words/values, or "none">
 
 I am ignoring (annotation, not design):
@@ -75,64 +91,76 @@ I am going to:
 - <the change, in product terms, in the existing design language>
 ```
 
-Then act. You do not wait for approval on the readback in an autonomous flow; you write it, act, and render. But the readback is on record, so when the result is wrong the miss is visible and localized (wrong complaint? wrong target? or right reading, wrong execution?) instead of a silent full-round loss.
+Then act. Do not wait for approval in an autonomous flow. The readback localizes a miss without forcing the user to translate visual feedback into a written specification.
 
-**Carry the readback, not the raw image, into any delegated step.** If you hand the actual implementation to a subagent or a fresh session, pass the readback (the extracted intent), not the raw annotated screenshot. A subagent handed the raw image with no framing reproduces exactly the literal-copy failure this skill exists to prevent.
+Carry the classification and readback, not an unframed image, into any delegated step. If the implementation needs the underlying reference pixels, pass the image together with that framing; do not remove evidence that the implementer must inspect.
 
-**When the direction is open, do not invent one.** A common case is an arrow that pins the target plus a contentless gut-word ("off", "feels wrong", "cheap"): the mark says WHERE, the word gives no WHICH-WAY. Write `Direction: open` rather than guessing, and resolve it from the complaint, not from the annotation. Two routes: if the gut-word maps to a defect axis, use eye-of-the-beholder's complaint-to-axis table to derive the axis and scan the target area for the concrete problem ("off" points at the odd-one-out scan, "cheap" at the credibility scan); if the direction is genuinely wide open (the user dislikes it but no axis is implied), that is a taste-test case, so show a small fan of directions for the target area rather than committing to one guessed move.
+When the direction is open, do not invent one. If a gut-word maps to an eye-of-the-beholder complaint axis, scan that axis. If the direction is genuinely absent, use taste-test to show a small fan of directions.
 
-## The reference-scope check
+## Reference-scope check
 
-The second classic failure with an uploaded reference is scope: the user says "borrow the grid from this" and the result copies the grid *and* the colors *and* the type *and* the spacing, or copies everything *except* the grid. When a user points at an existing design and asks you to take *something* from it, pin the one axis before you build.
-
-Ask (of the request, not the user): which single axis is being borrowed? Grid, color, type, spacing, radius, density, motion, tone. Then state the borrow and the non-borrow explicitly:
+When the user asks to borrow one aspect from an existing design, pin the named axis before building: grid, color, type, spacing, radius, density, motion, or tone.
 
 ```
-Borrowing from the reference: <the one axis, e.g. the 8-column grid rhythm>
-NOT borrowing: <everything else: its colors, its type, its density>
+Borrowing from the reference: <the named axis>
+Not borrowing: <the other visible axes>
 ```
 
-Copying more than the named axis is scope creep dressed as thoroughness. Copying less (taking the easy axes and missing the one the user actually pointed at) is the more common and more frustrating miss. The named axis is the deliverable; the rest of the reference is context.
+Copying more than the named axis is scope creep. Copying everything except the named axis misses the request.
 
 ## Relationship to the other skills
 
-- **eye-of-the-beholder** is the open diagnostic scan of a rendered result. Fat-marker-sketch runs earlier: it governs how an *incoming* image is read as intent. After you translate the sketch into a change and render it, eye-of-the-beholder scans the render.
-- **visual-inspection** is the opposite case: the image *is* a match reference, on named axes, with match-intent stated. Fat-marker-sketch is the default; visual-inspection is the earned exception. When you find match-intent, route there.
-- **taste-test** is for when the user has no image at all and cannot describe the direction: it elicits direction by showing divergent options. Fat-marker-sketch is for when they *did* upload something. They compose: a fat marker sketch often points at a complaint that a taste-test round then explores.
+- **eye-of-the-beholder** scans a rendered result. This skill classifies incoming visual evidence and extracts the user's signal first.
+- **visual-inspection** handles stated match intent against named reference axes. An annotated screenshot may route there for its underlying product pixels while its annotation layer remains commentary.
+- **taste-test** handles genuinely open direction by showing divergent options. A low-fidelity sketch or annotated screenshot can identify the target before taste-test explores alternatives.
 
 ## Common blind spots
 
 | What the agent does | What goes wrong |
-|--------------------|-----------------|
-| Treats the uploaded PNG as a spec | It is a fat marker sketch. Extract intent; do not reproduce pixels. |
-| Copies the annotation color into the UI | A red arrow means "look here", not "add red". Annotation color is never product color. |
-| Reproduces the CleanShot / Preview markup styling | Screenshot-tool chrome is the tool's voice, not the user's design. Strip it entirely. |
-| Builds the scribbled box as a bordered container | A hand-drawn box marks a region. Grouping is usually whitespace, not a border. |
-| Assumes crisp pixels mean "match exactly" | Fidelity of the capture is not match-intent. Only stated match-intent earns literal reading. |
-| Borrows every axis from a reference | Pin the one axis the user named. Copying the rest is scope creep. |
-| Takes the easy axes, misses the named one | "Borrow the grid" and returning everything-but-the-grid is the most common reference miss. |
-| Skips the readback and builds straight off the image | A wrong reading then costs a full round. The three-list readback localizes the miss up front. |
-| Waits for the user to re-explain in words | The user uploaded an image *because* words were failing them. Extract from the sketch; do not push the burden back. |
-| Hands the raw annotated image to a subagent to implement | The subagent has no framing and copies it literally. Pass the readback and extracted intent, not the raw image. |
-| Blanket-ignores annotation color when colors separate groups | Distinct colors marking distinct referents encode a distinction. Read it via one-meaning-per-channel; ignore color only for a lone mark. |
+|---------------------|-----------------|
+| Calls every uploaded image a fat-marker sketch | Artefact type and interpretation strategy are collapsed. Classify first. |
+| Calls a CleanShot capture a sketch | The filename identifies likely screenshot provenance, not a rough drawing. |
+| Assumes `CleanShot` means annotations are present | The file may be an untouched capture. Confirm the visible annotation layer. |
+| Trusts a generic filename as proof that the image is not a screenshot | Uploads get renamed and stripped of metadata. Filename is supporting evidence only. |
+| Treats the entire annotated screenshot as disposable feedback | Underlying product pixels may document current state or supply a literal named reference. Split the layers. |
+| Copies annotation color or callout styling into UI | Those pixels usually belong to the annotation tool, not the product design. |
+| Builds a scribbled box as a bordered container | A drawn box identifies a region; grouping may belong in whitespace or hierarchy. |
+| Assumes crisp pixels mean "match exactly" | Capture fidelity does not establish match intent. Read the user's words. |
+| Hands an unframed annotated screenshot to another implementer | The annotation layer can be mistaken for product styling. Pass classification and readback with the evidence. |
+| Ignores annotation colors that separate groups | Preserve the encoded distinction while discarding incidental literal hues. |
 
-## Output
+## Output examples
+
+Annotated screenshot:
 
 ```
-Reading this upload as a fat marker sketch (no match-intent stated).
+Reading this upload as an annotated screenshot. The CleanShot filename supports screenshot provenance; the arrow and callout are a visible annotation layer.
 
-From this sketch I read:
+From it I read:
 - Complaint: the header feels cramped against the top edge
-- Target: the title area (your arrow)
+- Target: the title area indicated by the arrow
 - Direction: more breathing room above it
-- Content to keep: the "Q3 Results" wording
+- Content to keep: "Q3 Results"
 
 I am ignoring (annotation, not design):
 - the red arrow and its color
-- the yellow highlighter stroke over the title
-- the CleanShot number badge
+- the callout bubble's font, fill, and shadow
 
 I am going to:
-- add top spacing above the title using the existing spacing scale,
-  in the product's own type and color, then render and scan it.
+- add top spacing using the product's existing spacing scale, then render and scan it
+```
+
+Actual low-fidelity sketch:
+
+```
+Reading this upload as a low-fidelity sketch: it proposes rough structure rather than showing captured product UI.
+
+From it I read:
+- Target: the results page
+- Direction: summary first, details second
+- Content to keep: total, period, and comparison
+- Topology: summary above the detail list
+
+I am going to:
+- preserve that hierarchy while designing the concrete layout in the product's visual language
 ```

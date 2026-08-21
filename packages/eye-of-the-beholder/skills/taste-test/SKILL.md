@@ -23,7 +23,7 @@ The standard design move here is to show, not ask. Several established methods w
 **Do not activate:**
 
 - The user named a concrete axis to match against a reference ("same radius as the favicon"). That is visual-inspection.
-- The user uploaded an image as a cue. That is fat-marker-sketch (which may then route here for the direction it points at).
+- The user uploaded an image as a cue. Classify and read it with fat-marker-sketch first; an annotated screenshot and an actual low-fidelity sketch carry different evidence. That skill may then route here when the direction remains open.
 - This is a whole new product or brand with no identity at all, and the ask is brand-level. That is art-director, which works one level up and once.
 - The change is a single measurable tweak on an existing, agreed direction ("this gap is too tight"). That is eye-of-the-beholder plus the build-time discipline.
 - The complaint is "cheap", "generic", or "looks AI-made" about an existing rendered result. Run eye-of-the-beholder's credibility scan first: removing the vibe-coded tells (gradients, bordered-card grids, status dots, one-font defaults) is cheap and often enough. Escalate to a variant fan only when that scan does not converge, or when there is no rendered starting point yet to scan. A full fan is the expensive move; do not reach for it before the cheap one when a render already exists.

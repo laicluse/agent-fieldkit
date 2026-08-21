@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.8",
+			"version": "2.0.9",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.1.0",
-				"type": "Added",
-				"summary": "/taste-test: elicit a visual direction without having to describe it."
+				"version": "v2.1.1",
+				"type": "Fixed",
+				"summary": "/fat-marker-sketch now distinguishes annotated screenshots from actual sketches."
 			}
 		},
 		{
@@ -742,6 +742,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
+			"plugin": "eye-of-the-beholder",
+			"packageVersion": "2.0.9",
+			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
+			"version": "v2.1.1",
+			"type": "Fixed",
+			"summary": "/fat-marker-sketch now distinguishes annotated screenshots from actual sketches.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
+		},
+		{
 			"plugin": "saysay",
 			"packageVersion": "2.0.9",
 			"detailPath": "agent-fieldkit/saysay/",
@@ -758,15 +767,6 @@
 			"type": "Changed",
 			"summary": "First l'Aicluse release.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/self-improvement/CHANGELOG.md"
-		},
-		{
-			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.8",
-			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.1.0",
-			"type": "Added",
-			"summary": "/taste-test: elicit a visual direction without having to describe it.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{
 			"plugin": "gurus",

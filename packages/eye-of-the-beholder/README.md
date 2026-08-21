@@ -8,7 +8,7 @@ This plugin ships five sister skills:
 
 - **`/eye-of-the-beholder`** (default): diagnostic, per-change visual review.
 - **`/taste-test`**: direction elicitation for someone who has taste but cannot describe it. Shows divergent options and reads the reaction instead of asking for a spec, then records the result in a growing `visual-language.md`.
-- **`/fat-marker-sketch`**: reads an uploaded screenshot or image as low-fidelity feedback (a fat-marker sketch), not a literal design to reproduce. The default reading for any image shared as a design cue.
+- **`/fat-marker-sketch`**: classifies an uploaded visual as an annotated screenshot, clean screenshot, actual low-fidelity sketch, or design reference before extracting intent. Annotation-tool styling stays out of the product.
 - **`/art-director`**: upstream identity work. Captures brand, visual language, and design-system architecture BEFORE CSS exists. Not for small UI tweaks; for new products, brand refreshes, or first-time design-system foundation.
 - **`/visual-inspection`**: reference matching. Forces a screenshot-plus-measurement loop when a new element must match an existing visual reference on named axes such as padding, radius, font, color, size, or alignment.
 
@@ -31,7 +31,7 @@ Elicits a visual direction from a user who knows what they like when they see it
 
 ### `/fat-marker-sketch`
 
-Reads an uploaded screenshot or image as a fat-marker sketch: low-fidelity feedback pointing at intent, not a design to reproduce. Extracts the complaint, target, direction, content, and topology; ignores the annotation layer (arrow colors, callout bubbles, CleanShot or Preview chrome, hand-drawn boxes). Writes an interpretation readback before the first edit and pins the single axis when a real reference is being borrowed. Routes to `/visual-inspection` when the user states match-intent.
+Classifies an uploaded screenshot or image before using it as design evidence. It distinguishes annotated screenshots from actual low-fidelity sketches, separates captured product pixels from annotation-tool pixels, and uses exposed filenames such as `CleanShot` or `Screenshot` as provenance hints rather than verdicts. It then extracts the complaint, target, direction, content, and topology; ignores incidental annotation styling; and routes stated match intent to `/visual-inspection`.
 
 ### `/art-director`
 
@@ -45,7 +45,7 @@ Compares a reference element and the result side by side. The user names the axi
 
 `/eye-of-the-beholder` activates DURING and AFTER layout CSS, color token, contrast, layout-stability, or animation work, to scan the rendered result. Also activates when a gut-word complaint ("too busy", "it jumps", "looks cheap", "off") needs translating into an axis to scan.
 
-`/fat-marker-sketch` is the reading discipline for any image shared as a design cue: treat it as feedback, not a literal design. Auto-selection is unreliable here, because a message that is only a dropped image has no text for the skill description to match, and no hook can detect an attachment to fire on. So the discipline is best kept primed as an always-on default rather than relied on to auto-load; on a wordless image, invoke `/fat-marker-sketch` explicitly. Accompanying text, and especially annotation markup (arrows, callouts, CleanShot or Preview chrome), makes auto-selection more likely. Once the resulting change is rendered, `/eye-of-the-beholder` scans the render.
+`/fat-marker-sketch` is the classifier and reading discipline for any image shared as a design cue. Auto-selection is unreliable when a message contains only a dropped image because there may be no text for the description to match. Keep the discipline primed: inspect any exposed filename, then verify the visible layers instead of guessing from the name. `CleanShot`, `Screenshot`, and localized capture names indicate likely screenshot provenance; visible marks establish whether it is annotated. Once the resulting change is rendered, `/eye-of-the-beholder` scans the render.
 
 `/taste-test` activates when the user reacts with a gut-word and no specification, when a new screen has no established direction and they cannot describe one, or when two rounds of pixel iteration have not converged. It is not for "make it match this reference" (that is visual-inspection) or full brand work (that is art-director).
 
@@ -57,4 +57,4 @@ Compares a reference element and the result side by side. The user names the axi
 
 Skipping straight to diagnosis is how AI reviews end up validating their own assumptions. The eye-of-the-beholder skill insists on at least three concrete observations before any cause is named, so the diagnosis has to fit what is actually on screen.
 
-The art-director skill works one level up: brand attributes and visual-language decisions captured upfront are the reference against which observations get their meaning. "Feels off" is unverifiable until there is a documented standard to feel off from. Taste-test is the lighter, per-direction way to produce that standard when the user cannot describe it: it shows options, reads the reaction, and records the result. Visual-inspection works one level tighter: a named reference turns the visual question into a measurement loop. Fat-marker-sketch guards the input side, so an uploaded image is read as intent rather than copied as a design.
+The art-director skill works one level up: brand attributes and visual-language decisions captured upfront are the reference against which observations get their meaning. "Feels off" is unverifiable until there is a documented standard to feel off from. Taste-test is the lighter, per-direction way to produce that standard when the user cannot describe it: it shows options, reads the reaction, and records the result. Visual-inspection works one level tighter: a named reference turns the visual question into a measurement loop. Fat-marker-sketch guards the input side by distinguishing captured product evidence, annotation commentary, rough sketches, and deliberate references before any pixels are translated into UI.
