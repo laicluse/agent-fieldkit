@@ -298,6 +298,7 @@ h3 {
 
 .home-product-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   min-height: 22rem;
   align-content: space-between;
   border: 1px solid var(--paper-line);
@@ -322,10 +323,14 @@ h3 {
 }
 
 .home-card-top {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
   align-items: flex-start;
+}
+
+.home-card-top > :first-child {
+  min-width: 0;
 }
 
 .home-card-top h2 {
