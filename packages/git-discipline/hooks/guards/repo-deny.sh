@@ -314,12 +314,8 @@ guard_repo_deny() {
 
   [[ -n "$sentinel" && -f "$sentinel" ]] || return 0
 
-  local reason
-  reason=$(head -n1 "$sentinel" 2>/dev/null)
-  local reason_part=""
-  if [[ -n "$reason" ]]; then
-    reason_part=" Reason: $reason."
-  fi
+  local reason_part
+  reason_part=$(dd_lock_suffix "$sentinel")
 
   dd_emit_deny "disable-git" \
 "git lock active for this repo (.git/git-discipline-deny).${reason_part} Subcommand '$subcmd' is a mutation. Run /git-discipline:enable-git to lift, or use a read-only command (status, log, diff, show, rev-parse, blame)."

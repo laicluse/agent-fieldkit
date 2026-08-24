@@ -17,10 +17,19 @@ deny_check() {
     return 0
   fi
 
-  local reason
-  reason=$(head -n1 "$common_dir/git-discipline-deny" 2>/dev/null || true)
+  # allow-comment: the lock format lives in lib/lock-info.sh so the CLI hooks
+  # allow-comment: quote the reason exactly as the PreToolUse guard does. Sourced
+  # allow-comment: relative to this file, which the installed hooks reference by
+  # allow-comment: absolute plugin path; soft-fails so an older install that
+  # allow-comment: predates the helper still denies, just without the reason.
   local reason_part=""
-  [[ -n "$reason" ]] && reason_part=" Reason: $reason."
+  local lock_lib
+  lock_lib="$(dirname "${BASH_SOURCE[0]}")/lock-info.sh"
+  if [[ -f "$lock_lib" ]]; then
+    # shellcheck disable=SC1090
+    . "$lock_lib"
+    reason_part=$(dd_lock_suffix "$common_dir/git-discipline-deny")
+  fi
 
   printf '[git-discipline/disable-git] %s blocked by %s/git-discipline-deny.%s Run /git-discipline:enable-git to lift.\n' \
     "$action" "$common_dir" "$reason_part" >&2

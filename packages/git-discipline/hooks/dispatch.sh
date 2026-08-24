@@ -17,6 +17,7 @@ case "$EVENT" in
 
     dd_cd_to_bash_target "$INPUT"
 
+    source "$DIR/lib/lock-info.sh"
     source "$DIR/guards/git-dash-c.sh"
     source "$DIR/guards/git-config-override.sh"
     source "$DIR/guards/repo-deny.sh"
@@ -108,6 +109,12 @@ case "$EVENT" in
     source "$DIR/lib/wip-gate.sh"
     source "$DIR/guards/commit-body-posttool.sh"
     guard_commit_body_posttool "$INPUT"
+    ;;
+
+  UserPromptExpansion)
+    source "$DIR/lib/lock-info.sh"
+    source "$DIR/handlers/toggle-commands.sh"
+    handle_toggle_commands "$INPUT"
     ;;
 esac
 

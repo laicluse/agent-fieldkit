@@ -821,9 +821,15 @@ the safety locks, before the disabled-sentinel early exit (so it also fires
 while discipline is off), and denies any agent-driven Bash call that creates
 or removes a `git-discipline-disabled-*` or `.git/git-discipline-deny`
 sentinel, in both directions and with no magic-comment or env-var escape.
-The toggle skills therefore hand the operator a ready-to-paste `! `-prefixed
-command instead of running it themselves; the operator's keystroke is the
-switch. Read-only inspection of the sentinel paths stays open.
+Read-only inspection of the sentinel paths stays open.
+
+The four toggle commands still honour that rule while running as a single
+keystroke. A `UserPromptExpansion` hook
+(`hooks/handlers/toggle-commands.sh`) fires on the operator's own typed
+command, writes or removes the sentinel itself, reports the result, and
+blocks the expansion, so the skill body never reaches the model. Nothing the
+model authored can reach the sentinel: `sentinel-protect` is untouched and
+keeps denying agent-driven Bash mutations.
 
 ## Architecture
 

@@ -2,51 +2,26 @@
 name: enable-git
 user-invocable: true
 description: >-
-  Explicit /git-discipline:enable-git: remove the repo read-only git lock for Claude.
+  Explicit /git-discipline:enable-git: remove the repo read-only git lock.
 disable-model-invocation: true
 argument-hint: ""
 ---
 
 # /git-discipline:enable-git
 
-Remove the per-repo lock that `/git-discipline:disable-git` set. After this command
-Claude is free to run mutating git commands again. Has no effect when no
-sentinel is present.
+Remove the per-repo lock that `/git-discipline:disable-git` set. The lock is not
+Claude-specific: while it is in place the installed `commit-msg` and `pre-push`
+hooks reject commits and pushes from every caller, including Codex and a plain
+shell. Removing it restores git for all of them. Has no effect when no lock is
+present.
 
-## Implementation
+## Nothing to do here
 
-Perform the following steps:
+The plugin's `UserPromptExpansion` hook handles this command at the keystroke
+itself: it removes `.git/git-discipline-deny`, reports the result, and blocks
+the expansion, so this file's content never reaches the model.
 
-1. Resolve the git common dir:
-
-   ```bash
-   common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
-   ```
-
-   Bail with a clear error when not inside a git repo.
-
-2. Check (read-only, not blocked) whether the sentinel exists:
-
-   ```bash
-   [ -f "$common_dir/git-discipline-deny" ]
-   ```
-
-   If it does not, report that no git lock was active and stop.
-
-3. Do NOT remove the sentinel yourself; the `sentinel-protect` guard
-   denies agent-driven removal, with no escape. Unlocking a repo the
-   operator locked is the operator's call. Print the ready-to-paste
-   command instead (the `! ` prefix runs it directly in the session):
-
-   ```
-   ! rm <common_dir>/git-discipline-deny
-   ```
-
-   Substitute `<common_dir>` with the literal path so the operator can
-   paste the line as-is.
-
-4. After the operator has run it, confirm via a read-only check and
-   report that the lock is lifted.
-
-Do not write further explanation or caveats afterwards. The operator
-typed this command deliberately.
+Reading this text means the hook did not run. Report that instead of removing
+the lock: the `sentinel-protect` guard denies agent-driven removal in any case,
+with no escape. Likely causes are a plugin installed without its hooks, or a
+host that does not implement `UserPromptExpansion`.

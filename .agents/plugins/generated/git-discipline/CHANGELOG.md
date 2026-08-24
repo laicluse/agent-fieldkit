@@ -19,7 +19,15 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
-## [v2.0.58]
+## [v2.0.60]
+
+### Breaking
+
+- **Locking a repository now requires a reason.** `/git-discipline:disable-git` refuses a bare invocation and asks for one: `/git-discipline:disable-git <why this repo is locked>`. The reason is stored with the lock alongside the date it was set, and both are quoted back on every denied git command, so a lock you meet weeks later explains itself. Locks written by earlier versions carry no reason and keep denying on their own terms.
+
+### Changed
+
+- **The four toggle commands now take effect when you type them.** `/git-discipline:enable-git`, `/git-discipline:disable-git`, `/git-discipline:enable-discipline` and `/git-discipline:disable-discipline` previously printed a shell command for you to run yourself, because the `sentinel-protect` guard denies agent-driven writes to these files in both directions. The commands now run off your own keystroke and report the result directly. That guard is unchanged and still denies every agent-driven attempt; what disappeared is the copy-paste step, not the rule behind it. Hosts without the `UserPromptExpansion` hook fall back to the previous behaviour.
 
 ### Fixed
 

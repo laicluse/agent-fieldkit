@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 84,
-		"hookFiles": 58
+		"hookFiles": 60
 	},
 	"install": {
 		"claude": [
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.59",
+			"version": "2.0.60",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -251,11 +251,11 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline",
 			"skillCount": 13,
 			"commandCount": 3,
-			"hookFileCount": 27,
+			"hookFileCount": 29,
 			"latestChange": {
-				"version": "v2.0.58",
-				"type": "Fixed",
-				"summary": "A commit that already shipped is never judged again at push time."
+				"version": "v2.0.60",
+				"type": "Breaking",
+				"summary": "Locking a repository now requires a reason."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.59",
+			"packageVersion": "2.0.60",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.58",
-			"type": "Fixed",
-			"summary": "A commit that already shipped is never judged again at push time.",
+			"version": "v2.0.60",
+			"type": "Breaking",
+			"summary": "Locking a repository now requires a reason.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
