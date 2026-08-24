@@ -171,7 +171,7 @@ continuation tick finds a PRELAUNCH loop file whose logged question is five
 minutes or older without an operator answer in `## Input`, the rover decides
 the question itself via `decide` and drives on.
 
-The loop is autonomous. It does not ask questions mid-phase. When it hits a choice, it invokes `decide`. Before any artefact leaves the rover (push, PR, handoff communiqué, research brief, generated doc, media, or any other deliverable), it invokes `pride` to catch what it missed. No human is required to keep it moving, but you can intervene via the `## Input` section or the `/rover:stop` and `/rover:rover` commands at any time.
+The loop is autonomous. It does not ask questions mid-phase. When it hits a choice, it invokes `decide`. Before any artefact leaves the rover (a commit, the handoff communiqué, a research brief, a generated doc, media, or any other deliverable), it invokes `pride` to catch what it missed. No human is required to keep it moving, but you can intervene via the `## Input` section or the `/rover:stop` and `/rover:rover` commands at any time.
 
 ## Three fates, not two
 
@@ -250,7 +250,7 @@ The reflex to sidestep this is to classify inherited items as "pre-existing", "f
 - "out of scope because it existed already"
 - "someone else raised this, someone else closes it"
 
-(These phrases are legitimate when they describe external-action gates the rover is structurally forbidden from taking: "the push is left for the operator" in `stop`'s Next actions is not a scope reflex, it is a factual statement about who holds the permission.)
+(These phrases are legitimate only when they describe an external-action gate the Dispatch itself named and the rover cannot take, such as a deploy the mission asked for. "The push is left for the operator" is not one of them: the rover has no push step, so that sentence invents a pending action rather than reporting one.)
 
 Every open item on the branch gets the same three fates as every pride finding: fix, cost-value-skip with structured rationale, or reject-as-non-issue with pride's second-pass evidence (see "Three fates" above). "It was filed thirteen days ago" is not evidence of non-issue; it is a date. For each inherited review thread, the rover reads the full thread against HEAD before classifying: a comment superseded by a later commit is resolved (name the commit), a comment the original reviewer has retracted in a follow-up is resolved (name the retraction), silence on the thread is not retraction. Anything still live on the current code is still live, whether it was filed this morning or last quarter.
 
@@ -415,8 +415,8 @@ continuation is the safety net after you stop driving, not the starter.
 Free-form text may also describe optional integrations. Parse phrases where the operator names a specific skill with a role, and record it as an integration:
 
 - A notifier skill to message after the loop ends: `notify_on_done: <skill>`
-- A review-bot skill to run after a PR goes up: `reviewbot: <skill>`
-- A commit-splitter skill to run before a push: `commit_splitter: <skill>`
+- A review-bot skill to run after a Draft PR goes up, on the PR-bound path only: `reviewbot: <skill>`
+- A commit-splitter skill to run before STOW closes: `commit_splitter: <skill>`
 
 For each parsed integration, verify the skill or binary exists before recording it. Use the `has_skill` helper from `decide`. When an operator-mentioned integration is not installed, do not silently skip: log a loud line to the loop file so the operator notices on any later read. Example: `[HH:MM] Setup: operator mentioned <skill> but it is not installed. Integration disabled.`
 
@@ -535,7 +535,7 @@ Run the check at three moments:
 Do not silently slide from "ship X" to "write a doc about X", not at setup, not at SURVEY end, not at DRIVE entry, not at INSPECT entry. Four gates, same question: are we delivering what the Dispatch asked for?
 
 **DRIVE**
-The mission branch was created at setup; stay on it. Read the active project and user instruction files for commit style and push policy; the rules there are authoritative. If those instructions point to a skill or other reference for these rules, follow the pointer and invoke it; the referenced content is the rule. Repo history is reference only for style details the rules leave silent. Git history is immutable, so a single off-style commit must not seed every commit that follows: before drafting each commit subject, name the rule you are applying and its source. Do not rebase, fast-forward, or otherwise reshape the branch during the mission; it exists to absorb every commit so the operator can drop the whole branch and start over if the mission is not it.
+The mission branch was created at setup; stay on it. Read the active project and user instruction files for commit style; the rules there are authoritative. If those instructions point to a skill or other reference for these rules, follow the pointer and invoke it; the referenced content is the rule. Repo history is reference only for style details the rules leave silent. Git history is immutable, so a single off-style commit must not seed every commit that follows: before drafting each commit subject, name the rule you are applying and its source. Do not rebase, fast-forward, or otherwise reshape the branch during the mission; it exists to absorb every commit so the operator can drop the whole branch and start over if the mission is not it.
 
 Quality over speed. No duct tape, no hacks. Structural solutions. Commit per logical step. Do not transition out of DRIVE with uncommitted changes.
 
@@ -629,11 +629,13 @@ On any interjection:
 
 The failure mode to refuse: slipping into interactive mode the moment a message arrives, then burning the operator's reply cycle on a one-line follow-up question. The rover does not need anything only the operator can provide, because by design it does not ask. It decides, it fixes, it drives. Anything that would have been a "blocker" in a dialogue-model rover is either resolved by `decide`, or fixed by loading the missing context through research skills, or addressed structurally with the tooling at hand.
 
-### Commits and pushes
+### Commits and what happens after
 
 Commits: autonomous. The operator approved them by starting the loop. Commit per logical step with a descriptive message. Follow the project's commit conventions.
 
-Pushes: never autonomous. Pushes are external actions with consequences beyond the rover's remit, so they fall outside the autonomy directive. Pushing to a remote requires explicit operator approval ("push", "ship", or equivalent). When a push is pending, log that the work is push-ready and keep driving local work. Do not ask the operator anything; the ready-to-push state is visible in the log and the operator reads it when they read it.
+Pushes, merges, deploys: not the rover's move, and not the rover's concern either. The rover's deliverable is commits on the mission branch. Where those commits go afterwards is a workflow decision that belongs to whoever runs the mission: a conveyor run resolves it in its own `deliver` station, and an interactive mission ends with the operator taking it from there. By default the rover therefore has no push step to defer, which means there is no push-ready state to log and nothing to leave as homework in the communiqué.
+
+The one exception is the PR-bound path in STOW: when the Dispatch asks for a PR, or the project's active instruction files make every mission PR-bound, the rover pushes the mission branch and opens the Draft PR as part of the mission. That push is a step the rover takes, not one it hands over. Outside that path it says nothing about remotes at all.
 
 ### Timestamps and mission duration
 
@@ -670,8 +672,8 @@ Trunk-based or feature-branch workflow is not a per-mission decision inside the 
 A loop runs without any of these. They are conveniences the operator plugs in at invocation time. Only use if detected at setup:
 
 - **notify_on_done.** After auto-stop or explicit stop, if a notifier skill is configured and installed, invoke it with a brief summary. The plugin itself ships none of these.
-- **reviewbot.** After creating a PR, if a review-bot skill is configured and installed, invoke it.
-- **commit_splitter.** If the loop produced uncommitted changes spanning multiple concerns and a commit-splitter skill is configured and installed, invoke it before the push.
+- **reviewbot.** Only on the PR-bound path in STOW: once the Draft PR is up, if a review-bot skill is configured and installed, invoke it. No PR, no reviewbot.
+- **commit_splitter.** If the loop produced uncommitted changes spanning multiple concerns and a commit-splitter skill is configured and installed, invoke it before STOW closes.
 
 If a user mentions an integration at setup that turns out not to be installed, log a loud line at that time (see "Parsing" above). Do not fail silently when running.
 
@@ -682,7 +684,6 @@ The contract is "any skill the operator has installed and named in their invocat
 The loop reads the active user-level and project-level instruction files before any code change (`CLAUDE.md`, `AGENTS.md`, or the host's equivalent). It adapts to:
 
 - Commit style
-- Push approval policy
 - Test requirements
 - Language conventions
 
@@ -694,7 +695,7 @@ These are project-specific and not hardcoded in this skill.
 - Stop the mission during setup because the tree was dirty, the starting branch was not what the rover expected, or a hook refused a setup command while telling the rover how to proceed. All are autonomous: step 2 creates or continues the mission branch and follows any blocking hook's own remediation with the rover's reasoning; step 3 commits any leftover changes, and the rest of setup proceeds.
 - Post a question or request into `## Input`. That section is operator-to-rover only.
 - Defer, postpone, plan, or down-scope any finding. Every finding goes through one of the three fates in this session (fix, cost-value-skip with structured rationale, reject-as-non-issue with pride second-pass evidence).
-- Push without explicit user approval (pushes are an external action outside the autonomy directive)
+- Push, merge, or deploy outside the PR-bound path in STOW. These sit outside the rover's remit, and writing one into the communiqué as a next action is the same overreach one step removed
 - Transition out of DRIVE with a dirty working tree
 - Hand off any artefact (code, docs, prose, research brief, media, communiqué, anything) without a pride pass logged in the loop file for that artefact
 - Treat "there is no diff" as an excuse to skip pride; the produced artefact is the review target

@@ -158,7 +158,7 @@ Pride is not a deferral mechanism. Its output is a list of things to weigh, not 
 
 1. Print findings to the conversation
 2. Fix every finding before returning. Pride is not a report-generating skill; it is a check that closes the gap between "looks done" and "actually done". Manual invocation means the user wants the work fixed, not a menu of what could be fixed.
-3. If the fix requires an external-action gate (push, deploy, merge), complete all local fixes and surface the push-ready state to the user at the end. Never ask mid-fix whether to continue.
+3. If the fix requires an external-action gate the rover cannot take, complete all local fixes and name the remaining gate once at the end. Never ask mid-fix whether to continue, and never turn the gate into a command for the user to run.
 
 ### Every reject gets a second pass
 

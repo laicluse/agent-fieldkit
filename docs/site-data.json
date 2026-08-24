@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.60",
+			"version": "2.0.61",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -501,7 +501,7 @@
 		},
 		{
 			"name": "rover",
-			"version": "2.0.25",
+			"version": "2.0.26",
 			"category": "autonomy",
 			"summary": "Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.",
 			"support": [
@@ -635,7 +635,7 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.60",
+			"packageVersion": "2.0.61",
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"version": "v2.0.60",
 			"type": "Breaking",
@@ -680,7 +680,7 @@
 		},
 		{
 			"plugin": "rover",
-			"packageVersion": "2.0.25",
+			"packageVersion": "2.0.26",
 			"detailPath": "agent-fieldkit/rover/",
 			"version": "v2.0.24",
 			"type": "Fixed",

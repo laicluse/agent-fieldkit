@@ -90,7 +90,7 @@ SURVEY ──► DRIVE ──► INSPECT ──► STOW ──► STANDBY
 
 - Ask the operator anything mid-mission (it uses `decide` for every fork, including scope calls)
 - Defer, postpone, plan, or down-scope a finding (fix it, or reject it with evidence via pride's second-pass gate)
-- Push to a remote without explicit operator go (pushes are the one external-action gate that stays operator-held)
+- Push, merge, or deploy on its own initiative (the mission ends at commits on its own branch; where those go next is your workflow, not the rover's). It pushes and opens a Draft PR only when the brief or the project's conventions make the mission PR-bound
 - Transition out of DRIVE with a dirty working tree
 - Hand off any artefact (code, docs, prose, research brief, media, communiqué) without a logged `pride` pass covering it
 - Call a mission done without ticked Done criteria and evidence

@@ -27,6 +27,8 @@ the version without producing an entry here).
 
 ### Changed
 
+- **A lock now explains itself to whoever runs into it.** An agent that met the lock could see that git was refused without knowing what set it or whether it was allowed to do anything about it, and the deny message made that worse by telling the reader to run `/git-discipline:enable-git`, which an agent cannot invoke. The sentinel is now written with a header naming the plugin, what it blocks, and whose call lifting it is, so opening the file answers the question on its own. Denies aimed at an agent say it cannot lift the lock itself and to ask the operator; the denies a plain terminal sees no longer assume a slash command exists there, and name the file to delete as well. Locks set by earlier versions keep working and keep reporting whatever they carry.
+
 - **The four toggle commands now take effect when you type them.** `/git-discipline:enable-git`, `/git-discipline:disable-git`, `/git-discipline:enable-discipline` and `/git-discipline:disable-discipline` previously printed a shell command for you to run yourself, because the `sentinel-protect` guard denies agent-driven writes to these files in both directions. The commands now run off your own keystroke and report the result directly. That guard is unchanged and still denies every agent-driven attempt; what disappeared is the copy-paste step, not the rule behind it. Hosts without the `UserPromptExpansion` hook fall back to the previous behaviour.
 
 ### Fixed

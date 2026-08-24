@@ -57,7 +57,7 @@ The conversation up to this point is the source of mission context. The operator
      ```
      [HH:MM prepare] Prepared in advance by /rover:prepare. Continuation NOT running, mission branch NOT created. Operator picks up by: cd <repo> && git checkout -b <branch>, then /rover:rover .autonomous/<NAME>.md.
      ```
-   - Instructions: same canonical block as rover (Phases, Decisions, Interjections, Commits and pushes, Timestamps, Source of truth).
+   - Instructions: same canonical block as rover (Phases, Decisions, Interjections, Commits and what happens after, Timestamps, Source of truth).
 
 6. **Report to the operator.** Print the exact path written, the branch name proposed, and the two commands they run to start the mission:
    ```
@@ -74,7 +74,7 @@ The conversation up to this point is the source of mission context. The operator
 - Does not arrange host continuation. The mission lies dormant until wake.
 - Does not create the mission branch in the target repo. The operator does that when they pick the mission up.
 - Does not commit anything in either repo.
-- Does not push.
+- Does not push, merge, or deploy.
 - Does not run a SURVEY iteration. The first iteration happens at wake.
 - Does not modify the originating repo (where prepare was invoked from). The target repo's `.autonomous/` is the only filesystem write.
 

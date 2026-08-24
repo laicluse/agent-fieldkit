@@ -102,7 +102,7 @@ The asymmetry is by design. Without a subtraction pass, addition wins by default
 
 1. Print findings to the conversation
 2. Apply the removals before returning. Trim is not a report-generating skill; it is the pass that closes the gap between "looks done" and "is also lean".
-3. If the removals require an external-action gate (push, deploy, merge), complete all local removals and surface the push-ready state to the user at the end. Never ask mid-removal whether to continue.
+3. If the removals require an external-action gate the rover cannot take, complete all local removals and name the remaining gate once at the end. Never ask mid-removal whether to continue, and never turn the gate into a command for the user to run.
 
 ## Trim is not STOW
 
