@@ -1,6 +1,6 @@
 {
   "name": "vaultsync",
-  "version": "2.0.16",
+  "version": "2.0.17+codex.hooks.2",
   "description": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict handling while respecting dibs locks.",
   "author": {
     "name": "local"

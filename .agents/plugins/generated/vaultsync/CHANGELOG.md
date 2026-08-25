@@ -2,6 +2,13 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.17]
+
+### Fixed
+
+- **CLI, daemon, and callback entrypoints survive plugin cache updates.** Plugin startup atomically publishes a complete immutable runtime behind one stable machine launcher, and older parallel sessions cannot downgrade the active version.
+- **The macOS LaunchAgent no longer pins a versioned plugin cache or Node installation.** Existing daemons restart through the stable launcher after a newer runtime is published.
+
 ## [v2.0.16]
 
 ### Fixed

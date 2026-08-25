@@ -52,7 +52,7 @@
 					<p class="lede">Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.16</span>
+						<span>2.0.17</span>
 						<span>1 skill</span>
 					</div>
 				</div>
@@ -67,6 +67,7 @@
 <li>Registers a Git checkout as a vaultsync target.</li>
 <li>Reports whether a checkout is vaultsync-managed through <code>vaultsync managed</code>, so other tools can ask the CLI instead of reading vaultsync storage directly.</li>
 <li>Stores runtime state under <code>${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync</code>.</li>
+<li>Publishes complete immutable runtime releases behind one stable machine launcher without depending on a coding-agent plugin cache path.</li>
 <li>Installs a user-level macOS LaunchAgent for the daemon loop.</li>
 <li>Debounces dirty Git state before committing.</li>
 <li>Refuses machine-local home paths in new commits and outgoing history before shared content can be pushed.</li>
@@ -87,12 +88,14 @@ vaultsync now [path] [--json]
 vaultsync pause [path] [--minutes &lt;n&gt; | --until &lt;time&gt;] [--reason &lt;text&gt;]
 vaultsync resume [path]
 vaultsync doctor [path] --llm-command '&lt;json command&gt;'
-vaultsync daemon</code></pre>
+vaultsync daemon
+vaultsync runtime install</code></pre>
 <p><code>install</code> resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.</p>
 <p><code>--pre-sync</code> registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock after integrating remote changes and before verification and publication, then reruns it after verifier repairs. A non-zero exit blocks push as a <code>pre-sync</code> failure while preserving any local source checkpoint for recovery. On unchanged daemon polls the command does not run; <code>vaultsync now</code> always runs it.</p>
 <p><code>managed</code> reports whether the requested path resolves to a vaultsync-managed checkout. It is the public integration point for tools that need to avoid operating inside vaultsync roots; they must call the CLI instead of depending on vaultsync's registration storage layout.</p>
 <p><code>status --json</code> emits the canonical <code>vaultsync.status.v1</code> contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is <code>synced</code>, <code>pending</code>, <code>degraded</code>, <code>blocked</code>, <code>paused</code>, <code>disabled</code>, or <code>unmanaged</code>; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. Pending state separates uncommitted paths from unpushed commits, and <code>lastSuccessfulSyncAt</code> is not overwritten by a failed cycle.</p>
 <p>vaultsync resolves <code>dibs</code> dynamically at runtime. <code>DIBS_BIN</code> remains an explicit override, otherwise vaultsync checks the installed plugin cache, <code>PATH</code>, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed <code>dibs</code> binary.</p>
+<p><code>runtime install</code> republishes the calling plugin version only when it is newer than the active machine runtime. Publication stages a complete runtime release before atomically changing the active pointer. If a LaunchAgent is already installed, a successful upgrade rewrites and restarts it through the stable launcher. This command is normally invoked by the plugin session hook.</p>
 <p><code>pause</code> always has an automatic resume deadline. The default is 120 minutes. If a pause expires while another live <code>dibs</code> holder still owns the checkout, vaultsync extends the pause by 60 minutes and repeats that rule until the lock clears.</p>
 <p>The built-in shareability gate rejects the current machine's home directory in added Git content, generated commit messages, and outgoing commits. Keep executable locations and other machine-specific values in environment overrides or user-level configuration. The optional verifier remains responsible for repository-specific content policy; vaultsync does not claim to remove PII from arbitrary prose.</p>
 <h2 id="llm-command-contract">LLM Command Contract</h2>

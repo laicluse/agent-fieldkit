@@ -7,6 +7,7 @@ export const COMMANDS = [
   'now',
   'daemon',
   'doctor',
+  'runtime',
 ];
 
 const SUMMARIES = {
@@ -18,6 +19,7 @@ const SUMMARIES = {
   now: 'run one immediate sync cycle for one checkout',
   daemon: 'run the long-lived debounce and remote-poll loop',
   doctor: 'run preflight checks for one checkout without registering it',
+  runtime: 'install the stable machine-owned runtime',
 };
 
 export function parseInvocation(argv) {

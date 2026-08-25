@@ -11,7 +11,9 @@ claude plugins install vaultsync@laicluse-agent-fieldkit
 codex plugin add vaultsync@laicluse-agent-fieldkit
 ```
 
-The plugin ships a `vaultsync` CLI. If the command is not on `PATH`, run the installed plugin's `bin/vaultsync` with Node.
+Starting or resuming a coding-agent session publishes the newest installed plugin runtime to `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync/runtime` and installs one stable launcher at `${VAULTSYNC_BIN_DIR:-$HOME/.local/bin}/vaultsync`. Add that bin directory to `PATH` once; CLI calls, the macOS LaunchAgent, and per-vault callback commands can then use the same version-independent entrypoint.
+
+Runtime releases are immutable and the active pointer only moves forward by version. An older parallel coding-agent session therefore cannot downgrade a newer machine runtime. Vaultsync never removes old runtime releases or coding-agent plugin caches; cache lifecycle remains the plugin host's responsibility.
 
 ## Capabilities
 
@@ -19,6 +21,7 @@ The plugin ships a `vaultsync` CLI. If the command is not on `PATH`, run the ins
 - Reports whether a checkout is vaultsync-managed through `vaultsync managed`,
   so other tools can ask the CLI instead of reading vaultsync storage directly.
 - Stores runtime state under `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync`.
+- Publishes complete immutable runtime releases behind one stable machine launcher without depending on a coding-agent plugin cache path.
 - Installs a user-level macOS LaunchAgent for the daemon loop.
 - Debounces dirty Git state before committing.
 - Refuses machine-local home paths in new commits and outgoing history before shared content can be pushed.
@@ -42,6 +45,7 @@ vaultsync pause [path] [--minutes <n> | --until <time>] [--reason <text>]
 vaultsync resume [path]
 vaultsync doctor [path] --llm-command '<json command>'
 vaultsync daemon
+vaultsync runtime install
 ```
 
 `install` resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.
@@ -56,6 +60,8 @@ vaultsync's registration storage layout.
 `status --json` emits the canonical `vaultsync.status.v1` contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is `synced`, `pending`, `degraded`, `blocked`, `paused`, `disabled`, or `unmanaged`; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. Pending state separates uncommitted paths from unpushed commits, and `lastSuccessfulSyncAt` is not overwritten by a failed cycle.
 
 vaultsync resolves `dibs` dynamically at runtime. `DIBS_BIN` remains an explicit override, otherwise vaultsync checks the installed plugin cache, `PATH`, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed `dibs` binary.
+
+`runtime install` republishes the calling plugin version only when it is newer than the active machine runtime. Publication stages a complete runtime release before atomically changing the active pointer. If a LaunchAgent is already installed, a successful upgrade rewrites and restarts it through the stable launcher. This command is normally invoked by the plugin session hook.
 
 `pause` always has an automatic resume deadline. The default is 120 minutes. If a pause expires while another live `dibs` holder still owns the checkout, vaultsync extends the pause by 60 minutes and repeats that rule until the lock clears.
 

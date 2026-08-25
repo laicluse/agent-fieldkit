@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { homedir, platform, userInfo } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
+import { machineLauncherPath } from './machine-runtime.mjs';
 
 export const DEFAULT_DEBOUNCE_SECONDS = 300;
 export const DEFAULT_IDLE_POLL_SECONDS = 300;
@@ -1493,10 +1494,6 @@ export async function daemonTick(env = process.env) {
   return results;
 }
 
-function currentBinPath() {
-  return fileURLToPath(new URL('../bin/vaultsync', import.meta.url));
-}
-
 function xmlEscape(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -1521,8 +1518,7 @@ export function launchAgentPlist(env = process.env) {
   <string>${SERVICE_LABEL}</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${xmlEscape(process.execPath)}</string>
-    <string>${xmlEscape(currentBinPath())}</string>
+    <string>${xmlEscape(machineLauncherPath(env))}</string>
     <string>daemon</string>
   </array>
   <key>EnvironmentVariables</key>
@@ -1561,6 +1557,11 @@ export function installLaunchAgent(env = process.env) {
   }
   spawnSync('launchctl', ['kickstart', '-k', `gui/${uid}/${SERVICE_LABEL}`], { encoding: 'utf8' });
   return { installed: true, label: SERVICE_LABEL, plist: plistPath };
+}
+
+export function launchAgentIsInstalled(env = process.env) {
+  if (platform() !== 'darwin') return false;
+  return existsSync(join(env.HOME || homedir(), 'Library', 'LaunchAgents', `${SERVICE_LABEL}.plist`));
 }
 
 export async function runCommand(command, args, env = process.env) {

@@ -12,16 +12,17 @@ Use this when the operator asks to install or operate `$vaultsync`, especially f
 
 ## Command
 
-Run the plugin CLI from this package:
+Run the stable machine CLI:
 
 ```bash
 vaultsync <command> [args]
 ```
 
-If the command is not on `PATH`, locate this plugin's `bin/vaultsync` in the installed plugin source/cache and run it with Node:
+Plugin startup publishes the newest complete runtime under `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync/runtime` and installs the launcher at `${VAULTSYNC_BIN_DIR:-$HOME/.local/bin}/vaultsync`. If the command is not found, add that bin directory to `PATH`; do not call or persist a versioned plugin-cache path.
 
 ```bash
-node /path/to/vaultsync/bin/vaultsync <command> [args]
+export PATH="$HOME/.local/bin:$PATH"
+vaultsync <command> [args]
 ```
 
 ## Install
@@ -73,6 +74,8 @@ Vaultsync only accepts repairs for files it included in the request. Verifier-re
 - `vaultsync now [path]` runs one immediate cycle without bypassing safety gates.
 - `vaultsync daemon` runs the long-lived loop. The install command writes a user-level LaunchAgent on macOS.
 - `vaultsync doctor [path] --llm-command '<command>'` runs preflight checks without registering the checkout.
+
+The LaunchAgent and any per-vault callback command must invoke the stable `vaultsync` launcher. Independent Claude and Codex plugin updates converge on the newest installed runtime; older sessions cannot downgrade it. Vaultsync keeps its immutable releases and never cleans coding-agent plugin caches.
 
 During a mutating cycle, vaultsync claims `dibs` for the target worktree root, rejects the current machine's home directory in added Git content and outgoing commits, commits Git-visible local changes after the debounce window, runs the optional verification command, asks the configured LLM to repair bounded verifier failures, commits those repairs, and releases its dibs claim. When the current branch has an upstream, the same cycle also fetches, pulls with rebase, resolves conflicts through the configured LLM command, verifies again, and pushes the current branch. Without an upstream, fetch/rebase/push are skipped and the repo remains a local auto-commit vault until an upstream is configured. When a pause expires while another dibs holder is still active, vaultsync extends the pause by 60 minutes and repeats that rule until the lock clears. Pure remote polling fetches do not claim dibs unless local checkout state must change. Repository-specific content policy, including PII checks in prose, belongs in the configured verifier.
 

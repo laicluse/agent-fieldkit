@@ -1,0 +1,15 @@
+{
+	"hooks": {
+		"SessionStart": [
+			{
+				"matcher": "startup|resume",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "loaded_root=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}\"; plugin_data=\"${PLUGIN_DATA:-${CLAUDE_PLUGIN_DATA:-}}\"; runtime_root=\"$loaded_root\"; case \"$loaded_root\" in */plugins/cache/*/*/*) version=\"${loaded_root##*/}\"; retained_base=\"$plugin_data/.runtime/hooks\"; retained_link=\"$retained_base/by-version/$version\"; if [ -x \"$retained_link/hooks/install-runtime.sh\" ]; then runtime_root=\"$retained_link\"; else source_root=\"$loaded_root\"; if [ ! -x \"$source_root/hooks/install-runtime.sh\" ]; then plugin_base=\"${loaded_root%/*}\"; source_root=\"\"; source_count=0; for candidate in \"$plugin_base\"/*; do if [ -d \"$candidate\" ] && [ -x \"$candidate/hooks/install-runtime.sh\" ]; then source_root=\"$candidate\"; source_count=$((source_count + 1)); fi; done; [ \"$source_count\" -eq 1 ] || source_root=\"\"; fi; if [ -n \"$source_root\" ] && [ -n \"$plugin_data\" ]; then original_umask=\"$(umask)\"; umask 077; mkdir -p \"$retained_base/snapshots\" \"$retained_base/by-version\"; if [ -L \"$retained_link\" ] && [ ! -e \"$retained_link\" ]; then rm -f \"$retained_link\"; fi; stage=\"$(mktemp -d \"$retained_base/snapshots/$version.XXXXXX\")\" || stage=\"\"; published=0; source_version=\"${source_root##*/}\"; if [ -n \"$stage\" ] && cp -R \"$source_root/.\" \"$stage\" && printf '%s\\n' \"$source_version\" > \"$stage/.circus-source-version\" && [ -x \"$stage/hooks/install-runtime.sh\" ] && ln -sn \"../snapshots/${stage##*/}\" \"$retained_link\" 2>/dev/null; then published=1; fi; if [ -x \"$retained_link/hooks/install-runtime.sh\" ]; then runtime_root=\"$retained_link\"; else runtime_root=\"$source_root\"; fi; if [ -n \"$stage\" ] && [ \"$published\" -eq 0 ]; then rm -rf \"$stage\"; fi; umask \"$original_umask\"; else runtime_root=\"$source_root\"; fi; fi ;; esac; hook_entry=\"$runtime_root/hooks/install-runtime.sh\"; export PLUGIN_ROOT=\"$runtime_root\" CLAUDE_PLUGIN_ROOT=\"$runtime_root\"; if [ ! -x \"$hook_entry\" ]; then printf '%s\\n' '{\"systemMessage\":\"vaultsync SessionStart hook has no retained or active runtime; restart this Codex session.\"}'; exit 0; fi; \"$hook_entry\""
+					}
+				]
+			}
+		]
+	}
+}

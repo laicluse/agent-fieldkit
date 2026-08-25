@@ -135,6 +135,20 @@ it('provides Node on PATH to LaunchAgent child executables', () => {
   assert.equal(result.stdout, 'child-ready\n');
 });
 
+it('launches the daemon through the stable machine entrypoint', () => {
+  const env = {
+    HOME: join(tmp, 'stable-launcher-home'),
+    LAICLUSE_HOME: join(tmp, 'stable-launcher-state'),
+    VAULTSYNC_BIN_DIR: join(tmp, 'stable-launcher-bin'),
+    PATH: '/usr/bin:/bin:/usr/sbin:/sbin',
+  };
+  const plist = launchAgentPlist(env);
+
+  assert.match(plist, new RegExp(`<string>${join(env.VAULTSYNC_BIN_DIR, 'vaultsync')}</string>\\s*<string>daemon</string>`));
+  assert.doesNotMatch(plist, /plugins\/cache/);
+  assert.doesNotMatch(plist, new RegExp(`<string>${process.execPath}</string>`));
+});
+
 it('keys registrations by the resolved Git worktree root', () => {
   const repo = createRepo('identity-main');
   mkdirSync(join(repo, 'notes'));

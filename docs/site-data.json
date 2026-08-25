@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 84,
-		"hookFiles": 61
+		"hookFiles": 64
 	},
 	"install": {
 		"claude": [
@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.16",
+			"version": "2.0.17",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -405,11 +405,11 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/vaultsync",
 			"skillCount": 1,
 			"commandCount": 1,
-			"hookFileCount": 0,
+			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.16",
+				"version": "v2.0.17",
 				"type": "Fixed",
-				"summary": "Failed generators roll back their Git-visible writes."
+				"summary": "CLI, daemon, and callback entrypoints survive plugin cache updates."
 			}
 		},
 		{
@@ -697,6 +697,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{
+			"plugin": "vaultsync",
+			"packageVersion": "2.0.17",
+			"detailPath": "agent-fieldkit/vaultsync/",
+			"version": "v2.0.17",
+			"type": "Fixed",
+			"summary": "CLI, daemon, and callback entrypoints survive plugin cache updates.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
+		},
+		{
 			"plugin": "anger-management",
 			"packageVersion": "2.0.16",
 			"detailPath": "agent-fieldkit/anger-management/",
@@ -713,15 +722,6 @@
 			"type": "Changed",
 			"summary": "Living docs describe the present, not their ancestry.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
-		},
-		{
-			"plugin": "vaultsync",
-			"packageVersion": "2.0.16",
-			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.16",
-			"type": "Fixed",
-			"summary": "Failed generators roll back their Git-visible writes.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
 			"plugin": "autonomous",
