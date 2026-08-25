@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.12]
+
+### Added
+
+- **Tracked generators can run as a fail-closed pre-sync phase.** `vaultsync install --pre-sync '<command>'` refreshes derived files under Dibs before commit, after remote integration, and after verifier repairs; a failing command blocks publication with explicit `pre-sync` status.
+
 ## [v2.0.10]
 
 ### Fixed

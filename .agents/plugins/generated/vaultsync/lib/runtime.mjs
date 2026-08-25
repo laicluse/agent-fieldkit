@@ -684,6 +684,22 @@ function runVerification(registration) {
   return { skipped: false };
 }
 
+function runPreSync(registration) {
+  if (!registration.preSyncCommand) return { skipped: true };
+  const result = shellCommand(registration.preSyncCommand, {
+    cwd: registration.rootRealpath,
+    timeoutMs: 10 * 60 * 1000,
+  });
+  if (result.status !== 0) {
+    const err = new Error(`pre-sync command failed: ${registration.preSyncCommand}`);
+    const detail = [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
+    err.detail = detail.slice(0, 4000);
+    err.exitCode = result.status || 1;
+    throw err;
+  }
+  return { skipped: false };
+}
+
 function isTextRepairPath(path) {
   return /\.(md|markdown|txt|csv|tsv|json|ya?ml)$/i.test(path);
 }
@@ -952,23 +968,46 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       return saveCycleResult(reg, { state: 'idle', lastPollAt: nowIso(), lastError: null }, env);
     }
     claim = withPhase('lock', () => claimDibs(reg, env));
-    let committed = null;
-    if (dirty) {
-      committed = withPhase('commit', () => commitDirtyState(reg, reason, env));
-    }
+    const committedPaths = [];
+    let commitWarning = null;
+    let preSyncRuns = 0;
+    const runRegisteredPreSync = () => {
+      const result = withPhase('pre-sync', () => runPreSync(reg));
+      if (!result.skipped) preSyncRuns += 1;
+      return result;
+    };
+    const commitPendingState = (commitReason) => {
+      if (!isDirty(reg.rootRealpath)) return { committed: false, paths: [] };
+      const result = withPhase('commit', () => commitDirtyState(reg, commitReason, env));
+      committedPaths.push(...result.paths);
+      if (!commitWarning && result.warning) commitWarning = result.warning;
+      return result;
+    };
+    runRegisteredPreSync();
+    commitPendingState(reason);
     let afterCommitRelation = aheadBehind(reg.rootRealpath);
     let rebase = { rebased: false, conflictsResolved: 0 };
-    if (afterCommitRelation.known && (afterCommitRelation.behind > 0 || committed?.committed)) {
+    const integratesRemoteChanges = afterCommitRelation.known && afterCommitRelation.behind > 0;
+    if (afterCommitRelation.known && (afterCommitRelation.behind > 0 || committedPaths.length > 0)) {
       rebase = withPhase('rebase', () => pullRebaseWithLlm(reg));
       afterCommitRelation = aheadBehind(reg.rootRealpath);
     }
-    const cyclePaths = committed?.committed ? committed.paths : aheadChangedPaths(reg.rootRealpath);
+    if (integratesRemoteChanges) {
+      runRegisteredPreSync();
+      commitPendingState(`${reason}-post-rebase`);
+      afterCommitRelation = aheadBehind(reg.rootRealpath);
+    }
+    const cyclePaths = [...new Set([...committedPaths, ...aheadChangedPaths(reg.rootRealpath)])];
     const verificationResult = withPhase('verification', () => verifyWithRepairs(reg, cyclePaths, reason, env));
     const verification = verificationResult.verification;
     if (verificationResult.repaired) {
+      for (const repair of verification.repairs || []) committedPaths.push(...(repair.paths || []));
+      runRegisteredPreSync();
+      const generatedCommit = commitPendingState(`${reason}-post-verification`);
+      if (generatedCommit.committed) withPhase('verification', () => runVerification(reg));
       afterCommitRelation = aheadBehind(reg.rootRealpath);
     }
-    if (afterCommitRelation.known && (afterCommitRelation.ahead > 0 || committed?.committed)) {
+    if (afterCommitRelation.known && (afterCommitRelation.ahead > 0 || committedPaths.length > 0)) {
       withPhase('push', () => pushCurrentBranch(reg.rootRealpath, env));
     }
     const completedAt = nowIso();
@@ -979,11 +1018,12 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       lastSuccessfulSyncAt: completedAt,
       lastSeenDirtyAt: null,
       lastError: null,
-      lastWarning: committed?.warning ? errorRecord(committed.warning, completedAt) : null,
+      lastWarning: commitWarning ? errorRecord(commitWarning, completedAt) : null,
       lastResult: {
         reason,
-        committed: Boolean(committed?.committed),
-        paths: committed?.paths || [],
+	committed: committedPaths.length > 0,
+	paths: [...new Set(committedPaths)],
+	preSyncRuns,
         rebased: rebase.rebased,
         conflictsResolved: rebase.conflictsResolved,
 	upstream: optionalUpstreamName(reg.rootRealpath),
@@ -1063,6 +1103,7 @@ async function commandInstall(args, env = process.env) {
     allowPositionals: true,
     options: {
       'llm-command': { type: 'string' },
+      'pre-sync': { type: 'string' },
       verify: { type: 'string' },
       'debounce-seconds': { type: 'string' },
       'idle-poll-seconds': { type: 'string' },
@@ -1087,6 +1128,7 @@ async function commandInstall(args, env = process.env) {
     branchAtInstall: preflight.branch,
     upstreamAtInstall: preflight.upstream,
     llmCommand,
+    preSyncCommand: parsed.values['pre-sync'] || null,
     verifyCommand: parsed.values.verify || null,
     debounceSeconds: numberOption(parsed.values['debounce-seconds'], DEFAULT_DEBOUNCE_SECONDS, 'debounce-seconds'),
     idlePollSeconds: numberOption(parsed.values['idle-poll-seconds'], DEFAULT_IDLE_POLL_SECONDS, 'idle-poll-seconds'),

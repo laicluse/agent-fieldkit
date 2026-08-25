@@ -200,6 +200,37 @@ it('reports whether a checkout is managed through the public CLI', () => {
   assert.equal(unmanagedResult.root, realpathSync(unmanaged));
 });
 
+it('stores the registered pre-sync command during installation', () => {
+  const local = createRepo('pre-sync-install');
+  const fakeDibs = join(tmp, 'pre-sync-install-dibs.mjs');
+  writeFileSync(fakeDibs, [
+    '#!/usr/bin/env node',
+    'const command = process.argv[2];',
+    'if (command === "check") process.stdout.write(JSON.stringify({ state: "free" }));',
+    'else process.stdout.write(JSON.stringify({ state: "released" }));',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const llm = join(tmp, 'pre-sync-install-llm.mjs');
+  writeFileSync(llm, [
+    '#!/usr/bin/env node',
+    'let input = "";',
+    'process.stdin.on("data", (chunk) => input += chunk);',
+    'process.stdin.on("end", () => {',
+    '  const payload = JSON.parse(input);',
+    '  if (payload.task === "resolve_conflict") process.stdout.write(JSON.stringify({ resolved: "Resolved.\\n" }));',
+    '  else process.exit(2);',
+    '});',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const cli = fileURLToPath(new URL('../../bin/vaultsync', import.meta.url));
+  const env = { LAICLUSE_HOME: join(tmp, 'pre-sync-install-state'), DIBS_BIN: fakeDibs, HOME: tmp };
+
+  runNode([cli, 'install', local, '--llm-command', `${process.execPath} ${llm}`, '--pre-sync', 'tilt site', '--no-launchd'], { env });
+
+  const registration = JSON.parse(readFileSync(registrationPathForRoot(realpathSync(local), env), 'utf8'));
+  assert.equal(registration.preSyncCommand, 'tilt site');
+});
+
 it('formats a git-discipline-friendly fallback commit message', () => {
   const message = fallbackCommitMessage('debounce');
   assert.match(message, /^Sync vault content\n\n/);
@@ -388,6 +419,121 @@ it('installs and runs one dirty checkout sync cycle against a bare remote', () =
   assert.equal(git(local, ['status', '--porcelain']), '');
   assert.match(git(local, ['log', '-1', '--pretty=%s']), /Update vault note/);
   assert.match(git(tmp, ['--git-dir', remote, 'log', '-1', '--pretty=%s']), /Update vault note/);
+});
+
+it('runs a registered pre-sync command before committing generated files', () => {
+  const fixture = syncFixture('pre-sync-generated-file');
+  const generator = join(tmp, 'pre-sync-generated-file.mjs');
+  writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { readFileSync, writeFileSync } from "node:fs";',
+    'const note = readFileSync("note.md", "utf8");',
+    'writeFileSync("viewer.html", `<main>${note.trim()}</main>\\n`);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...installed, preSyncCommand: `${process.execPath} ${generator}` }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nGenerated before commit.\n');
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Note\n\nGenerated before commit.</main>\n');
+  assert.match(git(fixture.local, ['show', '--pretty=', '--name-only', 'HEAD']), /note\.md[\s\S]*viewer\.html|viewer\.html[\s\S]*note\.md/);
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
+it('blocks commit and push when the pre-sync command fails', () => {
+  const fixture = syncFixture('pre-sync-failure');
+  const generator = join(tmp, 'pre-sync-failure.mjs');
+  writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { writeFileSync } from "node:fs";',
+    'writeFileSync("viewer.html", "partial viewer\\n");',
+    'process.stderr.write("viewer generation failed\\n");',
+    'process.exit(17);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...installed, preSyncCommand: `${process.execPath} ${generator}` }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nMust not publish.\n');
+
+  assert.throws(
+    () => runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }),
+    /pre-sync command failed/,
+  );
+
+  const registration = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  assert.equal(registration.lastError.phase, 'pre-sync');
+  assert.match(registration.lastError.detail, /viewer generation failed/);
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+  assert.match(git(fixture.local, ['status', '--porcelain']), /note\.md/);
+  assert.match(git(fixture.local, ['status', '--porcelain']), /viewer\.html/);
+});
+
+it('reruns pre-sync after integrating remote changes', () => {
+  const fixture = syncFixture('pre-sync-post-rebase');
+  const generator = join(tmp, 'pre-sync-post-rebase.mjs');
+  writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { existsSync, readFileSync, writeFileSync } from "node:fs";',
+    'const remote = existsSync("remote.md") ? readFileSync("remote.md", "utf8").trim() : "missing";',
+    'writeFileSync("viewer.html", `<main>${remote}</main>\\n`);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...installed, preSyncCommand: `${process.execPath} ${generator}` }, null, 2)}\n`);
+  const peer = join(tmp, 'pre-sync-post-rebase-peer');
+  git(tmp, ['clone', '-q', fixture.remote, peer]);
+  writeFileSync(join(peer, 'remote.md'), '# Remote input\n');
+  git(peer, ['add', 'remote.md']);
+  git(peer, ['commit', '-q', '-m', 'Add remote input']);
+  git(peer, ['push', '-q']);
+
+  const cycle = JSON.parse(runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Remote input</main>\n');
+  assert.equal(cycle.result.preSyncRuns, 2);
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
+it('reruns pre-sync after verifier repairs', () => {
+  const fixture = syncFixture('pre-sync-post-verification');
+  const generator = join(tmp, 'pre-sync-post-verification.mjs');
+  writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { readFileSync, writeFileSync } from "node:fs";',
+    'writeFileSync("viewer.html", `<main>${readFileSync("note.md", "utf8")}</main>`);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const verifier = join(tmp, 'pre-sync-post-verification-verifier.mjs');
+  writeFileSync(verifier, [
+    '#!/usr/bin/env node',
+    'import { readFileSync } from "node:fs";',
+    'const note = readFileSync("note.md", "utf8");',
+    'if (/ +$/m.test(note)) {',
+    '  process.stdout.write(`${process.cwd()}/note.md: trailing whitespace\\n`);',
+    '  process.exit(1);',
+    '}',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({
+    ...installed,
+    preSyncCommand: `${process.execPath} ${generator}`,
+    verifyCommand: `${process.execPath} ${verifier}`,
+  }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note  \n');
+
+  const cycle = JSON.parse(runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(readFileSync(join(fixture.local, 'note.md'), 'utf8'), '# Note\n');
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Note\n</main>');
+  assert.equal(cycle.result.preSyncRuns, 2);
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
 });
 
 it('preserves a failed commit-message generator as the primary blocked sync cause and retries staged changes', () => {
