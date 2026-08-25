@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.15]
+
+### Changed
+
+- **Living docs describe the present, not their ancestry.** `scar-tissue` now removes origin repositories, import SHAs, cutover narration, and other lineage from current READMEs, runbooks, and instructions while preserving explicit audit and changelog artifacts.
+
 ## [v2.0.13]
 
 ### Changed
