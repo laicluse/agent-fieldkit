@@ -983,20 +983,16 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       if (!commitWarning && result.warning) commitWarning = result.warning;
       return result;
     };
-    runRegisteredPreSync();
     commitPendingState(reason);
     let afterCommitRelation = aheadBehind(reg.rootRealpath);
     let rebase = { rebased: false, conflictsResolved: 0 };
-    const integratesRemoteChanges = afterCommitRelation.known && afterCommitRelation.behind > 0;
     if (afterCommitRelation.known && (afterCommitRelation.behind > 0 || committedPaths.length > 0)) {
       rebase = withPhase('rebase', () => pullRebaseWithLlm(reg));
       afterCommitRelation = aheadBehind(reg.rootRealpath);
     }
-    if (integratesRemoteChanges) {
-      runRegisteredPreSync();
-      commitPendingState(`${reason}-post-rebase`);
-      afterCommitRelation = aheadBehind(reg.rootRealpath);
-    }
+    runRegisteredPreSync();
+    commitPendingState(`${reason}-pre-sync`);
+    afterCommitRelation = aheadBehind(reg.rootRealpath);
     const cyclePaths = [...new Set([...committedPaths, ...aheadChangedPaths(reg.rootRealpath)])];
     const verificationResult = withPhase('verification', () => verifyWithRepairs(reg, cyclePaths, reason, env));
     const verification = verificationResult.verification;

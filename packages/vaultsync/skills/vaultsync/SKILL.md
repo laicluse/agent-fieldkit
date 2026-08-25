@@ -34,7 +34,7 @@ vaultsync install [path] --llm-command '<command that reads JSON stdin and write
 
 Before installing, vaultsync prints and stores the requested CWD, resolved Git root, current branch, and upstream when one exists. Installation must not require a remote or upstream: a local-only repository still gets debounced auto-commit cycles. Installation must fail when `dibs` is unavailable or when the LLM conflict resolver probe fails. `dibs` is resolved dynamically at runtime from `DIBS_BIN`, the local plugin cache, `PATH`, and only then legacy custom registration paths; do not pin versioned plugin-cache paths in registrations. The LLM command is required because unresolved conflicts are serious sync failures; commit-message generation may fall back to a built-in message, but conflict resolution may not.
 
-Use `--pre-sync` for a synchronous command that refreshes tracked generated files before Vaultsync commits. Vaultsync runs it under Dibs before the initial commit, after integrating remote changes, and after verifier repairs. Any non-zero exit blocks commit and push as a `pre-sync` failure. The command does not run on an unchanged daemon poll; `vaultsync now` forces a cycle and therefore runs it.
+Use `--pre-sync` for a synchronous command that refreshes tracked generated files before Vaultsync publishes. Vaultsync first checkpoints dirty source content, integrates remote changes, then runs the command under Dibs before verification and push. It reruns the command after verifier repairs. Any non-zero exit blocks publication as a `pre-sync` failure while preserving the local source checkpoint for recovery. The command does not run on an unchanged daemon poll; `vaultsync now` forces a cycle and therefore runs it.
 
 ## LLM Command Contract
 

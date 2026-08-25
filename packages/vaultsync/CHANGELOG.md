@@ -2,11 +2,17 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.13]
+
+### Fixed
+
+- **Tracked generators run only after remote integration.** Two peers can refresh the same derived file without making the generator create an avoidable rebase conflict, and a remote commit integrated during pull is always reflected before verification and push.
+
 ## [v2.0.12]
 
 ### Added
 
-- **Tracked generators can run as a fail-closed pre-sync phase.** `vaultsync install --pre-sync '<command>'` refreshes derived files under Dibs before commit, after remote integration, and after verifier repairs; a failing command blocks publication with explicit `pre-sync` status.
+- **Tracked generators can run as a fail-closed pre-sync phase.** `vaultsync install --pre-sync '<command>'` registers a synchronous preparation command whose failure blocks publication with explicit `pre-sync` status.
 
 ## [v2.0.10]
 

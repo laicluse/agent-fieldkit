@@ -52,7 +52,7 @@
 					<p class="lede">Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.12</span>
+						<span>2.0.13</span>
 						<span>1 skill</span>
 					</div>
 				</div>
@@ -89,7 +89,7 @@ vaultsync resume [path]
 vaultsync doctor [path] --llm-command '&lt;json command&gt;'
 vaultsync daemon</code></pre>
 <p><code>install</code> resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.</p>
-<p><code>--pre-sync</code> registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock before committing, reruns it after integrating remote changes, and reruns it after verifier repairs. A non-zero exit blocks commit and push as a <code>pre-sync</code> failure. On unchanged daemon polls the command does not run; <code>vaultsync now</code> always runs it.</p>
+<p><code>--pre-sync</code> registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock after integrating remote changes and before verification and publication, then reruns it after verifier repairs. A non-zero exit blocks push as a <code>pre-sync</code> failure while preserving any local source checkpoint for recovery. On unchanged daemon polls the command does not run; <code>vaultsync now</code> always runs it.</p>
 <p><code>managed</code> reports whether the requested path resolves to a vaultsync-managed checkout. It is the public integration point for tools that need to avoid operating inside vaultsync roots; they must call the CLI instead of depending on vaultsync's registration storage layout.</p>
 <p><code>status --json</code> emits the canonical <code>vaultsync.status.v1</code> contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is <code>synced</code>, <code>pending</code>, <code>degraded</code>, <code>blocked</code>, <code>paused</code>, <code>disabled</code>, or <code>unmanaged</code>; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. Pending state separates uncommitted paths from unpushed commits, and <code>lastSuccessfulSyncAt</code> is not overwritten by a failed cycle.</p>
 <p>vaultsync resolves <code>dibs</code> dynamically at runtime. <code>DIBS_BIN</code> remains an explicit override, otherwise vaultsync checks the installed plugin cache, <code>PATH</code>, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed <code>dibs</code> binary.</p>
