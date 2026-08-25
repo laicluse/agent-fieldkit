@@ -87,8 +87,6 @@ Deployment is repository-specific and must use the exact merged SHA from a clean
 
 ## Remove the source worktree and branch right after merge
 
-The merge is what the worktree existed for, so removing it belongs to this step rather than to a later tidy-up: hand the worktree and its branch to `bonsai:prune` as soon as the merge is reported.
-
-Deployment does not enter this decision. It runs from a clean deploy checkout on the merged SHA and never from here, so a worktree held back "until deployment" is a stale checkout that the next session has to think about, on top of a branch that is already in the default. Nothing else gates it either: a merge that the executable reported is proven, and there is no second condition to wait for.
+The merge is what the worktree existed for, so removing it belongs to this step rather than to a later tidy-up: hand the worktree and its branch to `bonsai:prune` as soon as the merge is reported. A reported merge is proven, and nothing else gates the removal.
 
 Report the candidate SHA, verified base SHA, merge SHA, target, race retries, the removed worktree, and deployment state when deployment was part of the order.
