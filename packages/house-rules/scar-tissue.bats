@@ -34,6 +34,16 @@ section() {
   [[ "$output" =~ external[[:space:]]+reader ]] || return 1
 }
 
+@test "living docs describe current identity instead of lineage" {
+  run section "Give living documents a present-tense identity"
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ living[[:space:]]+README ]] || return 1
+  [[ "$output" =~ Origin[[:space:]]+repositories ]] || return 1
+  [[ "$output" =~ Git[[:space:]]+already[[:space:]]+owns[[:space:]]+lineage ]] || return 1
+  [[ "$output" =~ explicit[[:space:]]+audit ]] || return 1
+  [[ "$output" =~ named[[:space:]]+current[[:space:]]+reader ]] || return 1
+}
+
 @test "migration guidance leaves one canonical implementation" {
   run section "Migration without residue"
   [ "$status" -eq 0 ]

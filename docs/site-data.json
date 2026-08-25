@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.15",
+			"version": "2.0.16",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -538,9 +538,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.13",
+				"version": "v2.0.15",
 				"type": "Changed",
-				"summary": "Diagnostic test stitches are temporary."
+				"summary": "Living docs describe the present, not their ancestry."
 			}
 		},
 		{
@@ -707,11 +707,11 @@
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.15",
+			"packageVersion": "2.0.16",
 			"detailPath": "agent-fieldkit/house-rules/",
-			"version": "v2.0.13",
+			"version": "v2.0.15",
 			"type": "Changed",
-			"summary": "Diagnostic test stitches are temporary.",
+			"summary": "Living docs describe the present, not their ancestry.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{

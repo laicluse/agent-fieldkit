@@ -1,7 +1,7 @@
 ---
 name: scar-tissue
 description: >-
-  Use when corrective work or a temporary diagnostic test leaves superseded residue, or before handoff. Remove residue while preserving current responsibilities.
+  Use when corrective work, migrations, living docs, or temporary diagnostic tests leave superseded residue, or before handoff.
 user-invocable: true
 ---
 
@@ -18,6 +18,12 @@ Repeated edits are normal. The trigger is not an edit count; it is an old and a 
 Working plans, task notes, unreleased docs, and uncommitted changes are edited in place. Append a correction only when an external reader depends on seeing the history, such as in published changelogs, released documentation, or pushed commits.
 
 Before handoff, ask what each suspicious layer serves today. Remove duplicated, superseded, or unowned material. Keep guards against a current failure mode, compatibility paths with a named current consumer, published history, and tests that assert live behavior. Repository-specific Git, test, migration, and task-tracking rules determine how the host performs that review.
+
+## Give living documents a present-tense identity
+
+A living README, runbook, instruction file, or product overview introduces the artifact as it exists now. Origin repositories, import SHAs, cutover dates, former names or platforms, and sentences explaining what no longer owns the system are historical residue even when they are accurate. Git already owns lineage. An explicit audit, changelog, migration record, or forensic report may retain it because historical evidence is that artifact's current responsibility.
+
+Do not surface or link lineage from a living document unless a named current reader needs it to operate the system or make a live decision. After a migration or correction, scan the affected living documents for old names and paths, source SHAs, `imported from`, `formerly`, and `no longer`; rewrite them around the current identity and responsibility. For example, a service README says what the service is and how to run it, while an import audit may record where its tree came from.
 
 ## Resolve stitches during Refactor
 
