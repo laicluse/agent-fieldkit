@@ -114,16 +114,15 @@ load helpers
   [[ "$output" != *"Reason:"* ]]
 }
 
-@test "an unlabelled reason plus locked-at line still parses" {
-  # The shape written before the self-describing header existed.
-  printf 'interim style reason\nlocked-at: 2026-01-05\n' > "$(repo_sentinel)"
+@test "an unlabelled reason parses alongside a labelled date" {
+  printf 'a reason on the first line\nlocked-at: 2026-01-05\n' > "$(repo_sentinel)"
 
   local json
   json=$(jq -cn '{hook_event_name:"PreToolUse",tool_name:"Bash",tool_input:{command:"git commit -m x"}}')
   run bash "$DISPATCH" <<< "$json"
 
   [ "$status" -eq 2 ]
-  [[ "$output" == *"Reason: interim style reason (locked 2026-01-05)."* ]]
+  [[ "$output" == *"Reason: a reason on the first line (locked 2026-01-05)."* ]]
 }
 
 @test "a legacy sentinel with only a reason line still quotes it" {
