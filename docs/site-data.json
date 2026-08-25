@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.55",
+			"version": "2.0.56",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 4,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.49",
-				"type": "Fixed",
-				"summary": "Claimed Codex repositories no longer require shell rewrites when hook payloads omit workdir."
+				"version": "v2.0.50",
+				"type": "Breaking",
+				"summary": "A lock is no longer released at the end of a turn."
 			}
 		},
 		{
@@ -653,11 +653,11 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.55",
+			"packageVersion": "2.0.56",
 			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.49",
-			"type": "Fixed",
-			"summary": "Claimed Codex repositories no longer require shell rewrites when hook payloads omit workdir.",
+			"version": "v2.0.50",
+			"type": "Breaking",
+			"summary": "A lock is no longer released at the end of a turn.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{

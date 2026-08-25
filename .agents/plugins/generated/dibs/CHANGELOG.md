@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.50]
+
+### Breaking
+
+- **A lock is no longer released at the end of a turn.** Since v2.0.43 the occupancy hook swept every lock a session held whenever its closing message did not end in `?`, `？` or `🚧`. A session that opens its closing line with a marker instead of ending on one never matched, so every turn handed the directory back and the next agent found it free, mid-work. The `Stop` hook is gone from both manifests. A lock now lasts until the agent releases it with `undibs`, until `SessionEnd`, or until pid-liveness sees the holding process is gone. Deciding when a directory is finished with is the agent's own call again: holding one turn too long costs an `undibs`, releasing one turn too early costs a collision nobody sees coming.
+
 ## [v2.0.49]
 
 ### Fixed
