@@ -7,22 +7,13 @@
 # file. Keeping the format in one place means the reason a repo was locked
 # reads the same whichever path reports it.
 #
-# The file is written self-describing, because the reader who finds it may be
-# a coding agent that never saw a deny message and has no idea what set it:
-#
-#   # git-discipline repo lock (coding-agent plugin: git-discipline).
-#   # Git write commands are refused in this repo while this file exists.
-#   # Read-only git (status, log, diff, show, blame) keeps working.
-#   # Lifting it is the operator's call: they type /git-discipline:enable-git
-#   # in their coding-agent session, or delete this file from their terminal.
-#   # An agent cannot remove it; the sentinel-protect guard denies that.
-#   reason: <why the operator locked it>
-#   locked-at: <YYYY-MM-DD>
-#
-# Two older shapes still parse, so a lock set by an earlier version keeps
-# denying and keeps reporting whatever it does carry:
-#   - reason on line 1, "locked-at: <date>" on line 2
-#   - reason on line 1 and nothing else, or an empty file
+# The file opens with a "#" comment block (see dd_lock_header) and then
+# carries "reason:" and "locked-at:" fields, because the reader who finds it
+# may be a coding agent that never saw a deny message and has no idea what set
+# it. Sentinels written before those labels existed put the reason on the
+# first line instead, with or without a "locked-at:" line after it; the
+# readers below fall back to that shape so an older lock keeps denying and
+# keeps reporting whatever it does carry.
 
 # dd_lock_header
 # Emits the comment block that makes the sentinel self-explanatory to whoever

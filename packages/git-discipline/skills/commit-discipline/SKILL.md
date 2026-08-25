@@ -823,13 +823,13 @@ or removes a `git-discipline-disabled-*` or `.git/git-discipline-deny`
 sentinel, in both directions and with no magic-comment or env-var escape.
 Read-only inspection of the sentinel paths stays open.
 
-The four toggle commands still honour that rule while running as a single
-keystroke. A `UserPromptExpansion` hook
+The four toggle commands reach the sentinel by a different path than that
+guard watches. A `UserPromptExpansion` hook
 (`hooks/handlers/toggle-commands.sh`) fires on the operator's own typed
 command, writes or removes the sentinel itself, reports the result, and
-blocks the expansion, so the skill body never reaches the model. Nothing the
-model authored can reach the sentinel: `sentinel-protect` is untouched and
-keeps denying agent-driven Bash mutations.
+blocks the expansion, so the skill body never reaches the model. The
+keystroke is the switch; a Bash call the model composed is not, and
+`sentinel-protect` denies it.
 
 ## Architecture
 
