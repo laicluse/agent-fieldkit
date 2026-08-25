@@ -44,6 +44,16 @@ section() {
   [[ "$output" =~ named[[:space:]]+current[[:space:]]+reader ]] || return 1
 }
 
+@test "shared artifacts do not retain their editing worklog" {
+  run section "Remove the worklog from the artifact"
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ worklog ]] || return 1
+  [[ "$output" =~ editing[[:space:]]+conversation ]] || return 1
+  [[ "$output" =~ only[[:space:]]+current[[:space:]]+function ]] || return 1
+  [[ "$output" =~ present-tense[[:space:]]+subject ]] || return 1
+  [[ "$output" =~ audit ]] || return 1
+}
+
 @test "migration guidance leaves one canonical implementation" {
   run section "Migration without residue"
   [ "$status" -eq 0 ]

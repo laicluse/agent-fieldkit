@@ -25,6 +25,10 @@ A living README, runbook, instruction file, or product overview introduces the a
 
 Do not surface or link lineage from a living document unless a named current reader needs it to operate the system or make a live decision. After a migration or correction, scan the affected living documents for old names and paths, source SHAs, `imported from`, `formerly`, and `no longer`; rewrite them around the current identity and responsibility. For example, a service README says what the service is and how to run it, while an import audit may record where its tree came from.
 
+## Remove the worklog from the artifact
+
+Instructions, feedback, and deliberation used to shape an artifact are worklog, not artifact content. A heading or sentence such as "In plain language," "Updated after feedback," "Revised plan," or "we removed the timeline" is scar tissue when its only current function is to narrate the editing conversation. Remove it or replace it with the actual present-tense subject. Preserve that history only when the artifact is itself an audit, changelog, decision record, or another form whose current responsibility is to carry it.
+
 ## Resolve stitches during Refactor
 
 A diagnostic stitch is a temporary test introduced to prove that a superseded interpretation has been removed, rather than to specify behavior the system owns now. That interpretation may come from a misunderstood prompt, a false assumption, or advancing understanding. A guard uniquely protects a current requirement or risk; a stitch only describes the interpretation being retired.

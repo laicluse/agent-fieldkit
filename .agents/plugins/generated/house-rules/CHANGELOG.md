@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.16]
+
+### Changed
+
+- **Shared artifacts no longer retain their editing worklog.** `scar-tissue` now removes headings and prose whose only current function is to narrate the feedback, deliberation, or transformation that produced the artifact.
+
 ## [v2.0.15]
 
 ### Changed
