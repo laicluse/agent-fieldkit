@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.65",
+			"version": "2.0.66",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -635,7 +635,7 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.65",
+			"packageVersion": "2.0.66",
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"version": "v2.0.65",
 			"type": "Changed",
