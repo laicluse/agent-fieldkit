@@ -311,14 +311,14 @@ it('excludes the complete Git trailer block from commit narratives', () => {
     'Preserve the same substantive reason.',
     '',
     'Verified: first verifier',
-    'PII-Doublecheck: yes',
+    ' continuation detail',
   ].join('\n');
   const second = [
     'Use another subject',
     '',
     'Preserve the same substantive reason.',
     '',
-    'Verified-how: second verifier',
+    'Verified-how:second verifier',
     'Visual: viewer.html',
   ].join('\n');
 
@@ -541,20 +541,75 @@ it('blocks commit and push when the pre-sync command fails', () => {
   assert.match(registration.lastError.detail, /viewer generation failed/);
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '1\t0');
   assert.match(git(fixture.local, ['show', '--pretty=', '--name-only', 'HEAD']), /note\.md/);
-  assert.match(git(fixture.local, ['status', '--porcelain']), /viewer\.html/);
+  assert.doesNotMatch(git(fixture.local, ['status', '--porcelain']), /viewer\.html/);
+
+  const peer = join(tmp, 'pre-sync-failure-peer');
+  git(tmp, ['clone', '-q', fixture.remote, peer]);
+  git(peer, ['config', 'core.hooksPath', '/dev/null']);
+  writeFileSync(join(peer, 'remote.md'), '# Remote\n');
+  writeFileSync(join(peer, 'viewer.html'), '<main># Remote</main>\n');
+  git(peer, ['add', 'remote.md', 'viewer.html']);
+  git(peer, ['commit', '-q', '-m', 'Refresh remote viewer']);
+  git(peer, ['push', '-q']);
+  const llm = join(tmp, 'pre-sync-failure-retry-llm.mjs');
+  writeFileSync(llm, [
+    '#!/usr/bin/env node',
+    'let input = "";',
+    'process.stdin.on("data", (chunk) => input += chunk);',
+    'process.stdin.on("end", () => {',
+    '  const payload = JSON.parse(input);',
+    '  if (payload.task === "commit_message") process.stdout.write(JSON.stringify({ message: "Recover generated viewer\\n\\nPublish only the successful generated state.\\n\\nSlice: docs-only" }));',
+    '  else if (payload.task === "resolve_conflict") process.exit(19);',
+    '  else process.exit(2);',
+    '});',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  writeFileSync(registrationPath, `${JSON.stringify({
+    ...JSON.parse(readFileSync(registrationPath, 'utf8')),
+    llmCommand: `${process.execPath} ${llm}`,
+  }, null, 2)}\n`);
 
   writeFileSync(generator, [
     '#!/usr/bin/env node',
     'import { readFileSync, writeFileSync } from "node:fs";',
     'const note = readFileSync("note.md", "utf8").trim();',
-    'writeFileSync("viewer.html", `<main>${note}</main>\\n`);',
+    'const remote = readFileSync("remote.md", "utf8").trim();',
+    'writeFileSync("viewer.html", `<main>${note} | ${remote}</main>\\n`);',
     '',
   ].join('\n'), { mode: 0o755 });
   runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
 
-  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Note\n\nMust not publish.</main>\n');
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Note\n\nMust not publish. | # Remote</main>\n');
   assert.doesNotMatch(git(tmp, ['--git-dir', fixture.remote, 'log', '-p', '--all']), /partial viewer/);
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
+it('rolls back generated output when the pre-sync process times out', () => {
+  const fixture = syncFixture('pre-sync-timeout');
+  const generator = join(tmp, 'pre-sync-timeout.mjs');
+  writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { writeFileSync } from "node:fs";',
+    'writeFileSync("viewer.html", "partial timeout viewer\\n");',
+    'setTimeout(() => {}, 1000);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({
+    ...installed,
+    preSyncCommand: `${process.execPath} ${generator}`,
+    preSyncTimeoutMs: 50,
+  }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nMust survive a timed-out generator.\n');
+
+  assert.throws(
+    () => runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }),
+    /pre-sync command failed/,
+  );
+
+  assert.doesNotMatch(git(fixture.local, ['status', '--porcelain']), /viewer\.html/);
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '1\t0');
 });
 
 it('reruns pre-sync after integrating remote changes', () => {
