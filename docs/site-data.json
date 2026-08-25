@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.15",
+			"version": "2.0.16",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.15",
+				"version": "v2.0.16",
 				"type": "Fixed",
-				"summary": "Failed generated output is repaired before a retry can checkpoint it."
+				"summary": "Failed generators roll back their Git-visible writes."
 			}
 		},
 		{
@@ -716,11 +716,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.15",
+			"packageVersion": "2.0.16",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.15",
+			"version": "v2.0.16",
 			"type": "Fixed",
-			"summary": "Failed generated output is repaired before a retry can checkpoint it.",
+			"summary": "Failed generators roll back their Git-visible writes.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{

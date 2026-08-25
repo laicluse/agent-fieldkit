@@ -428,12 +428,12 @@ function withoutCommitTrailerBlock(message) {
   let foundTrailer = false;
   while (cursor >= 0) {
     const line = lines[cursor];
-    if (/^[A-Za-z0-9-]+:\s+\S/.test(line)) {
-      foundTrailer = true;
+    if (/^[ \t]+\S/.test(line)) {
       cursor -= 1;
       continue;
     }
-    if (foundTrailer && /^[ \t]+\S/.test(line)) {
+    if (/^[A-Za-z0-9-]+:\s*\S/.test(line)) {
+      foundTrailer = true;
       cursor -= 1;
       continue;
     }
@@ -734,11 +734,22 @@ function runVerification(registration) {
 
 function runPreSync(registration) {
   if (!registration.preSyncCommand) return { skipped: true };
-  const result = shellCommand(registration.preSyncCommand, {
-    cwd: registration.rootRealpath,
-    timeoutMs: 10 * 60 * 1000,
-  });
+  const snapshot = captureGitVisibleWorktree(registration.rootRealpath);
+  let result;
+  try {
+    result = shellCommand(registration.preSyncCommand, {
+      cwd: registration.rootRealpath,
+      timeoutMs: registration.preSyncTimeoutMs || 10 * 60 * 1000,
+    });
+  } catch (cause) {
+    restoreGitVisibleWorktree(registration.rootRealpath, snapshot);
+    const err = new Error(`pre-sync command failed: ${registration.preSyncCommand}`);
+    err.detail = String(cause.message || cause).slice(0, 4000);
+    err.exitCode = cause.exitCode || 1;
+    throw err;
+  }
   if (result.status !== 0) {
+    restoreGitVisibleWorktree(registration.rootRealpath, snapshot);
     const err = new Error(`pre-sync command failed: ${registration.preSyncCommand}`);
     const detail = [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
     err.detail = detail.slice(0, 4000);
@@ -746,6 +757,36 @@ function runPreSync(registration) {
     throw err;
   }
   return { skipped: false };
+}
+
+function captureGitVisibleWorktree(root) {
+  const indexTree = gitOut(root, ['write-tree']);
+  let worktreeTree;
+  try {
+    git(root, ['add', '-A']);
+    worktreeTree = gitOut(root, ['write-tree']);
+  } finally {
+    git(root, ['read-tree', indexTree]);
+  }
+  return { indexTree, worktreeTree };
+}
+
+function restoreGitVisibleWorktree(root, snapshot) {
+  const changed = gitOut(root, ['diff', '--name-only', '-z', snapshot.worktreeTree])
+    .split('\0')
+    .filter(Boolean);
+  const untracked = gitOut(root, ['ls-files', '--others', '--exclude-standard', '-z'])
+    .split('\0')
+    .filter(Boolean);
+  for (const path of new Set([...changed, ...untracked])) {
+    const existsInSnapshot = git(root, ['cat-file', '-e', `${snapshot.worktreeTree}:${path}`], { allowFailure: true }).status === 0;
+    if (!existsInSnapshot) rmSync(join(root, path), { force: true });
+  }
+  try {
+    git(root, ['checkout', snapshot.worktreeTree, '--', '.']);
+  } finally {
+    git(root, ['read-tree', snapshot.indexTree]);
+  }
 }
 
 function isTextRepairPath(path) {
@@ -1031,7 +1072,6 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       if (!commitWarning && result.warning) commitWarning = result.warning;
       return result;
     };
-    if (reg.lastError?.phase === 'pre-sync') runRegisteredPreSync();
     commitPendingState(reason);
     let afterCommitRelation = aheadBehind(reg.rootRealpath);
     let rebase = { rebased: false, conflictsResolved: 0 };
