@@ -78,9 +78,9 @@ from `DIBS_OWNER`, then for Codex from `CMUX_TAB_ID`, `CMUX_WORKSPACE_ID`,
 
 `--description` stores a short human work description in the lock record. dibs compacts whitespace, turns separators such as `-`, `_`, and `/` into spaces, caps the field at 80 characters, and shows it in `check`, refused `claim` output, and occupancy hook denials as `work: <text>`.
 
-It has one reader: whoever finds a lock still standing weeks later and has to decide whether the work finished or died halfway. Name the change, so that question is answerable. `stale dibs lock cleanup` and `finish plugin install` answer it; `session work`, `coding`, and `editing files` do not, because the activity is identical in every directory a coding agent locks, so naming it discriminates nothing. The claiming agent composes the phrase itself, and the occupancy hook refuses to invent one from a branch or another host-specific label so that the refusal keeps asking. `bonsai` supplies the branch name as words when it hands out a worktree, ahead of any environment default.
+It has one reader: whoever finds a lock still standing weeks later and has to decide whether the work finished or died halfway. Name the change, so that question is answerable: `stale dibs lock cleanup` answers it, `session work` does not. The claiming agent composes the phrase itself, and the occupancy hook refuses to invent one from a branch or another host-specific label so that its refusal keeps asking. `bonsai` supplies the branch name as words when it hands out a worktree, ahead of any environment default. The `dibs` skill carries the full rule and the failure it guards against.
 
-The CLI also reads `DIBS_DESCRIPTION`, which is meant for a non-interactive runner that knows its task before it starts: set it per run, to that run's task. A value pinned once for every session is worse than none. It satisfies the requirement, so every lock carries the same label and the refusal that would have asked for something specific never fires.
+The CLI also reads `DIBS_DESCRIPTION`, meant for a non-interactive runner that knows its task before it starts: set it per run, to that run's task.
 
 ## How it works
 
