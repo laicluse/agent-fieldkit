@@ -172,7 +172,7 @@
 		},
 		{
 			"name": "bonsai",
-			"version": "2.0.34",
+			"version": "2.0.35",
 			"category": "workflow",
 			"summary": "Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.",
 			"support": [
@@ -187,14 +187,14 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.32",
+				"version": "v2.0.33",
 				"type": "Fixed",
-				"summary": "Local-only repositories use their configured default branch."
+				"summary": "A handed-out worktree is labelled with its branch again."
 			}
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.56",
+			"version": "2.0.57",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -210,8 +210,8 @@
 			"hookFileCount": 3,
 			"latestChange": {
 				"version": "v2.0.50",
-				"type": "Breaking",
-				"summary": "A lock is no longer released at the end of a turn."
+				"type": "Changed",
+				"summary": "The refusal that asks for a work description now says what makes one useful."
 			}
 		},
 		{
@@ -643,6 +643,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
+			"plugin": "dibs",
+			"packageVersion": "2.0.57",
+			"detailPath": "agent-fieldkit/dibs/",
+			"version": "v2.0.50",
+			"type": "Changed",
+			"summary": "The refusal that asks for a work description now says what makes one useful.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
+		},
+		{
 			"plugin": "dont-do-that",
 			"packageVersion": "2.0.58",
 			"detailPath": "agent-fieldkit/dont-do-that/",
@@ -650,15 +659,6 @@
 			"type": "Changed",
 			"summary": "Local Git remote configuration no longer requires repeated approval.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
-		},
-		{
-			"plugin": "dibs",
-			"packageVersion": "2.0.56",
-			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.50",
-			"type": "Breaking",
-			"summary": "A lock is no longer released at the end of a turn.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",
@@ -671,11 +671,11 @@
 		},
 		{
 			"plugin": "bonsai",
-			"packageVersion": "2.0.34",
+			"packageVersion": "2.0.35",
 			"detailPath": "agent-fieldkit/bonsai/",
-			"version": "v2.0.32",
+			"version": "v2.0.33",
 			"type": "Fixed",
-			"summary": "Local-only repositories use their configured default branch.",
+			"summary": "A handed-out worktree is labelled with its branch again.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/bonsai/CHANGELOG.md"
 		},
 		{

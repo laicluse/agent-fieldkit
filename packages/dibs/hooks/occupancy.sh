@@ -298,11 +298,18 @@ occ_refused_by_other() {
   return 0
 }
 
+# allow-comment: load-bearing WHY. This message is the only place most agents
+# allow-comment: ever learn what the description is for, so it carries the bar
+# allow-comment: rather than only the syntax. Asking "what you are doing here"
+# allow-comment: reliably produced "session work": the activity is the same in
+# allow-comment: every directory, so naming it discriminates nothing. Ask for
+# allow-comment: the change instead, name the reader and the decision they face,
+# allow-comment: and show one description that passes beside one that fails.
 occ_block_no_dibs() {
   local dir="$1" input="${2:-}" sid binding=""
   sid="$(occ_session "$input")"
   [ -n "$sid" ] && binding=" --session $sid"
-  printf '[dibs/occupancy] %s has no dibs registered for you, so this write is refused. Administer one first: run '\''dibs claim %s%s --description "<one line: what you are doing here>"'\'' with a description you compose yourself, then retry. The session flag binds the lock to this conversation; a claim without it belongs to the shell that ran it and is gone before your next write.\n' "$dir" "$dir" "$binding" >&2
+  printf '[dibs/occupancy] %s has no dibs registered for you, so this write is refused. Claim it first, then retry:\n  dibs claim %s%s --description "<the change you are making here>"\nThe description is what someone reads when they find this lock still standing weeks from now and have to decide whether the work finished or died halfway. Name the change, so that question is answerable: "revert the stop-release trigger" or "finish the plugin install" pass; "session work", "coding", "editing files" name an activity that is identical in every directory and tell that reader nothing. The session flag binds the lock to this conversation; a claim without it belongs to the shell that ran it and is gone before your next write.\n' "$dir" "$dir" "$binding" >&2
 }
 
 occ_codex_bash_target_is_ambiguous() {

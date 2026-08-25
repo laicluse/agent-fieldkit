@@ -1,6 +1,6 @@
 {
   "name": "dibs",
-  "version": "2.0.56+codex.hooks.2",
+  "version": "2.0.57+codex.hooks.2",
   "description": "Single-occupancy lock for a git worktree or standalone working directory: a vendor-neutral, cross-platform CLI so only one coding agent mutates a repository checkout at a time. claim/release/check use an atomic exclusive-create lockfile keyed by the nearest git worktree root, falling back to directory realpath outside git, with pid-based liveness that self-heals a dead holder and respects a live one. No flock, no native dependency. bonsai and the discipline hooks consume it.",
   "author": {
     "name": "local"

@@ -337,7 +337,7 @@ export function claim({ dir, pid, agent, session, owner, description, maxAgeHour
     return { ok: true, state: 'held-by-self', path, holder: priorHold };
   }
   if (!normalizeDescription(description)) {
-    throw new Error('a work description is required: run `dibs claim <dir> --description "<short summary of what you are doing here>"` (or set DIBS_DESCRIPTION). dibs will not create an anonymous lock.');
+    throw new Error('a work description is required: run `dibs claim <dir> --description "<the change you are making here>"`. Name the change, not the activity, because whoever finds this lock weeks from now reads it to decide whether the work finished: "revert the stop-release trigger" passes, "session work" tells them nothing. A non-interactive runner that knows its task up front may pass it in DIBS_DESCRIPTION for that run; a value pinned once for every session makes every lock read alike and is worse than none. dibs will not create an anonymous lock.');
   }
   ensureLocksDir();
   const record = buildRecord({ realpath, pid, agent, session, owner, description });

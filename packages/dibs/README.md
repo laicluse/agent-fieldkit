@@ -76,7 +76,11 @@ the lock to the new pid/host instead of self-locking. The occupancy hook sets it
 from `DIBS_OWNER`, then for Codex from `CMUX_TAB_ID`, `CMUX_WORKSPACE_ID`,
 `CODEX_THREAD_ID`, or finally the hook session id.
 
-`--description` stores a short human work description in the lock record. Use a compact phrase of a few words, for example `stale dibs lock cleanup` or `finish plugin install`. dibs compacts whitespace, turns separators such as `-`, `_`, and `/` into spaces, caps the field at 80 characters, and shows it in `check`, refused `claim` output, and occupancy hook denials as `work: <text>`. Use this for quick inspection of old locks: when the described work is visibly complete and the holder is stale, the next session can clear the leftover lock with more confidence. The CLI also reads `DIBS_DESCRIPTION`; the occupancy hook passes it through when set and refuses to invent one from a branch or another host-specific label. `bonsai` supplies the branch name as words when it hands out a worktree.
+`--description` stores a short human work description in the lock record. dibs compacts whitespace, turns separators such as `-`, `_`, and `/` into spaces, caps the field at 80 characters, and shows it in `check`, refused `claim` output, and occupancy hook denials as `work: <text>`.
+
+It has one reader: whoever finds a lock still standing weeks later and has to decide whether the work finished or died halfway. Name the change, so that question is answerable. `stale dibs lock cleanup` and `finish plugin install` answer it; `session work`, `coding`, and `editing files` do not, because the activity is identical in every directory a coding agent locks, so naming it discriminates nothing. The claiming agent composes the phrase itself, and the occupancy hook refuses to invent one from a branch or another host-specific label so that the refusal keeps asking. `bonsai` supplies the branch name as words when it hands out a worktree, ahead of any environment default.
+
+The CLI also reads `DIBS_DESCRIPTION`, which is meant for a non-interactive runner that knows its task before it starts: set it per run, to that run's task. A value pinned once for every session is worse than none. It satisfies the requirement, so every lock carries the same label and the refusal that would have asked for something specific never fires.
 
 ## How it works
 
@@ -167,7 +171,7 @@ If the operator explicitly asks an agent to work without a worktree, or a linked
 
 ```bash
 git -C "<repo>" config laicluse.requireWorktree false
-dibs claim "<repo>" --description "<what you are doing>"
+dibs claim "<repo>" --description "<the change you are making here>"
 ```
 
 Opt out of enforcement for a session with `DIBS_OCCUPANCY=off`. `bonsai`'s
@@ -216,6 +220,6 @@ if (!result.ok) console.warn(`held by ${result.holder.agent}`);
 An embedder that hands out a directory on behalf of a long-lived caller (as
 `bonsai` does) records that caller's pid, not its own short-lived process.
 `bonsai` reads `DIBS_HOLDER_PID`, `DIBS_AGENT`, and `DIBS_SESSION` to label the
-holder, `DIBS_OWNER` to preserve identity across resumes, `DIBS_DESCRIPTION` to
-override the recorded work description, and `DIBS_LIB` to point at an alternate
-lib path. The CLI honours `DIBS_BIN` for a fixed binary path.
+holder, `DIBS_OWNER` to preserve identity across resumes, `DIBS_DESCRIPTION` as
+the fallback work description when the caller names none, and `DIBS_LIB` to
+point at an alternate lib path. The CLI honours `DIBS_BIN` for a fixed binary path.

@@ -1,5 +1,5 @@
 {
   "name": "bonsai",
   "description": "Worktree lifecycle as a cross-platform CLI: create a worktree + branch off the freshest Git default, set it up from a .bonsai file list, and tear it down behind a hard safety gate that keeps non-integrated work and warns on orphaned commits or interference. Skills: bonsai (create+setup), setup, prune.",
-  "version": "2.0.34"
+  "version": "2.0.35"
 }

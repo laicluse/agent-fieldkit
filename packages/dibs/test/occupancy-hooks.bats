@@ -175,6 +175,35 @@ init_bash_target_repo() {
   echo "$output" | grep -q '"state": "free"'
 }
 
+# This refusal is where most agents compose a description, so it has to carry
+# the bar and not only the syntax. Asking for the activity produced the same
+# label in every directory, which is the failure this wording exists to avoid.
+@test "the no-dibs refusal asks for the change and names the reader" {
+  unset DIBS_DESCRIPTION
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  echo "$output" | grep -qi 'the change you are making'
+  echo "$output" | grep -qi 'weeks from now'
+}
+
+@test "the no-dibs refusal shows a description that passes and one that fails" {
+  unset DIBS_DESCRIPTION
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  echo "$output" | grep -qi 'finish the plugin install'
+  echo "$output" | grep -qi 'session work'
+}
+
+@test "the CLI refusal carries the same bar as the hook refusal" {
+  unset DIBS_DESCRIPTION
+  run dibs claim "$DIR" --pid $$ --agent claude --session sess-1
+  [ "$status" -ne 0 ]
+  echo "$output" | grep -qi 'the change you are making'
+  echo "$output" | grep -qi 'not the activity'
+}
+
 @test "gate does not record the actual default branch as work description" {
   local repo="$BATS_TEST_TMPDIR/default-branch-repo"
   init_test_repo "$repo" trunk
