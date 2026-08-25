@@ -86,6 +86,12 @@ Before deployment, inspect the canonical deploy checkout's occupancy and Git sta
 
 Do not detach, stash, reset, rebase, merge, publish unrelated work, or substitute the authoring worktree to get around that contention. Resume only the deployment step once the canonical checkout is available and can be updated to the exact merged SHA.
 
-Keep the source worktree and branch until merge and any required deployment are proven complete; cleanup belongs to `bonsai:prune`. Deployment is repository-specific and must use the exact merged SHA from a clean deploy checkout, never this authoring worktree.
+Deployment is repository-specific and must use the exact merged SHA from a clean deploy checkout, never this authoring worktree.
 
-Report the candidate SHA, verified base SHA, merge SHA, target, race retries, and deployment state when deployment was part of the order.
+## Remove the source worktree and branch right after merge
+
+The merge is what the worktree existed for, so removing it belongs to this step rather than to a later tidy-up: hand the worktree and its branch to `bonsai:prune` as soon as the merge is reported.
+
+Deployment does not enter this decision. It runs from a clean deploy checkout on the merged SHA and never from here, so a worktree held back "until deployment" is a stale checkout that the next session has to think about, on top of a branch that is already in the default. Nothing else gates it either: a merge that the executable reported is proven, and there is no second condition to wait for.
+
+Report the candidate SHA, verified base SHA, merge SHA, target, race retries, the removed worktree, and deployment state when deployment was part of the order.

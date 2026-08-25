@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.65]
+
+### Changed
+
+- **A finished merge now says the worktree is spent.** `merge-to-default` told you to keep the source worktree "until merge and any required deployment are proven complete", which coupled the worktree to a deployment it never takes part in and left a condition nobody could resolve, so integrated worktrees stayed behind. Removing the worktree and its branch is part of the merge step now, and the merge output names the worktree, its branch, and `bonsai:prune` at the moment it lands. Deployment is not a reason to keep one: it runs from a clean deploy checkout on the merged SHA.
+
 ## [v2.0.60]
 
 ### Breaking
