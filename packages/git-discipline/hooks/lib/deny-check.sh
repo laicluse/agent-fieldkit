@@ -31,7 +31,11 @@ deny_check() {
     reason_part=$(dd_lock_suffix "$common_dir/git-discipline-deny")
   fi
 
-  printf '[git-discipline/disable-git] %s blocked by %s/git-discipline-deny.%s Run /git-discipline:enable-git to lift.\n' \
-    "$action" "$common_dir" "$reason_part" >&2
+  # allow-comment: this path serves a plain terminal and any agent whose host
+  # allow-comment: has no PreToolUse guard, so it cannot assume the reader has a
+  # allow-comment: /git-discipline slash command. Name the mechanism, then give
+  # allow-comment: both routes, and say whose call lifting it is.
+  printf '[git-discipline/disable-git] %s blocked by %s/git-discipline-deny.%s This lock is set by the git-discipline plugin for coding agents; it refuses git write commands in this repo until the file is gone. Lifting it is the operator'"'"'s call: type /git-discipline:enable-git in a coding-agent session that has the plugin, or delete %s/git-discipline-deny from your own terminal.\n' \
+    "$action" "$common_dir" "$reason_part" "$common_dir" >&2
   exit 1
 }

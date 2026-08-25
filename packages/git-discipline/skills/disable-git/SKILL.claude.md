@@ -23,10 +23,18 @@ per-repo, never committed, and not visible in `git status`.
 ## A reason is required
 
 A lock outlives the session that set it, so the command refuses a bare
-invocation: pass the reason as the argument. It is stored as the first line of
-the sentinel, the date is stamped on the second, and both are quoted back on
-every denied git command. Locks written by earlier versions carry no reason
-and keep denying without one.
+invocation: pass the reason as the argument. It is stored in the sentinel with
+the date, and both are quoted back on every denied git command. Locks written
+by earlier versions carry no reason and keep denying without one.
+
+## The lock explains itself
+
+Whoever meets the lock may never have seen the deny message: a fresh agent
+session, a colleague in a plain terminal, you weeks later. So the sentinel is
+written with a comment header naming the plugin that set it, what it blocks,
+and that lifting it is the operator's call. The deny messages say the same,
+and they tell an agent it cannot lift the lock itself rather than handing it a
+command that is operator-invoked only.
 
 ## Who the lock stops
 

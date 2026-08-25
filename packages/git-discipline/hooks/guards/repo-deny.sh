@@ -317,6 +317,10 @@ guard_repo_deny() {
   local reason_part
   reason_part=$(dd_lock_suffix "$sentinel")
 
+  # allow-comment: name who may lift the lock rather than telling the reader to
+  # allow-comment: run the toggle. An agent cannot: the command is operator-only
+  # allow-comment: and sentinel-protect denies agent-driven removal, so an
+  # allow-comment: instruction phrased at the agent sends it into a refusal.
   dd_emit_deny "disable-git" \
-"git lock active for this repo (.git/git-discipline-deny).${reason_part} Subcommand '$subcmd' is a mutation. Run /git-discipline:enable-git to lift, or use a read-only command (status, log, diff, show, rev-parse, blame)."
+"This repo is locked by the git-discipline plugin (.git/git-discipline-deny).${reason_part} Subcommand '$subcmd' is a mutation. You cannot lift this yourself: the sentinel-protect guard denies agent-driven removal, and the toggle is operator-invoked only. Ask the operator to type /git-discipline:enable-git. Read-only git keeps working meanwhile (status, log, diff, show, rev-parse, blame)."
 }

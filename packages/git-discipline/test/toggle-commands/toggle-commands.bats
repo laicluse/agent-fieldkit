@@ -22,20 +22,52 @@ load helpers
 
   [ "$status" -eq 2 ]
   [[ "$output" == *"recovery window"* ]]
-  [ "$(head -n1 "$(repo_sentinel)")" = "recovery window" ]
+  grep -qx "reason: recovery window" "$(repo_sentinel)"
 }
 
 @test "disable-git stamps the date it locked" {
   run_expansion "git-discipline:disable-git" "recovery window"
 
-  [[ "$(sed -n '2p' "$(repo_sentinel)")" == "locked-at: "* ]]
+  grep -qE "^locked-at: [0-9]{4}-[0-9]{2}-[0-9]{2}$" "$(repo_sentinel)"
+}
+
+@test "the sentinel explains itself to whoever opens it" {
+  run_expansion "git-discipline:disable-git" "recovery window"
+
+  # A reader who never saw a deny message must learn from the file alone what
+  # set it, what it blocks, and whose call lifting it is.
+  grep -q "git-discipline" "$(repo_sentinel)"
+  grep -q "operator's call" "$(repo_sentinel)"
+  grep -q "agent cannot remove it" "$(repo_sentinel)"
+}
+
+@test "a denied command tells the agent it cannot lift the lock itself" {
+  run_expansion "git-discipline:disable-git" "recovery window"
+
+  local json
+  json=$(jq -cn '{hook_event_name:"PreToolUse",tool_name:"Bash",tool_input:{command:"git commit -m x"}}')
+  run bash "$DISPATCH" <<< "$json"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"cannot lift this yourself"* ]]
+  [[ "$output" == *"Ask the operator"* ]]
+}
+
+@test "the CLI deny names the plugin and both lift routes" {
+  run_expansion "git-discipline:disable-git" "recovery window"
+
+  run bash -c ". '$SCRIPT_DIR/../../hooks/lib/deny-check.sh'; deny_check commit"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"git-discipline plugin"* ]]
+  [[ "$output" == *"delete"* ]]
 }
 
 @test "disable-git trims surrounding whitespace from the reason" {
   run_expansion "git-discipline:disable-git" "   padded reason   "
 
   [ "$status" -eq 2 ]
-  [ "$(head -n1 "$(repo_sentinel)")" = "padded reason" ]
+  grep -qx "reason: padded reason" "$(repo_sentinel)"
 }
 
 @test "disable-git without a reason is refused" {
@@ -80,6 +112,18 @@ load helpers
   [ "$status" -eq 2 ]
   [[ "$output" == *"[git-discipline/disable-git]"* ]]
   [[ "$output" != *"Reason:"* ]]
+}
+
+@test "an unlabelled reason plus locked-at line still parses" {
+  # The shape written before the self-describing header existed.
+  printf 'interim style reason\nlocked-at: 2026-01-05\n' > "$(repo_sentinel)"
+
+  local json
+  json=$(jq -cn '{hook_event_name:"PreToolUse",tool_name:"Bash",tool_input:{command:"git commit -m x"}}')
+  run bash "$DISPATCH" <<< "$json"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"Reason: interim style reason (locked 2026-01-05)."* ]]
 }
 
 @test "a legacy sentinel with only a reason line still quotes it" {

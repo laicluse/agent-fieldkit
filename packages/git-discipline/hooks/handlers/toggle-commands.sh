@@ -73,7 +73,7 @@ _tc_disable_git() {
   sentinel=$(_tc_repo_sentinel) \
     || dd_emit_deny "disable-git" "Not inside a git repository; nothing to lock."
 
-  printf '%s\nlocked-at: %s\n' "$reason" "$(date +%Y-%m-%d)" > "$sentinel"
+  dd_lock_write "$sentinel" "$reason" "$(date +%Y-%m-%d)"
 
   dd_emit_deny "disable-git" "Repo locked ($sentinel). Reason: $reason. Run /git-discipline:enable-git to lift."
 }
