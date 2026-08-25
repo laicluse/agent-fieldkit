@@ -34,7 +34,7 @@ The plugin ships a `vaultsync` CLI. If the command is not on `PATH`, run the ins
 ## Commands
 
 ```bash
-vaultsync install [path] --llm-command '<json command>' [--verify '<command>']
+vaultsync install [path] --llm-command '<json command>' [--pre-sync '<command>'] [--verify '<command>']
 vaultsync managed [path] [--json]
 vaultsync status [path] [--json]
 vaultsync now [path] [--json]
@@ -45,6 +45,8 @@ vaultsync daemon
 ```
 
 `install` resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.
+
+`--pre-sync` registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock before committing, reruns it after integrating remote changes, and reruns it after verifier repairs. A non-zero exit blocks commit and push as a `pre-sync` failure. On unchanged daemon polls the command does not run; `vaultsync now` always runs it.
 
 `managed` reports whether the requested path resolves to a vaultsync-managed
 checkout. It is the public integration point for tools that need to avoid
