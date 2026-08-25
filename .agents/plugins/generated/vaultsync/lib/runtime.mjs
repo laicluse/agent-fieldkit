@@ -421,11 +421,34 @@ export function fallbackCommitMessage(reason = 'debounce', paths = [], diff = ''
   ].join('\n');
 }
 
+function withoutCommitTrailerBlock(message) {
+  const lines = String(message || '').split('\n');
+  let cursor = lines.length - 1;
+  while (cursor >= 0 && !lines[cursor].trim()) cursor -= 1;
+  let foundTrailer = false;
+  while (cursor >= 0) {
+    const line = lines[cursor];
+    if (/^[A-Za-z0-9-]+:\s+\S/.test(line)) {
+      foundTrailer = true;
+      cursor -= 1;
+      continue;
+    }
+    if (foundTrailer && /^[ \t]+\S/.test(line)) {
+      cursor -= 1;
+      continue;
+    }
+    break;
+  }
+  if (!foundTrailer || (cursor >= 0 && lines[cursor].trim())) return message;
+  return lines.slice(0, cursor + 1).join('\n').trimEnd();
+}
+
 function withoutVaultsyncTrailers(message) {
-  return message
+  const filtered = message
     .split('\n')
     .filter((line) => !/^(Tests|Slice|Red-then-green|Vaultsync-Reason):\s*/i.test(line.trim()))
-    .join('\n')
+    .join('\n');
+  return withoutCommitTrailerBlock(filtered)
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -449,7 +472,7 @@ function normalizeCommitMessage(message, reason, paths = [], diff = '') {
   ].join('\n');
 }
 
-function commitNarrative(message) {
+export function commitNarrative(message) {
   const [, ...body] = withoutVaultsyncTrailers(String(message || '').replace(/\r\n/g, '\n')).split('\n');
   return body
     .filter((line) => !/^Visual:\s*/i.test(line.trim()))
@@ -1008,6 +1031,7 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       if (!commitWarning && result.warning) commitWarning = result.warning;
       return result;
     };
+    if (reg.lastError?.phase === 'pre-sync') runRegisteredPreSync();
     commitPendingState(reason);
     let afterCommitRelation = aheadBehind(reg.rootRealpath);
     let rebase = { rebased: false, conflictsResolved: 0 };
