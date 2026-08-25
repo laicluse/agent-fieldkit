@@ -90,6 +90,12 @@
       "function": "guard_land",
       "contract": "persisted-edit"
     },
+    "reread": {
+      "lane": "post",
+      "order": 30,
+      "function": "guard_reread",
+      "contract": "persisted-edit"
+    },
     "false-claims": {
       "lane": "stop-tracked",
       "order": 10,

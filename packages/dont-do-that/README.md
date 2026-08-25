@@ -74,6 +74,8 @@ PostToolUse context guards surface rewrite instructions after persisted text is 
 - `dash`: catches em-dash or en-dash characters and HTML entity forms in persisted Markdown, text, MDX, or patch additions. Claude, Codex.
 - `land`: catches vague `land` / `landing` / `landed` / `geland` / `landt`
   wording in persisted text. Claude, Codex.
+- `reread`: asks for a reread of the whole section after lines are added to an
+  instruction artefact. Claude, Codex.
 
 Stop guards block weak final answers and make the agent continue:
 
@@ -239,6 +241,12 @@ Surfaces additional context when em-dash (U+2014), en-dash (U+2013), or an HTML 
 ### `land`
 
 Surfaces additional context when the vague `land` metaphor (`land`, `landing`, `landed`, `geland`, `landt`) appears in persisted file content or added `apply_patch` lines outside fenced code blocks. Completed shell commands are not inspected because a post-execution rewrite could repeat their side effects. The match is a plain case-insensitive substring, so ordinary words such as `Nederland`, `landscape`, and `landing page` can trip it. That is deliberate: this is a gentle reminder to choose a concrete verb, never a hard gate.
+
+### `reread`
+
+Surfaces additional context when an `Edit`, `MultiEdit`, or `Write` adds lines to an instruction artefact: a `SKILL.md` (including the `.claude.md` and `.codex.md` variants), a `CLAUDE.md` or `AGENTS.md`, or a file under a `circus/shared` or `circus/specific` directory. Prose has no test that catches a rule clashing with the rule two paragraphs below it, and a diff shows only what was written, never what surrounds it. The nudge asks two questions: does anything already in that section now contradict the addition, and did the operator ask for it. Moved text counts as added text, since arriving somewhere new is not the same as fitting there.
+
+An edit that removes more lines than it adds stays silent, and so does a rewrite of the same size; only growth trips it. Code files never trip it, whatever they contain.
 
 ## Stop guards
 

@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 84,
-		"hookFiles": 60
+		"hookFiles": 61
 	},
 	"install": {
 		"claude": [
@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.57",
+			"version": "2.0.58",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -273,7 +273,7 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/dont-do-that",
 			"skillCount": 3,
 			"commandCount": 2,
-			"hookFileCount": 28,
+			"hookFileCount": 29,
 			"latestChange": {
 				"version": "v2.0.57",
 				"type": "Changed",
@@ -644,7 +644,7 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.57",
+			"packageVersion": "2.0.58",
 			"detailPath": "agent-fieldkit/dont-do-that/",
 			"version": "v2.0.57",
 			"type": "Changed",

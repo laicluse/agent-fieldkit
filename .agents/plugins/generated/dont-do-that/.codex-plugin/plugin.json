@@ -1,6 +1,6 @@
 {
   "name": "dont-do-that",
-  "version": "2.0.57+codex.hooks.2",
+  "version": "2.0.58+codex.hooks.2",
   "description": "Guardrail hooks plus /duh, /just-a-question, and /not-your-monkey correction skills for Claude Code and Codex.",
   "author": {
     "name": "local"

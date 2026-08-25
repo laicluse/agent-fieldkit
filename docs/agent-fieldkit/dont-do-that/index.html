@@ -52,7 +52,7 @@
 					<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.57</span>
+						<span>2.0.58</span>
 						<span>3 skills</span>
 					</div>
 				</div>
@@ -100,6 +100,7 @@
 <ul>
 <li><code>dash</code>: catches em-dash or en-dash characters and HTML entity forms in persisted Markdown, text, MDX, or patch additions. Claude, Codex.</li>
 <li><code>land</code>: catches vague <code>land</code> / <code>landing</code> / <code>landed</code> / <code>geland</code> / <code>landt</code> wording in persisted text. Claude, Codex.</li>
+<li><code>reread</code>: asks for a reread of the whole section after lines are added to an instruction artefact. Claude, Codex.</li>
 </ul>
 <p>Stop guards block weak final answers and make the agent continue:</p>
 <ul>
@@ -163,6 +164,9 @@
 <p>Surfaces additional context when em-dash (U+2014), en-dash (U+2013), or an HTML entity form (<code>&amp;mdash;</code>, <code>&amp;ndash;</code>, <code>&amp;#8212;</code>, <code>&amp;#8211;</code>, <code>&amp;#x2014;</code>, <code>&amp;#x2013;</code>) appears in <code>.md</code>, <code>.txt</code>, or <code>.mdx</code> files outside fenced code blocks, in persisted file content, or in added <code>apply_patch</code> lines. Chat and completed shell commands are not checked.</p>
 <h3 id="land"><code>land</code></h3>
 <p>Surfaces additional context when the vague <code>land</code> metaphor (<code>land</code>, <code>landing</code>, <code>landed</code>, <code>geland</code>, <code>landt</code>) appears in persisted file content or added <code>apply_patch</code> lines outside fenced code blocks. Completed shell commands are not inspected because a post-execution rewrite could repeat their side effects. The match is a plain case-insensitive substring, so ordinary words such as <code>Nederland</code>, <code>landscape</code>, and <code>landing page</code> can trip it. That is deliberate: this is a gentle reminder to choose a concrete verb, never a hard gate.</p>
+<h3 id="reread"><code>reread</code></h3>
+<p>Surfaces additional context when an <code>Edit</code>, <code>MultiEdit</code>, or <code>Write</code> adds lines to an instruction artefact: a <code>SKILL.md</code> (including the <code>.claude.md</code> and <code>.codex.md</code> variants), a <code>CLAUDE.md</code> or <code>AGENTS.md</code>, or a file under a <code>circus/shared</code> or <code>circus/specific</code> directory. Prose has no test that catches a rule clashing with the rule two paragraphs below it, and a diff shows only what was written, never what surrounds it. The nudge asks two questions: does anything already in that section now contradict the addition, and did the operator ask for it. Moved text counts as added text, since arriving somewhere new is not the same as fitting there.</p>
+<p>An edit that removes more lines than it adds stays silent, and so does a rewrite of the same size; only growth trips it. Code files never trip it, whatever they contain.</p>
 <h2 id="stop-guards">Stop guards</h2>
 <h3 id="pre-existing-false-claims"><code>pre-existing</code> (<code>false-claims</code>)</h3>
 <p>Blocks Stop when recent assistant text relativizes a test or error as already existing before the current change. Also runs when <code>stop_hook_active</code> is true and keeps its own per-session line tracker. Pass condition: fix the failure, or formulate it as parallel work in the same directory when there is concrete evidence of a parallel session.</p>
