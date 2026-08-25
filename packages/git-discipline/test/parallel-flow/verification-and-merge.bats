@@ -21,6 +21,43 @@ load helpers
   [ "$parents" = "$base $candidate" ]
   [ "$(git -C "$TEST_REPO" rev-parse "$merged^{tree}")" = "$(git -C "$TEST_REPO" rev-parse "$candidate^{tree}")" ]
 }
+# The merge is the only thing a candidate worktree exists for, so the report
+# that lands the merge is also where the reader learns the worktree is spent.
+# Leaving that to the skill alone lost it: the instruction is read before the
+# merge and has to survive until after it.
+@test "a merge from a linked worktree names it and the prune step" {
+  create_feature_worktree_commit
+
+  run bash -c "cd '$FEATURE_WORKTREE' && '$GIT_DISCIPLINE' verify --local -- true"
+  [ "$status" -eq 0 ]
+
+  run bash -c "cd '$FEATURE_WORKTREE' && '$GIT_DISCIPLINE' merge --local"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"$FEATURE_WORKTREE"* ]]
+  [[ "$output" == *"bonsai:prune"* ]]
+  [[ "$output" == *"feature"* ]]
+}
+
+@test "the prune pointer denies deployment as a reason to keep the worktree" {
+  create_feature_worktree_commit
+
+  run bash -c "cd '$FEATURE_WORKTREE' && '$GIT_DISCIPLINE' verify --local -- true"
+  run bash -c "cd '$FEATURE_WORKTREE' && '$GIT_DISCIPLINE' merge --local"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Deployment is not a reason to keep it"* ]]
+}
+
+@test "a merge from the primary checkout points at no worktree to prune" {
+  create_feature_commit
+
+  run bash -c "cd '$TEST_REPO' && '$GIT_DISCIPLINE' verify --local -- true"
+  [ "$status" -eq 0 ]
+
+  run bash -c "cd '$TEST_REPO' && '$GIT_DISCIPLINE' merge --local"
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"bonsai:prune"* ]]
+}
+
 @test "verify command failure creates no mergeable candidate" {
   create_feature_commit
 

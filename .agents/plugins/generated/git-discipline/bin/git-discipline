@@ -372,6 +372,35 @@ function mergeCommand(argumentsList) {
   }
 
   process.stdout.write(`Merged ${candidate.slice(0, 12)} as ${mergeCommit.slice(0, 12)} on ${target} ${defaultName}.\n`);
+
+  // The merge is the only thing a candidate worktree exists for, so the moment
+  // it lands the worktree is stale. Saying so here rather than only in the
+  // skill puts the next step in front of the reader exactly when it applies,
+  // instead of in a document they read before the merge and have to remember
+  // afterwards.
+  const staleWorktree = linkedWorktreeRoot();
+  if (staleWorktree) {
+    process.stdout.write(`This worktree is now integrated and has nothing left to hold: remove ${staleWorktree} and branch ${featureBranch} with bonsai:prune. Deployment is not a reason to keep it; that runs from a clean deploy checkout on ${mergeCommit.slice(0, 12)}.\n`);
+  }
+}
+
+// The candidate sits in a linked worktree when its own git dir differs from the
+// common dir. Returns its root path, or null in the primary checkout where
+// there is nothing to prune.
+function linkedWorktreeRoot() {
+  const own = runGit(['rev-parse', '--path-format=absolute', '--git-dir'], { allowFailure: true });
+  if (own.status !== 0) return null;
+  let ownDir;
+  let commonDir;
+  try {
+    ownDir = realpathSync(own.stdout);
+    commonDir = gitCommonDirectory();
+  } catch {
+    return null;
+  }
+  if (ownDir === commonDir) return null;
+  const root = runGit(['rev-parse', '--show-toplevel'], { allowFailure: true });
+  return root.status === 0 ? root.stdout : null;
 }
 
 function guardCommitCommand() {
