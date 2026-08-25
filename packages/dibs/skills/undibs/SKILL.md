@@ -10,7 +10,7 @@ description: >-
 
 # undibs
 
-The deliberate counterpart to calling dibs: hand the directories back so the next agent can claim them. Use it when the current work is complete and control returns for genuinely new instructions, at the end of a long session, when a stale lock is in the way, or when the operator asks to free a worktree by hand. The occupancy hook normally performs the same session-wide sweep automatically on a completed `Stop` handoff.
+The deliberate counterpart to calling dibs: hand the directories back so the next agent can claim them. Use it when the current work is complete and control returns for genuinely new instructions, at the end of a long session, when a stale lock is in the way, or when the operator asks to free a worktree by hand. This is the only mid-session release there is; a lock otherwise lasts until `SessionEnd` or until pid-liveness sees the holding process is gone.
 
 A single session can hold more than one lock: the occupancy hook claims a lock
 per git-root for every directory it edits, so a session that touched several
@@ -79,4 +79,4 @@ operator asks to clear it.
 
 ## Release boundary
 
-A green test suite, a clean worktree, or a finished commit alone is not a release condition. Release when the work itself is complete and the agent is handing control back for genuinely new instructions. Keep Dibs while asking a question whose answer is needed to continue the same work, or mark an explicit work-in-progress handoff with `🚧`. Hosts with the Dibs `Stop` hook apply that boundary automatically; invoke `undibs` directly when the host has no such hook or the operator asks for immediate release.
+A green test suite, a clean worktree, or a finished commit alone is not a release condition. Release when the work itself is complete and the agent is handing control back for genuinely new instructions. Keep Dibs while asking a question whose answer is needed to continue the same work. Judging that boundary is the agent's own call and no hook makes it: a lock held one turn too long costs one `undibs`, while a lock released one turn too early costs a collision that surfaces only after another agent has written.

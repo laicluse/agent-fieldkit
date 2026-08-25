@@ -4,6 +4,16 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.50]
+
+### Changed
+
+- **The refusal that asks for a work description now says what makes one useful.** It asked for "what you are doing here", which every coding agent answers the same way in every directory, so locks ended up labelled `session work` and told you nothing at the moment you needed them: finding an old lock and deciding whether its work finished. Both the hook refusal and the CLI error now ask for the change, name the reader, and show a description that passes beside one that fails. `DIBS_DESCRIPTION` is documented as the channel for a scheduled run that knows its task up front, set per run; pinned once for every session it silently satisfies the requirement and suppresses the question.
+
+### Breaking
+
+- **A lock is no longer released at the end of a turn.** Since v2.0.43 the occupancy hook swept every lock a session held whenever its closing message did not end in `?`, `？` or `🚧`. A session that opens its closing line with a marker instead of ending on one never matched, so every turn handed the directory back and the next agent found it free, mid-work. The `Stop` hook is gone from both manifests. A lock now lasts until the agent releases it with `undibs`, until `SessionEnd`, or until pid-liveness sees the holding process is gone. Deciding when a directory is finished with is the agent's own call again: holding one turn too long costs an `undibs`, releasing one turn too early costs a collision nobody sees coming.
+
 ## [v2.0.49]
 
 ### Fixed

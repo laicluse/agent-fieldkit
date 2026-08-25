@@ -27,6 +27,31 @@ run_bonsai() { "$NODE_BIN" "$BONSAI" "$@"; }
   "$NODE_BIN" "$DIBS" check "$FIX/worktrees/my-feature" --json | grep -q '"description": "my feature"'
 }
 
+# The branch names the change this worktree exists for, so it has to win over
+# DIBS_DESCRIPTION. A caller that pins that variable session-wide would
+# otherwise label every worktree it ever hands out with the same phrase.
+@test "the branch name beats a session-wide DIBS_DESCRIPTION" {
+  DIBS_HOLDER_PID=$$ DIBS_DESCRIPTION="Claude Code session work" \
+    run run_bonsai create labelled-feature --repo "$FIX" --json
+  [ "$status" -eq 0 ]
+  "$NODE_BIN" "$DIBS" check "$FIX/worktrees/labelled-feature" --json \
+    | grep -q '"description": "labelled feature"'
+}
+
+@test "DIBS_DESCRIPTION still fills in when the caller names no description" {
+  local dir="$BATS_TEST_TMPDIR/unnamed"
+  mkdir -p "$dir"
+  LIB="$REPO_ROOT/packages/bonsai/bin/bonsai-lib.mjs" TARGET="$dir" \
+  DIBS_HOLDER_PID=$$ DIBS_DESCRIPTION="scheduled vault sweep" \
+    "$NODE_BIN" --input-type=module -e '
+      const { claimWorktreeLock } = await import(process.env.LIB);
+      const result = await claimWorktreeLock(process.env.TARGET, undefined);
+      if (!result.ok) { console.error(JSON.stringify(result)); process.exit(1); }
+    ' >/dev/null
+  "$NODE_BIN" "$DIBS" check "$dir" --json \
+    | grep -q '"description": "scheduled vault sweep"'
+}
+
 @test "the claimed lock records the caller pid, not the short-lived bonsai pid" {
   DIBS_HOLDER_PID=$$ run run_bonsai create pid-feature --repo "$FIX" --json
   [ "$status" -eq 0 ]

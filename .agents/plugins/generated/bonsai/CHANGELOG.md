@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.33]
+
+### Fixed
+
+- **A handed-out worktree is labelled with its branch again.** The lock recorded `DIBS_DESCRIPTION` ahead of the branch name, so a caller that pinned that variable session-wide gave every worktree it ever created the same label. The branch names the change the worktree exists for, so it now wins; the environment value remains the fallback for a caller that names no description.
+
 ## [v2.0.32]
 
 ### Fixed

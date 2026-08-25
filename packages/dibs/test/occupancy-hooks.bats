@@ -175,6 +175,35 @@ init_bash_target_repo() {
   echo "$output" | grep -q '"state": "free"'
 }
 
+# This refusal is where most agents compose a description, so it has to carry
+# the bar and not only the syntax. Asking for the activity produced the same
+# label in every directory, which is the failure this wording exists to avoid.
+@test "the no-dibs refusal asks for the change and names the reader" {
+  unset DIBS_DESCRIPTION
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  echo "$output" | grep -qi 'the change you are making'
+  echo "$output" | grep -qi 'weeks from now'
+}
+
+@test "the no-dibs refusal shows a description that passes and one that fails" {
+  unset DIBS_DESCRIPTION
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  echo "$output" | grep -qi 'finish the plugin install'
+  echo "$output" | grep -qi 'session work'
+}
+
+@test "the CLI refusal carries the same bar as the hook refusal" {
+  unset DIBS_DESCRIPTION
+  run dibs claim "$DIR" --pid $$ --agent claude --session sess-1
+  [ "$status" -ne 0 ]
+  echo "$output" | grep -qi 'the change you are making'
+  echo "$output" | grep -qi 'not the activity'
+}
+
 @test "gate does not record the actual default branch as work description" {
   local repo="$BATS_TEST_TMPDIR/default-branch-repo"
   init_test_repo "$repo" trunk
@@ -522,7 +551,12 @@ init_bash_target_repo() {
   echo "$output" | grep -q '"agent": "codex"'
 }
 
-@test "completed Stop sweeps every directory this session locked" {
+# A lock lasts as long as the session. Ending a turn is not a release: the
+# previous rule read the assistant's closing prose for a completion marker and
+# swept every lock whenever it did not find one, which is every turn that opens
+# its closing line with a marker instead of ending on one.
+
+@test "a finished-sounding turn keeps every lock the session holds" {
   local dir2="$BATS_TEST_TMPDIR/work2"
   mkdir -p "$dir2"
   export DIBS_HOLDER_PID=$$
@@ -532,57 +566,66 @@ init_bash_target_repo() {
   run_stop_hook "Implemented, verified, and committed."
   [ "$status" -eq 0 ]
   run dibs check "$DIR" --json
+  echo "$output" | grep -q '"pid": '$$
+  run dibs check "$dir2" --json
+  echo "$output" | grep -q '"pid": '$$
+}
+
+@test "a turn that pauses for the operator keeps its lock" {
+  export DIBS_HOLDER_PID=$$
+  dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
+
+  run_stop_hook "🚦 Waiting on your choice before I continue."
+  [ "$status" -eq 0 ]
+  run dibs check "$DIR" --json
+  echo "$output" | grep -q '"pid": '$$
+}
+
+@test "a turn that reports completion keeps its lock" {
+  export DIBS_HOLDER_PID=$$
+  dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
+
+  run_stop_hook "🏁 Committed and the tree is clean."
+  [ "$status" -eq 0 ]
+  run dibs check "$DIR" --json
+  echo "$output" | grep -q '"pid": '$$
+}
+
+@test "no wording at the end of a turn can release a lock" {
+  export DIBS_HOLDER_PID=$$
+  local phrasing
+  for phrasing in "Done." "Which account should I use?" "Still going 🚧" "🚧 Still going." ""; do
+    dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
+    run_stop_hook "$phrasing"
+    [ "$status" -eq 0 ]
+    run dibs check "$DIR" --json
+    echo "$output" | grep -q '"pid": '$$ || {
+      echo "released on phrasing: [$phrasing]" >&2
+      return 1
+    }
+  done
+}
+
+@test "SessionEnd still sweeps every directory this session locked" {
+  local dir2="$BATS_TEST_TMPDIR/work2"
+  mkdir -p "$dir2"
+  export DIBS_HOLDER_PID=$$
+  dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
+  dibs claim "$dir2" --pid $$ --agent claude --session sess-1 >/dev/null
+
+  run_hook SessionEnd ""
+  [ "$status" -eq 0 ]
+  run dibs check "$DIR" --json
   echo "$output" | grep -q '"state": "free"'
   run dibs check "$dir2" --json
   echo "$output" | grep -q '"state": "free"'
 }
 
-@test "Stop retains locks while waiting for an answer to continue the same work" {
-  export DIBS_HOLDER_PID=$$
-  dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
-
-  run_stop_hook "Which account should I use?"
-  [ "$status" -eq 0 ]
-  run dibs check "$DIR" --json
-  echo "$output" | grep -q '"pid": '$$
-}
-
-@test "Stop retains locks for an explicit work-in-progress handoff" {
-  export DIBS_HOLDER_PID=$$
-  dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
-
-  run_stop_hook "Still working through the failing integration test. 🚧"
-  [ "$status" -eq 0 ]
-  run dibs check "$DIR" --json
-  echo "$output" | grep -q '"pid": '$$
-}
-
-@test "Stop releases when a completed summary merely mentions the work-in-progress marker" {
-  export DIBS_HOLDER_PID=$$
-  dibs claim "$DIR" --pid $$ --agent claude --session sess-1 >/dev/null
-
-  run_stop_hook "Implemented the trailing 🚧 handling and verified it."
-  [ "$status" -eq 0 ]
-  run dibs check "$DIR" --json
-  echo "$output" | grep -q '"state": "free"'
-}
-
-@test "completed Stop does not disturb a lock held by another agent" {
-  tail -f /dev/null >/dev/null 2>&1 & local other=$!
-  dibs claim "$DIR" --pid "$other" --agent codex --session other-sess >/dev/null
-  export DIBS_HOLDER_PID=$$
-
-  run_stop_hook "Implemented, verified, and committed."
-  local rc=$status
-  run dibs check "$DIR" --json
-  kill "$other" 2>/dev/null || true
-  [ "$rc" -eq 0 ]
-  echo "$output" | grep -q '"agent": "codex"'
-}
-
-@test "Claude and Codex hook manifests register completed-handoff cleanup on Stop" {
-  jq -e '.hooks.Stop | length > 0' "$REPO_ROOT/packages/dibs/hooks/hooks.json" >/dev/null
-  jq -e '.hooks.Stop | length > 0' "$REPO_ROOT/packages/dibs/hooks/hooks.codex.json" >/dev/null
+@test "neither hook manifest registers a Stop handler" {
+  run jq -e '.hooks.Stop' "$REPO_ROOT/packages/dibs/hooks/hooks.json"
+  [ "$status" -ne 0 ]
+  run jq -e '.hooks.Stop' "$REPO_ROOT/packages/dibs/hooks/hooks.codex.json"
+  [ "$status" -ne 0 ]
 }
 
 @test "the recorded holder pid equals DIBS_HOLDER_PID, not the hook shell" {

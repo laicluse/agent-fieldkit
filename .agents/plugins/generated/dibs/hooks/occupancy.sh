@@ -1,5 +1,5 @@
 #!/bin/bash
-# allow-comment: load-bearing contract. dibs occupancy enforcement gates the write-output at PreToolUse: a file edit (Edit/Write/MultiEdit/apply_patch) always, and a Bash command that occ_bash_mutates classifies as writing. Write targets resolve from the tool call's own workdir. When Codex omits that workdir, an existing claim lets the normal target analysis use the conversation directory as its fallback basis; without that claim, ambiguous Bash mutations remain refused and Dibs never claims the conversation directory silently. Several agents may read and think in the same directory; dibs only arbitrates who writes. A claim needs a work description the agent composes (from DIBS_DESCRIPTION); a write with no administered dibs is hard-denied telling the agent to run `dibs claim <dir> --description ...`, and a write into a directory a DIFFERENT live session holds is hard-denied with the holder. Read-only work passes untouched. A completed Stop handoff releases every lock held by the session; a question or the 🚧 marker keeps them for continuation, and SessionEnd remains the final fallback. No lock logic lives here; every verb shells out to this plugin's own dibs CLI, and the gate fails open on infra faults (missing dibs binary, unresolvable dir) so a broken lock never blocks. Opt out per session with DIBS_OCCUPANCY=off.
+# allow-comment: load-bearing contract. dibs occupancy enforcement gates the write-output at PreToolUse: a file edit (Edit/Write/MultiEdit/apply_patch) always, and a Bash command that occ_bash_mutates classifies as writing. Write targets resolve from the tool call's own workdir. When Codex omits that workdir, an existing claim lets the normal target analysis use the conversation directory as its fallback basis; without that claim, ambiguous Bash mutations remain refused and Dibs never claims the conversation directory silently. Several agents may read and think in the same directory; dibs only arbitrates who writes. A claim needs a work description the agent composes (from DIBS_DESCRIPTION); a write with no administered dibs is hard-denied telling the agent to run `dibs claim <dir> --description ...`, and a write into a directory a DIFFERENT live session holds is hard-denied with the holder. Read-only work passes untouched. A lock lasts as long as the session that took it: it is released by SessionEnd, by an explicit undibs, or by dibs pid-liveness once the holding process is gone. Deliberately NOT at the end of a turn. Reading intent out of the assistant's closing prose was tried and reverted: the marker set it recognised (a trailing ?, ？ or 🚧) never matched the house convention of opening a closing line with 🏁 or 🚦, so every turn silently swept every lock the session held and the directory read as free to the next agent. A lock that outlives its usefulness costs one undibs; a lock that vanishes mid-work costs a collision nobody sees coming. No lock logic lives here; every verb shells out to this plugin's own dibs CLI, and the gate fails open on infra faults (missing dibs binary, unresolvable dir) so a broken lock never blocks. Opt out per session with DIBS_OCCUPANCY=off.
 
 OCC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # allow-comment: load-bearing. Share one holder-pid walk with the undibs skill so claim and release agree on the recorded pid.
@@ -12,17 +12,6 @@ occ_session() {
   resolved="$(occ_field session)"
   [ -n "$resolved" ] && { printf '%s\n' "$resolved"; return 0; }
   jq -r '.session_id // .sessionId // empty' <<< "$1" 2>/dev/null
-}
-
-occ_completed_handoff() {
-  local message
-  message="$(jq -r '.last_assistant_message // empty' <<< "$1" 2>/dev/null)"
-  [ -n "$(printf '%s' "$message" | tr -d '[:space:]')" ] || return 1
-  message="$(printf '%s' "$message" | sed -E 's/[[:space:]]+$//')"
-  case "$message" in
-    *\?|*？|*🚧) return 1 ;;
-  esac
-  return 0
 }
 
 occ_cwd() {
@@ -309,11 +298,18 @@ occ_refused_by_other() {
   return 0
 }
 
+# allow-comment: load-bearing WHY. This message is the only place most agents
+# allow-comment: ever learn what the description is for, so it carries the bar
+# allow-comment: rather than only the syntax. Asking "what you are doing here"
+# allow-comment: reliably produced "session work": the activity is the same in
+# allow-comment: every directory, so naming it discriminates nothing. Ask for
+# allow-comment: the change instead, name the reader and the decision they face,
+# allow-comment: and show one description that passes beside one that fails.
 occ_block_no_dibs() {
   local dir="$1" input="${2:-}" sid binding=""
   sid="$(occ_session "$input")"
   [ -n "$sid" ] && binding=" --session $sid"
-  printf '[dibs/occupancy] %s has no dibs registered for you, so this write is refused. Administer one first: run '\''dibs claim %s%s --description "<one line: what you are doing here>"'\'' with a description you compose yourself, then retry. The session flag binds the lock to this conversation; a claim without it belongs to the shell that ran it and is gone before your next write.\n' "$dir" "$dir" "$binding" >&2
+  printf '[dibs/occupancy] %s has no dibs registered for you, so this write is refused. Claim it first, then retry:\n  dibs claim %s%s --description "<the change you are making here>"\nThe description is what someone reads when they find this lock still standing weeks from now and have to decide whether the work finished or died halfway. Name the change, so that question is answerable: "revert the stop-release trigger" or "finish the plugin install" pass; "session work", "coding", "editing files" name an activity that is identical in every directory and tell that reader nothing. The session flag binds the lock to this conversation; a claim without it belongs to the shell that ran it and is gone before your next write.\n' "$dir" "$dir" "$binding" >&2
 }
 
 occ_codex_bash_target_is_ambiguous() {
@@ -395,7 +391,7 @@ occ_gate() {
   done <<< "$dirs"
 }
 
-# allow-comment: load-bearing. A session can claim more than one directory (occ_gate_dirs keys per git root of each edited file), so a single-dir release at completed Stop or SessionEnd would leak every non-cwd lock until pid-liveness self-heal. Sweep all of this session's locks by holder pid, plus owner/session when known.
+# allow-comment: load-bearing. A session can claim more than one directory (occ_gate_dirs keys per git root of each edited file), so a single-dir release at SessionEnd or undibs would leak every non-cwd lock until pid-liveness self-heal. Sweep all of this session's locks by holder pid, plus owner/session when known.
 occ_release() {
   local input="$1" dibs pid owner sid
   dibs="$(occ_dibs_bin)" || return 0
@@ -412,7 +408,6 @@ occ_release() {
 occ_dispatch() {
   local input="$1"
   case "$(occ_event "$input")" in
-    Stop)         occ_completed_handoff "$input" && occ_release "$input" ;;
     SessionEnd)   occ_release "$input" ;;
     PreToolUse)
       case "$(occ_tool "$input")" in
