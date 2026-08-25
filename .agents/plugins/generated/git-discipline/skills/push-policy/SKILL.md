@@ -68,20 +68,6 @@ The landing ref decides the branch, not habit. In a trunk repo (`auto-trunk`, `g
   then PR, then merge is the gated step that needs the operator's go.
 - **external**: no write access. Fork plus PR.
 
-## The go-gate on top of the modes
-
-A mode says what this repo allows. On top of that sits a short list of actions
-that reach other people irreversibly, and each of those needs the operator to
-say go in their own words, whatever the mode allows:
-
-- a force-push or history rewrite on a shared or protected branch
-- the first publication of a repo or a branch
-- a merge to the default branch in a `pr-flow` repo
-- a push that deploys to third-party production infrastructure
-
-A normal non-force push of a merge commit you created locally is not on this
-list; it follows the mode. Neither is the forced continuation below.
-
 **Forced continuation**: after a rebase of a branch that already has an
 upstream, a `--force-with-lease` push of your own branch is the completion of
 that rebase, not a new decision. Do not ask for it, unless the branch is a
