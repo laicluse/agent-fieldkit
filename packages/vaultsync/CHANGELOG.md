@@ -2,6 +2,13 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.15]
+
+### Fixed
+
+- **Failed generated output is repaired before a retry can checkpoint it.** A partially writing `pre-sync` command can no longer place its failed output in remote history on the next successful cycle.
+- **Commit narrative comparison follows Git trailer semantics.** Provider-specific verification and review trailers no longer hide repeated WHY prose from the change-specific fallback.
+
 ## [v2.0.14]
 
 ### Fixed

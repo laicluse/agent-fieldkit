@@ -7,6 +7,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_PAUSE_MINUTES,
+  commitNarrative,
   fallbackCommitMessage,
   findDibsBin,
   launchAgentPlist,
@@ -275,7 +276,7 @@ it('falls back when an LLM repeats a recent commit narrative', () => {
   writeFileSync(join(fixture.local, '.git', 'hooks', 'commit-msg'), [
     '#!/bin/sh',
     'narrative="This sync records the local vault changes before reconciling with the remote truth."',
-    'if grep -Fq "$narrative" "$1" && git log -1 --format=%B | grep -Fq "$narrative"; then',
+    'if grep -Fq "$narrative" "$1" && git log -5 --format=%B | grep -Fq "$narrative"; then',
     '  echo "git-discipline: duplicate-why: commit narrative duplicates the previous sync" >&2',
     '  exit 1',
     'fi',
@@ -284,11 +285,44 @@ it('falls back when an LLM repeats a recent commit narrative', () => {
 
   writeFileSync(join(fixture.local, 'first.md'), '# First\n\nFirst generated change.\n');
   runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+  for (const [name, body] of [['middle-a.md', 'First intervening change.'], ['middle-b.md', 'Second intervening change.']]) {
+    writeFileSync(join(fixture.local, name), `# Intervening\n\n${body}\n`);
+    git(fixture.local, ['add', name]);
+    git(fixture.local, [
+      'commit', '-q',
+      '-m', `Add ${name}`,
+      '-m', body,
+      '-m', 'Tests: n/a (test fixture)',
+      '-m', 'Slice: docs-only',
+    ]);
+  }
+  git(fixture.local, ['push', '-q']);
   writeFileSync(join(fixture.local, 'second.md'), '# Second\n\nSecond generated change.\n');
   runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
 
   assert.equal(git(fixture.local, ['log', '-1', '--format=%s']), 'Sync vault content');
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
+it('excludes the complete Git trailer block from commit narratives', () => {
+  const first = [
+    'Record vault changes',
+    '',
+    'Preserve the same substantive reason.',
+    '',
+    'Verified: first verifier',
+    'PII-Doublecheck: yes',
+  ].join('\n');
+  const second = [
+    'Use another subject',
+    '',
+    'Preserve the same substantive reason.',
+    '',
+    'Verified-how: second verifier',
+    'Visual: viewer.html',
+  ].join('\n');
+
+  assert.equal(commitNarrative(first), commitNarrative(second));
 });
 
 it('finds dibs through DIBS_BIN first', () => {
@@ -508,6 +542,19 @@ it('blocks commit and push when the pre-sync command fails', () => {
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '1\t0');
   assert.match(git(fixture.local, ['show', '--pretty=', '--name-only', 'HEAD']), /note\.md/);
   assert.match(git(fixture.local, ['status', '--porcelain']), /viewer\.html/);
+
+  writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { readFileSync, writeFileSync } from "node:fs";',
+    'const note = readFileSync("note.md", "utf8").trim();',
+    'writeFileSync("viewer.html", `<main>${note}</main>\\n`);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Note\n\nMust not publish.</main>\n');
+  assert.doesNotMatch(git(tmp, ['--git-dir', fixture.remote, 'log', '-p', '--all']), /partial viewer/);
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
 });
 
 it('reruns pre-sync after integrating remote changes', () => {
