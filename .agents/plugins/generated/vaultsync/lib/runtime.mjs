@@ -449,6 +449,25 @@ function normalizeCommitMessage(message, reason, paths = [], diff = '') {
   ].join('\n');
 }
 
+function commitNarrative(message) {
+  const [, ...body] = withoutVaultsyncTrailers(String(message || '').replace(/\r\n/g, '\n')).split('\n');
+  return body
+    .filter((line) => !/^Visual:\s*/i.test(line.trim()))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function repeatsRecentCommitNarrative(root, message, limit = 5) {
+  const narrative = commitNarrative(message);
+  if (!narrative) return false;
+  const result = git(root, ['log', `-${limit}`, '--format=%B%x00'], { allowFailure: true });
+  if (result.status !== 0) return false;
+  return result.stdout
+    .split('\0')
+    .some((recent) => commitNarrative(recent) === narrative);
+}
+
 function shellCommand(command, { cwd, input, env = process.env, timeoutMs = 120000 } = {}) {
   const result = spawnSync(command, {
     cwd,
@@ -570,7 +589,13 @@ function llmCommitMessage(registration, diff, paths, reason) {
       },
     }, { mandatory: false });
     if (!result || typeof result.message !== 'string') return { message: fallbackCommitMessage(reason, paths, diff), failure: null };
-    return { message: normalizeCommitMessage(result.message, reason, paths, diff), failure: null };
+    const message = normalizeCommitMessage(result.message, reason, paths, diff);
+    return {
+      message: repeatsRecentCommitNarrative(registration.rootRealpath, message)
+	? fallbackCommitMessage(reason, paths, diff)
+	: message,
+      failure: null,
+    };
   } catch (err) {
     return { message: fallbackCommitMessage(reason, paths, diff), failure: err };
   }

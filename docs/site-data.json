@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.13",
+			"version": "2.0.14",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.13",
+				"version": "v2.0.14",
 				"type": "Fixed",
-				"summary": "Tracked generators run only after remote integration."
+				"summary": "Repeated generated commit narratives fall back to change-specific reasoning."
 			}
 		},
 		{
@@ -716,11 +716,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.13",
+			"packageVersion": "2.0.14",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.13",
+			"version": "v2.0.14",
 			"type": "Fixed",
-			"summary": "Tracked generators run only after remote integration.",
+			"summary": "Repeated generated commit narratives fall back to change-specific reasoning.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{

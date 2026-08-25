@@ -254,6 +254,43 @@ it('makes fallback commit reasoning specific to the staged content', () => {
   assert.ok(first.split('\n').every((line) => line.length <= 72));
 });
 
+it('falls back when an LLM repeats a recent commit narrative', () => {
+  const fixture = syncFixture('repeated-commit-narrative');
+  const llm = join(tmp, 'repeated-commit-narrative-llm.mjs');
+  writeFileSync(llm, [
+    '#!/usr/bin/env node',
+    'let input = "";',
+    'process.stdin.on("data", (chunk) => input += chunk);',
+    'process.stdin.on("end", () => {',
+    '  const payload = JSON.parse(input);',
+    '  if (payload.task === "commit_message") process.stdout.write(JSON.stringify({ message: "Record vault changes" }));',
+    '  else if (payload.task === "resolve_conflict") process.stdout.write(JSON.stringify({ resolved: "Remote truth line.\\n" }));',
+    '  else process.exit(2);',
+    '});',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const registration = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...registration, llmCommand: `${process.execPath} ${llm}` }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, '.git', 'hooks', 'commit-msg'), [
+    '#!/bin/sh',
+    'narrative="This sync records the local vault changes before reconciling with the remote truth."',
+    'if grep -Fq "$narrative" "$1" && git log -1 --format=%B | grep -Fq "$narrative"; then',
+    '  echo "git-discipline: duplicate-why: commit narrative duplicates the previous sync" >&2',
+    '  exit 1',
+    'fi',
+    '',
+  ].join('\n'), { mode: 0o755 });
+
+  writeFileSync(join(fixture.local, 'first.md'), '# First\n\nFirst generated change.\n');
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+  writeFileSync(join(fixture.local, 'second.md'), '# Second\n\nSecond generated change.\n');
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(git(fixture.local, ['log', '-1', '--format=%s']), 'Sync vault content');
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
 it('finds dibs through DIBS_BIN first', () => {
   const fake = join(tmp, 'fake-dibs');
   writeFileSync(fake, '#!/bin/sh\nexit 0\n', { mode: 0o755 });
@@ -944,5 +981,7 @@ it('asks the LLM command to repair verifier failures before pushing', () => {
   assert.equal(readFileSync(join(local, 'note.md'), 'utf8'), '# Note\n\nChanged locally.\n');
   assert.equal(readFileSync(join(local, 'legacy.md'), 'utf8'), '# Legacy\n\nMentions [[E-Flux]].\n');
   assert.equal(readFileSync(join(local, 'other.md'), 'utf8'), '# Other\n\nMentions [[Zaptec]].\n');
-  assert.match(git(tmp, ['--git-dir', remote, 'log', '-1', '--pretty=%B']), /Update vault note/);
+  const repairCommit = git(tmp, ['--git-dir', remote, 'log', '-1', '--pretty=%B']);
+  assert.match(repairCommit, /^Sync vault content/);
+  assert.match(repairCommit, /Vaultsync-Reason: manual-verifier-repair/);
 });
