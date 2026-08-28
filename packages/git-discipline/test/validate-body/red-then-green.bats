@@ -306,6 +306,21 @@ final class SessionTests: XCTestCase {
   [ "$status" -eq 0 ]
 }
 
+@test "Red-then-green: combined form matches Playwright test declaration" {
+  export GIT_SHIM_LS_TREE_OUTPUT="e2e/selection.spec.js"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="e2e/selection.spec.js"
+  set_staged_blob "e2e/selection.spec.js" 'test("selecting a marble adds an optical lens", async ({ page }) => {
+  await page.goto("/fixture/");
+});'
+  use_trailers "Tests: e2e/selection.spec.js"$'\n'"Slice: validator + spec"$'\n'"Red-then-green: e2e/selection.spec.js:1 # selecting a marble adds an optical lens"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-playwright.txt" "$(_body_with_rtg "e2e/selection.spec.js:1 # selecting a marble adds an optical lens")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "Red-then-green: garbage value (no extension, not yes/n/a) is rejected" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   use_trailers "Tests: spec/services/session_spec.rb"$'\n'"Slice: handler + service + spec"$'\n'"Red-then-green: probably"$'\n'"Verified: operator-confirmed"

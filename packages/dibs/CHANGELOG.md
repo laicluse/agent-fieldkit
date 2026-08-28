@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.59]
+
+### Fixed
+
+- **Codex patch calls now lock the checkout named by the patch.** Codex can expose native `apply_patch` input as `tool_input.command`; Dibs ignored that payload form, lost even absolute file targets, and fell back to the conversation checkout. The patch extractor now treats `command` like the existing raw, `patch`, `input`, and `content` forms, so a patch aimed at another worktree checks that worktree instead.
+
 ## [v2.0.50]
 
 ### Changed

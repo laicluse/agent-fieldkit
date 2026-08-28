@@ -485,6 +485,32 @@ init_bash_target_repo() {
   echo "$output" | grep -q "\"pid\": $$"
 }
 
+@test "apply_patch gates a Codex command payload by its target git worktree" {
+  local parent="$BATS_TEST_TMPDIR/repo"
+  local child="$parent/worktrees/child"
+  init_test_repo "$parent"
+  git -C "$parent" worktree add -b child "$child" >/dev/null
+
+  tail -f /dev/null >/dev/null 2>&1 & local other=$!
+  dibs claim "$parent" --pid "$other" --agent claude --session other-sess >/dev/null
+  export DIBS_HOLDER_PID=$$
+  jq -nc --arg cwd "$parent" --arg target "$child/new.txt" '
+    {
+      hook_event_name:"PreToolUse",
+      tool_name:"apply_patch",
+      cwd:$cwd,
+      session_id:"sess-1",
+      tool_input:{command:"*** Begin Patch\n*** Add File: \($target)\n+ok\n*** End Patch\n"}
+    }' > "$BATS_TEST_TMPDIR/in.json"
+
+  run "$HOOK" < "$BATS_TEST_TMPDIR/in.json"
+  local rc=$status
+  run dibs check "$child" --json
+  kill "$other" 2>/dev/null || true
+  [ "$rc" -eq 0 ]
+  echo "$output" | grep -q "\"pid\": $$"
+}
+
 @test "SessionStart does not steer aside when a live other-session agent holds the dir" {
   tail -f /dev/null >/dev/null 2>&1 & local other=$!
   dibs claim "$DIR" --pid "$other" --agent codex --session other-sess >/dev/null

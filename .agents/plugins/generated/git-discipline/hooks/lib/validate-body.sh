@@ -524,7 +524,8 @@ validate_body() {
               local rtg_esc
               rtg_esc=$(printf '%s' "$rtg_name" | sed 's/[][\.*^$(){}+?|/]/\\&/g')
               local rtg_patterns=(
-                "(it|describe|context|specify|@test|@Test\\()[[:space:]]*[\"']${rtg_esc}[\"']"
+				"(it|test|describe|context|specify)[[:space:]]*\\(?[[:space:]]*[\"']${rtg_esc}[\"']"
+				"(@test|@Test\\()[[:space:]]*[\"']${rtg_esc}[\"']"
                 "Scenario:[[:space:]]*${rtg_esc}([[:space:]]|$)"
                 "func[[:space:]]+${rtg_esc}[[:space:]]*\\("
                 "def[[:space:]]+${rtg_esc}[[:space:]]*\\("
@@ -538,7 +539,7 @@ validate_body() {
                 fi
               done
               if [[ "$rtg_found" -eq 0 ]]; then
-                _vb_err "$(printf 'red-then-green-test-not-found: Red-then-green names "%s" in "%s", but no matching test (it/Scenario/@test/@Test/func/def) was found in the staged file. Name the test you actually saw red, in the form it appears in the file (the quoted description, the Scenario name, or the func/def identifier).' "$rtg_name" "$rtg_path")"
+				_vb_err "$(printf 'red-then-green-test-not-found: Red-then-green names "%s" in "%s", but no matching test (it/test/Scenario/@test/@Test/func/def) was found in the staged file. Name the test you actually saw red, in the form it appears in the file (the quoted description, the Scenario name, or the func/def identifier).' "$rtg_name" "$rtg_path")"
               fi
             fi
           fi

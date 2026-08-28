@@ -105,7 +105,7 @@ occ_patch_paths() {
   patch="$(jq -r '
     (
       if (.tool_input? | type) == "string" then .tool_input
-      else (.tool_input.patch? // .tool_input.input? // .tool_input.content? // empty)
+      else (.tool_input.patch? // .tool_input.input? // .tool_input.content? // .tool_input.command? // empty)
       end
     )
     | select(type == "string")

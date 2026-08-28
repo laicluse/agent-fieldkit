@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.69]
+
+### Fixed
+
+- **Playwright tests can now anchor a red-then-green claim by name.** The commit validator recognized RSpec-style `it "…"` declarations but not JavaScript function-style declarations such as `test("…")` or `it("…")`, so a valid `<path>:<line> # <test-name>` trailer was rejected and had to fall back to a file-only claim. Function-style Jest, Mocha, and Playwright declarations now use the same staged-blob verification as the existing runners.
+
 ## [v2.0.65]
 
 ### Changed

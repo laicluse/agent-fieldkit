@@ -52,11 +52,11 @@ dibs() {
 }
 
 @test "an exported agent pid does not become the holder, only DIBS_HOLDER_PID does" {
-  run env CLAUDE_PID=1 CLAUDE_CODE_SESSION_ID=sess-xyz \
+  run env CLAUDE_PID=1 DIBS_HOLDER_PID=$$ CLAUDE_CODE_SESSION_ID=sess-xyz \
     "$NODE_BIN" "$DIBS" claim "$DIR" --description "pid stays local" --json
   [ "$status" -eq 0 ]
   run dibs check "$DIR" --json
-  ! echo "$output" | grep -q '"pid": 1'
+  [ "$(jq -r '.holder.pid' <<< "$output")" -eq $$ ]
 }
 
 @test "explicit claim flags win over the exported session" {
