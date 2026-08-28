@@ -39,6 +39,18 @@ MSG
   [ "$status" -eq 0 ]
 }
 
+@test "Rust Tests path present in staged diff passes" {
+  export GIT_SHIM_LS_TREE_OUTPUT=""
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="codex-rs/core/src/tools/handlers/unified_exec_tests.rs"
+  use_trailers "Tests: codex-rs/core/src/tools/handlers/unified_exec_tests.rs"$'\n'"Slice: handler + spec"$'\n'"Red-then-green: n/a (fixture verifies Tests path parsing)"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rust-tests-found.txt" "$(_body_with_trailers "Tests: codex-rs/core/src/tools/handlers/unified_exec_tests.rs")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "absent Tests trailer when Slice is not opt-out fails with missing-tests" {
   use_trailers "Slice: handler + service + spec"$'\n'"Red-then-green: n/a (test fixture, no spec applies)"$'\n'"Verified: operator-confirmed"
 

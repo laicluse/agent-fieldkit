@@ -103,6 +103,18 @@ MSG
   [ "$status" -eq 0 ]
 }
 
+@test "Red-then-green: Rust test path present in staged diff is accepted" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="codex-rs/core/src/tools/handlers/unified_exec_tests.rs"
+  use_trailers "Tests: spec/services/session_spec.rb"$'\n'"Slice: handler + service + spec"$'\n'"Red-then-green: codex-rs/core/src/tools/handlers/unified_exec_tests.rs"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-rust-path-staged.txt" "$(_body_with_rtg "codex-rs/core/src/tools/handlers/unified_exec_tests.rs")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "Red-then-green: spec-path NOT in staged diff fails with red-then-green-path-not-in-staged" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="app/services/session.rb"

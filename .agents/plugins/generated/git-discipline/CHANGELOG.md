@@ -25,6 +25,8 @@ the version without producing an entry here).
 
 - **Playwright tests can now anchor a red-then-green claim by name.** The commit validator recognized RSpec-style `it "…"` declarations but not JavaScript function-style declarations such as `test("…")` or `it("…")`, so a valid `<path>:<line> # <test-name>` trailer was rejected and had to fall back to a file-only claim. Function-style Jest, Mocha, and Playwright declarations now use the same staged-blob verification as the existing runners.
 
+- **Rust test files are now valid commit evidence.** The `Tests:` and `Red-then-green:` path validators accepted common test extensions but omitted `.rs`, so commits in Rust repositories were rejected even when their staged test path existed.
+
 ## [v2.0.65]
 
 ### Changed

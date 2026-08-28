@@ -413,7 +413,7 @@ validate_body() {
       done <<< "$tests_paths"
 
       # Validate path format for at least one entry.
-      local path_re='[a-zA-Z0-9_./ -]+\.(rb|py|js|ts|go|sh|bash|bats|feature|tsx|jsx|swift)$'
+      local path_re='[a-zA-Z0-9_./ -]+\.(rb|py|js|ts|go|rs|sh|bash|bats|feature|tsx|jsx|swift)$'
       local has_valid_format=0
       while IFS= read -r path; do
         local clean_path="${path%%#*}"
@@ -455,7 +455,7 @@ validate_body() {
       # The path must end in a recognized spec extension and must appear in
       # the staged diff so the rote attestation "yes" cannot be replaced by
       # an equally rote "name some random spec file in the repo".
-      local rtg_path_re='^([a-zA-Z0-9_./ -]+\.(rb|py|js|ts|tsx|jsx|go|sh|bash|bats|feature|swift))(:.*)?$'
+      local rtg_path_re='^([a-zA-Z0-9_./ -]+\.(rb|py|js|ts|tsx|jsx|go|rs|sh|bash|bats|feature|swift))(:.*)?$'
       if [[ "$rtg_value" =~ $rtg_path_re ]]; then
         local rtg_path="${BASH_REMATCH[1]}"
         local rtg_suffix="${BASH_REMATCH[3]#:}"
