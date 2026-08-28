@@ -1,7 +1,7 @@
-import { accessSync, constants, existsSync, mkdirSync, readFileSync, realpathSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { accessSync, closeSync, constants, existsSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync, readdirSync, renameSync, rmSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { delimiter, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { homedir, platform, userInfo } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -20,6 +20,9 @@ const MAX_VERIFICATION_REPAIR_FILES = 1;
 const MAX_VERIFICATION_REPAIR_FILE_BYTES = 60000;
 const MAX_VERIFICATION_REPAIR_DETAIL_BYTES = 60000;
 const GIT_MAX_BUFFER_BYTES = 256 * 1024 * 1024;
+const LEGACY_VALIDATOR_NAME = 'legacy-verify';
+const VALIDATOR_NAME_PATTERN = /^[a-z0-9][a-z0-9._-]{0,63}$/;
+const REGISTRATION_LOCK_TIMEOUT_MS = 30000;
 
 const sleepSlot = new Int32Array(new SharedArrayBuffer(4));
 
@@ -74,6 +77,52 @@ export function registrationPathForRoot(rootRealpath, env = process.env) {
   return registrationPathForKey(repoKey(rootRealpath), env);
 }
 
+function processIsAlive(pid) {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    return err.code === 'EPERM';
+  }
+}
+
+function withRegistrationLock(key, env, operation) {
+  ensureRuntimeDirs(env);
+  const lockPath = `${registrationPathForKey(key, env)}.lock`;
+  const token = `${process.pid}:${randomUUID()}`;
+  const deadline = Date.now() + REGISTRATION_LOCK_TIMEOUT_MS;
+  let descriptor;
+  while (descriptor === undefined) {
+    try {
+      descriptor = openSync(lockPath, 'wx', 0o600);
+      writeFileSync(descriptor, `${token}\n`);
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err;
+      let owner = '';
+      try { owner = readFileSync(lockPath, 'utf8').trim(); } catch {}
+      const ownerPid = Number.parseInt(owner.split(':', 1)[0], 10);
+      const age = (() => {
+	try { return Date.now() - statSync(lockPath).mtimeMs; } catch { return Number.POSITIVE_INFINITY; }
+      })();
+      if ((owner && !processIsAlive(ownerPid)) || (!owner && age >= 5000)) {
+	rmSync(lockPath, { force: true });
+	continue;
+      }
+      if (Date.now() >= deadline) throw new Error(`timed out waiting for Vaultsync registration update held by process ${ownerPid || 'unknown'}`);
+      sleepMs(25);
+    }
+  }
+  try {
+    return operation();
+  } finally {
+    closeSync(descriptor);
+    let current = '';
+    try { current = readFileSync(lockPath, 'utf8').trim(); } catch {}
+    if (current === token) unlinkSync(lockPath);
+  }
+}
+
 function readJsonFile(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
@@ -95,9 +144,57 @@ export function loadRegistrations(env = process.env) {
 }
 
 export function saveRegistration(registration, env = process.env) {
-  const updated = { ...registration, updatedAt: nowIso() };
-  writeJsonAtomic(registrationPathForKey(updated.key, env), updated);
-  return updated;
+  return withRegistrationLock(registration.key, env, () => {
+    const path = registrationPathForKey(registration.key, env);
+    const current = existsSync(path) ? readJsonFile(path) : null;
+    const validatorsChanged = current
+      && JSON.stringify(current.validators || {}) !== JSON.stringify(registration.validators || {});
+    const merged = validatorsChanged
+      ? { ...registration, validators: current.validators || {}, lastValidation: current.lastValidation || null }
+      : registration;
+    const updated = { ...merged, updatedAt: nowIso() };
+    writeJsonAtomic(path, updated);
+    return updated;
+  });
+}
+
+function normalizeRepairPolicy(repair, legacy = false) {
+  if (legacy) return { mode: 'automatic', authority: 'diagnostics-and-changed' };
+  const mode = repair?.mode;
+  const authority = repair?.authority;
+  if (!['none', 'automatic'].includes(mode)) throw new Error(`invalid validator repair mode: ${mode || '(missing)'}`);
+  if (mode === 'none' && authority !== 'none') throw new Error('validator repair mode none requires authority none');
+  if (mode === 'automatic' && !['diagnostics', 'diagnostics-and-changed'].includes(authority)) {
+    throw new Error(`invalid validator repair authority: ${authority || '(missing)'}`);
+  }
+  return { mode, authority };
+}
+
+function normalizeNamedValidator(name, validator) {
+  if (!VALIDATOR_NAME_PATTERN.test(name) || name === LEGACY_VALIDATOR_NAME) throw new Error(`invalid or reserved validator name: ${name}`);
+  if (!validator || typeof validator.command !== 'string' || !validator.command.trim()) throw new Error(`validator ${name} requires a command`);
+  return {
+    name,
+    command: validator.command,
+    repair: normalizeRepairPolicy(validator.repair),
+    legacy: false,
+  };
+}
+
+export function configuredValidators(registration) {
+  const validators = [];
+  if (typeof registration.verifyCommand === 'string' && registration.verifyCommand.trim()) {
+    validators.push({
+      name: LEGACY_VALIDATOR_NAME,
+      command: registration.verifyCommand,
+      repair: normalizeRepairPolicy(null, true),
+      legacy: true,
+    });
+  }
+  for (const name of Object.keys(registration.validators || {}).sort()) {
+    validators.push(normalizeNamedValidator(name, registration.validators[name]));
+  }
+  return validators;
 }
 
 function git(cwd, args, options = {}) {
@@ -716,21 +813,78 @@ function pullRebaseWithLlm(registration) {
   }
 }
 
-function runVerification(registration) {
-  if (!registration.verifyCommand) return { skipped: true };
-  const result = shellCommand(registration.verifyCommand, {
-    cwd: registration.rootRealpath,
-    timeoutMs: 10 * 60 * 1000,
-  });
-  if (result.status !== 0) {
-    const err = new Error(`verification command failed: ${registration.verifyCommand}`);
-    const detail = [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
-    err.detail = detail.slice(0, 4000);
-    err.repairDetail = detail.slice(0, MAX_VERIFICATION_REPAIR_DETAIL_BYTES);
-    err.exitCode = result.status || 1;
-    throw err;
+function validatorFailure(validator, result, cause = null) {
+  const err = new Error(`verification command failed: ${validator.command}`);
+  const detail = cause
+    ? String(cause.message || cause)
+    : [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
+  err.detail = detail.slice(0, 4000);
+  err.repairDetail = detail.slice(0, MAX_VERIFICATION_REPAIR_DETAIL_BYTES);
+  err.exitCode = cause?.exitCode || result?.status || 1;
+  err.validatorName = validator.name;
+  return err;
+}
+
+function executeValidator(registration, validator) {
+  let result;
+  try {
+    result = shellCommand(validator.command, {
+      cwd: registration.rootRealpath,
+      timeoutMs: 10 * 60 * 1000,
+    });
+  } catch (cause) {
+    const error = validatorFailure(validator, null, cause);
+    return {
+      validator,
+      error,
+      outcome: { name: validator.name, state: 'failed', exitCode: error.exitCode, detail: redactDiagnostic(error.detail) || null },
+    };
   }
-  return { skipped: false };
+  if (result.status !== 0) {
+    const error = validatorFailure(validator, result);
+    return {
+      validator,
+      error,
+      outcome: { name: validator.name, state: 'failed', exitCode: error.exitCode, detail: redactDiagnostic(error.detail) || null },
+    };
+  }
+  return {
+    validator,
+    error: null,
+    outcome: { name: validator.name, state: 'passed', exitCode: 0, detail: null },
+  };
+}
+
+function validationFailure(executions, validation) {
+  const failures = executions.filter((execution) => execution.error);
+  const primary = failures[0].error;
+  if (failures.length > 1) {
+    primary.detail = failures.map((failure) => {
+      const detail = failure.error.detail || failure.error.message;
+      return `[${failure.validator.name}] ${detail}`;
+    }).join('\n');
+  }
+  primary.validation = validation;
+  primary.validatorFailures = failures;
+  primary.secondary = failures.slice(1).map((failure) => ({
+    phase: `verification:${failure.validator.name}`,
+    message: failure.error.message,
+    detail: failure.error.detail || null,
+  }));
+  return primary;
+}
+
+function runVerification(registration) {
+  const validators = configuredValidators(registration);
+  if (validators.length === 0) return { skipped: true, passed: true, validators: [] };
+  const executions = validators.map((validator) => executeValidator(registration, validator));
+  const validation = {
+    skipped: false,
+    passed: executions.every((execution) => !execution.error),
+    validators: executions.map((execution) => execution.outcome),
+  };
+  if (!validation.passed) throw validationFailure(executions, validation);
+  return validation;
 }
 
 function runPreSync(registration) {
@@ -805,11 +959,12 @@ function parseVerifierPaths(root, detail = '') {
   const out = [];
   const rootPrefix = `${root}/`;
   for (const line of String(detail).split('\n')) {
-    const start = line.indexOf(rootPrefix);
-    if (start < 0) continue;
-    const tail = line.slice(start + rootPrefix.length);
-    const match = tail.match(/^(.+?\.(?:md|markdown|txt|csv|tsv|json|ya?ml))(?::|\s|$)/i);
-    if (match) out.push(match[1]);
+    const absoluteStart = line.indexOf(rootPrefix);
+    const candidateText = absoluteStart >= 0 ? line.slice(absoluteStart + rootPrefix.length) : line.trimStart();
+    if (absoluteStart < 0 && isAbsolute(candidateText)) continue;
+    const match = candidateText.match(/^(.+?\.(?:md|markdown|txt|csv|tsv|json|ya?ml))(?=:\d*(?::\d*)?(?::|\s)|:|\s|$)/i);
+    const path = match ? safeRelativePath(root, match[1]) : null;
+    if (path) out.push(path);
   }
   return out;
 }
@@ -819,14 +974,17 @@ function readRepairCandidate(root, path) {
   if (!rel || !isTextRepairPath(rel)) return null;
   const full = join(root, rel);
   if (!existsSync(full)) return null;
+  const stat = lstatSync(full);
+  if (!stat.isFile() || stat.isSymbolicLink() || realpathSync(full) !== resolve(full)) return null;
   const content = readFileSync(full, 'utf8');
   if (Buffer.byteLength(content, 'utf8') > MAX_VERIFICATION_REPAIR_FILE_BYTES) return null;
   return { path: rel, content };
 }
 
-function verificationRepairCandidates(registration, verificationError, cyclePaths = []) {
+function verificationRepairCandidates(registration, validator, verificationError, cyclePaths = []) {
   const root = registration.rootRealpath;
-  const cycle = new Set(cyclePaths.map((p) => safeRelativePath(root, p)).filter(Boolean));
+  const includeChanged = validator.repair.authority === 'diagnostics-and-changed';
+  const cycle = new Set((includeChanged ? cyclePaths : []).map((p) => safeRelativePath(root, p)).filter(Boolean));
   const verifier = parseVerifierPaths(root, verificationError.repairDetail || verificationError.detail);
   const candidates = [];
   const add = (path) => {
@@ -848,7 +1006,7 @@ function verifierDetailForFiles(root, detail, files) {
   return (lines.length > 0 ? lines.join('\n') : text).slice(0, MAX_VERIFICATION_REPAIR_DETAIL_BYTES);
 }
 
-function mechanicalVerifierRepairs(registration, verificationError) {
+function mechanicalVerifierRepairs(registration, validator, verificationError) {
   const root = registration.rootRealpath;
   const byPath = new Map();
   const detail = verificationError.repairDetail || verificationError.detail || '';
@@ -863,7 +1021,7 @@ function mechanicalVerifierRepairs(registration, verificationError) {
   }
   const paths = [];
   for (const [path, fixes] of byPath) {
-    const candidate = readRepairCandidate(root, path);
+    const candidate = validator.repair.authority === 'none' ? null : readRepairCandidate(root, path);
     if (!candidate) continue;
     let content = candidate.content;
     if (fixes.trailingWhitespace) content = content.replace(/[ \t]+$/gm, '');
@@ -876,8 +1034,8 @@ function mechanicalVerifierRepairs(registration, verificationError) {
   return { repaired: paths.length > 0, kind: 'mechanical', paths };
 }
 
-function repairVerificationFailure(registration, verificationError, cyclePaths, reason) {
-  const files = verificationRepairCandidates(registration, verificationError, cyclePaths);
+function repairVerificationFailure(registration, validator, verificationError, cyclePaths, reason) {
+  const files = verificationRepairCandidates(registration, validator, verificationError, cyclePaths);
   if (files.length === 0) return { repaired: false, reason: 'no-repair-candidates', paths: [] };
   const allowed = new Set(files.map((file) => file.path));
   const repairDetail = verifierDetailForFiles(
@@ -895,7 +1053,8 @@ function repairVerificationFailure(registration, verificationError, cyclePaths, 
     },
     reason,
     verifier: {
-      command: registration.verifyCommand,
+      name: validator.name,
+      command: validator.command,
       message: verificationError.message,
       detail: repairDetail,
     },
@@ -916,7 +1075,7 @@ function repairVerificationFailure(registration, verificationError, cyclePaths, 
     writeFileSync(join(registration.rootRealpath, rel), repair.content);
     written.push(rel);
   }
-  return { repaired: written.length > 0, paths: written };
+  return { repaired: written.length > 0, paths: written, validator: validator.name };
 }
 
 function verifyWithRepairs(registration, cyclePaths, reason, env = process.env) {
@@ -928,12 +1087,18 @@ function verifyWithRepairs(registration, cyclePaths, reason, env = process.env) 
       return { verification, repaired: repairs.length > 0 };
     } catch (err) {
       if (step === MAX_VERIFICATION_REPAIR_STEPS) throw err;
-      let repair = mechanicalVerifierRepairs(registration, err);
-      if (!repair.repaired) repair = repairVerificationFailure(registration, err, cyclePaths, reason);
-      if (!repair.repaired) throw err;
+      const roundRepairs = [];
+      for (const failure of err.validatorFailures || []) {
+	const { validator, error } = failure;
+	if (validator.repair.mode !== 'automatic') continue;
+	let repair = mechanicalVerifierRepairs(registration, validator, error);
+	if (!repair.repaired) repair = repairVerificationFailure(registration, validator, error, cyclePaths, reason);
+	if (repair.repaired) roundRepairs.push({ ...repair, validator: validator.name });
+      }
+      if (roundRepairs.length === 0) throw err;
       const repairCommit = commitDirtyState(registration, `${reason}-verifier-repair`, env);
       if (!repairCommit.committed) throw err;
-      repairs.push(repair);
+      repairs.push(...roundRepairs);
     }
   }
   throw new Error('verification repair loop exhausted unexpectedly');
@@ -1105,6 +1270,7 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       lastSeenDirtyAt: null,
       lastError: null,
       lastWarning: commitWarning ? errorRecord(commitWarning, completedAt) : null,
+      lastValidation: verification,
       lastResult: {
         reason,
 	committed: committedPaths.length > 0,
@@ -1131,6 +1297,7 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       lastSuccessfulSyncAt: reg.lastSuccessfulSyncAt || (!reg.lastError && reg.lastResult ? reg.lastCycleAt : null),
       lastSeenDirtyAt: stillDirty ? reg.lastSeenDirtyAt : null,
       lastError: errorRecord(err, at),
+      lastValidation: err.validation || reg.lastValidation || null,
     }, env, err);
   } finally {
     if (claim) releaseDibs(reg, claim, env);
@@ -1205,6 +1372,8 @@ async function commandInstall(args, env = process.env) {
   if (!llmCommand) throw new Error('--llm-command is required; vaultsync must have a conflict resolver');
   probeLlmCommand(llmCommand, preflight.rootRealpath);
   ensureRuntimeDirs(env);
+  const existingPath = registrationPathForKey(preflight.key, env);
+  const existing = existsSync(existingPath) ? readJsonFile(existingPath) : null;
   const registration = {
     version: REGISTRATION_VERSION,
     key: preflight.key,
@@ -1229,6 +1398,7 @@ async function commandInstall(args, env = process.env) {
     lastWarning: null,
     createdAt: nowIso(),
   };
+  if (existing?.validators) registration.validators = existing.validators;
   const registrationDibsBin = registrationDibsBinForInstall(dibsBin);
   if (registrationDibsBin) registration.dibsBin = registrationDibsBin;
   const savedRegistration = saveRegistration(registration, env);
@@ -1270,6 +1440,122 @@ function commandDoctor(args, env = process.env) {
   const llmCommand = parsed.values['llm-command'] || env.VAULTSYNC_LLM_COMMAND;
   const llmProbe = llmCommand ? probeLlmCommand(llmCommand, preflight.rootRealpath) : false;
   emit({ ...preflight, dibsBin, llmProbe }, parsed.values.json);
+}
+
+function validatorConfiguration(registration) {
+  const outcomes = new Map((registration.lastValidation?.validators || []).map((outcome) => [outcome.name, outcome]));
+  return configuredValidators(registration).map((validator) => ({
+    name: validator.name,
+    command: redactDiagnostic(validator.command),
+    repair: validator.repair,
+    legacy: validator.legacy,
+    lastResult: outcomes.get(validator.name) || null,
+  }));
+}
+
+function withoutValidatorOutcome(registration, name) {
+  if (!registration.lastValidation) return registration;
+  const validators = (registration.lastValidation.validators || []).filter((outcome) => outcome.name !== name);
+  return {
+    ...registration,
+    lastValidation: {
+      ...registration.lastValidation,
+      skipped: validators.length === 0,
+      passed: validators.every((outcome) => outcome.state === 'passed'),
+      validators,
+    },
+  };
+}
+
+function mutateNamedValidators(key, env, mutation) {
+  return withRegistrationLock(key, env, () => {
+    const path = registrationPathForKey(key, env);
+    const current = readJsonFile(path);
+    const result = mutation(current);
+    if (!result.changed) return { registration: current, ...result };
+    const updated = { ...result.registration, updatedAt: nowIso() };
+    writeJsonAtomic(path, updated);
+    return { ...result, registration: updated };
+  });
+}
+
+function commandValidator(args, env = process.env) {
+  const parsed = parseArgs({
+    args,
+    allowPositionals: true,
+    options: {
+      command: { type: 'string' },
+      repair: { type: 'string' },
+      'repair-authority': { type: 'string' },
+      json: { type: 'boolean', default: false },
+    },
+  });
+  const [action, nameOrPath, explicitPath] = parsed.positionals;
+  if (!['add', 'list', 'remove'].includes(action)) throw new Error('usage: vaultsync validator <add|list|remove> ...');
+  if (action === 'list') {
+    if (parsed.positionals.length > 2) throw new Error('too many positional arguments for validator list');
+    if (parsed.values.command) throw new Error('--command is only valid with validator add');
+    if (parsed.values.repair) throw new Error('--repair is only valid with validator add');
+    if (parsed.values['repair-authority']) throw new Error('--repair-authority is only valid with validator add');
+    const registration = registrationForDir(nameOrPath || env.PWD || process.cwd(), env);
+    const payload = { root: registration.rootRealpath, validators: validatorConfiguration(registration) };
+    if (parsed.values.json) return emit(payload, true);
+    const lines = payload.validators.length === 0
+      ? [`${payload.root}: no validators configured`]
+      : payload.validators.flatMap((validator) => [
+	`${validator.name}${validator.legacy ? ' (legacy)' : ''}`,
+	`  command: ${validator.command}`,
+	`  repair: ${validator.repair.mode} (${validator.repair.authority})`,
+	`  last result: ${validator.lastResult?.state || '(not run)'}`,
+      ]);
+    return emit(lines.join('\n'));
+  }
+
+  const name = nameOrPath;
+  if (!name) throw new Error(`validator ${action} requires a name`);
+  if (parsed.positionals.length > 3) throw new Error(`too many positional arguments for validator ${action}`);
+  if (!VALIDATOR_NAME_PATTERN.test(name) || name === LEGACY_VALIDATOR_NAME) throw new Error(`invalid or reserved validator name: ${name}`);
+  const registration = registrationForDir(explicitPath || env.PWD || process.cwd(), env);
+  if (action === 'remove') {
+    if (parsed.values.command) throw new Error('--command is only valid with validator add');
+    if (parsed.values.repair) throw new Error('--repair is only valid with validator add');
+    if (parsed.values['repair-authority']) throw new Error('--repair-authority is only valid with validator add');
+    const mutation = mutateNamedValidators(registration.key, env, (current) => {
+      const namedValidators = { ...(current.validators || {}) };
+      const removed = Object.hasOwn(namedValidators, name);
+      if (!removed) return { changed: false, removed, registration: current };
+      delete namedValidators[name];
+      return { changed: true, removed, registration: { ...withoutValidatorOutcome(current, name), validators: namedValidators } };
+    });
+    const removed = mutation.removed;
+    return emit({ root: registration.rootRealpath, name, removed }, parsed.values.json);
+  }
+
+  if (!parsed.values.command) throw new Error('--command is required');
+  if (!parsed.values.repair) throw new Error('--repair is required');
+  if (parsed.values.repair === 'automatic' && !parsed.values['repair-authority']) throw new Error('--repair-authority is required for automatic repair');
+  if (parsed.values.repair === 'none' && parsed.values['repair-authority']) throw new Error('--repair-authority is not valid with --repair none');
+  const validator = {
+    command: parsed.values.command,
+    repair: normalizeRepairPolicy({
+      mode: parsed.values.repair,
+      authority: parsed.values.repair === 'none' ? 'none' : parsed.values['repair-authority'],
+    }),
+  };
+  normalizeNamedValidator(name, validator);
+  const mutation = mutateNamedValidators(registration.key, env, (current) => {
+    const namedValidators = { ...(current.validators || {}) };
+    const unchanged = JSON.stringify(namedValidators[name]) === JSON.stringify(validator);
+    if (unchanged) return { changed: false, unchanged, registration: current };
+    const withoutOutcome = withoutValidatorOutcome(current, name);
+    return {
+      changed: true,
+      unchanged,
+      registration: { ...withoutOutcome, validators: { ...namedValidators, [name]: validator } },
+    };
+  });
+  const unchanged = mutation.unchanged;
+  emit({ root: registration.rootRealpath, name, updated: !unchanged, validator }, parsed.values.json);
 }
 
 function pendingChanges(root) {
@@ -1323,6 +1609,7 @@ function structuredStatus(reg) {
       lastPollAt: reg.lastPollAt || null,
       lastSuccessfulSyncAt: reg.lastSuccessfulSyncAt || null,
       failure,
+      validators: validatorConfiguration(reg),
       pending,
     };
   } catch (err) {
@@ -1333,6 +1620,7 @@ function structuredStatus(reg) {
       enabled: reg.enabled !== false,
       state: 'blocked',
       failure: errorRecord(Object.assign(err, { phase: err.phase || 'status' })),
+      validators: [],
       pending: null,
     };
   }
@@ -1371,6 +1659,8 @@ function commandStatus(args, env = process.env) {
     if (status.ahead != null) lines.push(`  ahead/behind: ${status.ahead}/${status.behind}`);
     if (status.pausedUntil) lines.push(`  paused until: ${status.pausedUntil}`);
     if (status.lastSuccessfulSyncAt) lines.push(`  last successful sync: ${status.lastSuccessfulSyncAt}`);
+    lines.push(`  validators: ${status.validators.length}`);
+    for (const validator of status.validators) lines.push(`    ${validator.name}: ${validator.lastResult?.state || 'not run'}; repair ${validator.repair.mode} (${validator.repair.authority})`);
     if (status.failure) {
       lines.push(`  blocked during ${status.failure.phase}: ${status.failure.message}`);
       for (const secondary of status.failure.secondary || []) lines.push(`  secondary ${secondary.phase} failure: ${secondary.message}`);
@@ -1574,6 +1864,7 @@ export async function runCommand(command, args, env = process.env) {
     case 'now': return commandNow(args, env);
     case 'daemon': return commandDaemon(args, env);
     case 'doctor': return commandDoctor(args, env);
+    case 'validator': return commandValidator(args, env);
     default: throw new Error(`unknown command: ${command}`);
   }
 }

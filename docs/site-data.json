@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.17",
+			"version": "2.0.18",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.17",
-				"type": "Fixed",
-				"summary": "CLI, daemon, and callback entrypoints survive plugin cache updates."
+				"version": "v2.0.18",
+				"type": "Added",
+				"summary": "One checkout can run multiple independent validators."
 			}
 		},
 		{
@@ -688,6 +688,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
 		},
 		{
+			"plugin": "vaultsync",
+			"packageVersion": "2.0.18",
+			"detailPath": "agent-fieldkit/vaultsync/",
+			"version": "v2.0.18",
+			"type": "Added",
+			"summary": "One checkout can run multiple independent validators.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
+		},
+		{
 			"plugin": "house-rules",
 			"packageVersion": "2.0.17",
 			"detailPath": "agent-fieldkit/house-rules/",
@@ -704,15 +713,6 @@
 			"type": "Fixed",
 			"summary": "Codex now gives Claude enough time to finish peer reviews.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
-		},
-		{
-			"plugin": "vaultsync",
-			"packageVersion": "2.0.17",
-			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.17",
-			"type": "Fixed",
-			"summary": "CLI, daemon, and callback entrypoints survive plugin cache updates.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
 			"plugin": "anger-management",

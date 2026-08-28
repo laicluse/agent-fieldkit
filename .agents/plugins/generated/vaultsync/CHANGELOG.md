@@ -2,6 +2,18 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.18]
+
+### Added
+
+- **One checkout can run multiple independent validators.** Named, idempotently managed validators all run in each validation pass and expose separate results without changing the checkout's physical-root identity.
+
+### Changed
+
+- **Automatic repair authority is explicit per named validator.** A validator can be read-only or authorize bounded repairs from only its own absolute or checkout-relative diagnostics, optionally extended to the current change set; symlinks and checkout escapes remain outside repair authority.
+- **Concurrent validator owners preserve each other's configuration.** Named-entry updates serialize against daemon state writes, and replaced validators no longer inherit stale outcomes from an earlier command.
+- **Legacy verification remains migration-free.** Existing `verifyCommand` and `vaultsync install --verify` registrations keep their historical behavior and can coexist with named validators.
+
 ## [v2.0.17]
 
 ### Fixed

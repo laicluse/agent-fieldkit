@@ -52,7 +52,7 @@
 					<p class="lede">Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.17</span>
+						<span>2.0.18</span>
 						<span>1 skill</span>
 					</div>
 				</div>
@@ -74,8 +74,9 @@
 <li>Generates substantive English commit messages through the configured LLM command, with deterministic git-discipline-safe trailers.</li>
 <li>Preserves a failed commit-message provider as the primary diagnosis when the fallback commit also fails, including safely redacted stderr and the secondary commit failure.</li>
 <li>Publishes one <code>vaultsync.status.v1</code> status contract with sync phase, recovery guidance, last successful sync, and pending staged, unstaged, untracked, and unpushed work.</li>
-<li>Runs an optional verifier before a cycle is considered clean.</li>
-<li>Asks the configured LLM command to repair bounded verifier failures for included text files.</li>
+<li>Runs zero, one, or multiple independently named validators before a cycle is considered clean, while continuing to support existing <code>verifyCommand</code> registrations.</li>
+<li>Reports every validator outcome even when an earlier validator fails.</li>
+<li>Gives each named validator an explicit repair mode and file authority, so one tool cannot silently repair another tool's diagnostics or unrelated files.</li>
 <li>Claims <code>dibs</code> during mutating cycles so another agent does not edit the same checkout concurrently.</li>
 <li>When an upstream exists, fetches, rebases, resolves conflicts through the LLM command, and pushes the current branch.</li>
 <li>When no upstream exists, skips remote operations and remains a local auto-commit vault.</li>
@@ -88,12 +89,18 @@ vaultsync now [path] [--json]
 vaultsync pause [path] [--minutes &lt;n&gt; | --until &lt;time&gt;] [--reason &lt;text&gt;]
 vaultsync resume [path]
 vaultsync doctor [path] --llm-command '&lt;json command&gt;'
+vaultsync validator add &lt;name&gt; [path] --command '&lt;command&gt;' --repair none
+vaultsync validator add &lt;name&gt; [path] --command '&lt;command&gt;' --repair automatic --repair-authority diagnostics
+vaultsync validator list [path] [--json]
+vaultsync validator remove &lt;name&gt; [path] [--json]
 vaultsync daemon
 vaultsync runtime install</code></pre>
 <p><code>install</code> resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.</p>
 <p><code>--pre-sync</code> registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock after integrating remote changes and before verification and publication, then reruns it after verifier repairs. A non-zero exit blocks push as a <code>pre-sync</code> failure while preserving any local source checkpoint for recovery. On unchanged daemon polls the command does not run; <code>vaultsync now</code> always runs it.</p>
 <p><code>managed</code> reports whether the requested path resolves to a vaultsync-managed checkout. It is the public integration point for tools that need to avoid operating inside vaultsync roots; they must call the CLI instead of depending on vaultsync's registration storage layout.</p>
-<p><code>status --json</code> emits the canonical <code>vaultsync.status.v1</code> contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is <code>synced</code>, <code>pending</code>, <code>degraded</code>, <code>blocked</code>, <code>paused</code>, <code>disabled</code>, or <code>unmanaged</code>; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. Pending state separates uncommitted paths from unpushed commits, and <code>lastSuccessfulSyncAt</code> is not overwritten by a failed cycle.</p>
+<p><code>validator add</code> creates or replaces only the named entry and leaves every other validator untouched, including when independent installers update different names concurrently. Repeating the same command is a no-op. <code>validator remove</code> is also idempotent. Repair policy is mandatory: <code>none</code> grants no write authority, while <code>automatic</code> first applies known mechanical fixes and may then ask the configured LLM command for replacements. Automatic repair requires either <code>diagnostics</code>, which authorizes only regular files named by that validator's own absolute or checkout-relative diagnostics, or <code>diagnostics-and-changed</code>, which additionally authorizes files in the current sync change set. Symlinks and paths escaping the checkout never become repair candidates. Validator commands run from the physical Git checkout root.</p>
+<p>Registrations created by older Vaultsync releases remain valid. A non-empty <code>verifyCommand</code>, including one created by <code>vaultsync install --verify</code>, is projected at read time as the reserved <code>legacy-verify</code> validator with the historical automatic repair behavior. Vaultsync does not rewrite the registration merely to normalize it, and named validators can coexist with that legacy field.</p>
+<p><code>status --json</code> emits the canonical <code>vaultsync.status.v1</code> contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is <code>synced</code>, <code>pending</code>, <code>degraded</code>, <code>blocked</code>, <code>paused</code>, <code>disabled</code>, or <code>unmanaged</code>; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. The additive <code>validators</code> collection exposes each configured validator and its last independent result without changing existing status fields. Pending state separates uncommitted paths from unpushed commits, and <code>lastSuccessfulSyncAt</code> is not overwritten by a failed cycle.</p>
 <p>vaultsync resolves <code>dibs</code> dynamically at runtime. <code>DIBS_BIN</code> remains an explicit override, otherwise vaultsync checks the installed plugin cache, <code>PATH</code>, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed <code>dibs</code> binary.</p>
 <p><code>runtime install</code> republishes the calling plugin version only when it is newer than the active machine runtime. Publication stages a complete runtime release before atomically changing the active pointer. If a LaunchAgent is already installed, a successful upgrade rewrites and restarts it through the stable launcher. This command is normally invoked by the plugin session hook.</p>
 <p><code>pause</code> always has an automatic resume deadline. The default is 120 minutes. If a pause expires while another live <code>dibs</code> holder still owns the checkout, vaultsync extends the pause by 60 minutes and repeats that rule until the lock clears.</p>
@@ -120,7 +127,7 @@ Vaultsync-Reason: &lt;cycle reason&gt;</code></pre>
 <h2 id="verification">Verification</h2>
 <p>Run the package tests from the source checkout:</p>
 <pre><code class="language-bash">npm test --prefix packages/vaultsync</code></pre>
-<p>The tests cover local-only installs without upstream, remote-backed sync cycles, managed sync hooks that explicitly permit <code>--no-verify</code>, verifier failure recording, and verifier repair loops.</p>
+<p>The tests cover local-only installs without upstream, remote-backed sync cycles, managed sync hooks that explicitly permit <code>--no-verify</code>, untouched legacy registrations, mixed legacy and named validators, aggregate failures, idempotent validator management, repair boundaries, and verifier repair loops.</p>
 				</article>
 				<aside class="detail-sidebar" aria-label="Plugin links">
 					<div class="sidebar-block">

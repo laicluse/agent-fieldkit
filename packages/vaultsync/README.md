@@ -28,8 +28,9 @@ Runtime releases are immutable and the active pointer only moves forward by vers
 - Generates substantive English commit messages through the configured LLM command, with deterministic git-discipline-safe trailers.
 - Preserves a failed commit-message provider as the primary diagnosis when the fallback commit also fails, including safely redacted stderr and the secondary commit failure.
 - Publishes one `vaultsync.status.v1` status contract with sync phase, recovery guidance, last successful sync, and pending staged, unstaged, untracked, and unpushed work.
-- Runs an optional verifier before a cycle is considered clean.
-- Asks the configured LLM command to repair bounded verifier failures for included text files.
+- Runs zero, one, or multiple independently named validators before a cycle is considered clean, while continuing to support existing `verifyCommand` registrations.
+- Reports every validator outcome even when an earlier validator fails.
+- Gives each named validator an explicit repair mode and file authority, so one tool cannot silently repair another tool's diagnostics or unrelated files.
 - Claims `dibs` during mutating cycles so another agent does not edit the same checkout concurrently.
 - When an upstream exists, fetches, rebases, resolves conflicts through the LLM command, and pushes the current branch.
 - When no upstream exists, skips remote operations and remains a local auto-commit vault.
@@ -44,6 +45,10 @@ vaultsync now [path] [--json]
 vaultsync pause [path] [--minutes <n> | --until <time>] [--reason <text>]
 vaultsync resume [path]
 vaultsync doctor [path] --llm-command '<json command>'
+vaultsync validator add <name> [path] --command '<command>' --repair none
+vaultsync validator add <name> [path] --command '<command>' --repair automatic --repair-authority diagnostics
+vaultsync validator list [path] [--json]
+vaultsync validator remove <name> [path] [--json]
 vaultsync daemon
 vaultsync runtime install
 ```
@@ -57,7 +62,11 @@ checkout. It is the public integration point for tools that need to avoid
 operating inside vaultsync roots; they must call the CLI instead of depending on
 vaultsync's registration storage layout.
 
-`status --json` emits the canonical `vaultsync.status.v1` contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is `synced`, `pending`, `degraded`, `blocked`, `paused`, `disabled`, or `unmanaged`; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. Pending state separates uncommitted paths from unpushed commits, and `lastSuccessfulSyncAt` is not overwritten by a failed cycle.
+`validator add` creates or replaces only the named entry and leaves every other validator untouched, including when independent installers update different names concurrently. Repeating the same command is a no-op. `validator remove` is also idempotent. Repair policy is mandatory: `none` grants no write authority, while `automatic` first applies known mechanical fixes and may then ask the configured LLM command for replacements. Automatic repair requires either `diagnostics`, which authorizes only regular files named by that validator's own absolute or checkout-relative diagnostics, or `diagnostics-and-changed`, which additionally authorizes files in the current sync change set. Symlinks and paths escaping the checkout never become repair candidates. Validator commands run from the physical Git checkout root.
+
+Registrations created by older Vaultsync releases remain valid. A non-empty `verifyCommand`, including one created by `vaultsync install --verify`, is projected at read time as the reserved `legacy-verify` validator with the historical automatic repair behavior. Vaultsync does not rewrite the registration merely to normalize it, and named validators can coexist with that legacy field.
+
+`status --json` emits the canonical `vaultsync.status.v1` contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is `synced`, `pending`, `degraded`, `blocked`, `paused`, `disabled`, or `unmanaged`; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. The additive `validators` collection exposes each configured validator and its last independent result without changing existing status fields. Pending state separates uncommitted paths from unpushed commits, and `lastSuccessfulSyncAt` is not overwritten by a failed cycle.
 
 vaultsync resolves `dibs` dynamically at runtime. `DIBS_BIN` remains an explicit override, otherwise vaultsync checks the installed plugin cache, `PATH`, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed `dibs` binary.
 
@@ -119,4 +128,4 @@ Run the package tests from the source checkout:
 npm test --prefix packages/vaultsync
 ```
 
-The tests cover local-only installs without upstream, remote-backed sync cycles, managed sync hooks that explicitly permit `--no-verify`, verifier failure recording, and verifier repair loops.
+The tests cover local-only installs without upstream, remote-backed sync cycles, managed sync hooks that explicitly permit `--no-verify`, untouched legacy registrations, mixed legacy and named validators, aggregate failures, idempotent validator management, repair boundaries, and verifier repair loops.
