@@ -54,6 +54,15 @@ section() {
   [[ "$output" =~ audit ]] || return 1
 }
 
+@test "an explicit stitch marker becomes a session-local handoff obligation" {
+  run section "Resolve stitches during Refactor"
+  [ "$status" -eq 0 ]
+  marker_rule="$(printf '%s\n' "$output" | grep 'session-local cleanup obligation')"
+  [[ "$marker_rule" =~ explicitly[[:space:]]+marked ]] || return 1
+  [[ "$marker_rule" =~ [Bb]efore[[:space:]]+handoff ]] || return 1
+  [[ "$marker_rule" =~ remove[[:space:]]+it.*rewrite[[:space:]]+it.*preserve[[:space:]]+it ]] || return 1
+}
+
 @test "migration guidance leaves one canonical implementation" {
   run section "Migration without residue"
   [ "$status" -eq 0 ]

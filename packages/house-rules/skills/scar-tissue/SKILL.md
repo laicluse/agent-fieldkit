@@ -35,6 +35,8 @@ A diagnostic stitch is a temporary test introduced to prove that a superseded in
 
 Use the stitch for RED and GREEN. During Refactor, keep or rewrite it when it uniquely guards current behavior; remove it when positive coverage already owns the intended behavior. After removal or rewrite, temporarily revert the fix and confirm that the surviving specification goes RED, then restore the fix and confirm GREEN. A stitch introduced by the current change does not enter that change's commit.
 
+When a layer is explicitly marked as a suspected stitch, treat the marker as a session-local cleanup obligation, not as proof that the layer is disposable. Before handoff, inspect the marked layer against the system's current responsibilities: remove it when it only proves a retired interpretation, rewrite it when it should become a positive specification or current guard, or preserve it only with a named current responsibility.
+
 For example, a request to make a dental bridge printable might be misread as a request to configure a Windows network bridge. `does not modify Windows network adapters` can prove that interpretation is gone during repair; `queues the dental bridge model for the configured resin printer` is the specification that remains.
 
 ## Explicit invocation

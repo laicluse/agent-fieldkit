@@ -38,3 +38,7 @@ adapters) for published agent tooling. Model-invocable.
 TDD workflow (Red-Green-Refactor), specs-specify-not-verify, Cucumber/Gherkin
 conventions, scar-tissue and absence-pinning smells, flaky-test discipline, and
 test-suite health. Model-invocable.
+
+### `scar-tissue`
+
+Doctrine for consolidating superseded residue, keeping living artifacts focused on current responsibilities, and resolving diagnostic stitches during Refactor. An explicit stitch marker creates a session-local cleanup obligation that must be resolved before handoff. Model-invocable.

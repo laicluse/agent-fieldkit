@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.17",
+			"version": "2.0.18",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -688,6 +688,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
 		},
 		{
+			"plugin": "house-rules",
+			"packageVersion": "2.0.18",
+			"detailPath": "agent-fieldkit/house-rules/",
+			"version": "v2.0.16",
+			"type": "Changed",
+			"summary": "Shared artifacts no longer retain their editing worklog.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
+		},
+		{
 			"plugin": "vaultsync",
 			"packageVersion": "2.0.18",
 			"detailPath": "agent-fieldkit/vaultsync/",
@@ -695,15 +704,6 @@
 			"type": "Added",
 			"summary": "One checkout can run multiple independent validators.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
-		},
-		{
-			"plugin": "house-rules",
-			"packageVersion": "2.0.17",
-			"detailPath": "agent-fieldkit/house-rules/",
-			"version": "v2.0.16",
-			"type": "Changed",
-			"summary": "Shared artifacts no longer retain their editing worklog.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
 			"plugin": "intervision",
