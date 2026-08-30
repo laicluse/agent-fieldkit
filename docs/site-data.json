@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.19",
+			"version": "2.0.20",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -689,7 +689,7 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.19",
+			"packageVersion": "2.0.20",
 			"detailPath": "agent-fieldkit/vaultsync/",
 			"version": "v2.0.18",
 			"type": "Added",

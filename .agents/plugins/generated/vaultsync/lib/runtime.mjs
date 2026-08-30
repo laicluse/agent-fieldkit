@@ -322,7 +322,7 @@ function assertPortableContent(content, env = process.env) {
 function assertPortableOutgoingCommits(root, env = process.env) {
   if (!optionalUpstreamName(root)) return;
   const messages = gitOut(root, ['log', '--format=%B', '@{u}..HEAD']);
-  const patches = gitOut(root, ['log', '--format=', '--patch', '--unified=0', '@{u}..HEAD']);
+  const patches = gitOut(root, ['diff', '--unified=0', '@{u}...HEAD']);
   assertPortableContent(messages, env);
   assertPortableContent(addedDiffContent(patches), env);
 }

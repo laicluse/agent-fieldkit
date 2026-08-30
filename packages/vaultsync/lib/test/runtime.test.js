@@ -901,6 +901,21 @@ it('allows a corrective commit that removes a machine-local home path', () => {
   assert.equal(git(tmp, ['--git-dir', fixture.remote, 'show', 'HEAD:note.md']), '# Note\n\nRun tilt from PATH.');
 });
 
+it('evaluates corrected outgoing content from the final tree', () => {
+  const fixture = syncFixture('shareability-outgoing-cleanup');
+  writeFileSync(join(fixture.local, 'note.md'), `# Note\n\nRun ${fixture.env.HOME}/bin/tilt.\n`);
+  git(fixture.local, ['add', 'note.md']);
+  git(fixture.local, ['commit', '-q', '-m', 'Capture legacy machine-local command']);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nRun tilt from PATH.\n');
+  git(fixture.local, ['add', 'note.md']);
+  git(fixture.local, ['commit', '-q', '-m', 'Use portable command resolution']);
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+  assert.equal(git(tmp, ['--git-dir', fixture.remote, 'show', 'HEAD:note.md']), '# Note\n\nRun tilt from PATH.');
+});
+
 it('syncs a staged transcript batch larger than the default subprocess buffer', () => {
   const fixture = syncFixture('large-transcript-batch');
   writeFileSync(join(fixture.local, 'large-transcript.md'), `# Transcript\n\n${'spoken words '.repeat(2_000_000)}\n`);
