@@ -529,6 +529,28 @@ it('commits generated files before publication', () => {
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
 });
 
+it('continues publication when another cycle checkpoints the same staged state', () => {
+  const fixture = syncFixture('concurrent-checkpoint');
+  const hook = join(fixture.local, '.git', 'hooks', 'pre-commit');
+  writeFileSync(hook, [
+    '#!/bin/sh',
+    'tree=$(git write-tree)',
+    'parent=$(git rev-parse HEAD)',
+    'commit=$(printf "Concurrent checkpoint\\n" | git commit-tree "$tree" -p "$parent")',
+    'git update-ref HEAD "$commit" "$parent"',
+    'printf "On branch main\\nnothing to commit, working tree clean\\n" >&2',
+    'exit 1',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nCheckpointed by the daemon.\n');
+
+  const cycle = JSON.parse(runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(cycle.state, 'synced');
+  assert.equal(git(fixture.local, ['status', '--porcelain']), '');
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
 it('blocks commit and push when the pre-sync command fails', () => {
   const fixture = syncFixture('pre-sync-failure');
   const generator = join(tmp, 'pre-sync-failure.mjs');

@@ -231,6 +231,10 @@ function isManagedSyncGitGuard(output) {
   return /via '[^']+ sync' beheerd/.test(output) && output.includes('--no-verify');
 }
 
+function isAlreadyCheckpointed(output) {
+  return /nothing to commit(?:, working tree clean)?/i.test(output);
+}
+
 function throwGitResult(result, fallbackMessage) {
   const output = gitCombinedOutput(result).trim();
   const err = new Error(output || fallbackMessage);
@@ -1172,6 +1176,9 @@ function commitDirtyState(registration, reason, env = process.env) {
   const commit = git(root, ['commit', '-F', '-'], { input: `${message.trim()}\n`, allowFailure: true });
   if (commit.status !== 0) {
     const output = gitCombinedOutput(commit);
+    if (isAlreadyCheckpointed(output) && !isDirty(root)) {
+      return { committed: false, paths: [], warning: generated.failure || null };
+    }
     try {
       if (!isManagedSyncGitGuard(output)) throwGitResult(commit, 'git commit failed');
       git(root, ['commit', '--no-verify', '-F', '-'], { input: `${message.trim()}\n` });
