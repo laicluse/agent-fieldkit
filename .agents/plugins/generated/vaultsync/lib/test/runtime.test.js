@@ -11,6 +11,7 @@ import {
   commitNarrative,
   fallbackCommitMessage,
   findDibsBin,
+  launchAgentNeedsReconciliation,
   launchAgentPlist,
   preflightRepository,
   probeLlmCommand,
@@ -149,6 +150,19 @@ it('launches the daemon through the stable machine entrypoint', () => {
   assert.match(plist, new RegExp(`<string>${join(env.VAULTSYNC_BIN_DIR, 'vaultsync')}</string>\\s*<string>daemon</string>`));
   assert.doesNotMatch(plist, /plugins\/cache/);
   assert.doesNotMatch(plist, new RegExp(`<string>${process.execPath}</string>`));
+});
+
+it('reconciles a published runtime until the LaunchAgent records that version', () => {
+  const env = {
+    HOME: join(tmp, 'launch-agent-version-home'),
+    LAICLUSE_HOME: join(tmp, 'launch-agent-version-state'),
+  };
+  assert.equal(launchAgentNeedsReconciliation('2.0.21', env), true);
+  const stateDir = join(env.LAICLUSE_HOME, 'vaultsync');
+  mkdirSync(stateDir, { recursive: true });
+  writeFileSync(join(stateDir, 'launch-agent.json'), '{"version":"2.0.21"}\n');
+  assert.equal(launchAgentNeedsReconciliation('2.0.21', env), false);
+  assert.equal(launchAgentNeedsReconciliation('2.0.22', env), true);
 });
 
 it('allows only one long-lived daemon to own a machine runtime', () => {

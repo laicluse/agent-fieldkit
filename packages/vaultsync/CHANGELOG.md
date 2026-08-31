@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.22]
+
+### Fixed
+
+- **Published runtimes finish deferred LaunchAgent reconciliation.** If runtime publication completed before the LaunchAgent restart, the next startup detects the missing version marker and still removes stale daemons before recording the reconciled release.
+
 ## [v2.0.21]
 
 ### Fixed

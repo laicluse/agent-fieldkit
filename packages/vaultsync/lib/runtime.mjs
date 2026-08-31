@@ -1944,6 +1944,18 @@ export function launchAgentPlist(env = process.env) {
 `;
 }
 
+function launchAgentStatePath(env = process.env) {
+  return join(vaultsyncDir(env), 'launch-agent.json');
+}
+
+export function launchAgentNeedsReconciliation(version, env = process.env) {
+  try {
+    return readJsonFile(launchAgentStatePath(env)).version !== version;
+  } catch {
+    return true;
+  }
+}
+
 function regexEscape(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -1975,7 +1987,7 @@ function terminateVaultsyncDaemons(env = process.env) {
   return pids;
 }
 
-export function installLaunchAgent(env = process.env) {
+export function installLaunchAgent(env = process.env, version = null) {
   if (platform() !== 'darwin') return { skipped: true, reason: 'launchd is only available on macOS' };
   ensureRuntimeDirs(env);
   const launchAgents = join(env.HOME || homedir(), 'Library', 'LaunchAgents');
@@ -1990,6 +2002,7 @@ export function installLaunchAgent(env = process.env) {
     throw new Error((bootstrap.stderr || bootstrap.stdout || 'launchctl bootstrap failed').trim());
   }
   spawnSync('launchctl', ['kickstart', '-k', `gui/${uid}/${SERVICE_LABEL}`], { encoding: 'utf8' });
+  if (version) writeJsonAtomic(launchAgentStatePath(env), { version });
   return { installed: true, label: SERVICE_LABEL, plist: plistPath, terminatedPids };
 }
 

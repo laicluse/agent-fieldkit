@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseInvocation, helpText } from '../lib/cli.mjs';
 import { installMachineRuntime, sourceRuntimeVersion } from '../lib/machine-runtime.mjs';
-import { installLaunchAgent, launchAgentIsInstalled, runCommand } from '../lib/runtime.mjs';
+import { installLaunchAgent, launchAgentIsInstalled, launchAgentNeedsReconciliation, runCommand } from '../lib/runtime.mjs';
 
 const sourceRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const sourceVersion = sourceRuntimeVersion(sourceRoot);
@@ -24,7 +24,9 @@ try {
   const publication = installMachineRuntime({ sourceRoot, version: sourceVersion });
   if (inv.command === 'runtime') {
     if (inv.args.length !== 1 || inv.args[0] !== 'install') throw new Error('usage: vaultsync runtime install');
-    if (publication.installed && launchAgentIsInstalled()) installLaunchAgent();
+    if (launchAgentIsInstalled() && (publication.installed || launchAgentNeedsReconciliation(publication.version))) {
+      installLaunchAgent(process.env, publication.version);
+    }
     process.stdout.write(`Vaultsync ${publication.version} machine runtime ready at ${publication.launcher}.\n`);
     process.exit(0);
   }
