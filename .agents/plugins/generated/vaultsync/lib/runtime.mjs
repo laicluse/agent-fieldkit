@@ -23,6 +23,7 @@ const GIT_MAX_BUFFER_BYTES = 256 * 1024 * 1024;
 const LEGACY_VALIDATOR_NAME = 'legacy-verify';
 const VALIDATOR_NAME_PATTERN = /^[a-z0-9][a-z0-9._-]{0,63}$/;
 const REGISTRATION_LOCK_TIMEOUT_MS = 30000;
+const DAEMON_SHUTDOWN_TIMEOUT_MS = 3000;
 
 const sleepSlot = new Int32Array(new SharedArrayBuffer(4));
 
@@ -85,6 +86,44 @@ function processIsAlive(pid) {
   } catch (err) {
     return err.code === 'EPERM';
   }
+}
+
+function daemonLeasePath(env = process.env) {
+  return join(vaultsyncDir(env), 'daemon.lock');
+}
+
+export function acquireDaemonLease(env = process.env) {
+  ensureRuntimeDirs(env);
+  const path = daemonLeasePath(env);
+  const token = `${process.pid}:${randomUUID()}`;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    let descriptor;
+    try {
+      descriptor = openSync(path, 'wx', 0o600);
+      writeFileSync(descriptor, `${token}\n`);
+      closeSync(descriptor);
+      let released = false;
+      return {
+        path,
+        release() {
+          if (released) return;
+          released = true;
+          let current = '';
+          try { current = readFileSync(path, 'utf8').trim(); } catch {}
+          if (current === token) rmSync(path, { force: true });
+        },
+      };
+    } catch (err) {
+      if (descriptor !== undefined) closeSync(descriptor);
+      if (err.code !== 'EEXIST') throw err;
+      let owner = '';
+      try { owner = readFileSync(path, 'utf8').trim(); } catch {}
+      const ownerPid = Number.parseInt(owner.split(':', 1)[0], 10);
+      if (owner && processIsAlive(ownerPid)) return null;
+      rmSync(path, { force: true });
+    }
+  }
+  return null;
 }
 
 function withRegistrationLock(key, env, operation) {
@@ -1117,6 +1156,48 @@ function pushCurrentBranch(root, env = process.env) {
   return git(root, ['push', '--no-verify']);
 }
 
+function sshHostForRemote(url) {
+  if (url.startsWith('ssh://')) {
+    try { return new URL(url).hostname || null; } catch { return null; }
+  }
+  const match = /^(?:[^@/:\s]+@)?(\[[^\]]+\]|[^/:\s]+):.+/.exec(url);
+  return match ? match[1].replace(/^\[|\]$/g, '') : null;
+}
+
+function configuredRemoteUrl(root, env = process.env) {
+  const branch = branchName(root);
+  const remote = gitOut(root, ['config', '--get', `branch.${branch}.remote`], { env, allowFailure: true });
+  if (!remote || remote === '.') return null;
+  const result = git(root, ['remote', 'get-url', remote], { env, allowFailure: true });
+  return result.status === 0 ? result.stdout.trim() : null;
+}
+
+function resolvedIdentityAgent(host, env = process.env) {
+  const config = spawnSync('ssh', ['-G', host], { encoding: 'utf8', env, timeout: 5000 });
+  if (config.error || config.status !== 0) return null;
+  const value = config.stdout.match(/^identityagent\s+(.+)$/mi)?.[1]?.trim();
+  if (!value || value === 'none') return null;
+  if (value === 'SSH_AUTH_SOCK' || value === '$SSH_AUTH_SOCK') return env.SSH_AUTH_SOCK || null;
+  if (value.startsWith('~/')) return join(env.HOME || homedir(), value.slice(2));
+  return isAbsolute(value) ? value : null;
+}
+
+function remoteAuthenticationAvailability(root, env = process.env) {
+  const url = configuredRemoteUrl(root, env);
+  const host = url ? sshHostForRemote(url) : null;
+  if (!host) return { available: true };
+  const socket = resolvedIdentityAgent(host, env);
+  if (!socket) return { available: true };
+  const identities = spawnSync('ssh-add', ['-l'], {
+    encoding: 'utf8',
+    env: { ...env, SSH_AUTH_SOCK: socket },
+    timeout: 5000,
+  });
+  return identities.status === 0
+    ? { available: true }
+    : { available: false, reason: 'ssh-agent-unavailable' };
+}
+
 function fetchRemote(root) {
   if (!optionalUpstreamName(root)) return { skipped: true };
   return git(root, ['fetch', '--quiet']);
@@ -1223,11 +1304,20 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       err.phase = 'preflight';
       throw err;
     }
-    withPhase('fetch', () => fetchRemote(reg.rootRealpath));
+    const remoteAuthentication = reason === 'manual'
+      ? { available: true }
+      : withPhase('authentication', () => remoteAuthenticationAvailability(reg.rootRealpath, env));
+    if (remoteAuthentication.available) withPhase('fetch', () => fetchRemote(reg.rootRealpath));
     const dirty = isDirty(reg.rootRealpath);
     const relation = aheadBehind(reg.rootRealpath);
     if (!dirty && relation.ahead === 0 && relation.behind === 0 && !force) {
-      return saveCycleResult(reg, { state: 'idle', lastPollAt: nowIso(), lastError: null }, env);
+      const state = remoteAuthentication.available ? 'idle' : 'waiting-for-authentication';
+      return saveCycleResult(reg, {
+        state,
+        lastPollAt: nowIso(),
+        lastError: null,
+        lastResult: remoteAuthentication.available ? null : { reason, remoteSkipped: remoteAuthentication.reason },
+      }, env);
     }
     claim = withPhase('lock', () => claimDibs(reg, env));
     const committedPaths = [];
@@ -1248,7 +1338,7 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
     commitPendingState(reason);
     let afterCommitRelation = aheadBehind(reg.rootRealpath);
     let rebase = { rebased: false, conflictsResolved: 0 };
-    if (afterCommitRelation.known && (afterCommitRelation.behind > 0 || committedPaths.length > 0)) {
+    if (remoteAuthentication.available && afterCommitRelation.known && (afterCommitRelation.behind > 0 || committedPaths.length > 0)) {
       rebase = withPhase('rebase', () => pullRebaseWithLlm(reg));
       afterCommitRelation = aheadBehind(reg.rootRealpath);
     }
@@ -1265,15 +1355,15 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
       if (generatedCommit.committed) withPhase('verification', () => runVerification(reg));
       afterCommitRelation = aheadBehind(reg.rootRealpath);
     }
-    if (afterCommitRelation.known && (afterCommitRelation.ahead > 0 || committedPaths.length > 0)) {
+    if (remoteAuthentication.available && afterCommitRelation.known && (afterCommitRelation.ahead > 0 || committedPaths.length > 0)) {
       withPhase('push', () => pushCurrentBranch(reg.rootRealpath, env));
     }
     const completedAt = nowIso();
     return saveCycleResult(reg, {
-      state: 'synced',
+      state: remoteAuthentication.available ? 'synced' : 'waiting-for-authentication',
       lastCycleAt: completedAt,
       lastPollAt: completedAt,
-      lastSuccessfulSyncAt: completedAt,
+      lastSuccessfulSyncAt: remoteAuthentication.available ? completedAt : reg.lastSuccessfulSyncAt,
       lastSeenDirtyAt: null,
       lastError: null,
       lastWarning: commitWarning ? errorRecord(commitWarning, completedAt) : null,
@@ -1286,6 +1376,7 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
         rebased: rebase.rebased,
         conflictsResolved: rebase.conflictsResolved,
 	upstream: optionalUpstreamName(reg.rootRealpath),
+        remoteSkipped: remoteAuthentication.available ? null : remoteAuthentication.reason,
         verification,
       },
     }, env);
@@ -1733,17 +1824,31 @@ async function commandDaemon(args, env = process.env) {
     },
   });
   ensureRuntimeDirs(env);
-  const result = await daemonTick(env);
   if (parsed.values.once) {
+    const result = await daemonTick(env);
     emit(result, parsed.values.json);
     return;
   }
+  const lease = acquireDaemonLease(env);
+  if (!lease) {
+    emit({ state: 'already-running', label: SERVICE_LABEL }, parsed.values.json);
+    return;
+  }
   process.stdout.write(`vaultsync daemon running (${SERVICE_LABEL})\n`);
-  process.on('SIGTERM', () => process.exit(0));
-  process.on('SIGINT', () => process.exit(0));
-  while (true) {
-    sleepMs(DAEMON_SLEEP_MS);
+  const stop = () => {
+    lease.release();
+    process.exit(0);
+  };
+  process.on('SIGTERM', stop);
+  process.on('SIGINT', stop);
+  try {
     await daemonTick(env);
+    while (true) {
+      sleepMs(DAEMON_SLEEP_MS);
+      await daemonTick(env);
+    }
+  } finally {
+    lease.release();
   }
 }
 
@@ -1839,6 +1944,37 @@ export function launchAgentPlist(env = process.env) {
 `;
 }
 
+function regexEscape(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function vaultsyncDaemonPids(processTable, env = process.env, currentPid = process.pid) {
+  const stable = regexEscape(machineLauncherPath(env));
+  const releases = regexEscape(join(vaultsyncDir(env), 'runtime', 'releases'));
+  const daemonCommand = new RegExp(`(?:${stable}|${releases}/[^/\\s]+/bin/vaultsync)\\s+daemon(?:\\s|$)`);
+  return String(processTable || '')
+    .split('\n')
+    .map((row) => /^\s*(\d+)\s+(.+)$/.exec(row))
+    .filter(Boolean)
+    .filter(([, pid, command]) => Number(pid) !== currentPid && daemonCommand.test(command) && !/\sdaemon\s+--once(?:\s|$)/.test(command))
+    .map(([, pid]) => Number(pid));
+}
+
+function terminateVaultsyncDaemons(env = process.env) {
+  const processes = spawnSync('ps', ['-axo', 'pid=,command='], { encoding: 'utf8' });
+  if (processes.status !== 0) return [];
+  const pids = vaultsyncDaemonPids(processes.stdout, env);
+  for (const pid of pids) {
+    try { process.kill(pid, 'SIGTERM'); } catch {}
+  }
+  const deadline = Date.now() + DAEMON_SHUTDOWN_TIMEOUT_MS;
+  while (pids.some(processIsAlive) && Date.now() < deadline) sleepMs(50);
+  for (const pid of pids.filter(processIsAlive)) {
+    try { process.kill(pid, 'SIGKILL'); } catch {}
+  }
+  return pids;
+}
+
 export function installLaunchAgent(env = process.env) {
   if (platform() !== 'darwin') return { skipped: true, reason: 'launchd is only available on macOS' };
   ensureRuntimeDirs(env);
@@ -1848,12 +1984,13 @@ export function installLaunchAgent(env = process.env) {
   writeFileSync(plistPath, launchAgentPlist(env));
   const uid = userInfo().uid;
   spawnSync('launchctl', ['bootout', `gui/${uid}`, plistPath], { encoding: 'utf8' });
+  const terminatedPids = terminateVaultsyncDaemons(env);
   const bootstrap = spawnSync('launchctl', ['bootstrap', `gui/${uid}`, plistPath], { encoding: 'utf8' });
   if (bootstrap.status !== 0) {
     throw new Error((bootstrap.stderr || bootstrap.stdout || 'launchctl bootstrap failed').trim());
   }
   spawnSync('launchctl', ['kickstart', '-k', `gui/${uid}/${SERVICE_LABEL}`], { encoding: 'utf8' });
-  return { installed: true, label: SERVICE_LABEL, plist: plistPath };
+  return { installed: true, label: SERVICE_LABEL, plist: plistPath, terminatedPids };
 }
 
 export function launchAgentIsInstalled(env = process.env) {

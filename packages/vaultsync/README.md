@@ -4,6 +4,8 @@ vaultsync turns a Markdown vault or note repository into a local-first sync back
 
 Remote sync is optional. A repository without a remote or upstream still gets the core behavior: debounced auto-commits plus verification. When an upstream is configured later, vaultsync starts fetching, rebasing, resolving conflicts through the configured LLM command, and pushing the current branch. It follows the branch already checked out and never creates branches or remotes.
 
+Automatic cycles inspect the SSH agent configured by OpenSSH for an SSH remote before contacting it. If that agent does not currently advertise identities, vaultsync still checkpoints and validates local changes but defers fetch, rebase, and push until a later poll. An explicit `vaultsync now` remains an operator-directed remote attempt and bypasses that availability check.
+
 ## Installation
 
 ```bash
@@ -11,7 +13,7 @@ claude plugins install vaultsync@laicluse-agent-fieldkit
 codex plugin add vaultsync@laicluse-agent-fieldkit
 ```
 
-Starting or resuming a coding-agent session publishes the newest installed plugin runtime to `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync/runtime` and installs one stable launcher at `${VAULTSYNC_BIN_DIR:-$HOME/.local/bin}/vaultsync`. Add that bin directory to `PATH` once; CLI calls, the macOS LaunchAgent, and per-vault callback commands can then use the same version-independent entrypoint.
+Starting or resuming a coding-agent session publishes the newest installed plugin runtime to `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync/runtime` and installs one stable launcher at `${VAULTSYNC_BIN_DIR:-$HOME/.local/bin}/vaultsync`. Add that bin directory to `PATH` once; CLI calls, the macOS LaunchAgent, and per-vault callback commands can then use the same version-independent entrypoint. The daemon holds a machine-level singleton lease, and LaunchAgent reconciliation removes stale Vaultsync daemon processes from older releases before starting the current runtime.
 
 Runtime releases are immutable and the active pointer only moves forward by version. An older parallel coding-agent session therefore cannot downgrade a newer machine runtime. Vaultsync never removes old runtime releases or coding-agent plugin caches; cache lifecycle remains the plugin host's responsibility.
 

@@ -7,6 +7,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_PAUSE_MINUTES,
+  acquireDaemonLease,
   commitNarrative,
   fallbackCommitMessage,
   findDibsBin,
@@ -16,6 +17,7 @@ import {
   registrationPathForRoot,
   repoKey,
   resolveGitRoot,
+  vaultsyncDaemonPids,
 } from '../runtime.mjs';
 
 let tmp;
@@ -149,6 +151,39 @@ it('launches the daemon through the stable machine entrypoint', () => {
   assert.doesNotMatch(plist, new RegExp(`<string>${process.execPath}</string>`));
 });
 
+it('allows only one long-lived daemon to own a machine runtime', () => {
+  const env = {
+    HOME: join(tmp, 'daemon-lease-home'),
+    LAICLUSE_HOME: join(tmp, 'daemon-lease-state'),
+  };
+  const first = acquireDaemonLease(env);
+  assert.ok(first);
+  assert.equal(acquireDaemonLease(env), null);
+  first.release();
+  const replacement = acquireDaemonLease(env);
+  assert.ok(replacement);
+  replacement.release();
+});
+
+it('identifies stale stable and versioned daemon processes without touching one-shot commands', () => {
+  const env = {
+    HOME: join(tmp, 'daemon-process-home'),
+    LAICLUSE_HOME: join(tmp, 'daemon-process-state'),
+    VAULTSYNC_BIN_DIR: join(tmp, 'daemon-process-bin'),
+  };
+  const stable = join(env.VAULTSYNC_BIN_DIR, 'vaultsync');
+  const release = join(env.LAICLUSE_HOME, 'vaultsync', 'runtime', 'releases', '2.0.20', 'bin', 'vaultsync');
+  const rows = [
+    `101 node ${stable} daemon`,
+    `102 node ${release} daemon`,
+    `103 node ${release} daemon --once`,
+    `104 node ${join(tmp, 'unrelated', 'vaultsync')} daemon`,
+    `105 node ${stable} status`,
+  ].join('\n');
+
+  assert.deepEqual(vaultsyncDaemonPids(rows, env, 101), [102]);
+});
+
 it('keys registrations by the resolved Git worktree root', () => {
   const repo = createRepo('identity-main');
   mkdirSync(join(repo, 'notes'));
@@ -213,6 +248,34 @@ it('reports whether a checkout is managed through the public CLI', () => {
   assert.equal(managedResult.root, realpathSync(managed));
   assert.equal(unmanagedResult.managed, false);
   assert.equal(unmanagedResult.root, realpathSync(unmanaged));
+});
+
+it('checkpoints locally but waits to sync an SSH remote until its agent has identities', () => {
+  const fixture = syncFixture('locked-ssh-agent');
+  const fakeBin = join(tmp, 'locked-ssh-agent-bin');
+  mkdirSync(fakeBin);
+  writeFileSync(join(fakeBin, 'ssh'), [
+    '#!/usr/bin/env node',
+    'if (process.argv[2] === "-G") {',
+    '  process.stdout.write("hostname locked-host\\nidentityagent /tmp/locked-agent.sock\\n");',
+    '  process.exit(0);',
+    '}',
+    'process.exit(99);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  writeFileSync(join(fakeBin, 'ssh-add'), '#!/usr/bin/env node\nprocess.exit(1);\n', { mode: 0o755 });
+  git(fixture.local, ['remote', 'set-url', 'origin', 'vault@locked-host:notes.git']);
+  const env = { ...fixture.env, PATH: `${fakeBin}:${process.env.PATH}` };
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), env);
+  const registration = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...registration, debounceSeconds: 1, lastSeenDirtyAt: '2026-01-01T00:00:00Z' }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nDurable while credentials are locked.\n');
+
+  const daemonResult = JSON.parse(runNode([fixture.cli, 'daemon', '--once', '--json'], { env }).stdout);
+  assert.equal(daemonResult[0].state, 'waiting-for-authentication');
+  assert.equal(git(fixture.local, ['status', '--porcelain']), '');
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '1\t0');
+  assert.throws(() => runNode([fixture.cli, 'now', fixture.local, '--json'], { env }), /fetch|remote|repository/i);
 });
 
 it('stores the registered pre-sync command during installation', () => {

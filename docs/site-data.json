@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.20",
+			"version": "2.0.21",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.18",
-				"type": "Added",
-				"summary": "One checkout can run multiple independent validators."
+				"version": "v2.0.21",
+				"type": "Fixed",
+				"summary": "Locked SSH agents no longer interrupt background work."
 			}
 		},
 		{
@@ -689,11 +689,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.20",
+			"packageVersion": "2.0.21",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.18",
-			"type": "Added",
-			"summary": "One checkout can run multiple independent validators.",
+			"version": "v2.0.21",
+			"type": "Fixed",
+			"summary": "Locked SSH agents no longer interrupt background work.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{

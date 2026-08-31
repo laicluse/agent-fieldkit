@@ -2,6 +2,13 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.21]
+
+### Fixed
+
+- **Locked SSH agents no longer interrupt background work.** Automatic cycles keep local changes durable but defer fetch, rebase, and push until the remote's configured SSH agent advertises identities; explicit `vaultsync now` calls still attempt the remote immediately.
+- **Only one long-lived daemon owns the machine runtime.** A machine-level lease rejects duplicate loops, and LaunchAgent reconciliation terminates stale stable or versioned Vaultsync daemons before starting the current release.
+
 ## [v2.0.18]
 
 ### Added
