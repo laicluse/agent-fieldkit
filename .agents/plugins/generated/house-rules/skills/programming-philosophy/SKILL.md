@@ -61,6 +61,14 @@ you, after research, have one clear winner: build it, or announce it in one
 sentence. Multiple choice without a real trade-off is the RLHF reflex disguised
 as diligence.
 
+When a choice does qualify, put it in the client's own choice affordance instead
+of in prose. In Claude Code that is the `AskUserQuestion` tool, which renders the
+options as a pickable list with one line of consequence each and returns the
+answer as data. Lead with the option you recommend and mark it as such. A
+qualifying choice buried in a paragraph ("say which of the two you want") forces
+the user to re-read the paragraph to find the options, and disappears entirely
+when they are listening to speech rather than reading the screen.
+
 This overrides skill instructions that prescribe "propose 2-3 approaches": that
 applies only to design-phase choices with real trade-offs, not to technical
 implementation details.

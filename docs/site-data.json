@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.18",
+			"version": "2.0.19",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -698,7 +698,7 @@
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.18",
+			"packageVersion": "2.0.19",
 			"detailPath": "agent-fieldkit/house-rules/",
 			"version": "v2.0.16",
 			"type": "Changed",
