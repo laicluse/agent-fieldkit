@@ -52,7 +52,7 @@
 					<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.59</span>
+						<span>2.0.60</span>
 						<span>2 skills</span>
 					</div>
 				</div>
@@ -64,7 +64,7 @@
 <p>It is deliberately not a git lock: it does not touch the index and still locks standalone non-git directories. When a requested path lives inside a git worktree, dibs locks that worktree root so two subdirectories in the same checkout cannot be occupied independently. <code>bonsai</code> creates worktrees and consumes dibs to claim the directory it hands out; the lock logic lives in exactly one place.</p>
 <h2 id="cli">CLI</h2>
 <pre><code>dibs claim       &lt;dir&gt; [--pid &lt;n&gt;] [--agent &lt;name&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt;] [--description &lt;text&gt;] [--max-age-hours &lt;n&gt;] [--json]
-dibs release     &lt;dir&gt; [--pid &lt;n&gt;] [--nonce &lt;hex&gt;] [--json]
+dibs release     &lt;dir&gt; [--pid &lt;n&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt; --agent &lt;name&gt;] [--nonce &lt;hex&gt;] [--json]
 dibs release-all [--pid &lt;n&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt; --agent &lt;name&gt;] [--json]
 dibs check       &lt;dir&gt; [--max-age-hours &lt;n&gt;] [--json]
 dibs exclude     &lt;dir&gt; [--json]
@@ -73,8 +73,8 @@ dibs excludes    [--json]</code></pre>
 <p>The directory-keyed verbs (<code>claim</code>, <code>release</code>, <code>check</code>) require the directory to exist. If the path is inside a git worktree, dibs walks upward to the nearest <code>.git</code> marker and keys the lock by that worktree root's realpath. Outside git, the requested directory's realpath remains the key. A missing path is therefore a clear error rather than a silently divergent key. <code>release-all</code> is the exception: it operates on the lock store directly, reading each lock's recorded realpath, so it still frees a worktree that has since been pruned.</p>
 <ul>
 <li><strong>claim</strong> takes exclusive occupancy of the resolved lock target: the nearest git worktree root when one exists, otherwise the requested directory realpath. Exits 0 on a fresh claim, on an idempotent re-claim by the same holder (<code>held-by-self</code>), or on taking over a stale lock whose holder pid is dead (<code>took-over-stale</code>). Exits non-zero and reports the holder when a live holder exists. A refused claim also suggests creating a separate git worktree on a new branch (for example with <code>bonsai:bonsai</code>, or plain <code>git worktree</code> if you do not have it) and claiming that worktree path.</li>
-<li><strong>release</strong> deletes the lock only if you are the holder. Releasing a lock held by another is refused; releasing an unheld directory is a no-op.</li>
-<li><strong>release-all</strong> releases every lock whose holder identifies as the caller's session in one sweep (same host, matching any of <code>--pid</code>, <code>--session</code>, or <code>--owner</code> with <code>--agent</code>), across all directories. It takes no <code>&lt;dir&gt;</code> and requires at least one selector so it can never blindly clear the whole store. A session that edits files in several git roots holds several locks; this is how SessionEnd and the <code>undibs</code> skill free all of them at once. Locks belonging to a different live agent are never touched.</li>
+<li><strong>release</strong> deletes the lock only if you are the holder. On the same host, the holder is recognized by its PID, exact session, or stable owner plus agent; a retained Codex shell also reads its session from <code>CODEX_THREAD_ID</code>. A supplied nonce must still match. Releasing a lock held by another is refused; releasing an unheld directory is a no-op.</li>
+<li><strong>release-all</strong> releases every lock whose holder identifies as the caller's session in one sweep, across all directories. Every supplied selector narrows the match: <code>--pid</code>, <code>--session</code>, and <code>--owner</code> with <code>--agent</code> must all match the same holder when combined. It takes no <code>&lt;dir&gt;</code> and requires at least one selector so it can never blindly clear the whole store. A session that edits files in several git roots holds several locks; this is how SessionEnd and the <code>undibs</code> skill free all of them at once. Locks belonging to a different live agent are never touched.</li>
 <li><strong>check</strong> reports <code>free</code>, or the holder with its liveness and staleness, or <code>excluded</code> when the directory is on the exclude list.</li>
 <li><strong>exclude</strong> never locks <code>&lt;dir&gt;</code> again; <strong>include</strong> is its inverse and starts locking it again; <strong>excludes</strong> lists the built-in defaults plus the configured entries. See <em>Excludes</em> below.</li>
 </ul>

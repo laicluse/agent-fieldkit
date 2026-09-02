@@ -45,7 +45,7 @@ DIBS="${DIBS_BIN:-$ROOT/bin/dibs}"
 
 ```bash
 node "$DIBS" claim       <dir> [--pid <n>] [--agent <name>] [--session <id>] [--owner <id>] [--description <text>] [--max-age-hours <n>] [--json]
-node "$DIBS" release     <dir> [--pid <n>] [--json]
+node "$DIBS" release     <dir> [--pid <n>] [--session <id>] [--owner <id> --agent <name>] [--json]
 node "$DIBS" release-all [--pid <n>] [--session <id>] [--owner <id> --agent <name>] [--json]
 node "$DIBS" check       <dir> [--max-age-hours <n>] [--json]
 node "$DIBS" exclude     <dir> [--json]   # never lock <dir>
@@ -67,15 +67,8 @@ node "$DIBS" excludes    [--json]         # list defaults + configured
   when bonsai is unavailable), then claim and work in that path. Do not copy the
   repository to a loose non-git directory as a substitute; that is only a spike
   and must not be presented as integrated work.
-- **release** deletes the lock only if you are the holder; releasing a lock held
-  by someone else is refused and exits non-zero, releasing an unheld directory
-  is a no-op.
-- **release-all** releases every lock whose holder identifies as this session
-  (same host, matching `--pid` / `--session` / `--owner`+`--agent`) in one sweep,
-  across all directories. It takes no `<dir>` and needs at least one selector. A
-  session holds more than one lock when it edits files in several git roots, so
-  this is how the host's session-end and the `undibs` skill free all of them at
-  once; locks held by a *different* live agent are never touched.
+- **release** deletes the lock only if you are the holder; on the same host, PID, exact session, or stable owner plus agent can identify that holder. A retained Codex shell reads its session from `CODEX_THREAD_ID`. Releasing a lock held by someone else is refused and exits non-zero; releasing an unheld directory is a no-op.
+- **release-all** releases every lock whose holder identifies as this session in one sweep, across all directories. Every supplied selector narrows the match: `--pid`, `--session`, and `--owner`+`--agent` must all match the same holder when combined. It takes no `<dir>` and needs at least one selector. A session holds more than one lock when it edits files in several git roots, so this is how the host's session-end and the `undibs` skill free all of them at once; locks held by a *different* live agent are never touched.
 - **check** prints `free` or the holder plus its liveness and staleness for the
   same resolved target that `claim` would use, or `excluded` when the directory
   is on the exclude list.

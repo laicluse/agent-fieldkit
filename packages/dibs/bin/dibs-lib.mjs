@@ -378,12 +378,14 @@ export function claim({ dir, pid, agent, session, owner, description, maxAgeHour
   return refusalResult(path, finalHolder, classifyHolder(finalHolder, maxAgeHours).reason);
 }
 
-export function release({ dir, pid, nonce }) {
+export function release({ dir, pid, nonce, session, owner, agent }) {
   const path = lockPathForRealpath(occupancyRoot(dir));
   const existing = readRecordStable(path);
   if (!existing) return { ok: true, state: 'not-held', path };
+  const holderIdentityMatches = existing.pid === pid
+    || heldBySelf(existing, { session, owner, agent }).self;
   const mine = existing.hostname === hostname()
-    && existing.pid === pid
+    && holderIdentityMatches
     && (nonce === undefined || existing.nonce === nonce);
   if (mine) {
     rmSync(path, { force: true });
@@ -392,13 +394,13 @@ export function release({ dir, pid, nonce }) {
   return { ok: false, state: 'held-by-other', path, holder: existing };
 }
 
-// allow-comment: a lock identifies as the caller's when it lives on this host and matches any one stable session key. host-gated because pid/session ids carry no meaning across hosts.
+// allow-comment: release-all selectors narrow one holder identity together. Treating them as alternatives let a stable owner override an explicit pid and sweep locks from other resumed sessions. Host-gated because pid/session ids carry no meaning across hosts.
 function recordMatchesSelector(record, { pid, session, owner, agent }) {
   if (record.hostname !== hostname()) return false;
-  if (pid != null && record.pid === pid) return true;
-  if (session != null && record.session === session) return true;
-  if (owner != null && agent != null && record.owner === owner && record.agent === agent) return true;
-  return false;
+  if (pid != null && record.pid !== pid) return false;
+  if (session != null && record.session !== session) return false;
+  if (owner != null && agent != null && (record.owner !== owner || record.agent !== agent)) return false;
+  return true;
 }
 
 export function releaseAll({ pid, session, owner, agent }) {

@@ -4,6 +4,13 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.60]
+
+### Fixed
+
+- **A retained Codex shell can release the lock it owns after its command PID changes.** Single-directory release now recognizes the lock's exact session or stable owner identity in addition to PID, while preserving nonce and same-host checks.
+- **A PID-constrained release sweep no longer takes locks from another resumed session.** Multiple `release-all` selectors now narrow one holder identity together, so a shared owner cannot override an explicitly different PID or session.
+
 ## [v2.0.59]
 
 ### Fixed

@@ -69,3 +69,17 @@ dibs() {
   [ "$status" -ne 0 ]
   echo "$output" | grep -q '"state": "held-by-other"'
 }
+
+@test "a retained codex shell can release its owner and thread lock after pid drift" {
+  dibs claim "$DIR" --pid 29066 --agent codex \
+    --owner retained-shell-owner \
+    --session retained-shell-thread --json >/dev/null
+
+  run env DIBS_OWNER=retained-shell-owner \
+    CODEX_THREAD_ID=retained-shell-thread \
+    "$NODE_BIN" "$DIBS" release "$DIR" --json
+
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q '"state": "released"'
+  [ "$(ls "$LAICLUSE_HOME/locks" 2>/dev/null | wc -l)" -eq 0 ]
+}

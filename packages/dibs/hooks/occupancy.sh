@@ -391,17 +391,13 @@ occ_gate() {
   done <<< "$dirs"
 }
 
-# allow-comment: load-bearing. A session can claim more than one directory (occ_gate_dirs keys per git root of each edited file), so a single-dir release at SessionEnd or undibs would leak every non-cwd lock until pid-liveness self-heal. Sweep all of this session's locks by holder pid, plus owner/session when known.
+# allow-comment: load-bearing. A session can claim more than one directory (occ_gate_dirs keys per git root of each edited file), so a single-dir release at SessionEnd would leak every non-cwd lock until pid-liveness self-heal. Claim and SessionEnd share holder-pid.sh, making that PID the exact sweep boundary; adding broader stable identities would either override the PID under alternative matching or reject older PID-owned locks under conjunctive matching.
 occ_release() {
-  local input="$1" dibs pid owner sid
+  local input="$1" dibs pid
   dibs="$(occ_dibs_bin)" || return 0
   command -v node >/dev/null 2>&1 || return 0
   pid="$(occ_holder_pid "${OCC_PPID:-$PPID}")"
-  owner="$(occ_owner "$input")"
-  sid="$(occ_session "$input")"
   set -- release-all --pid "$pid"
-  [ -n "$sid" ] && set -- "$@" --session "$sid"
-  [ -n "$owner" ] && set -- "$@" --owner "$owner" --agent "$(occ_agent_label)"
   node "$dibs" "$@" >/dev/null 2>&1 || true
 }
 

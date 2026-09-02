@@ -44,14 +44,10 @@ uses to *claim* (so claim and release agree on the same pid), then sweep:
 ```bash
 . "$ROOT/bin/holder-pid.sh"
 PID="$(dibs_holder_pid)"
-node "$DIBS" release-all --pid "$PID" ${DIBS_OWNER:+--owner "$DIBS_OWNER" --agent claude} --json
+node "$DIBS" release-all --pid "$PID" --json
 ```
 
-`release-all` enumerates the lock store and removes every lock whose recorded
-holder identifies as this session (same host, matching pid / session / owner). It
-reads each lock's own realpath, so it still frees a worktree that has since been
-pruned. Report the JSON `count` and the `released[].realpath` list back to the
-operator.
+`release-all` enumerates the lock store and removes every lock whose recorded holder identifies as this session. Every supplied selector narrows the same holder match; the shared holder PID is therefore the exact default sweep boundary and must not be broadened with owner or session selectors. It reads each lock's own realpath, so it still frees a worktree that has since been pruned. Report the JSON `count` and the `released[].realpath` list back to the operator.
 
 ## Release a single directory
 

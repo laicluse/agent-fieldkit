@@ -71,3 +71,23 @@ lockcount() { ls "$LAICLUSE_HOME/locks" 2>/dev/null | wc -l | tr -d ' '; }
   [ "$status" -eq 0 ]
   [ "$(lockcount)" -eq 1 ]
 }
+
+@test "release-all requires every supplied selector to match the same holder" {
+  dibs claim "$A" --pid 29066 --agent codex \
+    --owner retained-shell-owner \
+    --session retained-shell-thread --json >/dev/null
+  dibs claim "$B" --pid 80049 --agent codex \
+    --owner retained-shell-owner \
+    --session earlier-shell-thread --json >/dev/null
+
+  run dibs release-all --pid 29066 \
+    --owner retained-shell-owner --agent codex --json
+
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q '"count": 1'
+  run dibs check "$A" --json
+  echo "$output" | grep -q '"state": "free"'
+  run dibs check "$B" --json
+  echo "$output" | grep -q '"state": "held"'
+  echo "$output" | grep -q '"pid": 80049'
+}

@@ -185,7 +185,15 @@ try {
     else if (result.state === 'took-over-stale') emit(result, `took over stale lock on ${result.holder.realpath} (previous ${result.brokeStale.reason}); now held (pid ${pid})`);
     else emit(result, claimRefusalMessage(result), 1);
   } else if (command === 'release') {
-    const result = release({ dir, pid, nonce: values.nonce });
+    const codexSession = process.env.CODEX_THREAD_ID;
+    const result = release({
+      dir,
+      pid,
+      nonce: values.nonce,
+      session: values.session || process.env.DIBS_SESSION || process.env.CLAUDE_CODE_SESSION_ID || codexSession,
+      owner: values.owner || process.env.DIBS_OWNER,
+      agent: values.agent || process.env.DIBS_AGENT || (codexSession ? 'codex' : (process.env.CLAUDECODE ? 'claude' : undefined)),
+    });
     if (result.state === 'released') emit(result, `released ${result.holder.realpath}`);
     else if (result.state === 'not-held') emit(result, 'not held; nothing to release');
     else emit(result, `refused: ${formatHolder(result.holder)}`, 1);

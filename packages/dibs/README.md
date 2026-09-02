@@ -25,7 +25,7 @@ codex plugin add dibs@laicluse-agent-fieldkit
 
 ```
 dibs claim       <dir> [--pid <n>] [--agent <name>] [--session <id>] [--owner <id>] [--description <text>] [--max-age-hours <n>] [--json]
-dibs release     <dir> [--pid <n>] [--nonce <hex>] [--json]
+dibs release     <dir> [--pid <n>] [--session <id>] [--owner <id> --agent <name>] [--nonce <hex>] [--json]
 dibs release-all [--pid <n>] [--session <id>] [--owner <id> --agent <name>] [--json]
 dibs check       <dir> [--max-age-hours <n>] [--json]
 dibs exclude     <dir> [--json]
@@ -49,15 +49,8 @@ realpath, so it still frees a worktree that has since been pruned.
   exists. A refused claim also suggests creating a separate git worktree on a
   new branch (for example with `bonsai:bonsai`, or plain `git worktree` if you
   do not have it) and claiming that worktree path.
-- **release** deletes the lock only if you are the holder. Releasing a lock held
-  by another is refused; releasing an unheld directory is a no-op.
-- **release-all** releases every lock whose holder identifies as the caller's
-  session in one sweep (same host, matching any of `--pid`, `--session`, or
-  `--owner` with `--agent`), across all directories. It takes no `<dir>` and
-  requires at least one selector so it can never blindly clear the whole store.
-  A session that edits files in several git roots holds several locks; this is
-  how SessionEnd and the `undibs` skill free all of them at once. Locks belonging
-  to a different live agent are never touched.
+- **release** deletes the lock only if you are the holder. On the same host, the holder is recognized by its PID, exact session, or stable owner plus agent; a retained Codex shell also reads its session from `CODEX_THREAD_ID`. A supplied nonce must still match. Releasing a lock held by another is refused; releasing an unheld directory is a no-op.
+- **release-all** releases every lock whose holder identifies as the caller's session in one sweep, across all directories. Every supplied selector narrows the match: `--pid`, `--session`, and `--owner` with `--agent` must all match the same holder when combined. It takes no `<dir>` and requires at least one selector so it can never blindly clear the whole store. A session that edits files in several git roots holds several locks; this is how SessionEnd and the `undibs` skill free all of them at once. Locks belonging to a different live agent are never touched.
 - **check** reports `free`, or the holder with its liveness and staleness, or
   `excluded` when the directory is on the exclude list.
 - **exclude** never locks `<dir>` again; **include** is its inverse and starts
