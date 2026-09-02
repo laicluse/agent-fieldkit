@@ -54,6 +54,16 @@ pretool_bash_with_user() {
     '{hook_event_name:"PreToolUse", tool_name:"Bash", transcript_path:$tr, tool_input:{command:$c}}'
 }
 
+pretool_bash_with_codex_user() {
+  local cmd="$1" user_text="$2" transcript_file
+  transcript_file=$(mktemp)
+  jq -cn --arg t "$user_text" \
+    '{type:"response_item",payload:{type:"message",role:"user",content:[{type:"input_text",text:$t}]}}' \
+    > "$transcript_file"
+  jq -cn --arg c "$cmd" --arg tr "$transcript_file" \
+    '{hook_event_name:"PreToolUse", tool_name:"Bash", transcript_path:$tr, tool_input:{command:$c}}'
+}
+
 posttool_edit() {
   local file="$1" content="$2"
   jq -cn --arg f "$file" --arg c "$content" \
@@ -636,6 +646,9 @@ expect_deny "no-remote-create: bare go after unrelated chatter still blocks" \
 
 expect_allow "no-remote-create: imperative Dutch order passes for repo create" \
   "$(pretool_bash_with_user 'gh repo create example/infra-tools --private --source . --remote origin --push' 'Maak de remotes. En push. Private.')"
+
+expect_allow "no-remote-create: Codex transcript approval passes for repo create" \
+  "$(pretool_bash_with_codex_user 'gh repo create example/infra-tools --private' 'Maak de private GitHub-repository example/infra-tools aan en push ernaartoe.')"
 
 expect_deny "no-remote-create: status question without assent still blocks" \
   "$(pretool_bash_with_user 'gh repo create example/sneaky --private' 'Welke remotes heeft dit project eigenlijk?')" \

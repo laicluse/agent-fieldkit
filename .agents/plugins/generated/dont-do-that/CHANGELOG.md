@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.59]
+
+### Fixed
+
+- **Codex remote-creation approvals are recognized from the active transcript.** The `no-remote-create` guard now reads Codex user-message records as well as Claude records, so an explicit approval no longer gets rejected as missing.
+
 ## [v2.0.57]
 
 ### Changed

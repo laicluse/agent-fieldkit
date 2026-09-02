@@ -26,10 +26,10 @@ elif type == "object" then (.text? // (.content? | textify) // "")
 else "" end;
 [
 .[]
-| select(.type == "user" or .role == "user" or .message.role == "user")
-| select(((.message.content? // .content?) | type) != "array"
-    or (((.message.content? // .content?) | map(.type? // "")) | index("tool_result") | not))
-| (.message.content? // .content? // .text? // empty | textify)
+| select(.type == "user" or .role == "user" or .message.role == "user" or (.payload.type == "message" and .payload.role == "user"))
+| select(((.payload.content? // .message.content? // .content?) | type) != "array"
+    or (((.payload.content? // .message.content? // .content?) | map(.type? // "")) | index("tool_result") | not))
+| (.payload.content? // .message.content? // .content? // .text? // empty | textify)
 | select(length > 0)
 ] | .[-3:] | join("\n")
 ' 2>/dev/null \
