@@ -501,7 +501,7 @@
 		},
 		{
 			"name": "rover",
-			"version": "2.0.26",
+			"version": "2.0.27",
 			"category": "autonomy",
 			"summary": "Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.",
 			"support": [
@@ -680,7 +680,7 @@
 		},
 		{
 			"plugin": "rover",
-			"packageVersion": "2.0.26",
+			"packageVersion": "2.0.27",
 			"detailPath": "agent-fieldkit/rover/",
 			"version": "v2.0.24",
 			"type": "Fixed",

@@ -43,7 +43,9 @@ End a loop on purpose, with a recap.
 
    ### Language
 
-   The communiqué is written in the language of the Dispatch block. Whatever language the operator dispatched the rover in, the communiqué matches that. Mixed-language dispatches (prose in one language with technical terms in another) follow the dominant prose language of the Dispatch, not of the Context, Plan, or Log (those may have drifted into another language during execution). The rover does not translate the work; it writes the report in the same language the operator asked the question in, so the operator does not context-switch between briefing and report. Operator override takes precedence: if a later `## Input` entry names a language (e.g. "report in English", or the same instruction in any other operator language), the rover follows that.
+   The communiqué follows the operator's active conversation language at stop. A later explicit language instruction in the conversation or `## Input` takes precedence over every inferred signal. Preserve technical terms, exact commands, quotes, and artefacts in their original language; for mixed-language prose, follow the dominant natural language used by the operator.
+
+   Use the Dispatch language only as a fallback when the current conversation provides no clear operator-language signal and the Dispatch prose was written directly by the operator. An internally generated, normalized, or translated Dispatch is workflow scaffolding, not evidence that the operator changed language; neither are the Context, Plan, or Log. Regression case: when the operator is speaking Dutch and the rover stores an English Dispatch, the communiqué remains Dutch unless the operator explicitly requests English.
 
    ### Shape of the communiqué
 
