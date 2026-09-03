@@ -342,10 +342,13 @@ expect_block_mnemonic "prefer: push changes into helper wording is not an extern
   "$(stop_payload "Two local options:"$'\n'"1. Push these changes into a helper module"$'\n'"2. Keep these changes inline"$'\n'"Which one do you prefer?")"
 
 expect_pass "prefer: squared-letter marker silences" \
-  "$(stop_payload "Twee wegen: (a) inline, (b) extract. Ik leun naar 🅰️ want simpeler en sneller te testen. 🏁")"
+  "$(stop_payload "Twee wegen: 🅰️ inline, 🅱️ extract. Ik leun naar 🅰️ want simpeler en sneller te testen. 🏁")"
 
-expect_pass "prefer: number-keycap marker silences" \
-  "$(stop_payload "Optie 1 of optie 2; ik ga voor 1️⃣ omdat het de bestaande helper hergebruikt. 🏁")"
+expect_block_mnemonic "prefer: lone squared-letter marker does not silence" prefer \
+  "$(stop_payload "Er zijn twee wegen: (a) inline, (b) extract. Jouw keuze. Ik kies 🅰️. 🏁")"
+
+expect_block_mnemonic "prefer: paired labels without a pick do not silence" prefer \
+  "$(stop_payload "Twee wegen: 🅰️ inline, 🅱️ extract. Welke wil je? 🏁")"
 
 expect_pass "prefer: compass escape" \
   "$(stop_payload "🧭 (a) inline of (b) extract, dit is jouw keuze. Welke wil je?")"
@@ -367,6 +370,9 @@ expect_pass "prefer: numbered report with relative 'which'" \
 
 expect_pass "prefer: numbered list with 'liever' is not a menu" \
   "$(stop_payload "Twee dingen gedaan:"$'\n'"1. de helper hernoemd"$'\n'"2. de test toegevoegd, liever vroeg dan laat"$'\n'"Klaar. 🏁")"
+
+expect_pass "prefer: plural choices in a numbered report are not a menu handoff" \
+  "$(stop_payload "De flow werkt nu:"$'\n'"1. Cleanup beoordeelt ieder bericht tweemaal."$'\n'"2. Daarna kies jij Bewaren, Twijfel of Verwijderkandidaat."$'\n'"3. Pas na jouw controle trekt Cleanup conclusies op grotere schaal."$'\n'"Jouw keuzes blijven disabled tot beide beoordelingen klaar zijn. 🏁")"
 
 expect_block_mnemonic "jargon: push-go coinage" jargon \
   "$(stop_payload "De twee commits staan lokaal en wachten op je push-go. 🏁")"
