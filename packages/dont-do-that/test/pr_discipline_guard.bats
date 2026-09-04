@@ -68,3 +68,38 @@ advance_base() {
   [ "$status" -eq 0 ]
   [ -z "$output" ]
 }
+
+@test "pr-discipline blocks a markdown link to an image in the PR body" {
+  run_guard 'gh pr edit 12 --body "Capture: [monitor.png](https://github.com/o/r/blob/feature/doc/monitor.png)"'
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"links to an image instead of showing it"* ]]
+}
+
+@test "pr-discipline blocks a blob image URL without raw=true" {
+  run_guard 'gh pr edit 12 --body "![monitor](https://github.com/o/r/blob/feature/doc/monitor.png)"'
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"?raw=true"* ]]
+}
+
+@test "pr-discipline blocks a bare image URL in the PR body" {
+  run_guard 'gh pr edit 12 --body "Zie https://github.com/o/r/releases/download/pr-12-assets/after.png voor het resultaat"'
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"bare image URL"* ]]
+}
+
+@test "pr-discipline accepts inline images with raw=true and release assets" {
+  run_guard 'gh pr edit 12 --body "![a](https://github.com/o/r/blob/feature/doc/a.gif?raw=true) <img src=\"https://github.com/o/r/releases/download/pr-12-assets/b.png\" width=\"400\">"'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "pr-discipline lets a deliberate image link through with the escape" {
+  run_guard 'gh pr edit 12 --body "[monitor.png](https://github.com/o/r/blob/feature/doc/monitor.png)" # allow-image-link'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}

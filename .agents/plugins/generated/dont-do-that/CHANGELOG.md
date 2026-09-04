@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.61]
+
+### Added
+
+- **A pull request body can no longer hand the reviewer a link where a picture belongs.** `gh pr create` and `gh pr edit` now refuse a markdown link or bare URL whose target is an image or video file, and a `github.com/.../blob/...` image URL without `?raw=true`, because both render as something to click instead of the capture itself. The deny names the working forms: `![alt](url)` on a URL that serves the bytes, the blob URL with `?raw=true` for a committed file, a release-asset download URL otherwise, a captioned table for two or more portrait shots and `<img width>` for one. Takes `# allow-image-link` for a deliberate link.
+
 ## [v2.0.59]
 
 ### Fixed

@@ -44,6 +44,8 @@ guard_pr_discipline() {
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
 
+  dd_pr_image_links "$cmd"
+
   # Currency check runs last: the content checks above are local and cheap,
   # this one costs a fetch. Only offering a PR counts, so `edit` is exempt.
   case "$pr_verb" in create|ready) ;; *) return 0 ;; esac
@@ -102,4 +104,30 @@ dd_pr_flag_value() {
   grep -oE -- "$2[[:space:]]+(\"[^\"]*\"|'[^']*'|[^[:space:]]+)" <<< "$1" \
     | head -1 \
     | sed -E "s/^$2[[:space:]]+//; s/^[\"']//; s/[\"']\$//"
+}
+
+# allow-comment: a capture belongs in the PR body as a picture, not as a link the reviewer has to click. Two link shapes lose the picture: a markdown link or bare URL whose target is an image file, and a blob URL to a committed image without ?raw=true (GitHub renders the file page, not the bytes). The fix is spelled out in the deny so the retry lands in one attempt.
+dd_pr_image_links() {
+  local cmd="$1"
+  grep -q -- '# allow-image-link' <<< "$cmd" && return 0
+
+  local image_ext='\.(png|gif|jpe?g|webp|svg|mov|mp4|webm)'
+  local linked
+  linked=$(grep -oE "(^|[^!])\[[^]]*\]\((https?://[^) ]*${image_ext}(\?[^) ]*)?)\)" <<< "$cmd" | head -1)
+  if [ -n "$linked" ]; then
+    dd_emit_deny pr-discipline "PR body links to an image instead of showing it: ${linked#?}. A capture is inline, so the reviewer sees it without clicking: markdown image syntax ![alt](url) with a URL that serves the bytes. For a file committed in the repo use the blob URL with ?raw=true (https://github.com/OWNER/REPO/blob/BRANCH/path.png?raw=true); otherwise upload it as a release asset (pr-NUMBER-assets) and use its download URL. Portrait shots go in a table with captions (two or more) or in <img width=...> (one). Append '# allow-image-link' for a deliberate link."
+  fi
+
+  local blob
+  blob=$(grep -oE "(!\[[^]]*\]\(|<img[^>]*src=\"?)https?://github\.com/[^/ ]+/[^/ ]+/blob/[^) \"]*${image_ext}(\)|\"|[[:space:]])" <<< "$cmd" | head -1)
+  if [ -n "$blob" ]; then
+    dd_emit_deny pr-discipline "PR body embeds a committed image through its blob page URL, which renders as a link to the file page instead of the picture. Append ?raw=true to the blob URL (https://github.com/OWNER/REPO/blob/BRANCH/path.png?raw=true) so GitHub serves the image bytes inline. Append '# allow-image-link' for a deliberate exception."
+  fi
+
+  local bare
+  bare=$(grep -oE "(^|[[:space:]])https?://[^ <>()]*${image_ext}(\?[^ <>()]*)?([[:space:]]|$)" <<< "$cmd" | head -1)
+  if [ -n "$bare" ]; then
+    dd_emit_deny pr-discipline "PR body contains a bare image URL:${bare% }. Show the picture instead of the address: ![alt](url) for a landscape shot, a captioned table for two or more portrait shots, <img src=... width=...> for a single portrait shot. Append '# allow-image-link' for a deliberate link."
+  fi
+  return 0
 }
