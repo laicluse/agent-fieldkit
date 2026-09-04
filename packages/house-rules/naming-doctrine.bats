@@ -16,3 +16,13 @@
   run grep -F 'An epic boundary should separate outcomes a product owner can steer independently, not components, repositories, technical layers, or implementation teams.' "$doctrine"
   [ "$status" -eq 0 ]
 }
+
+@test "precise domain terms beat generic gate jargon" {
+  doctrine="$BATS_TEST_DIRNAME/skills/naming-is-hard/references/naming-doctrine.md"
+
+  run grep -F 'Treat `gate` as a naming smell' "$doctrine"
+  [ "$status" -eq 0 ]
+
+  run grep -F 'This is a prompt to choose precisely, not a banned-word rule.' "$doctrine"
+  [ "$status" -eq 0 ]
+}

@@ -22,6 +22,7 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 
 ### Changed
 
+- **Generic gate jargon now triggers a naming check.** `naming-is-hard` asks agents to name the actual validation, review, confirmation, eligibility, or selection while preserving established protocol terms and literal commands.
 - **Shared artifacts no longer retain their editing worklog.** `scar-tissue` now removes headings and prose whose only current function is to narrate the feedback, deliberation, or transformation that produced the artifact.
 
 ## [v2.0.15]

@@ -69,6 +69,7 @@ question a name, not tokens to ban.
     Searchability beats private cleverness.
 11. For backlog ideas, refinements, variants, and proposed slices, write for the product owner who may have no implementation context. Lead with the observable human problem or desired outcome; move component names, hooks, commands, and technical causes into the description or grounding. A backlog title must still make sense when read outside the originating session.
 12. An epic boundary should separate outcomes a product owner can steer independently, not components, repositories, technical layers, or implementation teams. Reuse an existing epic when the human outcome matches even if the implementation differs; create a new epic only when prioritizing one outcome independently from the others would be meaningful.
+13. Treat `gate` as a naming smell when it is attached to every check, approval, phase boundary, or operator decision. Name the actual domain event or result instead: validation, review, confirmation, eligibility, selection, publication, or whichever narrower term fits. Keep `gate` when it is already the protocol or product term, part of a literal command or identifier, or the boundary itself is the concept readers manage. This is a prompt to choose precisely, not a banned-word rule.
 
 ## Shapes That Sometimes Help
 

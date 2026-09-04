@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.19",
+			"version": "2.0.20",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -540,7 +540,7 @@
 			"latestChange": {
 				"version": "v2.0.16",
 				"type": "Changed",
-				"summary": "Shared artifacts no longer retain their editing worklog."
+				"summary": "Generic gate jargon now triggers a naming check."
 			}
 		},
 		{
@@ -698,11 +698,11 @@
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.19",
+			"packageVersion": "2.0.20",
 			"detailPath": "agent-fieldkit/house-rules/",
 			"version": "v2.0.16",
 			"type": "Changed",
-			"summary": "Shared artifacts no longer retain their editing worklog.",
+			"summary": "Generic gate jargon now triggers a naming check.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
