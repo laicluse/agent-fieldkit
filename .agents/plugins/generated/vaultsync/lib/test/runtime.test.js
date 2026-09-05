@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_PAUSE_MINUTES,
   acquireDaemonLease,
+  commitMessageDiff,
   commitNarrative,
   fallbackCommitMessage,
   findDibsBin,
@@ -393,6 +394,63 @@ it('falls back when an LLM repeats a recent commit narrative', () => {
 
   assert.equal(git(fixture.local, ['log', '-1', '--format=%s']), 'Sync vault content');
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
+it('keeps oversized file hunks out of the commit-message diff', () => {
+  const small = 'diff --git a/note.md b/note.md\n--- a/note.md\n+++ b/note.md\n@@ -1 +1 @@\n-# Note\n+# Note edited\n';
+  const bigBody = `+${'x'.repeat(5000)}\n`;
+  const big = `diff --git a/viewer.html b/viewer.html\n--- a/viewer.html\n+++ b/viewer.html\n@@ -1 +1 @@\n${bigBody}`;
+
+  const bounded = commitMessageDiff(`${small}${big}`, { fileLimit: 1024, totalLimit: 4096 });
+
+  assert.ok(bounded.includes('+# Note edited'), 'small file hunks stay verbatim');
+  assert.ok(bounded.includes('diff --git a/viewer.html b/viewer.html'), 'the oversized file keeps its header');
+  assert.ok(!bounded.includes(bigBody), 'oversized hunks are dropped');
+  assert.match(bounded, /\[vaultsync: \d+ bytes of hunks omitted from the commit-message prompt\]/);
+  assert.ok(Buffer.byteLength(bounded, 'utf8') < 4096);
+  assert.equal(commitMessageDiff(small, { fileLimit: 1024, totalLimit: 4096 }), small, 'a small diff passes unchanged');
+});
+
+it('drops the largest hunks first when the whole diff exceeds the total limit', () => {
+  const file = (name, size) => `diff --git a/${name} b/${name}\n--- a/${name}\n+++ b/${name}\n@@ -1 +1 @@\n+${'y'.repeat(size)}\n`;
+  const bounded = commitMessageDiff(`${file('a.md', 900)}${file('b.md', 700)}${file('c.md', 100)}`, { fileLimit: 1000, totalLimit: 800 });
+
+  assert.ok(!bounded.includes('y'.repeat(900)), 'largest file is omitted first');
+  assert.ok(!bounded.includes('y'.repeat(700)), 'second largest follows when still over the limit');
+  assert.ok(bounded.includes('y'.repeat(100)), 'the smallest file stays verbatim');
+  assert.ok(Buffer.byteLength(bounded, 'utf8') <= 800);
+});
+
+it('generates a real commit message when a staged file dwarfs the prompt budget', () => {
+  const fixture = syncFixture('bounded-commit-diff');
+  const llm = join(tmp, 'bounded-commit-diff-llm.mjs');
+  writeFileSync(llm, [
+    '#!/usr/bin/env node',
+    'let input = "";',
+    'process.stdin.on("data", (chunk) => input += chunk);',
+    'process.stdin.on("end", () => {',
+    '  const payload = JSON.parse(input);',
+    '  if (payload.task === "commit_message") {',
+    '    if (payload.diff.length > 300000) { process.stderr.write("Prompt is too long"); process.exit(1); }',
+    '    process.stdout.write(JSON.stringify({ message: "Refresh the generated viewer\\n\\nRecord the regenerated export next to the edited note.\\n\\nSlice: docs-only" }));',
+    '  }',
+    '  else if (payload.task === "resolve_conflict") process.stdout.write(JSON.stringify({ resolved: "Remote truth line.\\n" }));',
+    '  else process.exit(2);',
+    '});',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const registration = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...registration, llmCommand: `${process.execPath} ${llm}` }, null, 2)}\n`);
+
+  writeFileSync(join(fixture.local, 'viewer.html'), `<html>${'<p>generated</p>'.repeat(60000)}</html>\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nEdited next to a huge generated file.\n');
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(git(fixture.local, ['log', '-1', '--format=%s']), 'Refresh the generated viewer');
+  const status = JSON.parse(runNode([fixture.cli, 'status', fixture.local, '--json'], { env: fixture.env }).stdout);
+  const entry = Array.isArray(status) ? status[0] : (status.checkouts?.[0] || status);
+  assert.ok(!JSON.stringify(entry).includes('Prompt is too long'), 'no degraded failure is recorded');
 });
 
 it('excludes the complete Git trailer block from commit narratives', () => {

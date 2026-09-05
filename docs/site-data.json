@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.22",
+			"version": "2.0.23",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.22",
+				"version": "v2.0.23",
 				"type": "Fixed",
-				"summary": "Published runtimes finish deferred LaunchAgent reconciliation."
+				"summary": "Commit-message generation survives huge generated files."
 			}
 		},
 		{
@@ -689,11 +689,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.22",
+			"packageVersion": "2.0.23",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.22",
+			"version": "v2.0.23",
 			"type": "Fixed",
-			"summary": "Published runtimes finish deferred LaunchAgent reconciliation.",
+			"summary": "Commit-message generation survives huge generated files.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{

@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.23]
+
+### Fixed
+
+- **Commit-message generation survives huge generated files.** The diff handed to the LLM command now drops the hunks of any file above 64 KB and keeps the whole prompt under 256 KB, replacing omitted hunks with a byte count. A regenerated 1.5 MB Studio export no longer pushes the request over the model's token limit and forces the fallback message.
+
 ## [v2.0.22]
 
 ### Fixed

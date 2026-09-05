@@ -544,6 +544,57 @@ function visualEvidenceTrailer(paths, message = '') {
   return viewer ? [`Visual: ${viewer}`] : [];
 }
 
+export const COMMIT_MESSAGE_DIFF_FILE_LIMIT = 64 * 1024;
+export const COMMIT_MESSAGE_DIFF_TOTAL_LIMIT = 256 * 1024;
+
+function splitDiffSections(diff) {
+  const sections = [];
+  let current = null;
+  for (const line of String(diff || '').split('\n')) {
+    if (line.startsWith('diff --git ')) {
+      current = { header: [line], hunks: [] };
+      sections.push(current);
+      continue;
+    }
+    if (!current) {
+      current = { header: [], hunks: [] };
+      sections.push(current);
+    }
+    if (current.hunks.length === 0 && !line.startsWith('@@')) current.header.push(line);
+    else current.hunks.push(line);
+  }
+  return sections;
+}
+
+function omittedHunks(section) {
+  const hunks = section.hunks.join('\n');
+  const bytes = Buffer.byteLength(hunks, 'utf8');
+  return { ...section, hunks: [`[vaultsync: ${bytes} bytes of hunks omitted from the commit-message prompt]`], omitted: true };
+}
+
+function sectionText(section) {
+  return [...section.header, ...section.hunks].join('\n');
+}
+
+function hunkBytes(section) {
+  return section.omitted ? 0 : Buffer.byteLength(section.hunks.join('\n'), 'utf8');
+}
+
+export function commitMessageDiff(diff, limits = {}) {
+  const fileLimit = limits.fileLimit ?? COMMIT_MESSAGE_DIFF_FILE_LIMIT;
+  const totalLimit = limits.totalLimit ?? COMMIT_MESSAGE_DIFF_TOTAL_LIMIT;
+  const text = String(diff || '');
+  if (Buffer.byteLength(text, 'utf8') <= Math.min(fileLimit, totalLimit)) return text;
+  let sections = splitDiffSections(text).map((section) => (hunkBytes(section) > fileLimit ? omittedHunks(section) : section));
+  const totalBytes = () => Buffer.byteLength(sections.map(sectionText).join('\n'), 'utf8');
+  while (totalBytes() > totalLimit) {
+    const largest = sections.reduce((best, section) => (hunkBytes(section) > hunkBytes(best) ? section : best), sections[0]);
+    if (!largest || hunkBytes(largest) === 0) break;
+    sections = sections.map((section) => (section === largest ? omittedHunks(section) : section));
+  }
+  return sections.map(sectionText).join('\n');
+}
+
 export function fallbackCommitMessage(reason = 'debounce', paths = [], diff = '') {
   const fingerprint = createHash('sha256').update(diff || `${reason}\0${paths.join('\0')}`).digest('hex').slice(0, 10);
   const pathCount = paths.length === 1 ? '1 changed vault path' : `${paths.length} changed vault paths`;
@@ -1251,7 +1302,7 @@ function commitDirtyState(registration, reason, env = process.env) {
   if (!diff.trim()) return { committed: false, paths: [] };
   assertPortableContent(addedDiffContent(diff), env);
   const paths = changedPaths(root, true);
-  const generated = llmCommitMessage(registration, diff, paths, reason);
+  const generated = llmCommitMessage(registration, commitMessageDiff(diff), paths, reason);
   const message = generated.message;
   assertPortableContent(message, env);
   const commit = git(root, ['commit', '-F', '-'], { input: `${message.trim()}\n`, allowFailure: true });
