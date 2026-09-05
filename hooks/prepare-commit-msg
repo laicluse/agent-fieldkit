@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Setup: git config core.hooksPath hooks
+
+# Hand over to the operator's global hooks (git-discipline) once the
+# repo-owned checks pass. A repo-local core.hooksPath replaces the global
+# one instead of stacking on it, so without this exec every global hook
+# would silently stop running in this repository.
+global_hooks=$(git config --global core.hooksPath 2>/dev/null || true)
+if [ -n "$global_hooks" ] && [ -x "$global_hooks/prepare-commit-msg" ]; then
+  exec "$global_hooks/prepare-commit-msg" "$@"
+fi
