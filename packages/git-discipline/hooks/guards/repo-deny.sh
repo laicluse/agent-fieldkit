@@ -250,7 +250,9 @@ guard_repo_deny() {
   # tokens, global-flag names, and write-flag names are always plain words
   # without embedded spaces. Use `read -ra` so quoted-string fragments stay
   # in their own token rather than splitting on inner whitespace.
-  local rest="${command#*git}"
+  local matched="${BASH_REMATCH[0]}"
+  local before="${command%%"${matched}"*}"
+  local rest="${command:$(( ${#before} + ${#matched} ))}"
   rest="${rest#"${rest%%[![:space:]]*}"}"
   local -a raw_args=()
   read -ra raw_args <<< "$rest"

@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.71]
+
+### Fixed
+
+- **A locked repo no longer refuses `git status` behind a `github.com` path.** The repo lock guard cut the command line at the first `git` substring, so `cd ~/github.com/owner/repo && git status` was parsed as the subcommand `hub.com/owner/repo` and denied as a mutation. The guard now slices the arguments at the git invocation its own word-boundary match found, so read-only inspection through such a path passes while mutations stay blocked.
+
 ## [v2.0.69]
 
 ### Fixed

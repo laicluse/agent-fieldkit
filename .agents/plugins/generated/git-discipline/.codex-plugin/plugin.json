@@ -1,6 +1,6 @@
 {
   "name": "git-discipline",
-  "version": "2.0.70",
+  "version": "2.0.71",
   "description": "Parallel-worktree Git flow, repo-aware push policy, atomic verified merges, and commit/push hooks for agent sessions and direct CLI use.",
   "author": {
     "name": "local"

@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.70",
+			"version": "2.0.71",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 3,
 			"hookFileCount": 29,
 			"latestChange": {
-				"version": "v2.0.69",
+				"version": "v2.0.71",
 				"type": "Fixed",
-				"summary": "Playwright tests can now anchor a red-then-green claim by name."
+				"summary": "A locked repo no longer refuses git status behind a github.com path."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.70",
+			"packageVersion": "2.0.71",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.69",
+			"version": "v2.0.71",
 			"type": "Fixed",
-			"summary": "Playwright tests can now anchor a red-then-green claim by name.",
+			"summary": "A locked repo no longer refuses git status behind a github.com path.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
