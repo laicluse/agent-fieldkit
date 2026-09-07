@@ -56,7 +56,7 @@ Choose the relevant deterministic test command from the repository and run it th
 "$GD_ROOT/bin/git-discipline" verify "$TARGET" -- <test-command> [args...]
 ```
 
-Use `bash -lc '<command-1> && <command-2>'` only when one candidate needs multiple commands. A failed command removes mergeability for that candidate. Any later commit, amend, rebase, or default-branch advance requires another verification.
+Use `bash -c '<command-1> && <command-2>'` only when one candidate needs multiple commands. Never add `-l`. A login shell re-reads the profile and can place system tooling ahead of a version manager's shims, so the suite runs on the wrong Ruby, Node, or Python and fails on the environment while the candidate itself is fine. When the repo pins its toolchain through asdf, rbenv, mise, or nvm, put those shims in front explicitly, for example `bash -c 'export PATH="$HOME/.asdf/shims:$PATH"; <command>'`. A failed command removes mergeability for that candidate. Any later commit, amend, rebase, or default-branch advance requires another verification.
 
 ## Published feature branches
 
