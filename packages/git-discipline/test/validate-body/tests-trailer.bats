@@ -51,6 +51,18 @@ MSG
   [ "$status" -eq 0 ]
 }
 
+@test "Node .mjs Tests path present in staged diff passes" {
+  export GIT_SHIM_LS_TREE_OUTPUT=""
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="packages/tilt/test/skill-contract.test.mjs"
+  use_trailers "Tests: packages/tilt/test/skill-contract.test.mjs"$'\n'"Slice: skill + spec"$'\n'"Red-then-green: n/a (fixture verifies Tests path parsing)"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "mjs-tests-found.txt" "$(_body_with_trailers "Tests: packages/tilt/test/skill-contract.test.mjs")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "absent Tests trailer when Slice is not opt-out fails with missing-tests" {
   use_trailers "Slice: handler + service + spec"$'\n'"Red-then-green: n/a (test fixture, no spec applies)"$'\n'"Verified: operator-confirmed"
 

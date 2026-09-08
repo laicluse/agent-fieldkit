@@ -224,7 +224,7 @@ rejected with `slice-too-short`.
 **`Tests` rules:** every path in the list must exist in the HEAD tree
 (`git ls-tree -r HEAD --name-only`) or in the staged diff
 (`git diff --cached --name-only`). Supported extensions:
-`.rb`, `.py`, `.js`, `.ts`, `.tsx`, `.jsx`, `.go`, `.sh`, `.bash`, `.bats`,
+`.rb`, `.py`, `.js`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.jsx`, `.go`, `.sh`, `.bash`, `.bats`,
 `.feature`, `.swift`.
 Anchor suffixes (`#method_name`) are stripped for the file existence check.
 
@@ -234,7 +234,7 @@ be checked and was the primary leakage path.
 
 | Form | Meaning | When |
 |------|---------|------|
-| `<path>` | Names the spec file that was seen red. The path must end in a recognized spec extension (`.rb`, `.py`, `.js`, `.ts`, `.tsx`, `.jsx`, `.go`, `.sh`, `.bash`, `.bats`, `.feature`, `.swift`) and must appear in `git diff --cached --name-only` so the claim is anchored to the change under review. | The file is at least named. |
+| `<path>` | Names the spec file that was seen red. The path must end in a recognized spec extension (`.rb`, `.py`, `.js`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.jsx`, `.go`, `.sh`, `.bash`, `.bats`, `.feature`, `.swift`) and must appear in `git diff --cached --name-only` so the claim is anchored to the change under review. | The file is at least named. |
 | `<path>:<line> # <test-name>` | Identifies WHICH test was seen red, by line and by name. The validator checks that the staged blob has at least `<line>` lines, and matches `<test-name>` against runner-specific patterns: `it "name"`, `describe "name"`, `context "name"`, `specify "name"`, `@test "name"`, `@Test("name")`, `Scenario: name`, `func name(`, `def name(`. First hit wins. The `# ` separator is the RSpec / Cucumber wire format and keeps `path:line` clickable in iTerm2 / VSCode / Ghostty terminal link parsers (the gcc-style `path:line: <name>` form was rejected because two of those three parsers absorb the trailing non-numeric continuation past the second colon, breaking cmd-click). | Strongest form: the commit says exactly which test, on which line, went RED then GREEN. |
 | `n/a (reason)` | Opt-out with a rationale of at least 10 characters. Bare `n/a` without rationale is rejected. | When no red-then-green sequence applies (e.g. log-line addition, copy change). |
 
