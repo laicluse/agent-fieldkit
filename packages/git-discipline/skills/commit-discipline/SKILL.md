@@ -107,6 +107,17 @@ regex in `commit-subject.sh`.
   are exempt from the 72-char ceiling.
 - **Free-text Slice under 10 chars.** A token like `Slice: fe` is rejected
   with `slice-too-short`; write at least `frontend layer` or similar.
+- **A spec or script path in `Verified:`.** The path form means an artefact
+  that captured what you observed: a screenshot, a log, a recording, a report.
+  A source or spec file is a runner, so naming one claims only that a test
+  exists, not that it exercised this change. It is rejected with
+  `verified-path-is-source`. Reach for `Verified: red-then-green` instead,
+  which anchors the spec against the staged diff.
+- **An artefact that does not cover the staged change.** The validator checks
+  that the path exists, never that it is about this diff. A test you happened
+  to run, or a log from an earlier task, satisfies the schema and still makes
+  the trailer false. Before writing the path, ask what it shows about THIS
+  change; when the answer is nothing, `n/a (reason)` is the honest value.
 - **Vague `Verified: n/a` rationale.** The rationale must contain one of the
   closed-enum tokens listed in the "Required trailers" section. A phrase like
   "not applicable" matches none of them and is rejected with
@@ -214,7 +225,7 @@ Soft nudges (subject 51-72 chars) are non-blocking and appear as context.
 | `Tests` | comma-separated list of spec paths | when `Slice` is not an opt-out token |
 | `Red-then-green` | `yes` or `n/a (reason >= 10 chars)` | when `Slice` is not `docs-only`, `config-only`, `migration-only`, `spec-only`, or `chore-deps` |
 | `Visual` | file path or `n/a (reason >= 10 chars)` | when the staged diff touches UI files (see heuristic below) |
-| `Verified` | `operator-confirmed`, `agent-confirmed`, `<path>`, `red-then-green`, or `n/a (reason)` | when `Slice` is not an opt-out token |
+| `Verified` | `operator-confirmed`, `agent-confirmed`, `<artefact path>`, `red-then-green`, or `n/a (reason)` | when `Slice` is not an opt-out token |
 | `Verified-how` | one sentence, `Due to <reason>, this was confirmed by <what the agent ran and saw>` (>= 20 chars) | when `Verified` is `agent-confirmed` |
 
 **`Slice` rules:** the value is either one of the eight opt-out tokens (see
@@ -290,6 +301,7 @@ Error codes:
 | `missing-verified` | Trailer is absent on a non-opt-out commit, or the value is bare `n/a` without rationale, or the value is none of the recognised forms (e.g. `Verified: probably`). |
 | `missing-verified-how` | `Verified: agent-confirmed` without a companion `Verified-how:` trailer, or with one under 20 chars. Add a sentence naming why the agent verified instead of the operator and what it ran. |
 | `verified-path-not-found` | Path-form value points at a file that does not exist relative to repo root. |
+| `verified-path-is-source` | Path-form value is a source or spec file (`.sh`, `.rb`, `.py`, `.ts`, `.swift`, ...). A runner is not evidence; use `red-then-green`, `agent-confirmed`, `operator-confirmed`, or an artefact path. |
 | `verified-red-then-green-mismatch` | `Verified: red-then-green` while `Red-then-green` is `n/a (...)`; pick a different Verified form. |
 | `verified-build-only-removed` | `Verified: build-only` is no longer accepted; supply a concrete anchor (`operator-confirmed`, `<path>`, `red-then-green`) or `n/a (reason)`. |
 | `verified-rationale-vague` | `n/a (reason)` rationale does not name a recognised category from the closed enum (same set as `Visual: n/a`). |

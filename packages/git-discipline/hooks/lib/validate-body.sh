@@ -693,6 +693,18 @@ validate_body() {
       _vb_err 'missing-verified: bare "n/a" requires a rationale in parens: n/a (reason >= 10 chars)'
     elif [[ "$verified_value" == */* ]] || [[ "$verified_value" =~ \.(png|jpg|jpeg|gif|webp|heic|mov|mp4|webm|pdf|txt|log|md|json|html|svg|tiff|bmp)$ ]]; then
       # Path form: artefact in repo. Resolve relative to repo root.
+      #
+      # A source or spec file is a RUNNER, not evidence. Naming one says
+      # "a test exists that could be run", which is exactly the unanchored
+      # self-attestation that bare `Red-then-green: yes` was removed for.
+      # The artefact forms (screenshot, log, recording, report) capture what
+      # was actually observed; `Verified: red-then-green` is the form that
+      # anchors a claim to a spec, and it checks that spec against the
+      # staged diff.
+      if [[ "${verified_value%%:*}" =~ \.(sh|bash|bats|rb|py|js|mjs|cjs|ts|tsx|jsx|go|swift|feature)$ ]]; then
+        _vb_err "$(printf 'verified-path-is-source: Verified path "%s" is a source/spec file, not an artefact of something you observed. Naming a runner claims a test exists, not that it exercised THIS change. Use Verified: red-then-green (which anchors the spec to the staged diff), Verified: agent-confirmed with a Verified-how sentence, Verified: operator-confirmed, an artefact path (screenshot / log / recording), or n/a (reason).' "$verified_value")"
+      fi
+
       local v_repo_root
       v_repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
       local v_resolved="$verified_value"

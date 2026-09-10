@@ -102,6 +102,35 @@ _trailers_with_agent_confirmed() {
   [[ "$output" == *"verified-path-not-found"* ]]
 }
 
+@test "Verified: <spec path> fails verified-path-is-source even when the file exists" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  local artefact
+  artefact=$(write_visual_path "test/support/plugin-manifest.test.sh")
+  local rel="test/support/plugin-manifest.test.sh"
+  use_trailers "$(_trailers_with_verified "$rel")"
+
+  local file
+  file=$(write_fixture "verified-path-source.txt" "$(_body_with_verified "$rel")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"verified-path-is-source"* ]]
+}
+
+@test "Verified: <artefact path> stays accepted alongside the source guard" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  local artefact
+  artefact=$(write_visual_path "doc/evidence/run.log")
+  local rel="doc/evidence/run.log"
+  use_trailers "$(_trailers_with_verified "$rel")"
+
+  local file
+  file=$(write_fixture "verified-path-log.txt" "$(_body_with_verified "$rel")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "Verified: red-then-green is accepted when Red-then-green names a staged spec" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="spec/services/session_spec.rb"
