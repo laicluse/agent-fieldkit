@@ -34,5 +34,5 @@ guard_compliance() {
 
   dd_external_irreversible_gate "$text" && return 0
 
-  dd_emit_block compliance "'?' ending: double-check, not a whip. If the answer is knowable and the action is reversible local work, answer it yourself and continue. If it would create or mutate external/account-bound state (remote repo/fork/remote, push, deploy, publish, production, DNS, shared infra), ask as a real gate instead. Mark deliberately: 🧭 (genuine user-choice), 🚦 (waiting on external go), or 🏁 (done)."
+  dd_emit_block compliance "'?' ending: double-check, not a whip. First ask what the operator actually requested. If they asked about existing state (does X say Y, is this covered, klopt dit, a review or audit), the answer IS the deliverable: give it and mark 🏁. An action you thought of while answering is yours, not theirs, and executing it converts their question into an assignment they never gave. If the action WAS the request and it is knowable, reversible, local work, do it yourself and continue. If it would create or mutate external/account-bound state (remote repo/fork/remote, push, deploy, publish, production, DNS, shared infra), ask as a real gate instead. Mark deliberately: 🧭 (genuine user-choice), 🚦 (waiting on external go), or 🏁 (done)."
 }
