@@ -55,12 +55,12 @@ load helpers
   # hook must emit that deny rather than silently degrading.
   local broken_root="$BATS_TEST_TMPDIR/no-such-install"
   mkdir -p "$broken_root/hooks/guards"
-  cp packages/git-discipline/hooks/guards/commit-subject.sh "$broken_root/hooks/guards/"
-  cp packages/git-discipline/hooks/lib/rotation-rules.sh "$broken_root/hooks/guards/"
+  cp "$PKG_ROOT/hooks/guards/commit-subject.sh" "$broken_root/hooks/guards/"
+  cp "$PKG_ROOT/hooks/lib/rotation-rules.sh" "$broken_root/hooks/guards/"
   run bash -c "
-    source packages/git-discipline/hooks/lib/common.sh
+    source '$PKG_ROOT/hooks/lib/common.sh'
     DD_RULE_PASSWORD=()
-    source packages/git-discipline/hooks/lib/rotation-rules.sh
+    source '$PKG_ROOT/hooks/lib/rotation-rules.sh'
     source '$broken_root/hooks/guards/commit-subject.sh'
     json='{\"tool_input\":{\"command\":\"git commit -m \\\"Some subject\\\"\"}}'
     guard_commit_subject \"\$json\"

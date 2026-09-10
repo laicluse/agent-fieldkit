@@ -19,6 +19,13 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DISPATCH="$SCRIPT_DIR/../../hooks/dispatch.sh"
+# Anchor fixture paths here rather than on the caller's cwd. A test that
+# reaches for a repo path with a bare relative string passes under
+# test/run-bats (which documents repo root) and fails when a single .bats
+# file is run from the package directory, reporting a missing fixture as
+# if the guard under test had regressed.
+PKG_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPO_ROOT="$(cd "$PKG_ROOT/../.." && pwd)"
 
 # Override shadow log so tests never write to the real log.
 export GIT_DISCIPLINE_SHADOW_LOG="$BATS_TEST_TMPDIR/shadow.log"
