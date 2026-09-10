@@ -53,6 +53,30 @@ MSG
   }
 }
 
+@test "long Verified-how trailer line passes commit-format silently" {
+  local msg
+  msg='Settings page works on Windows
+
+Body that fits within 72 chars per line.
+Second body line that also fits comfortably.
+
+Slice: short
+Tests: spec/foo.rb
+Red-then-green: n/a (copy-only change to a string, no branch moved)
+Verified: agent-confirmed
+Verified-how: Due to no operator being at the keyboard for this run, this was confirmed by running the full bats suite and seeing 578 tests pass with no failures.'
+
+  local cmd="git commit -m \"\$(cat <<MSG
+${msg}
+MSG
+)\""
+  run invoke_guard "$cmd"
+  [[ "$output" != *'max 72'* ]] || {
+    printf 'commit-format flagged a long Verified-how line that should be exempt; output: %s\n' "$output" >&2
+    return 1
+  }
+}
+
 @test "long prose body line still triggers commit-format 72-char warning" {
   local msg
   msg='Settings page works on Windows

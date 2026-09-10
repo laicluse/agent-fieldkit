@@ -25,7 +25,7 @@ guard_commit_format() {
     # allow-comment: starting with a capitalised keyword and colon (Note:,
     # allow-comment: TODO:, BUG:, Warning:) stay subject to the ceiling because
     # allow-comment: they are narrative and should wrap for readability.
-    local trailer_re='^(Slice|Tests|Red-then-green|Verified|Visual|PII-Doublecheck|Cucumber|Signed-off-by|Co-Authored-By|Co-authored-by|Acked-by|Reviewed-by|Cc|Fixes|Closes|Resolves):[[:space:]]'
+    local trailer_re='^(Slice|Tests|Red-then-green|Verified|Verified-how|Visual|PII-Doublecheck|Cucumber|Signed-off-by|Co-Authored-By|Co-authored-by|Acked-by|Reviewed-by|Cc|Fixes|Closes|Resolves):[[:space:]]'
     if [[ ${#line} -gt 72 ]]; then
       if [[ $line_num -eq 1 ]]; then
         hard+=("Subject is ${#line} chars, max 72. Tighten: \"${line}\"")
