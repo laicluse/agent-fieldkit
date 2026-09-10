@@ -714,6 +714,21 @@ validate_body() {
       if [[ "$at_commit_time" -eq 1 && ! -f "$v_resolved" ]]; then
         _vb_err "$(printf 'verified-path-not-found: Verified path "%s" was not found on disk (relative to repo root). Add the artefact or use a different Verified form.' "$verified_value")"
       fi
+
+      # Evidence has to postdate the thing it proves. An artefact older than
+      # the previous commit was captured before this work existed, so it
+      # cannot show what this change does; citing one satisfies the schema
+      # while saying nothing. Everything uncertain stays permissive: no HEAD
+      # (root commit), an unreadable mtime, or push re-validation (where
+      # mtimes carry no meaning) all skip the check rather than deny.
+      if [[ "$at_commit_time" -eq 1 && -f "$v_resolved" ]]; then
+        local v_head_ts v_art_ts
+        v_head_ts=$(git log -1 --format=%ct HEAD 2>/dev/null || true)
+        v_art_ts=$(stat -f %m "$v_resolved" 2>/dev/null || stat -c %Y "$v_resolved" 2>/dev/null || true)
+        if [[ "$v_head_ts" =~ ^[0-9]+$ ]] && [[ "$v_art_ts" =~ ^[0-9]+$ ]] && [[ "$v_art_ts" -lt "$v_head_ts" ]]; then
+          _vb_err "$(printf 'verified-path-stale: Verified artefact "%s" is older than the previous commit, so it was captured before this change existed and cannot show what it does. Re-capture it against the current state, or pick a Verified form that matches what you actually did.' "$verified_value")"
+        fi
+      fi
     else
       _vb_err "$(printf 'missing-verified: value must be "operator-confirmed", "agent-confirmed", "red-then-green", "build-only", "<path>", or "n/a (reason)"; got: "%s"' "$verified_value")"
     fi

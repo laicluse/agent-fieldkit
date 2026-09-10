@@ -114,10 +114,11 @@ regex in `commit-subject.sh`.
   `verified-path-is-source`. Reach for `Verified: red-then-green` instead,
   which anchors the spec against the staged diff.
 - **An artefact that does not cover the staged change.** The validator checks
-  that the path exists, never that it is about this diff. A test you happened
-  to run, or a log from an earlier task, satisfies the schema and still makes
-  the trailer false. Before writing the path, ask what it shows about THIS
-  change; when the answer is nothing, `n/a (reason)` is the honest value.
+  that the path exists and that it is newer than the previous commit, never
+  that it is about this diff. A log from a neighbouring task in the same
+  session clears both checks and still makes the trailer false. Before writing
+  the path, ask what it shows about THIS change; when the answer is nothing,
+  `n/a (reason)` is the honest value.
 - **Vague `Verified: n/a` rationale.** The rationale must contain one of the
   closed-enum tokens listed in the "Required trailers" section. A phrase like
   "not applicable" matches none of them and is rejected with
@@ -302,6 +303,7 @@ Error codes:
 | `missing-verified-how` | `Verified: agent-confirmed` without a companion `Verified-how:` trailer, or with one under 20 chars. Add a sentence naming why the agent verified instead of the operator and what it ran. |
 | `verified-path-not-found` | Path-form value points at a file that does not exist relative to repo root. |
 | `verified-path-is-source` | Path-form value is a source or spec file (`.sh`, `.rb`, `.py`, `.ts`, `.swift`, ...). A runner is not evidence; use `red-then-green`, `agent-confirmed`, `operator-confirmed`, or an artefact path. |
+| `verified-path-stale` | Path-form artefact has an mtime older than the previous commit, so it was captured before this change existed. Re-capture against the current state. Skipped when HEAD is absent, the mtime is unreadable, or on push re-validation. |
 | `verified-red-then-green-mismatch` | `Verified: red-then-green` while `Red-then-green` is `n/a (...)`; pick a different Verified form. |
 | `verified-build-only-removed` | `Verified: build-only` is no longer accepted; supply a concrete anchor (`operator-confirmed`, `<path>`, `red-then-green`) or `n/a (reason)`. |
 | `verified-rationale-vague` | `n/a (reason)` rationale does not name a recognised category from the closed enum (same set as `Visual: n/a`). |

@@ -131,6 +131,36 @@ _trailers_with_agent_confirmed() {
   [ "$status" -eq 0 ]
 }
 
+@test "Verified: <artefact older than the previous commit> fails verified-path-stale" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  local artefact
+  artefact=$(write_visual_path "doc/evidence/old-run.log")
+  touch -t 202001010000 "$artefact"
+  local rel="doc/evidence/old-run.log"
+  use_trailers "$(_trailers_with_verified "$rel")"
+
+  local file
+  file=$(write_fixture "verified-path-stale.txt" "$(_body_with_verified "$rel")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"verified-path-stale"* ]]
+}
+
+@test "Verified: <artefact captured after the previous commit> is accepted" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  local artefact
+  artefact=$(write_visual_path "doc/evidence/fresh-run.log")
+  local rel="doc/evidence/fresh-run.log"
+  use_trailers "$(_trailers_with_verified "$rel")"
+
+  local file
+  file=$(write_fixture "verified-path-fresh.txt" "$(_body_with_verified "$rel")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "Verified: red-then-green is accepted when Red-then-green names a staged spec" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="spec/services/session_spec.rb"
