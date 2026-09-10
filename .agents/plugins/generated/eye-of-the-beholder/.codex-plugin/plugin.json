@@ -1,7 +1,7 @@
 {
   "name": "eye-of-the-beholder",
-  "version": "2.0.9",
-  "description": "Visual review, taste elicitation, and art-direction skills for layout, color, animation, layout stability, screenshot-feedback interpretation, reference matching, and design-system foundations. Skills: eye-of-the-beholder, art-director, visual-inspection, fat-marker-sketch, taste-test.",
+  "version": "2.0.10",
+  "description": "Collaborative visual design with image generation, one decision at a time, and reference-based rendering review. Skills: eye-of-the-beholder, explore, define, review.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Eye Of The Beholder",
-    "shortDescription": "Visual review, taste elicitation, and art-direction skills for layout, color, animation, layout stability, screenshot...",
-    "longDescription": "Visual review, taste elicitation, and art-direction skills for layout, color, animation, layout stability, screenshot-feedback interpretation, reference matching, and design-system foundations. Skills: eye-of-the-beholder, art-director, visual-inspection, fat-marker-sketch, taste-test.",
+    "shortDescription": "Collaborative visual design with image generation, one decision at a time, and reference-based rendering review. Skil...",
+    "longDescription": "Collaborative visual design with image generation, one decision at a time, and reference-based rendering review. Skills: eye-of-the-beholder, explore, define, review.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

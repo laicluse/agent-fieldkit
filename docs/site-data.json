@@ -93,7 +93,7 @@
 		"codexPackages": 21,
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
-		"skillEntries": 84,
+		"skillEntries": 83,
 		"hookFiles": 64
 	},
 	"install": {
@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.9",
+			"version": "2.0.10",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -293,13 +293,13 @@
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
 			"sourcePath": "packages/eye-of-the-beholder",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/eye-of-the-beholder",
-			"skillCount": 5,
+			"skillCount": 4,
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.1.1",
-				"type": "Fixed",
-				"summary": "/fat-marker-sketch now distinguishes annotated screenshots from actual sketches."
+				"version": "vX.Y.Z",
+				"type": "Changed",
+				"summary": "See the package changelog for the latest user-visible note."
 			}
 		},
 		{
@@ -743,11 +743,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.9",
+			"packageVersion": "2.0.10",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.1.1",
-			"type": "Fixed",
-			"summary": "/fat-marker-sketch now distinguishes annotated screenshots from actual sketches.",
+			"version": "vX.Y.Z",
+			"type": "Changed",
+			"summary": "See the package changelog for the latest user-visible note.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{

@@ -18,7 +18,18 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
-without a `## [vX.Y.Z]` section stays silent on every update.
+without a `## [v2.0.10]
+
+### Breaking
+
+- Use `eye-of-the-beholder` as the entry point. The public stages are now `explore`, `define` and `review`; `taste-test`, `art-director`, `fat-marker-sketch` and `visual-inspection` are retired. Update saved invocations of those names.
+
+### Changed
+
+- New visual treatments start with reference-guided image generation and one consequential decision per round. Rejection of all candidates is valid. Concept, mechanism and implementation approval are tracked separately, and accepted images accompany the visual-language record.
+- Review evaluates the real implementation's aesthetics, meaning, fidelity and interaction separately. Image classification and reference comparison tools remain available internally.
+
+## [vX.Y.Z]` section stays silent on every update.
 
 ## [v2.1.1]
 

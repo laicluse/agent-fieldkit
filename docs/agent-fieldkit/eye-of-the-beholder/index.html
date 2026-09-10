@@ -13,8 +13,8 @@
 		<meta property="og:url" content="https://laicluse.com/agent-fieldkit/eye-of-the-beholder/">
 		<meta property="og:title" content="eye-of-the-beholder · l'Aicluse Agent Fieldkit">
 		<meta property="og:description" content="Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.">
-		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
-		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
+		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=dfc2762270">
+		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=dfc2762270">
 		<meta property="og:image:type" content="image/png">
 		<meta property="og:image:width" content="1200">
 		<meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="eye-of-the-beholder · l'Aicluse Agent Fieldkit">
 		<meta name="twitter:description" content="Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.">
-		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
+		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=dfc2762270">
 
 		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
@@ -52,44 +52,54 @@
 					<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.9</span>
-						<span>5 skills</span>
+						<span>2.0.10</span>
+						<span>4 skills</span>
 					</div>
 				</div>
 			</section>
 
 			<section class="detail-content-section">
 				<article class="readme-content">
-<p>Visual layout review. Observation before explanation: screenshot first, describe what you see, then diagnose. Design-TDD for CSS.</p>
-<p>Catches cramped text, missing margins, disproportionate spacing, broken WCAG contrast, ad-hoc token use, snapping transitions, out-of-sync animations, layout that jumps between states, and content that disappears before its container does. It also helps translate a user who has taste but no design vocabulary into a direction, and reads uploaded screenshots as feedback rather than as literal designs.</p>
-<p>This plugin ships five sister skills:</p>
-<ul>
-<li><strong><code>/eye-of-the-beholder</code></strong> (default): diagnostic, per-change visual review.</li>
-<li><strong><code>/taste-test</code></strong>: direction elicitation for someone who has taste but cannot describe it. Shows divergent options and reads the reaction instead of asking for a spec, then records the result in a growing <code>visual-language.md</code>.</li>
-<li><strong><code>/fat-marker-sketch</code></strong>: classifies an uploaded visual as an annotated screenshot, clean screenshot, actual low-fidelity sketch, or design reference before extracting intent. Annotation-tool styling stays out of the product.</li>
-<li><strong><code>/art-director</code></strong>: upstream identity work. Captures brand, visual language, and design-system architecture BEFORE CSS exists. Not for small UI tweaks; for new products, brand refreshes, or first-time design-system foundation.</li>
-<li><strong><code>/visual-inspection</code></strong>: reference matching. Forces a screenshot-plus-measurement loop when a new element must match an existing visual reference on named axes such as padding, radius, font, color, size, or alignment.</li>
-</ul>
+<p>Collaborative visual design anchored in images. Start with <code>eye-of-the-beholder</code> for a new visual element, an unpleasing result or a redesign. It selects the workflow, develops proposals with image generation and resolves one consequential design decision at a time before implementation.</p>
 <h2 id="skills">Skills</h2>
-<h3 id="eye-of-the-beholder"><code>/eye-of-the-beholder</code></h3>
-<p>Reviews the current visual state. Captures a screenshot, lists concrete observations, then maps each observation to a diagnosis: token, spacing scale, contrast ratio, animation timing, layout shift, or another visible cause. Includes a complaint-to-axis table that turns a gut-word (&quot;too busy&quot;, &quot;it jumps&quot;, &quot;looks cheap&quot;) into the axis to scan, a layout-stability axis for unwanted motion between states, a one-meaning-per-channel rule for visual semantics, and a convergence guard that routes to <code>/taste-test</code> or a first-principles reset when the same complaint survives two rounds.</p>
-<h3 id="taste-test"><code>/taste-test</code></h3>
-<p>Elicits a visual direction from a user who knows what they like when they see it but cannot describe it. Renders 3 to 5 genuinely divergent options side by side, offers reaction-card word-axes to point at instead of asking for a specification, harvests current genre exemplars for transferable moves (not copied pixels), and actively avoids the documented AI-slop tells. Records each decision in a growing <code>visual-language.md</code> so the direction is not re-litigated every session. Sits between <code>/art-director</code> (heavy, once) and <code>/eye-of-the-beholder</code> (diagnostic, per change).</p>
-<h3 id="fat-marker-sketch"><code>/fat-marker-sketch</code></h3>
-<p>Classifies an uploaded screenshot or image before using it as design evidence. It distinguishes annotated screenshots from actual low-fidelity sketches, separates captured product pixels from annotation-tool pixels, and uses exposed filenames such as <code>CleanShot</code> or <code>Screenshot</code> as provenance hints rather than verdicts. It then extracts the complaint, target, direction, content, and topology; ignores incidental annotation styling; and routes stated match intent to <code>/visual-inspection</code>.</p>
-<h3 id="art-director"><code>/art-director</code></h3>
-<p>Produces <code>brand.md</code> + <code>visual-language.md</code> + <code>design-system/</code> skeleton from stakeholder interviews, competitive scan, and brand strategy. Three modules: brand identity discovery, visual language translation across type / color / form / motion / photography, and design-system architecture with token layers and component taxonomy. Artefacts become the standard that the session's build-time discipline applies per feature and eye-of-the-beholder verifies per change.</p>
-<h3 id="visual-inspection"><code>/visual-inspection</code></h3>
-<p>Compares a reference element and the result side by side. The user names the axis; the skill records the reference value, result value, match verdict, and screenshot evidence. It is stricter than an open visual review: every named axis stays open until it matches or the user accepts the deviation.</p>
-<h2 id="auto-trigger">Auto-trigger</h2>
-<p><code>/eye-of-the-beholder</code> activates DURING and AFTER layout CSS, color token, contrast, layout-stability, or animation work, to scan the rendered result. Also activates when a gut-word complaint (&quot;too busy&quot;, &quot;it jumps&quot;, &quot;looks cheap&quot;, &quot;off&quot;) needs translating into an axis to scan.</p>
-<p><code>/fat-marker-sketch</code> is the classifier and reading discipline for any image shared as a design cue. Auto-selection is unreliable when a message contains only a dropped image because there may be no text for the description to match. Keep the discipline primed: inspect any exposed filename, then verify the visible layers instead of guessing from the name. <code>CleanShot</code>, <code>Screenshot</code>, and localized capture names indicate likely screenshot provenance; visible marks establish whether it is annotated. Once the resulting change is rendered, <code>/eye-of-the-beholder</code> scans the render.</p>
-<p><code>/taste-test</code> activates when the user reacts with a gut-word and no specification, when a new screen has no established direction and they cannot describe one, or when two rounds of pixel iteration have not converged. It is not for &quot;make it match this reference&quot; (that is visual-inspection) or full brand work (that is art-director).</p>
-<p><code>/art-director</code> activates only on explicit brand / art-direction / design-system-architecture requests, or at the start of a new product or brand refresh. Strict triage: it does NOT auto-fire on per-component or per-view design work.</p>
-<p><code>/visual-inspection</code> activates when a user points at a reference element and asks for the result to match it on one or more visual axes, with match-intent stated. It is not for general &quot;make it better&quot; review (that remains eye-of-the-beholder) or for reading an uploaded image as feedback (that is fat-marker-sketch).</p>
-<h2 id="why-observation-first">Why observation first</h2>
-<p>Skipping straight to diagnosis is how AI reviews end up validating their own assumptions. The eye-of-the-beholder skill insists on at least three concrete observations before any cause is named, so the diagnosis has to fit what is actually on screen.</p>
-<p>The art-director skill works one level up: brand attributes and visual-language decisions captured upfront are the reference against which observations get their meaning. &quot;Feels off&quot; is unverifiable until there is a documented standard to feel off from. Taste-test is the lighter, per-direction way to produce that standard when the user cannot describe it: it shows options, reads the reaction, and records the result. Visual-inspection works one level tighter: a named reference turns the visual question into a measurement loop. Fat-marker-sketch guards the input side by distinguishing captured product evidence, annotation commentary, rough sketches, and deliberate references before any pixels are translated into UI.</p>
+<table>
+<thead>
+<tr><th>Skill</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td><code>eye-of-the-beholder</code></td><td>The single entry point: inspect context, route the request and carry accepted decisions through to the real render.</td></tr>
+<tr><td><code>eye-of-the-beholder:explore</code></td><td>Generate visual proposals from actual references, interpret reactions and establish an accepted target.</td></tr>
+<tr><td><code>eye-of-the-beholder:define</code></td><td>Establish identity and design-system foundations when the product needs them.</td></tr>
+<tr><td><code>eye-of-the-beholder:review</code></td><td>Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately.</td></tr>
+</tbody>
+</table>
+<h2 id="workflow">Workflow</h2>
+<p>Image generation is the default for genuinely new visual form. Exact fixes and reuse of accepted components skip concept exploration. Each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. Combinations and rejection of every option are valid. If image generation is unavailable, agree a fallback instead of silently replacing it with CSS sketches.</p>
+<p>The canonical visual-language document records accepted image anchors and scoped accepted, rejected and unresolved decisions. Concept approval, mechanism approval and implementation approval are distinct. A generated image is a concept, not proof that the interaction works: the actual implementation must be reviewed at relevant scales, densities and combined states, including motion where it matters.</p>
+<p>This method is intended to improve collaboration; aesthetic success still needs to be established with the user. Generic anti-slop rules and passing technical checks cannot prove it.</p>
+<h2 id="host-support">Host support</h2>
+<p>Install from the registered marketplace:</p>
+<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="Agent terminal commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="commands-cd26904522-claude">claude plugins install eye-of-the-beholder@laicluse-agent-fieldkit</code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="commands-cd26904522-codex">codex plugin add eye-of-the-beholder@laicluse-agent-fieldkit</code></pre>
+	</div>
+</div>
+<p>Both Claude Code and Codex use the same instructions; available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow <a href="skills/explore/generation.md">backend resolution</a> before starting. Reload the plugin catalog or start a fresh session after an update.</p>
+<h2 id="migration">Migration</h2>
+<p>The old public skills <code>taste-test</code>, <code>art-director</code>, <code>fat-marker-sketch</code> and <code>visual-inspection</code> are retired. Use <code>eye-of-the-beholder</code> as the entry point, or <code>explore</code>, <code>define</code> and <code>review</code> when deliberately selecting a stage. Update saved instructions that invoke the old names. Image classification and reference matching remain internal protocols under <code>skills/review</code>; their useful measurement tools and fixtures are retained.</p>
+<h2 id="verification">Verification</h2>
+<p>Run the image classification regression and reference comparison corpus from the repository root:</p>
+<pre><code class="language-bash">bats packages/eye-of-the-beholder/test/*.bats
+node packages/eye-of-the-beholder/skills/review/reference-match/scripts/run-corpus.mjs</code></pre>
+<p>The manual workflow scenarios in <code>test/workflow-scenarios.md</code> exercise routing and approval boundaries. They are behavior probes, not proof of aesthetic quality. Test the installed workflow with an actual visual request before judging the design outcomes.</p>
 				</article>
 				<aside class="detail-sidebar" aria-label="Plugin links">
 					<div class="sidebar-block">
