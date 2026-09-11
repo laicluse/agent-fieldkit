@@ -11,7 +11,7 @@ Principles and conventions for testing. The core principle: specs are specificat
 
 ## Specs specify, they do not verify
 
-RSpec calls it a "spec" for a reason: it is a specification, not a test. The spec defines what "done" means before any code is written. Without that definition, "done" is a subjective judgment by the implementer. Code that compiles proves syntax. Code that passes a pre-written spec proves semantics.
+RSpec calls it a "spec" for a reason: it is a specification, not a test. The spec defines what "done" means before any code is written. Derive expected behavior from the requested use and the caller's contract before choosing assertions. A passing spec demonstrates the cases it exercises; it does not establish that the expectations or coverage are sufficient.
 
 **NEVER write implementation before you have seen a failing spec.**
 
@@ -38,9 +38,9 @@ This is not optional. This is not "where possible". This is ALWAYS, for every fe
 
 **RED -> GREEN -> REFACTOR is a continuous flow.** Do not pause between phases to ask for permission. If the user has given an instruction ("fix dit", "pas dat aan"), run the full TDD cycle without stopping. The only pause point is AFTER the cycle, when the result is ready for review.
 
-## Do not do more than the spec prescribes
+## Keep specifications anchored to the requested behavior
 
-The spec bounds the work. If there is no spec for it, it does not exist as a requirement. Want to do more? Write a new spec first. This prevents scope creep, gold plating, and the urge to "real quick" / "even snel" slip in something extra.
+The requested behavior bounds the work; specs express it. A missing spec for a requested outcome is a coverage gap, not permission to omit that outcome. Add the missing specification before implementing it. Do not invent requirements to justify extra tests or implementation.
 
 ## Scar tissue
 

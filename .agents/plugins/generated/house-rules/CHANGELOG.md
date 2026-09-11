@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.22]
+
+### Changed
+
+- **Specifications remain accountable to requested behavior.** Missing test coverage no longer makes a requested outcome optional; passing tests establish only the cases they exercise. Artifact reviews attempt the recipient's task before assessing wording.
+
 ## [v2.0.21]
 
 ### Changed

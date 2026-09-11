@@ -20,7 +20,7 @@ Before handoff, ask what each suspicious layer serves today. Remove duplicated, 
 
 ## Review the artifact before its sentences
 
-Read the complete current artifact as a reader who has not seen the conversation. Establish its purpose and audience, then inspect its opening and outline before editing individual phrases. Does the reader learn what the subject is, why it matters, what the evidence supports, and what decision or action follows? Choose an order that serves that purpose; do not impose one template on reports, plans, runbooks, and changelogs.
+Attempt the intended recipient's task using the complete current artifact and only the context available to that recipient. For a document, derive the needed understanding or decision from the text itself; do not supply missing explanations from the authoring conversation. Use what this attempt reveals to guide the review. Inspect the opening and outline before editing individual phrases, and choose an order that serves the artifact's purpose rather than imposing one template on every document.
 
 Residue can shape the whole document even when every sentence is accurate. An analysis that opens with remaining work may still be answering the last editing request instead of introducing its subject. A remaining-work opening belongs in a status update whose reader already has the context. Reorganize a misplaced opening or outline, rather than merely renaming headings or adding another explanation above it.
 
