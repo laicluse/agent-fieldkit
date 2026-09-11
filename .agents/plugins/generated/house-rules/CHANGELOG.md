@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.21]
+
+### Changed
+
+- **Scar-tissue reviews inspect document structure before wording.** Reviews evaluate the opening and outline for the intended reader, preserve necessary measurement provenance, and distinguish semantic findings from successful tooling checks or repeated pass counts.
+
 ## [v2.0.16]
 
 ### Changed

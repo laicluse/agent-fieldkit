@@ -19,6 +19,20 @@ Working plans, task notes, unreleased docs, and uncommitted changes are edited i
 
 Before handoff, ask what each suspicious layer serves today. Remove duplicated, superseded, or unowned material. Keep guards against a current failure mode, compatibility paths with a named current consumer, published history, and tests that assert live behavior. Repository-specific Git, test, migration, and task-tracking rules determine how the host performs that review.
 
+## Review the artifact before its sentences
+
+Read the complete current artifact as a reader who has not seen the conversation. Establish its purpose and audience, then inspect its opening and outline before editing individual phrases. Does the reader learn what the subject is, why it matters, what the evidence supports, and what decision or action follows? Choose an order that serves that purpose; do not impose one template on reports, plans, runbooks, and changelogs.
+
+Residue can shape the whole document even when every sentence is accurate. An analysis that opens with remaining work may still be answering the last editing request instead of introducing its subject. A remaining-work opening belongs in a status update whose reader already has the context. Reorganize a misplaced opening or outline, rather than merely renaming headings or adding another explanation above it.
+
+Preserve the information needed to assess claims: measurement dates and time zones, source versions, uncertainty, and the distinction between implemented, deployed, and measured behavior. Old evidence can be essential in a research report. Remove obsolete recommendations, not the provenance that makes retained evidence usable.
+
+## Report the review that actually happened
+
+A skill is guidance for a semantic review, not an automated certification. File reads, keyword searches, schema checks, and repeated pass counts do not establish that content is coherent or free of residue. Report concrete findings, changes, and remaining uncertainty; do not turn successful tooling checks into a clean-content claim.
+
+When repeated passes are requested, give each a distinct question and inspect the full artifact for it. After the last edit, reread the resulting opening, outline, and body together. If a purportedly completed review missed the same kind of residue, test the revised review against that failure and a legitimate counterexample; another repetition of the same check is not evidence of improvement.
+
 ## Give living documents a present-tense identity
 
 A living README, runbook, instruction file, or product overview introduces the artifact as it exists now. Origin repositories, import SHAs, cutover dates, former names or platforms, and sentences explaining what no longer owns the system are historical residue even when they are accurate. Git already owns lineage. An explicit audit, changelog, migration record, or forensic report may retain it because historical evidence is that artifact's current responsibility.
