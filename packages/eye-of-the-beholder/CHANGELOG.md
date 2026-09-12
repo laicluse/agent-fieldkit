@@ -28,6 +28,7 @@ without a `## [v2.0.10]
 
 - New visual treatments start with reference-guided image generation and one consequential decision per round. Rejection of all candidates is valid. Concept, mechanism and implementation approval are tracked separately, and accepted images accompany the visual-language record.
 - Review evaluates the real implementation's aesthetics, meaning, fidelity and interaction separately. Image classification and reference comparison tools remain available internally.
+- Motion evidence defaults to broadly playable H.264 MP4 and is verified as a delivered file before it is linked for review. WebM remains available only when the recipient or target surface is known to support it.
 
 ## [vX.Y.Z]` section stays silent on every update.
 

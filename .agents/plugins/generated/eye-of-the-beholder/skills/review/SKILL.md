@@ -14,6 +14,8 @@ If the actual render cannot be captured or inspected, disclose the specific limi
 
 Capture at presentation resolution with enough product context to understand the state and behavior. Compare equivalent scales and data. Do not enlarge a low-resolution crop and call it evidence. Show fresh evidence in the shared artifact, not just a temporary local file.
 
+Motion evidence must also be playable by its recipient outside the capture browser. Default to H.264 MP4 with `yuv420p` pixel format and fast-start metadata for ordinary desktop handoff; use WebM only when the recipient or target surface is known to support it. Verify the delivered file itself with a local player or decoder before linking it as evidence.
+
 Assess separately:
 
 - Meaning and behavior: each visual channel has a clear role; dependencies and combined states remain correct.
