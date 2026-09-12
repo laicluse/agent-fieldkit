@@ -17,6 +17,8 @@ This fires on explicit invocation (`$not-your-monkey`, `/not-your-monkey`, `/don
 
 1. Reconstruct the target. Identify the app, route, component, file, viewport, state, or artifact under discussion from the conversation and repository. If no dev server is running, start the project-native one. If the target route is unknown, inspect scripts, routes, tests, Storybook config, screenshots, or recent diffs before asking.
 2. Inspect with the host's available visual capability. Use a browser, Chrome/Playwright, simulator, device screenshot, PDF/image renderer, canvas pixel probe, accessibility tree, DOM metrics, computed styles, console logs, or another host-owned route that actually lets you see the result.
+   - For motion complaints, inspect the complete motion at playback speed through a capability that actually presents motion. Still frames, contact sheets, optical metrics, code review, and another agent's description can support diagnosis, but none counts as watching the motion. If the host cannot present the video or interaction as motion, disclose that limitation and do not claim visual verification.
+   - Reproduce the operator's real product representation, data density, and interaction. A synthetic fixture may isolate performance or mechanics, but it cannot approve the real render when its shapes, grouping, sizes, or state transitions differ.
 3. Capture evidence before changing more code when feasible. Save or reference screenshots and useful measurements for the affected state and at least one relevant viewport. For dynamic interactions, drive the interaction instead of treating the first page load as enough.
 4. Diagnose from observed facts. Tie the hypothesis to visible evidence: bounding boxes, overlap, missing pixels, color contrast, scroll position, responsive breakpoints, console errors, asset load status, or rendered text. Tests and DOM inspection can support the diagnosis but do not replace looking when the complaint is visual.
 5. Patch the smallest relevant cause. Rebuild or restart only when the project requires it. Reload the same target yourself and capture fresh evidence.
@@ -32,5 +34,7 @@ Stop and ask only for a genuinely missing human input: credentials you cannot re
 - Saying "please reload and check", "does it look right now?", or "can you send another screenshot?" before exhausting local visual tooling.
 - Claiming you cannot see the UI without first trying the host's browser, screenshot, renderer, simulator, or local app route.
 - Treating code review, tests, or screenshots from before the latest render-affecting edit as enough.
+- Treating sampled frames or a contact sheet as if the full video was watched.
+- Approving a synthetic stress fixture while the reported real product state uses different visual bodies or grouping.
 - Making blind visual tweaks from memory or CSS intuition without observing the result after the change.
 - Returning a command recipe for the operator to run when the agent can run the same dev server, browser, renderer, or screenshot command.
