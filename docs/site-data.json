@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.11",
+			"version": "2.0.12",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -724,6 +724,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/anger-management/CHANGELOG.md"
 		},
 		{
+			"plugin": "eye-of-the-beholder",
+			"packageVersion": "2.0.12",
+			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
+			"version": "vX.Y.Z",
+			"type": "Changed",
+			"summary": "See the package changelog for the latest user-visible note.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
+		},
+		{
 			"plugin": "autonomous",
 			"packageVersion": "2.0.11",
 			"detailPath": "agent-fieldkit/autonomous/",
@@ -740,15 +749,6 @@
 			"type": "Fixed",
 			"summary": "Codex now gets its own /clipboard helper-resolution instructions.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/clipboard/CHANGELOG.md"
-		},
-		{
-			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.11",
-			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "vX.Y.Z",
-			"type": "Changed",
-			"summary": "See the package changelog for the latest user-visible note.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{
 			"plugin": "saysay",

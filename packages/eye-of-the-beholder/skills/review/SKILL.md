@@ -17,6 +17,8 @@ Capture at presentation resolution with enough product context to understand the
 
 Motion evidence must also be playable by its recipient outside the capture browser. Default to H.264 MP4 with `yuv420p` pixel format and fast-start metadata for ordinary desktop handoff; use WebM only when the recipient or target surface is known to support it. Verify the delivered file itself with a local player or decoder before linking it as evidence.
 
+The capture path must preserve the timing being judged. Measure the product's displayed or instrumented frame rate during the recorded interaction and report the observed range; a recorder that materially lowers it makes the evidence invalid even when the resulting file itself is encoded at a higher nominal frame rate. Switch to hardware-accelerated rendering and native screen capture, or another path whose measured runtime remains representative, before drawing conclusions about motion quality.
+
 Assess separately:
 
 - Meaning and behavior: each visual channel has a clear role; dependencies and combined states remain correct.
