@@ -22,6 +22,10 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.64]
+
+- **Breaking:** Replace `no-osascript` with `no-shell-ui-control`. Shell commands may no longer activate host apps, send host mouse or keyboard input, or capture the host screen. A denied route may not be replaced with an equivalent shell command; use the host's explicit UI or browser capability.
+
 ## [v2.0.61]
 
 ### Added

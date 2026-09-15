@@ -50,7 +50,7 @@ Every other registered guard runs for Codex.
 
 PreToolUse Bash denies invalid or risky command attempts before they run:
 
-- `no-osascript`: blocks `osascript` and common wrapper forms. Claude, Codex.
+- `no-shell-ui-control`: blocks shell commands that control or capture the host desktop. Claude, Codex.
 - `no-remote`: blocks `git push` with no remote or an unknown named remote.
   Claude, Codex.
 - `no-remote-create`: blocks `gh repo create` and `gh repo fork`. Claude, Codex.
@@ -103,12 +103,15 @@ Stop guards block weak final answers and make the agent continue:
 
 ## Bash guards
 
-### `no-osascript`
+### `no-shell-ui-control`
 
-Denies Bash tool calls that invoke `osascript`, including `/usr/bin/osascript`
-and wrapper forms such as `sudo`, `env`, `command`, `exec`, `nohup`, `arch`, and
-command substitutions. Pass condition: use an explicit host-owned UI or browser
-capability, or a project-native command path that does not execute AppleScript.
+Denies Bash tool calls that activate host apps, send host mouse or keyboard input,
+or capture the host screen. Covered commands include `osascript`, macOS `open`,
+`cliclick`, `xdotool`, `ydotool`, `wtype`, `screencapture`, `gnome-screenshot`,
+and `scrot`, including wrapper and command-substitution forms. A denied route may
+not be replaced with an equivalent command. Pass condition: use an explicit
+host-owned UI or browser capability, or a project-native command path that does
+not touch user-facing desktop state.
 
 ### `no-remote`
 

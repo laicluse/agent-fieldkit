@@ -595,23 +595,39 @@ expect_allow "followup: echoing a sentence about gh api body fields and follow-u
 expect_allow "followup: grep for follow-up in a notes file that also names gh api and body passes" \
   "$(pretool_bash 'grep -n "follow-up" /tmp/Notes-on-gh-api-body.md')"
 
-expect_deny "no-osascript: direct command blocked" \
+expect_deny "no-shell-ui-control: osascript blocked" \
   "$(pretool_bash "osascript -e 'return 1'")" \
-  "no-osascript"
+  "no-shell-ui-control"
 
-expect_deny "no-osascript: absolute path after chain blocked" \
+expect_deny "no-shell-ui-control: absolute path after chain blocked" \
   "$(pretool_bash "echo ready && /usr/bin/osascript -e 'return 1'")" \
-  "no-osascript"
+  "no-shell-ui-control"
 
-expect_deny "no-osascript: wrapper command blocked" \
+expect_deny "no-shell-ui-control: wrapper command blocked" \
   "$(pretool_bash "sudo osascript -e 'return 1'")" \
-  "no-osascript"
+  "no-shell-ui-control"
 
-expect_deny "no-osascript: command substitution blocked" \
+expect_deny "no-shell-ui-control: command substitution blocked" \
   "$(pretool_bash 'echo $(osascript -e "return 1")')" \
-  "no-osascript"
+  "no-shell-ui-control"
 
-expect_allow "no-osascript: searching for the word passes" \
+expect_deny "no-shell-ui-control: cliclick keyboard input blocked" \
+  "$(pretool_bash 'cliclick kp:cmd+l')" \
+  "no-shell-ui-control"
+
+expect_deny "no-shell-ui-control: macOS app activation blocked" \
+  "$(pretool_bash "open -a Arc 'https://example.test'")" \
+  "no-shell-ui-control"
+
+expect_deny "no-shell-ui-control: host screen capture blocked" \
+  "$(pretool_bash 'screencapture -x /tmp/screen.png')" \
+  "no-shell-ui-control"
+
+expect_deny "no-shell-ui-control: Linux host input blocked" \
+  "$(pretool_bash 'xdotool key ctrl+l')" \
+  "no-shell-ui-control"
+
+expect_allow "no-shell-ui-control: searching for command names passes" \
   "$(pretool_bash 'rg osascript packages/dont-do-that')"
 
 # --- no-remote-create --- allow-comment: section divider matches existing smoke-test.sh pattern

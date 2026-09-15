@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.63",
+			"version": "2.0.64",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 29,
 			"latestChange": {
-				"version": "v2.0.61",
-				"type": "Added",
-				"summary": "A pull request body can no longer hand the reviewer a link where a picture belongs."
+				"version": "v2.0.64",
+				"type": "Changed",
+				"summary": "Breaking: Replace no-osascript with no-shell-ui-control."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.63",
+			"packageVersion": "2.0.64",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.61",
-			"type": "Added",
-			"summary": "A pull request body can no longer hand the reviewer a link where a picture belongs.",
+			"version": "v2.0.64",
+			"type": "Changed",
+			"summary": "Breaking: Replace no-osascript with no-shell-ui-control.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

@@ -52,7 +52,7 @@
 					<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.63</span>
+						<span>2.0.64</span>
 						<span>3 skills</span>
 					</div>
 				</div>
@@ -82,7 +82,7 @@
 <h2 id="guard-catalog">Guard catalog</h2>
 <p>PreToolUse Bash denies invalid or risky command attempts before they run:</p>
 <ul>
-<li><code>no-osascript</code>: blocks <code>osascript</code> and common wrapper forms. Claude, Codex.</li>
+<li><code>no-shell-ui-control</code>: blocks shell commands that control or capture the host desktop. Claude, Codex.</li>
 <li><code>no-remote</code>: blocks <code>git push</code> with no remote or an unknown named remote. Claude, Codex.</li>
 <li><code>no-remote-create</code>: blocks <code>gh repo create</code> and <code>gh repo fork</code>. Claude, Codex.</li>
 <li><code>no-worktree-deploy</code>: blocks <code>ansible-playbook</code> from a git worktree unless read-only flags are used. Claude, Codex.</li>
@@ -116,8 +116,8 @@
 <li><code>jargon</code>: blocks coined approval-gate <code>-go</code> compounds in operator-facing text. Claude, Codex.</li>
 </ul>
 <h2 id="bash-guards">Bash guards</h2>
-<h3 id="no-osascript"><code>no-osascript</code></h3>
-<p>Denies Bash tool calls that invoke <code>osascript</code>, including <code>/usr/bin/osascript</code> and wrapper forms such as <code>sudo</code>, <code>env</code>, <code>command</code>, <code>exec</code>, <code>nohup</code>, <code>arch</code>, and command substitutions. Pass condition: use an explicit host-owned UI or browser capability, or a project-native command path that does not execute AppleScript.</p>
+<h3 id="no-shell-ui-control"><code>no-shell-ui-control</code></h3>
+<p>Denies Bash tool calls that activate host apps, send host mouse or keyboard input, or capture the host screen. Covered commands include <code>osascript</code>, macOS <code>open</code>, <code>cliclick</code>, <code>xdotool</code>, <code>ydotool</code>, <code>wtype</code>, <code>screencapture</code>, <code>gnome-screenshot</code>, and <code>scrot</code>, including wrapper and command-substitution forms. A denied route may not be replaced with an equivalent command. Pass condition: use an explicit host-owned UI or browser capability, or a project-native command path that does not touch user-facing desktop state.</p>
 <h3 id="no-remote"><code>no-remote</code></h3>
 <p>Denies <code>git push</code> when the current repo has no configured remote, or when the push names a remote that is not configured. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code> before checking remotes, then falls back to the hook cwd. Pass condition: add or choose a configured remote through the operator-approved route, or keep the work local.</p>
 <h3 id="no-remote-create"><code>no-remote-create</code></h3>
