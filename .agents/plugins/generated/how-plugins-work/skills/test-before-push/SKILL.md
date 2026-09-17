@@ -54,7 +54,7 @@ if [ "$git_dir" != "$common_dir" ]; then
 fi
 ```
 
-Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, that merge is the activation path for future sessions because Codex reads the generated plugin directly from the primary checkout.
+Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, that merge only updates the source: Codex runs a snapshot under `~/.codex/plugins/cache/<alias>/<plugin>/<version>`, so future sessions see the change only after a version bump and a refresh through the gate below.
 
 ## Detect the Codex source mode
 
@@ -77,7 +77,7 @@ case "$codex_source" in
 esac
 ```
 
-When this check passes, merge the candidate into that primary checkout. Do not run `codex plugin add`, `codex plugin marketplace add`, or `codex plugin marketplace upgrade`; those commands are redundant for this source mode and can invalidate hook paths held by every running Codex session. A fresh Codex session will read the integrated generated source.
+When this check passes, merge the candidate into that primary checkout with a bumped plugin version and regenerated Codex adapters. `codex plugin list` reports the cached version, not the manifest in the checkout, so a lower version than the manifest means the install is stale. `codex plugin marketplace upgrade` does not apply to a local marketplace; the refresh is `codex plugin add` under the gate below, and it can invalidate hook paths held by running Codex sessions.
 
 ## Shared runtime mutation gate
 
@@ -85,7 +85,7 @@ Claude Code normally executes an installed cache snapshot. Codex may also use a 
 
 ```bash
 claude plugins update "$plugin@$alias"  # or install on first use
-codex plugin add "$plugin@$alias"       # only for first install or a non-local source refresh
+codex plugin add "$plugin@$alias"       # first install, or a refresh of the version-keyed cache
 ```
 
 Do not infer approval from a request to fix, test, integrate, commit, or merge a plugin. Those actions do not authorize changing shared agent runtime state. Marketplace add, remove, or upgrade commands require the same explicit approval.

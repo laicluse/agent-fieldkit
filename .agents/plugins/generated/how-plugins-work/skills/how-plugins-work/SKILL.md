@@ -120,7 +120,7 @@ Important differences from Claude:
 A change to a plugin that ships to both Claude Code and Codex needs verified adapters and a safe delivery path for each host. Source completion does not authorize mutation of shared machine runtime state.
 
 1. Build and check generated adapters.
-2. Inspect `codex plugin list --json`. When `marketplaceSource.sourceType` is `local` and `source.path` is inside the primary checkout, merge the candidate into that primary checkout. Do not run `codex plugin add`; future sessions already read the integrated source.
+2. Inspect `codex plugin list --json`. When `marketplaceSource.sourceType` is `local` and `source.path` is inside the primary checkout, merge the candidate into that primary checkout with a bumped plugin version. Codex runs a snapshot under `~/.codex/plugins/cache/<alias>/<plugin>/<version>`, so future sessions read the change only after an approved `codex plugin add`.
 3. Treat Claude cache updates, first installs, non-local Codex refreshes, enablement changes, removals, and marketplace changes as machine-wide mutations. They require explicit operator approval in the current turn, even when source implementation and integration were requested.
 4. After an approved mutation, verify Claude's version and active `installPath` in `~/.claude/plugins/installed_plugins.json`, or Codex's version, enabled state, and active source with `codex plugin list --json`.
 5. Compare at least one changed runtime file with its active source. Matching manifest versions alone do not prove the payload arrived.
@@ -471,7 +471,7 @@ test "$(git rev-parse --absolute-git-dir)" = "$common_dir" || printf 'candidate 
 
 Claude Code: a directory-backed marketplace still installs cache snapshots. Adding or re-pointing the marketplace and updating a plugin are machine-wide mutations and require explicit operator approval in the current turn.
 
-Codex: a local marketplace registration reads `.agents/plugins/marketplace.json`, follows `plugins[].source.path`, and reports that direct path through `codex plugin list --json`. Once the path is inside the primary checkout, integrating generated changes is sufficient for future sessions. `codex plugin add` is only for a first install or an explicitly approved non-local refresh.
+Codex: a local marketplace registration reads `.agents/plugins/marketplace.json`, follows `plugins[].source.path`, and reports that direct path through `codex plugin list --json`. Codex still runs a snapshot under `~/.codex/plugins/cache/<alias>/<plugin>/<version>`, and `codex plugin list` reports that cached version. Integrating generated changes therefore reaches future sessions only after a version bump and an explicitly approved `codex plugin add`, which is also the first-install command.
 
 Feature-worktree validation remains transient: run source tests, adapter build/check, and host-specific ephemeral checks there. Integrate the candidate into the primary checkout. Never repoint a marketplace or reinstall a plugin to make unintegrated work loadable.
 

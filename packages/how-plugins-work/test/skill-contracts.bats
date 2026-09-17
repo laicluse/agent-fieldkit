@@ -14,11 +14,12 @@ runtime_closeout_section() {
 	' "$REFERENCE"
 }
 
-@test "the general plugin workflow keeps local Codex activation merge-only" {
+@test "the general plugin workflow refreshes the version-keyed local Codex cache" {
 	run runtime_closeout_section
 	[ "$status" -eq 0 ]
 	[[ "$output" == *"merge the candidate into that primary checkout"* ]]
-	[[ "$output" == *"Do not run `codex plugin add`"* ]]
+	[[ "$output" == *"~/.codex/plugins/cache/<alias>/<plugin>/<version>"* ]]
+	[[ "$output" != *"Do not run `codex plugin add`"* ]]
 	[[ "$output" == *"explicit operator approval"* ]]
 	[[ "$output" == *"codex plugin list --json"* ]]
 }
