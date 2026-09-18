@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.77",
+			"version": "2.0.78",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,14 +253,14 @@
 			"commandCount": 3,
 			"hookFileCount": 29,
 			"latestChange": {
-				"version": "v2.0.71",
-				"type": "Fixed",
-				"summary": "A locked repo no longer refuses git status behind a github.com path."
+				"version": "v2.0.78",
+				"type": "Changed",
+				"summary": "Finished work no longer implies a push."
 			}
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.67",
+			"version": "2.0.68",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 31,
 			"latestChange": {
-				"version": "v2.0.65",
-				"type": "Added",
-				"summary": "A file search can no longer start at the filesystem root or the home directory."
+				"version": "v2.0.68",
+				"type": "Changed",
+				"summary": "The premature nudge no longer invites a push reminder."
 			}
 		},
 		{
@@ -635,20 +635,20 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.77",
+			"packageVersion": "2.0.78",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.71",
-			"type": "Fixed",
-			"summary": "A locked repo no longer refuses git status behind a github.com path.",
+			"version": "v2.0.78",
+			"type": "Changed",
+			"summary": "Finished work no longer implies a push.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.67",
+			"packageVersion": "2.0.68",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.65",
-			"type": "Added",
-			"summary": "A file search can no longer start at the filesystem root or the home directory.",
+			"version": "v2.0.68",
+			"type": "Changed",
+			"summary": "The premature nudge no longer invites a push reminder.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

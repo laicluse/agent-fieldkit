@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.78]
+
+### Changed
+
+- **Finished work no longer implies a push.** `push-policy` now separates finishing work from publishing it. Committed but unpushed work is a finished, safe state that may stay local for weeks, and an agent no longer reports it as open, counts commits ahead of the remote, or proposes a push nobody ordered. Every push needs a reason from one of three classes: a workflow step of a flow the operator ordered (a pull request branch, the force-with-lease after a rebase), a backup to a ref only the operator reads, or a release that changes what others see or run, which happens only on the operator's explicit order. A remark such as "nothing gets lost by not pushing" is not an order to push. In `auto-trunk` the default-branch push counts as a backup: allowed without asking, never reported, and a release as soon as something such as a deploy reads the remote default. `merge-to-default` finishes a `gated-trunk` merge on the local default without reporting the remote as pending.
+
 ## [v2.0.71]
 
 ### Fixed

@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.68]
+
+### Changed
+
+- **The `premature` nudge no longer invites a push reminder.** Its closing hint defined `🏁` as "done, including unpushed commits" next to `🚦` as "waiting on external go", which agents read as a cue to end every turn waiting for a push. `🏁` now means committed work is done, pushed or not, and `🚦` means blocked on an operator decision needed to continue. The hint states that a push or merge nobody ordered is not a `🚦`, and that a gate already named needs no repeat.
+
 ## [v2.0.65]
 
 ### Added

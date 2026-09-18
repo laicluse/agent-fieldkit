@@ -47,10 +47,10 @@ guard_premature() {
   fi
   if [ "$has_gate" -eq 1 ]; then
     _dd_premature_substance "$text" && return 0
-    dd_emit_block premature "🚦 alone is not a pause. Write a full sentence stating what you are waiting for + 🚦. One surface is enough; 🏁 works fine after that."
+    dd_emit_block premature "🚦 alone is not a pause. Write a full sentence stating which decision you are waiting for + 🚦. One surface is enough; 🏁 works fine after that."
   fi
 
-  dd_emit_block premature "Keep working, or end with 🏁 (done, including unpushed commits) / 🚦 (waiting on external go) + a full sentence."
+  dd_emit_block premature "Keep working, or end with 🏁 (done: committed work is done, pushed or not) / 🚦 (blocked on an operator decision you need before you can continue) + a full sentence. A push or merge nobody ordered is not a 🚦, and a gate you already named needs no repeat."
 }
 
 # _dd_premature_substance <text>

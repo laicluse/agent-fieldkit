@@ -52,7 +52,7 @@
 					<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.67</span>
+						<span>2.0.68</span>
 						<span>3 skills</span>
 					</div>
 				</div>
@@ -187,7 +187,7 @@
 <p>Pass condition: state the preference the agent would back and why, then mark the pick with a squared-letter or number-keycap emoji. <code>🧭</code> for a genuine operator call and <code>🚧</code> for work in progress also stand the guard aside. When the <code>rover</code> plugin is installed, the reminder can include a <code>/rover:decide</code> pointer for hard calls.</p>
 <p>The guard stands aside when the menu includes external irreversible state such as remote creation, remote attachment, push, deploy, publish, production, DNS, or shared infrastructure; those are operator gates, not preference-reflex cases.</p>
 <h3 id="premature"><code>premature</code></h3>
-<p>Blocks Stop when the last assistant message does not end with a question and does not end with <code>🏁</code> (finished) or <code>🚦</code> (waiting on external go) plus a substantive sentence of at least 40 non-space, non-emoji characters with a sentence terminator. Pass condition: finish with a real completed-work sentence, finish with a real waiting-on-external-go sentence, or keep writing.</p>
+<p>Blocks Stop when the last assistant message does not end with a question and does not end with <code>🏁</code> (finished) or <code>🚦</code> (blocked on an operator decision) plus a substantive sentence of at least 40 non-space, non-emoji characters with a sentence terminator. Committed work is finished whether or not it is pushed, so it closes with <code>🏁</code>; a push or merge nobody ordered is not a reason for <code>🚦</code>, and a gate named once is not repeated every turn. Pass condition: finish with a real completed-work sentence, finish with a real waiting-on-a-decision sentence, or keep writing.</p>
 <h3 id="verify"><code>verify</code></h3>
 <p>Blocks Stop when the assistant delegates verification to the operator with phrases like &quot;zou moeten werken&quot;, &quot;check of het werkt&quot;, or &quot;refresh de pagina&quot; instead of verifying directly. Meta-references in backticks, quotes, and table cells are stripped before matching. Pass condition: actually verify with a test, curl, grep, screenshot, browser check, or other available tool, then prefix the conclusion with <code>Geverifieerd:</code>.</p>
 <h3 id="duh"><code>duh</code></h3>

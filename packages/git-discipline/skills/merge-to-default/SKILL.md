@@ -37,7 +37,7 @@ Repository policy determines the only valid merge target:
 | Mode | Action |
 |------|--------|
 | `local-only` | Use `--local`; atomically update the local default ref. |
-| `auto-trunk` | Use `--remote`; the non-force push is normal completion. |
+| `auto-trunk` | Use `--remote`; the non-force push is a backup of a private default and needs no report. When something reads the remote default, such as a deploy on push, the push is a release: use `--local` unless the operator's order names publishing. |
 | `gated-trunk` | Use `--local`: the merge commit updates the local default ref and publication stays a separate decision. Use `--remote` only when the operator's order names publishing this default, in their own words (push, publish, origin, live). Invoking this skill orders the merge, not the publication; a merge order is never by itself the go for a shared ref update. |
 | `pr-flow` | Do not update the default ref directly. Follow the repository's PR flow; the remote merge remains an explicit operator gate. |
 | `external` | Do not update the default ref; there is no write access. |
@@ -53,7 +53,7 @@ case "$MODE" in
 esac
 ```
 
-Raise `gated-trunk` to `TARGET=--remote` only after reading the operator's order again and finding publication in it. When the order is silent about publishing, finish on the local default and report that the remote is untouched; the operator can order the push as its own step.
+Raise `gated-trunk` to `TARGET=--remote` only after reading the operator's order again and finding publication in it. When the order is silent about publishing, finish on the local default and leave the remote untouched without reporting it as pending; publication is a separate decision the operator makes when they want it.
 
 ## Prepare and verify the candidate
 

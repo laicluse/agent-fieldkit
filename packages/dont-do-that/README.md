@@ -320,10 +320,13 @@ or shared infrastructure; those are operator gates, not preference-reflex cases.
 ### `premature`
 
 Blocks Stop when the last assistant message does not end with a question and
-does not end with `🏁` (finished) or `🚦` (waiting on external go) plus a
+does not end with `🏁` (finished) or `🚦` (blocked on an operator decision) plus a
 substantive sentence of at least 40 non-space, non-emoji characters with a
-sentence terminator. Pass condition: finish with a real completed-work sentence,
-finish with a real waiting-on-external-go sentence, or keep writing.
+sentence terminator. Committed work is finished whether or not it is pushed, so
+it closes with `🏁`; a push or merge nobody ordered is not a reason for `🚦`, and
+a gate named once is not repeated every turn. Pass condition: finish with a real
+completed-work sentence, finish with a real waiting-on-a-decision sentence, or
+keep writing.
 
 ### `verify`
 
