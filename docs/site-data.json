@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 83,
-		"hookFiles": 64
+		"hookFiles": 66
 	},
 	"install": {
 		"claude": [
@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.64",
+			"version": "2.0.65",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -273,11 +273,11 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/dont-do-that",
 			"skillCount": 3,
 			"commandCount": 2,
-			"hookFileCount": 29,
+			"hookFileCount": 31,
 			"latestChange": {
-				"version": "v2.0.64",
-				"type": "Changed",
-				"summary": "Breaking: Replace no-osascript with no-shell-ui-control."
+				"version": "v2.0.65",
+				"type": "Added",
+				"summary": "A file search can no longer start at the filesystem root or the home directory."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.64",
+			"packageVersion": "2.0.65",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.64",
-			"type": "Changed",
-			"summary": "Breaking: Replace no-osascript with no-shell-ui-control.",
+			"version": "v2.0.65",
+			"type": "Added",
+			"summary": "A file search can no longer start at the filesystem root or the home directory.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

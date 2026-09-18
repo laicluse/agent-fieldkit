@@ -51,6 +51,7 @@ Every other registered guard runs for Codex.
 PreToolUse Bash denies invalid or risky command attempts before they run:
 
 - `no-shell-ui-control`: blocks shell commands that control or capture the host desktop. Claude, Codex.
+- `no-root-search`: blocks a recursive file search rooted at the filesystem root, the users directory, the home directory, or the home Library and its app-container directories. Claude, Codex.
 - `no-remote`: blocks `git push` with no remote or an unknown named remote.
   Claude, Codex.
 - `no-remote-create`: blocks `gh repo create` and `gh repo fork`. Claude, Codex.
@@ -112,6 +113,12 @@ and `scrot`, including wrapper and command-substitution forms. A denied route ma
 not be replaced with an equivalent command. Pass condition: use an explicit
 host-owned UI or browser capability, or a project-native command path that does
 not touch user-facing desktop state.
+
+### `no-root-search`
+
+Denies a recursive file search whose root is the filesystem root, the users directory, `/Volumes`, the home directory, or the home `Library`, `Library/Containers` and `Library/Group Containers`. Walking those trees reads other apps' private data, which on macOS raises one privacy prompt per app for the operator, and it runs for many minutes where a package-manager or index query answers in a second. Covered tools are `find`, `bfs`, `fd`, `rg`, `grep -r`, `ag`, `ack`, `tree`, `du` and `ls -R`, including wrapper, `sh -c` and command-substitution forms. Every spelling of a root counts (`~`, `$HOME`, an absolute path, a `..` chain, `~/*`), and a search without a path is judged against the directory it runs in, following a leading `cd`. Quoted text, heredoc bodies and commands passed to another host are data and pass. Pass condition: search the specific directory that can hold the answer; locate a dependency through its package manager (`bundle show`, `gem contents`, `npm ls`, `pip show -f`, `go list -m`); find a file by name through the file index (`mdfind -name`, `locate`). A shallow listing passes: `-maxdepth 2` from the filesystem root or the users directory, `-maxdepth 1` from the other roots. Append `# allow-root-search` when the operator asked for a search of that whole tree.
+
+The `no-root-search-tool` registry entry applies the same roots to Claude's built-in `Grep` and `Glob` tools, which default to the session directory. `Grep` needs a `path` outside the guarded roots; `Glob` is judged by the literal directory prefix of its pattern and by how deep the rest descends, so `*.md` in the home directory passes and `**/Gemfile` does not. These tools carry no comment, so an operator-requested search of a whole tree goes through the shell with `# allow-root-search`.
 
 ### `no-remote`
 
@@ -445,8 +452,8 @@ The registry has four parts:
   invocation, `persisted-edit` is file content or shell text after it has been
   applied, and `final-answer` is the assistant's final-turn text.
 - `events`: hook events and the contracts they provide.
-- `lanes`: execution groups owned by the dispatcher. `pre-bash` and `pre-edit`
-  deny tool calls, `post` and `stop-tracked` capture context while still running
+- `lanes`: execution groups owned by the dispatcher. `pre-bash`, `pre-edit` and
+  `pre-search` (the host's built-in search tools) deny tool calls, `post` and `stop-tracked` capture context while still running
   every guard for line tracking, and `stop-mutex` blocks Stop unless a previous
   Stop fire already blocked.
 - `guards`: every guard, keyed by the guard id, with its lane, order, function,

@@ -13,6 +13,7 @@
   "lanes": {
     "pre-bash": { "event": "PreToolUse" },
     "pre-edit": { "event": "PreToolUse" },
+    "pre-search": { "event": "PreToolUse" },
     "post": { "event": "PostToolUse" },
     "stop-tracked": { "event": "Stop" },
     "stop-mutex": { "event": "Stop" }
@@ -22,6 +23,12 @@
       "lane": "pre-bash",
       "order": 5,
       "function": "guard_no_shell_ui_control",
+      "contract": "tool-call"
+    },
+    "no-root-search": {
+      "lane": "pre-bash",
+      "order": 7,
+      "function": "guard_no_root_search",
       "contract": "tool-call"
     },
     "no-remote": {
@@ -76,6 +83,12 @@
       "lane": "pre-edit",
       "order": 10,
       "function": "guard_no_code_comments",
+      "contract": "tool-call"
+    },
+    "no-root-search-tool": {
+      "lane": "pre-search",
+      "order": 10,
+      "function": "guard_no_root_search_tool",
       "contract": "tool-call"
     },
     "dash": {

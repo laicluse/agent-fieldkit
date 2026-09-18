@@ -630,6 +630,22 @@ expect_deny "no-shell-ui-control: Linux host input blocked" \
 expect_allow "no-shell-ui-control: searching for command names passes" \
   "$(pretool_bash 'rg osascript packages/dont-do-that')"
 
+# --- no-root-search --- allow-comment: section divider matches existing smoke-test.sh pattern
+
+expect_deny "no-root-search: find from the filesystem root blocked" \
+  "$(pretool_bash 'find / -type d -name "puma-*" -path "*gems*" 2>/dev/null')" \
+  "no-root-search"
+
+expect_deny "no-root-search: recursive grep of the home directory blocked" \
+  "$(pretool_bash 'grep -rn puma ~/')" \
+  "bundle show"
+
+expect_allow "no-root-search: named directory passes" \
+  "$(pretool_bash 'find /opt/homebrew/lib -name "puma-*"')"
+
+expect_allow "no-root-search: root search named in a commit message passes" \
+  "$(pretool_bash 'echo "never run find / -name x"')"
+
 # --- no-remote-create --- allow-comment: section divider matches existing smoke-test.sh pattern
 
 expect_deny "no-remote-create: gh repo create blocked" \

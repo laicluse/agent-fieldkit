@@ -46,6 +46,9 @@ case "$EVENT" in
       Edit|Write|MultiEdit|apply_patch)
         run_direct_lane pre-edit PreToolUse
         ;;
+      Grep|Glob)
+        run_direct_lane pre-search PreToolUse
+        ;;
     esac
     ;;
 

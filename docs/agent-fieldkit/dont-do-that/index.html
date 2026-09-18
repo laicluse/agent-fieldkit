@@ -52,7 +52,7 @@
 					<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.64</span>
+						<span>2.0.65</span>
 						<span>3 skills</span>
 					</div>
 				</div>
@@ -83,6 +83,7 @@
 <p>PreToolUse Bash denies invalid or risky command attempts before they run:</p>
 <ul>
 <li><code>no-shell-ui-control</code>: blocks shell commands that control or capture the host desktop. Claude, Codex.</li>
+<li><code>no-root-search</code>: blocks a recursive file search rooted at the filesystem root, the users directory, the home directory, or the home Library and its app-container directories. Claude, Codex.</li>
 <li><code>no-remote</code>: blocks <code>git push</code> with no remote or an unknown named remote. Claude, Codex.</li>
 <li><code>no-remote-create</code>: blocks <code>gh repo create</code> and <code>gh repo fork</code>. Claude, Codex.</li>
 <li><code>no-worktree-deploy</code>: blocks <code>ansible-playbook</code> from a git worktree unless read-only flags are used. Claude, Codex.</li>
@@ -118,6 +119,9 @@
 <h2 id="bash-guards">Bash guards</h2>
 <h3 id="no-shell-ui-control"><code>no-shell-ui-control</code></h3>
 <p>Denies Bash tool calls that activate host apps, send host mouse or keyboard input, or capture the host screen. Covered commands include <code>osascript</code>, macOS <code>open</code>, <code>cliclick</code>, <code>xdotool</code>, <code>ydotool</code>, <code>wtype</code>, <code>screencapture</code>, <code>gnome-screenshot</code>, and <code>scrot</code>, including wrapper and command-substitution forms. A denied route may not be replaced with an equivalent command. Pass condition: use an explicit host-owned UI or browser capability, or a project-native command path that does not touch user-facing desktop state.</p>
+<h3 id="no-root-search"><code>no-root-search</code></h3>
+<p>Denies a recursive file search whose root is the filesystem root, the users directory, <code>/Volumes</code>, the home directory, or the home <code>Library</code>, <code>Library/Containers</code> and <code>Library/Group Containers</code>. Walking those trees reads other apps' private data, which on macOS raises one privacy prompt per app for the operator, and it runs for many minutes where a package-manager or index query answers in a second. Covered tools are <code>find</code>, <code>bfs</code>, <code>fd</code>, <code>rg</code>, <code>grep -r</code>, <code>ag</code>, <code>ack</code>, <code>tree</code>, <code>du</code> and <code>ls -R</code>, including wrapper, <code>sh -c</code> and command-substitution forms. Every spelling of a root counts (<code>~</code>, <code>$HOME</code>, an absolute path, a <code>..</code> chain, <code>~/*</code>), and a search without a path is judged against the directory it runs in, following a leading <code>cd</code>. Quoted text, heredoc bodies and commands passed to another host are data and pass. Pass condition: search the specific directory that can hold the answer; locate a dependency through its package manager (<code>bundle show</code>, <code>gem contents</code>, <code>npm ls</code>, <code>pip show -f</code>, <code>go list -m</code>); find a file by name through the file index (<code>mdfind -name</code>, <code>locate</code>). A shallow listing passes: <code>-maxdepth 2</code> from the filesystem root or the users directory, <code>-maxdepth 1</code> from the other roots. Append <code># allow-root-search</code> when the operator asked for a search of that whole tree.</p>
+<p>The <code>no-root-search-tool</code> registry entry applies the same roots to Claude's built-in <code>Grep</code> and <code>Glob</code> tools, which default to the session directory. <code>Grep</code> needs a <code>path</code> outside the guarded roots; <code>Glob</code> is judged by the literal directory prefix of its pattern and by how deep the rest descends, so <code>*.md</code> in the home directory passes and <code>**/Gemfile</code> does not. These tools carry no comment, so an operator-requested search of a whole tree goes through the shell with <code># allow-root-search</code>.</p>
 <h3 id="no-remote"><code>no-remote</code></h3>
 <p>Denies <code>git push</code> when the current repo has no configured remote, or when the push names a remote that is not configured. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code> before checking remotes, then falls back to the hook cwd. Pass condition: add or choose a configured remote through the operator-approved route, or keep the work local.</p>
 <h3 id="no-remote-create"><code>no-remote-create</code></h3>
@@ -231,7 +235,7 @@
 <ul>
 <li><code>contracts</code>: payload types guards can inspect. <code>tool-call</code> is the pending tool invocation, <code>persisted-edit</code> is file content or shell text after it has been applied, and <code>final-answer</code> is the assistant's final-turn text.</li>
 <li><code>events</code>: hook events and the contracts they provide.</li>
-<li><code>lanes</code>: execution groups owned by the dispatcher. <code>pre-bash</code> and <code>pre-edit</code> deny tool calls, <code>post</code> and <code>stop-tracked</code> capture context while still running every guard for line tracking, and <code>stop-mutex</code> blocks Stop unless a previous Stop fire already blocked.</li>
+<li><code>lanes</code>: execution groups owned by the dispatcher. <code>pre-bash</code>, <code>pre-edit</code> and <code>pre-search</code> (the host's built-in search tools) deny tool calls, <code>post</code> and <code>stop-tracked</code> capture context while still running every guard for line tracking, and <code>stop-mutex</code> blocks Stop unless a previous Stop fire already blocked.</li>
 <li><code>guards</code>: every guard, keyed by the guard id, with its lane, order, function, inspected contract, and optional per-agent policy.</li>
 </ul>
 <p>If <code>guards.json</code> is missing or malformed, PreToolUse fails closed with a <code>[dont-do-that/registry]</code> denial so a broken registry cannot silently disarm the safety gates. PostToolUse and Stop stay quiet in that state because they only surface context or nudges.</p>

@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.65]
+
+### Added
+
+- **A file search can no longer start at the filesystem root or the home directory.** The new `no-root-search` guard denies `find /`, `rg pattern ~`, `grep -r`, `fd`, `ag`, `ack`, `tree`, `du` and `ls -R` when they are rooted at `/`, the users directory, `/Volumes`, the home directory, or the home `Library` and its app-container directories, in every spelling and also when the root is only the directory the command runs in. Such a walk reads other apps' private data, so macOS asks the operator for permission once per app, and it takes many minutes. The deny names the fast routes: the package manager for a dependency (`bundle show`, `gem contents`, `npm ls`, `pip show -f`, `go list -m`), the file index for a file name (`mdfind -name`, `locate`), or the specific directory. Claude's `Grep` and `Glob` tools get the same check, so a session started in the home directory has to pass a `path`. A shallow listing (`-maxdepth 1`) passes. Takes `# allow-root-search` when the operator asked for a search of the whole tree.
+
 ## [v2.0.64]
 
 - **Breaking:** Replace `no-osascript` with `no-shell-ui-control`. Shell commands may no longer activate host apps, send host mouse or keyboard input, or capture the host screen. A denied route may not be replaced with an equivalent shell command; use the host's explicit UI or browser capability.
