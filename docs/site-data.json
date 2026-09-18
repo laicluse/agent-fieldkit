@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.41",
+			"version": "2.0.42",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.79",
+			"version": "2.0.80",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -635,7 +635,7 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.79",
+			"packageVersion": "2.0.80",
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"version": "v2.0.79",
 			"type": "Added",
@@ -662,7 +662,7 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.41",
+			"packageVersion": "2.0.42",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
 			"version": "v2.0.39",
 			"type": "Fixed",

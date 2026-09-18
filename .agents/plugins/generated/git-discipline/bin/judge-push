@@ -2,7 +2,7 @@
 // allow-comment: Judges the consequence of a pending `git push` before it runs. Reads a PreToolUse hook payload on stdin and prints {verdict, reason}: "allow" for a push whose consequence is known and harmless or part of ordered work, "agree" for a push that publishes, releases, deploys, rewrites or cannot be classified (it runs only once the operator agreed, marked by the push-agreed token), "never" for a push the repository's agreement rules out. The decision rests on the agreement for the repository, never on whether the remote happens to reject the push. Anything unrecognised resolves to "agree": autonomy needs a positive match.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -303,7 +303,52 @@ function repositoryFacts(directory, env) {
     confidence: policyFields.confidence || 'low',
     visibility: policyFields.visibility || 'public',
     daemonManaged: daemonManages(root, env),
+    localMarketplaces: localMarketplaces(root, env),
   };
+}
+
+// allow-comment: localMarketplaces names the plugin marketplaces this machine registered from a local directory that is this checkout, for Claude (known_marketplaces.json) and Codex (config.toml). Such an install reads the local default branch, so a release push is never what makes a change usable here.
+function localMarketplaces(root, env) {
+  const home = env.HOME ?? homedir();
+  const names = new Set();
+  const samePath = (candidate) => {
+    if (!candidate) return false;
+    try {
+      return realpathSync(candidate) === realpathSync(root);
+    } catch {
+      return false;
+    }
+  };
+  try {
+    const known = JSON.parse(readFileSync(join(home, '.claude', 'plugins', 'known_marketplaces.json'), 'utf8'));
+    for (const [name, entry] of Object.entries(known)) {
+      if (entry?.source?.source === 'directory' && samePath(entry.source.path)) names.add(`Claude: ${name}`);
+    }
+  } catch {}
+  try {
+    const config = readFileSync(join(home, '.codex', 'config.toml'), 'utf8');
+    let section = null;
+    let sourceType = null;
+    const flush = (source) => {
+      if (section && sourceType === 'local' && samePath(source)) names.add(`Codex: ${section}`);
+    };
+    let source = null;
+    for (const line of config.split('\n')) {
+      const header = line.match(/^\[marketplaces\.([^\]]+)\]/);
+      if (header || /^\[/.test(line)) {
+        flush(source);
+        section = header ? header[1].replace(/^"|"$/g, '') : null;
+        sourceType = null;
+        source = null;
+        continue;
+      }
+      const pair = line.match(/^\s*(source_type|source)\s*=\s*"([^"]*)"/);
+      if (pair && pair[1] === 'source_type') sourceType = pair[2];
+      else if (pair) source = pair[2];
+    }
+    flush(source);
+  } catch {}
+  return [...names];
 }
 
 function daemonManages(root, env) {
@@ -361,8 +406,8 @@ function destinations(parsed, facts) {
   return result;
 }
 
-const SAFE_STATE = "Committed work that is not pushed is finished and safe; it is not data loss and it is not open work. A remark about pushing is not agreement to push.";
-const HOW_TO_AGREE = `If the operator agreed to this exact push in this conversation, rerun the same command ending in '${AGREED_TOKEN}'. Otherwise leave the work committed, and mention the possible push at most once, only when it matters for what the operator is trying to achieve.`;
+const SAFE_STATE = 'Unpushed committed work is done and safe, and a remark about pushing is not agreement.';
+const HOW_TO_AGREE = `Once the operator agreed to this push, rerun it ending in '${AGREED_TOKEN}'.`;
 
 function agree(consequence) {
   return { verdict: 'agree', reason: `${consequence} ${SAFE_STATE} ${HOW_TO_AGREE}` };
@@ -374,7 +419,7 @@ function never(reason) {
 
 export function judgeInvocation(invocation, env = process.env) {
   if (invocation.directory === null || !existsSync(invocation.directory) || !statSync(invocation.directory).isDirectory()) {
-    return agree('The directory this push runs in cannot be read from the command, so its consequence is unknown.');
+    return agree('The directory this push runs in is unknown.');
   }
   const parsed = parsePushArgs(invocation.args);
   if (parsed.dryRun) return { verdict: 'allow', reason: 'dry run' };
@@ -383,16 +428,16 @@ export function judgeInvocation(invocation, env = process.env) {
   if (facts === null) return { verdict: 'allow', reason: 'not a git repository' };
   if (facts.remotes.length === 0 || facts.mode === 'local-only') return { verdict: 'allow', reason: 'no remote' };
 
-  if (parsed.unresolvable) return agree('The remote or ref of this push is computed at run time, so its consequence cannot be judged beforehand.');
+  if (parsed.unresolvable) return agree('The remote or ref is only known at run time.');
 
   const remote = parsed.remote || (facts.currentBranch ? git(facts.root, ['for-each-ref', '--format=%(push:remotename)', `refs/heads/${facts.currentBranch}`]) : null) || facts.homeRemote;
   if (!remote || remote !== facts.homeRemote) {
-    return agree(`This push goes to '${remote ?? 'an unnamed remote'}', which is not this repository's own remote. Such a remote is a deploy target or somebody else's repository.`);
+    return agree(`'${remote ?? 'an unnamed remote'}' is not this repository's own remote: a deploy target or somebody else's repository.`);
   }
-  if (parsed.mirror || parsed.all || parsed.tags) return agree('This push updates every branch or tag at once, which reaches further than one change.');
+  if (parsed.mirror || parsed.all || parsed.tags) return agree('This updates every branch or tag at once.');
 
   const targets = destinations(parsed, facts);
-  if (targets === null) return agree('HEAD is detached or the target ref cannot be resolved, so the consequence of this push is unknown.');
+  if (targets === null) return agree('The target ref is unknown.');
 
   let worst = { verdict: 'allow', reason: 'known destination' };
   const consider = (candidate) => {
@@ -401,48 +446,51 @@ export function judgeInvocation(invocation, env = process.env) {
 
   for (const target of targets) {
     if (target.kind === 'tag') {
-      consider(agree(`Pushing tag '${target.name}' publishes a version, and a tag often triggers a release, a deploy or a package update.`));
+      consider(agree(`Tag '${target.name}' publishes a version, often a release or deploy trigger.`));
       continue;
     }
     if (target.kind === 'other') {
-      consider(agree(`'${target.name}' is neither a branch nor a tag, so the consequence of updating it is unknown.`));
+      consider(agree(`'${target.name}' is neither a branch nor a tag.`));
       continue;
     }
     const isDefault = facts.defaultNames.has(target.name);
 
     if (isDefault && facts.daemonManaged) {
-      consider(never(`A sync daemon owns the pushes of this checkout. Commit the work and let the daemon publish '${target.name}'; an agent does not push it.`));
+      consider(never(`A sync daemon owns this checkout's pushes. Commit and let it publish '${target.name}'.`));
       continue;
     }
     if (target.deletes) {
-      consider(agree(`This push deletes '${target.name}' on the remote, which cannot be undone from here.`));
+      consider(agree(`This deletes '${target.name}' on the remote.`));
       continue;
     }
     if (isDefault) {
       if (facts.mode === 'auto-trunk') {
-        if (facts.confidence === 'low') consider(agree(`The facts about this repository could not be read (no answer from the forge), so whether pushing '${target.name}' is free here is a guess.`));
-        else if (target.forced || parsed.lease) consider(agree(`This push rewrites the history of the default branch '${target.name}'.`));
+        if (facts.confidence === 'low') consider(agree(`This repository's regime could not be read, so pushing '${target.name}' freely is a guess.`));
+        else if (target.forced || parsed.lease) consider(agree(`This rewrites the history of '${target.name}'.`));
         continue;
       }
       if (facts.mode === 'gated-trunk') {
-        consider(agree(`Pushing '${target.name}' of this ${facts.visibility === 'public' ? 'public' : 'shared'} repository is a release: other people and their installs receive it.`));
+        const localInstall = facts.localMarketplaces.length > 0
+          ? ` Local installs read this checkout (${facts.localMarketplaces.join(', ')}) and need no push.`
+          : '';
+        consider(agree(`'${target.name}' is a release here: other people and their installs receive it.${localInstall}`));
         continue;
       }
-      consider(never(`This repository takes changes to '${target.name}' only through a pull request merge (mode ${facts.mode}). That is an agreement; whether the remote would reject the push does not matter, so the push is not attempted. Push your own branch, create or update the pull request, and leave the merge to the operator.`));
+      consider(never(`'${target.name}' changes only through a pull request merge here (${facts.mode}); whether the remote would reject the push does not matter. Push a branch and use the pull request.`));
       continue;
     }
 
     if (facts.mode === 'external') {
-      consider(agree('There is no write access to this repository, so a push here reaches a fork or fails; the contribution route has to be agreed first.'));
+      consider(agree('No write access: the contribution route needs agreement first.'));
       continue;
     }
     if (target.forced && !parsed.lease) {
-      consider(agree(`A plain --force on '${target.name}' overwrites whatever is on the remote, including work by others. Use --force-with-lease for a rebased branch of your own.`));
+      consider(agree(`A plain --force overwrites '${target.name}' on the remote. Use --force-with-lease for your own rebased branch.`));
       continue;
     }
     const alreadyPublished = git(facts.root, ['rev-parse', '--verify', '--quiet', `refs/remotes/${remote}/${target.name}`]) !== null;
     if (facts.visibility === 'public' && !alreadyPublished) {
-      consider(agree(`The first push of '${target.name}' makes its content public. That fits when the operator ordered a pull request or a publication.`));
+      consider(agree(`The first push of '${target.name}' makes its content public.`));
     }
   }
   return worst;

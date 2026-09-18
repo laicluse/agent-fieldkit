@@ -71,9 +71,9 @@ passes() {
   repo=$(make_repo marketplace public individual pushable)
   push_from "$repo" 'git push origin main'
   held
-  [[ "$output" == *"is a release"* ]]
-  [[ "$output" == *"not data loss"* ]]
-  [[ "$output" == *"A remark about pushing is not agreement"* ]]
+  [[ "$output" == *"is a release here"* ]]
+  [[ "$output" == *"Unpushed committed work is done and safe"* ]]
+  [[ "$output" == *"a remark about pushing is not agreement"* ]]
   push_from "$repo" 'git push origin main # push-agreed'
   passes
 }
@@ -91,7 +91,7 @@ passes() {
   repo=$(make_repo team private shared protected)
   push_from "$repo" 'git push origin main'
   refused
-  [[ "$output" == *"only through a pull request merge"* ]]
+  [[ "$output" == *"changes only through a pull request merge"* ]]
   [[ "$output" == *"whether the remote would reject the push does not matter"* ]]
   push_from "$repo" 'git push origin main # push-agreed'
   refused
@@ -197,4 +197,25 @@ passes() {
   git -C "$repo" remote remove origin
   push_from "$repo" 'git push'
   passes
+}
+
+@test "a release push of a locally installed marketplace names the local update route" {
+  repo=$(make_repo marketplace public individual pushable)
+  mkdir -p "$BATS_TEST_TMPDIR/home/.claude/plugins" "$BATS_TEST_TMPDIR/home/.codex"
+  jq -n --arg path "$repo" '{"local-kit": {source: {source: "directory", path: $path}}}' > "$BATS_TEST_TMPDIR/home/.claude/plugins/known_marketplaces.json"
+  printf '[marketplaces.local-kit]\nsource_type = "local"\nsource = "%s"\n' "$repo" > "$BATS_TEST_TMPDIR/home/.codex/config.toml"
+  payload=$(jq -cn --arg cwd "$repo" '{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, tool_input:{command:"git push origin main"}}')
+  run env HOME="$BATS_TEST_TMPDIR/home" PATH="$FAKEBIN:$PATH" VAULTSYNC_BIN="$FAKEBIN/vaultsync" bash -c 'printf "%s" "$1" | bash "$2"' _ "$payload" "$DISPATCH"
+  held
+  [[ "$output" == *"Local installs read this checkout (Claude: local-kit, Codex: local-kit)"* ]]
+  [[ "$output" == *"need no push"* ]]
+}
+
+@test "a release push of a repository no local marketplace reads stays silent about local installs" {
+  repo=$(make_repo marketplace public individual pushable)
+  mkdir -p "$BATS_TEST_TMPDIR/home"
+  payload=$(jq -cn --arg cwd "$repo" '{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, tool_input:{command:"git push origin main"}}')
+  run env HOME="$BATS_TEST_TMPDIR/home" PATH="$FAKEBIN:$PATH" VAULTSYNC_BIN="$FAKEBIN/vaultsync" bash -c 'printf "%s" "$1" | bash "$2"' _ "$payload" "$DISPATCH"
+  held
+  [[ "$output" != *"Local installs read this checkout"* ]]
 }

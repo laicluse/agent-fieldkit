@@ -749,7 +749,7 @@ Observed symptom: user types `/rover` (or `/autonomous:rover`) and Claude Code r
 
 2. **Plugin listed but disabled.** Patch `~/.claude/settings.json` `enabledPlugins` to `"<plugin>@<marketplace>": true`. This is a user-level file; ask first before editing.
 
-3. **Marketplace source out of date.** If the plugin only exists on a local branch that the marketplace source (GitHub or local path) has not seen, the install will fail. Fix the source: push the branch (requires user go) or re-point the marketplace at the working copy.
+3. **Marketplace source out of date.** Check the source with `claude plugin marketplace list`. A directory source reads the primary checkout: integrate the branch there and update the plugin, no push needed. Only a GitHub source needs the remote, and publishing there is a release to agree on first. Never re-point a marketplace at a working copy or worktree.
 
 4. **Skill missing `user-invocable: true`.** Without the flag the skill is model-triggered only and no slash command appears. Edit the frontmatter.
 
