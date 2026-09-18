@@ -11,42 +11,43 @@ This skill governs push CONTEXT: whether a push belongs to the work at all. The 
 
 ## Done is not published
 
-Finishing work and publishing work are two separate decisions. Work is done when it is committed and verified. A push is a separate act with its own reason, and completing a task never supplies that reason by itself.
+Finishing work and publishing work are two separate decisions. Work is done when it is committed and verified. Whether a push follows depends on what that push does in this repository, never on the fact that the work is finished.
 
-Committed but unpushed work is a finished, safe state, on a feature branch and on the default branch alike. It may stay on the operator's machine for weeks. Do not report it as open, do not count the commits ahead of the remote, do not end a turn waiting for a push, and do not propose one the operator did not ask for. The reflex that turns "the work is done" into "now it should be pushed" is the error this skill exists to stop.
+Committed but unpushed work is a finished, safe state, on a feature branch and on the default branch alike. It may stay on the operator's machine for weeks. It is not data loss, it is not open work, and it is no reason to end a turn waiting. The reflex that turns "the work is done" into "now it should be pushed" is the error this skill exists to stop.
 
 ## A commit is not a push, and never a gate
 
 A local commit captures your own finished work; it is expected, not asked for. Leaving that work uncommitted while calling it "operator territory" is the error, not the caution: it is dirty state handed off as a to-do. "Never commit to main" is a team-repo rule about a shared or protected branch, not a universal one; on a solo or personal repo, committing to main is the normal flow.
 
-## Every push has a reason
+## What a push does depends on where it goes
 
-Before any push, name its reason. The reason follows from one question: who reads the destination ref, and what happens when it moves? Every legitimate push falls into one of three classes.
+`git push` is one technique with very different consequences: a copy for safekeeping, the update of a pull request, a release to other people, a deploy, a rewrite of shared history. The consequence follows from three things: which remote, which ref, and who or what reads that ref. Find the row for the push before you make it.
 
-1. **Workflow step.** The push is a mechanical part of a flow the operator already ordered, and the flow does not work without it. Examples: publishing the branch of a pull request you were asked to open or update, pushing review fixes to that branch, the `--force-with-lease` that completes a rebase of a branch that already has an upstream. Do it as part of the work, without asking and without announcing more than its result.
-2. **Backup.** The destination is a ref that only the operator reads, and moving it changes nothing for anyone else: the operator's own branch, or the default branch of a private, individual repo that no deploy, CI or consumer reads from. It is an off-site copy and nothing more. Where the mode below allows it, it may happen without asking. It is never required, never a completion step, and never reported as pending.
-3. **Release.** The push changes what other people or systems see or run: the default branch of a public or shared repository, any branch in a public repository, a ref a deploy, marketplace, package registry or other consumer reads, a tag. A release happens only on the operator's explicit order for this change, in their own words (push, publish, release, ship, live). Do not propose it and do not remind the operator of it; they decide when.
-
-A push whose reason is none of these, or unclear, does not happen. Leaving the work unpushed needs no question either, because unpushed work is safe.
-
-A statement about pushing is not an order to push. "Don't make such a fuss about pushing, nothing gets lost there" says that unpushed work is safe; it does not order a push. "It's fine that this is still local" does not either. Only an instruction to push, publish or release this change is the order.
-
-### Examples
-
-| Situation | Class | Action |
+| Destination | Consequence | On your own? |
 |---|---|---|
-| The operator asked for a pull request in a repo with a protected default | Workflow step | Push the branch and create the PR. The merge stays the operator's. |
-| Review fixes on a PR branch you created for the operator | Workflow step | Push them to that branch. |
-| A rebase rewrote a branch that already has an upstream | Workflow step | `--force-with-lease` to that branch, never to the default. |
-| Finished work on the default branch of a private dotfiles or notes repo | Backup | Allowed without asking in `auto-trunk`, never mentioned as open. |
-| Finished work on the default branch of a public plugin marketplace | Release | Commit locally and stop. Push only on the operator's order. |
-| A private repo whose CI deploys every push to its default branch | Release | The deploy makes it a release, whatever the mode says. |
-| A pull request is green and waiting | Release (the merge) | Say once that it is ready. Do not repeat it every turn. |
-| The operator says unpushed work is safe | None | Nothing to push; carry on with what was asked. |
+| Your own branch, private repository | A copy. Nobody notices. | Yes, without mention. |
+| Your own branch, public repository, first push | Its content becomes public. | When the ordered work includes a pull request or a publication. |
+| A branch with a pull request, `--force-with-lease` after a rebase included | CI runs and reviewers are notified, which is what the pull request is for. | Yes. It is part of the work. |
+| Default branch, solo private repository (`auto-trunk`) | A copy. Pushing is part of working there. | Yes, without mention. |
+| Default branch, public or shared repository (`gated-trunk`) | A release: other people and their installs receive it. | No. Agree with the operator first. |
+| Default branch, pull request repository (`pr-flow`, or undetermined) | The agreement is that the default branch changes only through a pull request merge. | Never. Push a branch and use the pull request. |
+| Default branch of a checkout a sync daemon manages | The daemon publishes it. | Never. Commit and leave it to the daemon. |
+| A tag | A version, often the trigger for a release, a deploy or a package update. | No. Agree first. |
+| A remote other than the repository's own | A deploy target, or somebody else's repository. | No. Agree first. |
+| Plain `--force`, a rewrite of a default branch, a ref deletion, `--all`, `--mirror`, `--tags` | Overwrites or reaches more than one change. | No. Agree first. |
+| Anything else, or a row you cannot point to with confidence | Unknown. | No. Agree first. |
+
+The last row makes the list complete. Pushing on your own needs a positive match: you can name the consequence, and it falls inside what the operator ordered. A case nobody thought of ends at "agree first", never at "probably fine".
+
+The rows rest on the agreement for the repository, not on what the remote enforces. Branch protection is a paid feature on some plans, so a repository can be pull-request-only by agreement while the remote would accept a direct push. Such a push is not attempted; a remote that would reject it is only a safety net. An agreement the forge cannot show is declared with the `codingAgent.git.*` overrides below, and a declared fact counts as much as a measured one.
+
+Agreeing is a normal exchange in the conversation, not a ceremony. Say once what the push would do and why it matters now, and let the operator answer. A remark about pushing is not agreement: "don't make such a fuss about pushing, nothing gets lost there" says that unpushed work is safe, which is the opposite of an order to push. Agreement names this push: this repository, this release.
+
+The `push-destination` guard applies the table to every `git push` a coding agent runs, including one aimed at another repository than the session's own. The "Yes" rows pass silently. The "agree first" rows are denied with their consequence, and run once the same command ends in `# push-agreed`, which you add only after the operator agreed in this conversation. The "Never" rows have no token.
 
 ## Reporting
 
-Report a push only when you made one, with its class when that is not obvious. Do not list what is unpushed, and do not end a turn on a push or merge nobody ordered. A release gate you have already named once is not repeated at the end of every later turn or loop tick; the operator knows it is there.
+Report a push only when you made one that the operator would not expect. Do not list what is unpushed, do not count commits ahead of the remote, and do not end a turn on a push or merge nobody asked about. When a release matters for what the operator is trying to achieve, mention it once; a gate you have already named is not repeated at the end of later turns or loop ticks.
 
 ## The resolver
 
@@ -94,13 +95,13 @@ The landing ref decides the branch, not habit. In a trunk repo (`auto-trunk`, `g
 
 ## Five modes
 
-The mode bounds which push classes are possible in a repository. Within those bounds the class of each push decides whether it happens.
+The mode is the repository's regime. It decides the default-branch rows of the table above.
 
 - **local-only**: no remote. Pushing never comes up; do not mention it.
-- **auto-trunk**: a private, individual repo with a pushable default. The default branch is the working line. A push of it is a backup, allowed without asking and never required. It becomes a release as soon as something reads the remote default, such as a deploy on push.
-- **gated-trunk**: a public or shared repo you can write to with a pushable default. Every push to the default branch is a release, and in a public repo so is every feature branch push. Pushes happen only as a workflow step of an ordered flow, or on the operator's order.
-- **pr-flow**: a protected default. Never push the default directly. When the ordered change has to reach the default branch, pushing its branch and creating the pull request are workflow steps. The merge is a release and stays the operator's.
-- **external**: no write access. A fork and a pull request, only when the operator ordered the contribution.
+- **auto-trunk**: a private, individual repo with a pushable default. Carte blanche: the default branch is the working line, and pushing it is part of working there. Do not ask, do not report it, and do not route the work through a feature branch it does not need.
+- **gated-trunk**: a public or shared repo you can write to with a pushable default. Work is committed locally, often for weeks; a push of the default branch is a release that the operator and you agree on first. Branches for a pull request push as part of that work.
+- **pr-flow**: the default branch changes only through a pull request merge, whether the forge enforces that or the operator declared it. Never push the default. Pushing a branch and creating or updating its pull request are part of the work; the merge is the operator's.
+- **external**: no write access. A fork and a pull request, agreed with the operator first.
 
 ## Safe defaults when gh is absent
 
@@ -108,6 +109,8 @@ The mode bounds which push classes are possible in a repository. Within those bo
 - no write becomes `external`
 - unknown default-branch metadata becomes `unknown`, which resolves to `pr-flow`
 - unknown visibility becomes `public` (strictest hygiene)
+- a repository whose facts could not be read at all reports `confidence=low`, and a default-branch push there waits for agreement even in `auto-trunk`
+- declared facts count as measured ones: with visibility, push access and default-branch policy all set through overrides, confidence is `high` without the forge
 
 ## Config and overrides
 

@@ -108,6 +108,10 @@ main() {
       fi
     fi
 
+    if [ -n "$(_cfg "$repo" codingAgent.git.visibility || true)" ] && [ -n "$pa_override" ] && [ -n "$(_cfg "$repo" codingAgent.git.defaultBranchPolicy || true)" ]; then
+      confidence="high"
+    fi
+
     collaboration="$(_cfg "$repo" codingAgent.git.collaboration || true)"
     [ -z "$collaboration" ] && collaboration="$(_detect_collaboration "$repo")"
     collaboration="$(_normalize_collaboration "$collaboration")"

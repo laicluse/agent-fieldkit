@@ -1,0 +1,475 @@
+#!/usr/bin/env node
+// allow-comment: Judges the consequence of a pending `git push` before it runs. Reads a PreToolUse hook payload on stdin and prints {verdict, reason}: "allow" for a push whose consequence is known and harmless or part of ordered work, "agree" for a push that publishes, releases, deploys, rewrites or cannot be classified (it runs only once the operator agreed, marked by the push-agreed token), "never" for a push the repository's agreement rules out. The decision rests on the agreement for the repository, never on whether the remote happens to reject the push. Anything unrecognised resolves to "agree": autonomy needs a positive match.
+
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const AGREED_TOKEN = '# push-agreed';
+const SEVERITY = { allow: 0, agree: 1, never: 2 };
+const WRAPPERS = new Set(['command', 'exec', 'nohup', 'time', 'builtin', 'noglob', '{', '!', 'then', 'do', 'else', 'if', 'while', 'until']);
+const OPTION_WRAPPERS = new Set(['sudo', 'doas', 'env', 'nice']);
+const GIT_OPTIONS_WITH_VALUE = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--exec-path', '--super-prefix', '--config-env']);
+const PUSH_OPTIONS_WITH_VALUE = new Set(['-o', '--push-option', '--repo', '--receive-pack', '--exec', '--recurse-submodules']);
+
+export function shellCommands(text) {
+  const commands = [];
+  let words = [];
+  let word = '';
+  let hasWord = false;
+  let skipNextWord = false;
+  const pendingHeredocs = [];
+
+  const endWord = () => {
+    if (hasWord) {
+      if (skipNextWord) skipNextWord = false;
+      else words.push(word);
+    }
+    word = '';
+    hasWord = false;
+  };
+  const endCommand = () => {
+    endWord();
+    if (words.length > 0) commands.push(words);
+    words = [];
+  };
+  const substitutionEnd = (from) => {
+    let depth = 1;
+    let index = from;
+    while (index < text.length) {
+      const char = text[index];
+      if (char === "'") {
+        const close = text.indexOf("'", index + 1);
+        index = close === -1 ? text.length : close;
+      } else if (char === '(') depth += 1;
+      else if (char === ')') {
+        depth -= 1;
+        if (depth === 0) return index;
+      }
+      index += 1;
+    }
+    return text.length;
+  };
+
+  let index = 0;
+  while (index < text.length) {
+    const char = text[index];
+    const next = text[index + 1];
+
+    if (char === "'") {
+      const close = text.indexOf("'", index + 1);
+      const end = close === -1 ? text.length : close;
+      word += text.slice(index + 1, end);
+      hasWord = true;
+      index = end + 1;
+      continue;
+    }
+    if (char === '"') {
+      hasWord = true;
+      index += 1;
+      while (index < text.length && text[index] !== '"') {
+        if (text[index] === '\\') {
+          word += text[index + 1] ?? '';
+          index += 2;
+        } else if (text[index] === '$' && text[index + 1] === '(') {
+          const end = substitutionEnd(index + 2);
+          commands.push(...shellCommands(text.slice(index + 2, end)));
+          word += '$()';
+          index = end + 1;
+        } else {
+          word += text[index];
+          index += 1;
+        }
+      }
+      index += 1;
+      continue;
+    }
+    if (char === '\\') {
+      if (next !== '\n') {
+        word += next ?? '';
+        hasWord = true;
+      }
+      index += 2;
+      continue;
+    }
+    if (char === '#' && !hasWord) {
+      while (index < text.length && text[index] !== '\n') index += 1;
+      continue;
+    }
+    if (char === '$' && next === '(') {
+      const end = substitutionEnd(index + 2);
+      commands.push(...shellCommands(text.slice(index + 2, end)));
+      word += '$()';
+      hasWord = true;
+      index = end + 1;
+      continue;
+    }
+    if (char === '<' && next === '<' && text[index + 2] !== '<') {
+      endWord();
+      index += 2;
+      if (text[index] === '-') index += 1;
+      while (text[index] === ' ' || text[index] === '\t') index += 1;
+      let tag = '';
+      while (index < text.length && !/[\s;&|)<>]/.test(text[index])) {
+        if (!/['"\\]/.test(text[index])) tag += text[index];
+        index += 1;
+      }
+      if (tag) pendingHeredocs.push(tag);
+      continue;
+    }
+    if (char === '<' || char === '>') {
+      if (/^\d*$/.test(word)) {
+        word = '';
+        hasWord = false;
+      } else endWord();
+      index += 1;
+      while (index < text.length && /[<>&| \t]/.test(text[index])) index += 1;
+      skipNextWord = true;
+      continue;
+    }
+    if (char === ' ' || char === '\t') {
+      endWord();
+      index += 1;
+      continue;
+    }
+    if (char === '\n') {
+      endCommand();
+      index += 1;
+      while (pendingHeredocs.length > 0) {
+        const tag = pendingHeredocs.shift();
+        while (index < text.length) {
+          const lineEnd = text.indexOf('\n', index);
+          const line = text.slice(index, lineEnd === -1 ? text.length : lineEnd);
+          index = lineEnd === -1 ? text.length : lineEnd + 1;
+          if (line.replace(/^\t+/, '') === tag) break;
+        }
+      }
+      continue;
+    }
+    if (';&|()`'.includes(char)) {
+      endCommand();
+      index += 1;
+      continue;
+    }
+    word += char;
+    hasWord = true;
+    index += 1;
+  }
+  endCommand();
+  return commands;
+}
+
+function expandHome(word) {
+  if (word === '~') return homedir();
+  if (word.startsWith('~/')) return join(homedir(), word.slice(2));
+  if (word.startsWith('$HOME')) return homedir() + word.slice(5);
+  if (word.startsWith('${HOME}')) return homedir() + word.slice(7);
+  return word;
+}
+
+function resolvable(word) {
+  return !/[$`*?]/.test(word);
+}
+
+function stripWrappers(words) {
+  const rest = [...words];
+  while (rest.length > 0) {
+    const head = rest[0];
+    if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(head) || WRAPPERS.has(head)) {
+      rest.shift();
+    } else if (OPTION_WRAPPERS.has(head)) {
+      rest.shift();
+      while (rest.length > 0 && (rest[0].startsWith('-') || /^[A-Za-z_][A-Za-z0-9_]*=/.test(rest[0]) || /^\d+$/.test(rest[0]))) rest.shift();
+    } else break;
+  }
+  return rest;
+}
+
+// allow-comment: pushInvocations returns every `git push` in the command text with the directory it runs in and its arguments. directory is null when a preceding cd or a -C value cannot be resolved from the text, which the judge treats as unclassifiable.
+export function pushInvocations(commandText, startDirectory) {
+  const invocations = [];
+  let directory = startDirectory;
+  for (const rawWords of shellCommands(commandText)) {
+    const words = stripWrappers(rawWords);
+    if (words.length === 0) continue;
+    const tool = basename(words[0]);
+
+    if (tool === 'cd' || tool === 'pushd') {
+      const target = words.slice(1).find((word) => word !== '--');
+      if (target === undefined) directory = homedir();
+      else if (target !== '-') directory = resolvable(target) && directory !== null ? resolve(directory, expandHome(target)) : null;
+      continue;
+    }
+    if (['bash', 'sh', 'zsh', 'dash', 'ksh'].includes(tool)) {
+      const flagIndex = words.findIndex((word, position) => position > 0 && /^-[A-Za-z]*c$/.test(word));
+      if (flagIndex !== -1 && words[flagIndex + 1] !== undefined) invocations.push(...pushInvocations(words[flagIndex + 1], directory));
+      continue;
+    }
+    if (tool === 'eval') {
+      invocations.push(...pushInvocations(words.slice(1).join(' '), directory));
+      continue;
+    }
+    if (tool !== 'git') continue;
+
+    let position = 1;
+    let gitDirectory = directory;
+    while (position < words.length && words[position].startsWith('-')) {
+      const option = words[position];
+      if (option === '-C') {
+        const value = words[position + 1] ?? '';
+        gitDirectory = resolvable(value) && gitDirectory !== null ? resolve(gitDirectory, expandHome(value)) : null;
+      }
+      position += GIT_OPTIONS_WITH_VALUE.has(option) ? 2 : 1;
+    }
+    if (words[position] !== 'push') continue;
+    invocations.push({ directory: gitDirectory, args: words.slice(position + 1) });
+  }
+  return invocations;
+}
+
+export function parsePushArgs(args) {
+  const parsed = { remote: null, refspecs: [], all: false, mirror: false, tags: false, deleteRefs: false, force: false, lease: false, dryRun: false, unresolvable: false };
+  const positionals = [];
+  for (let position = 0; position < args.length; position += 1) {
+    const arg = args[position];
+    if (arg === '--') {
+      positionals.push(...args.slice(position + 1));
+      break;
+    }
+    if (arg.startsWith('--')) {
+      const name = arg.split('=')[0];
+      if (name === '--all' || name === '--branches') parsed.all = true;
+      else if (name === '--mirror') parsed.mirror = true;
+      else if (name === '--tags' || name === '--follow-tags') parsed.tags = true;
+      else if (name === '--delete') parsed.deleteRefs = true;
+      else if (name === '--force') parsed.force = true;
+      else if (name === '--force-with-lease') parsed.lease = true;
+      else if (name === '--dry-run') parsed.dryRun = true;
+      else if (name === '--repo') parsed.unresolvable = true;
+      if (PUSH_OPTIONS_WITH_VALUE.has(name) && !arg.includes('=')) position += 1;
+      continue;
+    }
+    if (arg.startsWith('-') && arg.length > 1) {
+      for (const flag of arg.slice(1)) {
+        if (flag === 'f') parsed.force = true;
+        else if (flag === 'd') parsed.deleteRefs = true;
+        else if (flag === 'n') parsed.dryRun = true;
+      }
+      if (arg === '-o') position += 1;
+      continue;
+    }
+    positionals.push(arg);
+  }
+  if (positionals.some((word) => !resolvable(word))) parsed.unresolvable = true;
+  parsed.remote = positionals[0] ?? null;
+  parsed.refspecs = positionals.slice(1);
+  return parsed;
+}
+
+function git(directory, args) {
+  const result = spawnSync('git', args, { cwd: directory, encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() : null;
+}
+
+function repositoryFacts(directory, env) {
+  const root = git(directory, ['rev-parse', '--show-toplevel']);
+  if (root === null) return null;
+
+  const remotes = (git(root, ['remote']) ?? '').split('\n').filter(Boolean);
+  const homeRemote = remotes.includes('origin') ? 'origin' : remotes.length === 1 ? remotes[0] : null;
+  const currentBranch = git(root, ['symbolic-ref', '--quiet', '--short', 'HEAD']);
+
+  const policyScript = env.GIT_DISCIPLINE_POLICY_BIN ?? join(dirname(fileURLToPath(import.meta.url)), '..', 'skills', 'push-policy', 'git-repo-policy');
+  const policy = spawnSync(policyScript, [root], { encoding: 'utf8', env });
+  const policyFields = Object.fromEntries((policy.stdout ?? '').split('\n').filter((line) => line.includes('=')).map((line) => [line.slice(0, line.indexOf('=')), line.slice(line.indexOf('=') + 1)]));
+
+  const defaultNames = new Set(['main', 'master']);
+  if (homeRemote !== null) {
+    const remoteHead = git(root, ['symbolic-ref', '--quiet', '--short', `refs/remotes/${homeRemote}/HEAD`]);
+    if (remoteHead !== null) defaultNames.add(remoteHead.slice(homeRemote.length + 1));
+  }
+  const configuredDefault = git(root, ['config', '--get', 'init.defaultBranch']);
+  if (configuredDefault) defaultNames.add(configuredDefault);
+
+  return {
+    root,
+    remotes,
+    homeRemote,
+    currentBranch,
+    defaultNames,
+    mode: policyFields.mode || 'unknown',
+    confidence: policyFields.confidence || 'low',
+    visibility: policyFields.visibility || 'public',
+    daemonManaged: daemonManages(root, env),
+  };
+}
+
+function daemonManages(root, env) {
+  const candidates = [env.VAULTSYNC_BIN, ...(env.PATH ?? '').split(':').filter(Boolean).map((entry) => join(entry, 'vaultsync'))].filter(Boolean);
+  for (const candidate of candidates) {
+    if (!existsSync(candidate)) continue;
+    const result = spawnSync(candidate, ['managed', root, '--json'], { encoding: 'utf8', env });
+    if (result.status !== 0) continue;
+    try {
+      return JSON.parse(result.stdout).managed === true;
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+// allow-comment: destinations lists what the push would update as {kind: branch|tag|other, name, deletes, forced}, or null when the target cannot be read from the arguments and the repository state.
+function destinations(parsed, facts) {
+  if (parsed.refspecs.length === 0) {
+    if (facts.currentBranch === null) return null;
+    const pushRef = git(facts.root, ['for-each-ref', '--format=%(push:remoteref)', `refs/heads/${facts.currentBranch}`]);
+    const name = pushRef && pushRef.startsWith('refs/heads/') ? pushRef.slice('refs/heads/'.length) : facts.currentBranch;
+    return [{ kind: 'branch', name, deletes: parsed.deleteRefs, forced: parsed.force }];
+  }
+
+  const result = [];
+  for (let position = 0; position < parsed.refspecs.length; position += 1) {
+    let refspec = parsed.refspecs[position];
+    if (refspec === 'tag') {
+      position += 1;
+      result.push({ kind: 'tag', name: parsed.refspecs[position] ?? '', deletes: parsed.deleteRefs, forced: parsed.force });
+      continue;
+    }
+    let forced = parsed.force;
+    if (refspec.startsWith('+')) {
+      forced = true;
+      refspec = refspec.slice(1);
+    }
+    const hasColon = refspec.includes(':');
+    const source = hasColon ? refspec.slice(0, refspec.indexOf(':')) : refspec;
+    let target = hasColon ? refspec.slice(refspec.indexOf(':') + 1) : refspec;
+    const deletes = parsed.deleteRefs || (hasColon && source === '');
+    if (target === 'HEAD' || target === '@') {
+      if (facts.currentBranch === null) return null;
+      target = facts.currentBranch;
+    }
+    if (target.startsWith('refs/heads/')) result.push({ kind: 'branch', name: target.slice('refs/heads/'.length), deletes, forced });
+    else if (target.startsWith('refs/tags/')) result.push({ kind: 'tag', name: target.slice('refs/tags/'.length), deletes, forced });
+    else if (target.startsWith('refs/')) result.push({ kind: 'other', name: target, deletes, forced });
+    else if (hasColon || deletes || git(facts.root, ['rev-parse', '--verify', '--quiet', `refs/heads/${target}`]) !== null) result.push({ kind: 'branch', name: target, deletes, forced });
+    else if (git(facts.root, ['rev-parse', '--verify', '--quiet', `refs/tags/${target}`]) !== null) result.push({ kind: 'tag', name: target, deletes, forced });
+    else return null;
+  }
+  return result;
+}
+
+const SAFE_STATE = "Committed work that is not pushed is finished and safe; it is not data loss and it is not open work. A remark about pushing is not agreement to push.";
+const HOW_TO_AGREE = `If the operator agreed to this exact push in this conversation, rerun the same command ending in '${AGREED_TOKEN}'. Otherwise leave the work committed, and mention the possible push at most once, only when it matters for what the operator is trying to achieve.`;
+
+function agree(consequence) {
+  return { verdict: 'agree', reason: `${consequence} ${SAFE_STATE} ${HOW_TO_AGREE}` };
+}
+
+function never(reason) {
+  return { verdict: 'never', reason };
+}
+
+export function judgeInvocation(invocation, env = process.env) {
+  if (invocation.directory === null || !existsSync(invocation.directory) || !statSync(invocation.directory).isDirectory()) {
+    return agree('The directory this push runs in cannot be read from the command, so its consequence is unknown.');
+  }
+  const parsed = parsePushArgs(invocation.args);
+  if (parsed.dryRun) return { verdict: 'allow', reason: 'dry run' };
+
+  const facts = repositoryFacts(invocation.directory, env);
+  if (facts === null) return { verdict: 'allow', reason: 'not a git repository' };
+  if (facts.remotes.length === 0 || facts.mode === 'local-only') return { verdict: 'allow', reason: 'no remote' };
+
+  if (parsed.unresolvable) return agree('The remote or ref of this push is computed at run time, so its consequence cannot be judged beforehand.');
+
+  const remote = parsed.remote || (facts.currentBranch ? git(facts.root, ['for-each-ref', '--format=%(push:remotename)', `refs/heads/${facts.currentBranch}`]) : null) || facts.homeRemote;
+  if (!remote || remote !== facts.homeRemote) {
+    return agree(`This push goes to '${remote ?? 'an unnamed remote'}', which is not this repository's own remote. Such a remote is a deploy target or somebody else's repository.`);
+  }
+  if (parsed.mirror || parsed.all || parsed.tags) return agree('This push updates every branch or tag at once, which reaches further than one change.');
+
+  const targets = destinations(parsed, facts);
+  if (targets === null) return agree('HEAD is detached or the target ref cannot be resolved, so the consequence of this push is unknown.');
+
+  let worst = { verdict: 'allow', reason: 'known destination' };
+  const consider = (candidate) => {
+    if (SEVERITY[candidate.verdict] > SEVERITY[worst.verdict]) worst = candidate;
+  };
+
+  for (const target of targets) {
+    if (target.kind === 'tag') {
+      consider(agree(`Pushing tag '${target.name}' publishes a version, and a tag often triggers a release, a deploy or a package update.`));
+      continue;
+    }
+    if (target.kind === 'other') {
+      consider(agree(`'${target.name}' is neither a branch nor a tag, so the consequence of updating it is unknown.`));
+      continue;
+    }
+    const isDefault = facts.defaultNames.has(target.name);
+
+    if (isDefault && facts.daemonManaged) {
+      consider(never(`A sync daemon owns the pushes of this checkout. Commit the work and let the daemon publish '${target.name}'; an agent does not push it.`));
+      continue;
+    }
+    if (target.deletes) {
+      consider(agree(`This push deletes '${target.name}' on the remote, which cannot be undone from here.`));
+      continue;
+    }
+    if (isDefault) {
+      if (facts.mode === 'auto-trunk') {
+        if (facts.confidence === 'low') consider(agree(`The facts about this repository could not be read (no answer from the forge), so whether pushing '${target.name}' is free here is a guess.`));
+        else if (target.forced || parsed.lease) consider(agree(`This push rewrites the history of the default branch '${target.name}'.`));
+        continue;
+      }
+      if (facts.mode === 'gated-trunk') {
+        consider(agree(`Pushing '${target.name}' of this ${facts.visibility === 'public' ? 'public' : 'shared'} repository is a release: other people and their installs receive it.`));
+        continue;
+      }
+      consider(never(`This repository takes changes to '${target.name}' only through a pull request merge (mode ${facts.mode}). That is an agreement; whether the remote would reject the push does not matter, so the push is not attempted. Push your own branch, create or update the pull request, and leave the merge to the operator.`));
+      continue;
+    }
+
+    if (facts.mode === 'external') {
+      consider(agree('There is no write access to this repository, so a push here reaches a fork or fails; the contribution route has to be agreed first.'));
+      continue;
+    }
+    if (target.forced && !parsed.lease) {
+      consider(agree(`A plain --force on '${target.name}' overwrites whatever is on the remote, including work by others. Use --force-with-lease for a rebased branch of your own.`));
+      continue;
+    }
+    const alreadyPublished = git(facts.root, ['rev-parse', '--verify', '--quiet', `refs/remotes/${remote}/${target.name}`]) !== null;
+    if (facts.visibility === 'public' && !alreadyPublished) {
+      consider(agree(`The first push of '${target.name}' makes its content public. That fits when the operator ordered a pull request or a publication.`));
+    }
+  }
+  return worst;
+}
+
+export function judgeCommand(commandText, startDirectory, env = process.env) {
+  const agreed = commandText.includes(AGREED_TOKEN);
+  let worst = { verdict: 'allow', reason: 'no push' };
+  for (const invocation of pushInvocations(commandText, startDirectory)) {
+    const judged = judgeInvocation(invocation, env);
+    if (SEVERITY[judged.verdict] > SEVERITY[worst.verdict]) worst = judged;
+  }
+  if (worst.verdict === 'agree' && agreed) return { verdict: 'allow', reason: 'agreed with the operator' };
+  return worst;
+}
+
+function main() {
+  let payload = {};
+  try {
+    payload = JSON.parse(readFileSync(0, 'utf8'));
+  } catch {
+    payload = {};
+  }
+  const commandText = payload.tool_input?.command ?? '';
+  const startDirectory = payload.cwd ?? payload.tool_input?.cwd ?? process.cwd();
+  const start = isAbsolute(startDirectory) ? startDirectory : resolve(startDirectory);
+  process.stdout.write(`${JSON.stringify(judgeCommand(commandText, start))}\n`);
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

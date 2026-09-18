@@ -55,8 +55,10 @@ case "$EVENT" in
     source "$DIR/guards/git-first-contact.sh"
     guard_git_first_contact "$INPUT"
 
+    source "$DIR/guards/push-destination.sh"
     source "$DIR/guards/push-wip-gate.sh"
     source "$DIR/guards/push-body-gate.sh"
+    guard_push_destination "$INPUT"
     guard_push_wip_gate "$INPUT"
     guard_push_body_gate "$INPUT"
 

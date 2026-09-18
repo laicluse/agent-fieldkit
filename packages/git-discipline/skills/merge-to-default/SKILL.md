@@ -53,7 +53,7 @@ case "$MODE" in
 esac
 ```
 
-Raise `gated-trunk` to `TARGET=--remote` only after reading the operator's order again and finding publication in it. When the order is silent about publishing, finish on the local default and leave the remote untouched without reporting it as pending; publication is a separate decision the operator makes when they want it.
+Raise `gated-trunk` to `TARGET=--remote` only after reading the operator's order again and finding publication in it. When the order is silent about publishing, finish on the local default and leave the remote untouched without reporting it as pending; publishing the default is a release the operator and you agree on separately.
 
 ## Prepare and verify the candidate
 

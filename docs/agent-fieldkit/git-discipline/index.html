@@ -52,7 +52,7 @@
 					<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.78</span>
+						<span>2.0.79</span>
 						<span>13 skills</span>
 					</div>
 				</div>
@@ -128,6 +128,7 @@ git-discipline merge --local|--remote</code></pre>
 <tr><td><code>commit-body.sh</code></td><td><code>git commit -m</code></td><td>bodies that fail <code>validate-body.sh</code></td></tr>
 <tr><td><code>commit-body-posttool.sh</code></td><td>PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am)</td><td>bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see)</td></tr>
 <tr><td><code>commit-trailers.sh</code></td><td><code>git commit -m</code></td><td><code>Co-Authored-By:</code> with <code>@anthropic.com</code> email</td></tr>
+<tr><td><code>push-destination.sh</code></td><td><code>git push</code></td><td>push whose destination releases, deploys, rewrites or cannot be classified (held until <code># push-agreed</code>), or that the repository's agreement rules out (refused)</td></tr>
 <tr><td><code>push-wip-gate.sh</code></td><td><code>git push</code></td><td>push range containing a <code>Slice: wip</code> commit</td></tr>
 <tr><td><code>push-body-gate.sh</code></td><td><code>git push</code></td><td>push range containing a body that fails <code>validate-body.sh</code></td></tr>
 </tbody>

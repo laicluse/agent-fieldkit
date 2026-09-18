@@ -19,11 +19,15 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
-## [v2.0.78]
+## [v2.0.79]
+
+### Added
+
+- **A push is judged by where it goes before it runs.** The new `push-destination` guard reads the remote, the ref and the repository's regime for every `git push` a coding agent runs, also when the command first changes into another repository. A push that belongs to the work passes without a word: a branch, a pull request update with `--force-with-lease`, the default branch of a solo private repository. A push that releases, deploys, rewrites or cannot be classified is denied with its consequence, and runs once the command ends in `# push-agreed`, which the agent adds after the operator agreed in the conversation: the default branch of a public or shared repository, a tag, a remote other than the repository's own, plain `--force`, a deletion, `--all`, `--mirror`, `--tags`, the first push of a branch in a public repository. The default branch of a pull request repository and of a checkout a sync daemon manages is never pushed, token or not. The decision rests on the agreement for the repository, so a repository without paid branch protection is still treated as pull-request-only once `codingAgent.git.defaultBranchPolicy=protected` declares it.
 
 ### Changed
 
-- **Finished work no longer implies a push.** `push-policy` now separates finishing work from publishing it. Committed but unpushed work is a finished, safe state that may stay local for weeks, and an agent no longer reports it as open, counts commits ahead of the remote, or proposes a push nobody ordered. Every push needs a reason from one of three classes: a workflow step of a flow the operator ordered (a pull request branch, the force-with-lease after a rebase), a backup to a ref only the operator reads, or a release that changes what others see or run, which happens only on the operator's explicit order. A remark such as "nothing gets lost by not pushing" is not an order to push. In `auto-trunk` the default-branch push counts as a backup: allowed without asking, never reported, and a release as soon as something such as a deploy reads the remote default. `merge-to-default` finishes a `gated-trunk` merge on the local default without reporting the remote as pending.
+- **Finished work no longer implies a push.** `push-policy` separates finishing work from publishing it and replaces its rules with one table of push destinations and their consequences, ending in a default row: what cannot be classified waits for agreement. Committed but unpushed work is a finished, safe state that may stay local for weeks, and a remark such as "nothing gets lost by not pushing" is not an order to push. `auto-trunk` stays carte blanche. A repository whose facts are all declared through `codingAgent.git.*` overrides now reports `confidence=high` without the forge.
 
 ## [v2.0.71]
 

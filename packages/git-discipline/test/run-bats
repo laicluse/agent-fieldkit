@@ -28,6 +28,7 @@ exec bats \
   packages/git-discipline/test/repo-deny/*.bats \
   packages/git-discipline/test/sentinel-protect/*.bats \
   packages/git-discipline/test/push-policy/*.bats \
+  packages/git-discipline/test/push-destination/*.bats \
   packages/git-discipline/test/cd-target/*.bats \
   packages/git-discipline/test/merge-conflict-markers/*.bats \
   packages/git-discipline/test/parallel-flow/*.bats \

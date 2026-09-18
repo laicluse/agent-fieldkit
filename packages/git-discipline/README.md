@@ -136,6 +136,7 @@ PreToolUse:Bash dispatcher chain (`hooks/dispatch.sh`):
 | `commit-body.sh` | `git commit -m` | bodies that fail `validate-body.sh` |
 | `commit-body-posttool.sh` | PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am) | bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see) |
 | `commit-trailers.sh` | `git commit -m` | `Co-Authored-By:` with `@anthropic.com` email |
+| `push-destination.sh` | `git push` | push whose destination releases, deploys, rewrites or cannot be classified (held until `# push-agreed`), or that the repository's agreement rules out (refused) |
 | `push-wip-gate.sh` | `git push` | push range containing a `Slice: wip` commit |
 | `push-body-gate.sh` | `git push` | push range containing a body that fails `validate-body.sh` |
 

@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 83,
-		"hookFiles": 66
+		"hookFiles": 67
 	},
 	"install": {
 		"claude": [
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.78",
+			"version": "2.0.79",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -250,12 +250,12 @@
 			"sourcePath": "packages/git-discipline",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline",
 			"skillCount": 13,
-			"commandCount": 3,
-			"hookFileCount": 29,
+			"commandCount": 4,
+			"hookFileCount": 30,
 			"latestChange": {
-				"version": "v2.0.78",
-				"type": "Changed",
-				"summary": "Finished work no longer implies a push."
+				"version": "v2.0.79",
+				"type": "Added",
+				"summary": "A push is judged by where it goes before it runs."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.78",
+			"packageVersion": "2.0.79",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.78",
-			"type": "Changed",
-			"summary": "Finished work no longer implies a push.",
+			"version": "v2.0.79",
+			"type": "Added",
+			"summary": "A push is judged by where it goes before it runs.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{

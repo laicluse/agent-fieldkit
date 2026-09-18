@@ -28,6 +28,7 @@ export GIT_DISCIPLINE_WIP_PUSH_LOG="$BATS_TEST_TMPDIR/git-discipline-wip-pushes.
 
 # allow-comment: wip-gate tests focus on wip-vs-clean; push-body-gate fires on the same `git push` event and would deny non-schema-conformant fixtures.
 export GIT_DISCIPLINE_PUSH_BODY_GATE_DISABLED=1
+export GIT_DISCIPLINE_PUSH_DESTINATION_DISABLED=1
 
 # Default shims: no upstream, no commits, no wip. Tests override per case.
 export GIT_SHIM_ORIGIN_URL="https://github.com/someorg/somerepo.git"
