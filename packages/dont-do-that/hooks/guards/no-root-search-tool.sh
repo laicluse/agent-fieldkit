@@ -51,5 +51,5 @@ guard_no_root_search_tool() {
   dd_nrs_judge "$root" "$cwd" "$depth"
   [ -z "$DD_NRS_HIT" ] && return 0
 
-  dd_emit_deny no-root-search "Whole-disk search blocked: $tool on $DD_NRS_HIT. $DD_NRS_ADVICE Pass a 'path' that names the project or directory to search. When the operator asked for a search of that whole tree, run it as a shell command that ends in '# allow-root-search'."
+  dd_emit_deny no-root-search "Whole-disk search blocked: $tool on $DD_NRS_HIT. $DD_NRS_ADVICE$(dd_nrs_start_hint) Pass a 'path' that names the project or directory to search. When the operator asked for a search of that whole tree, run it as a shell command that ends in '# allow-root-search'."
 }
