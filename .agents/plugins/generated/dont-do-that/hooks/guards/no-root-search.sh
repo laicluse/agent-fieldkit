@@ -488,23 +488,7 @@ dd_nrs_inspect() {
   done < <(dd_nrs_scan "$text")
 }
 
-DD_NRS_ADVICE="Walking it reads other apps' private data (on macOS one privacy prompt per app for the operator) and runs for many minutes. Search the specific directory that can hold the answer. To locate an installed dependency, ask its package manager: bundle show <gem>, gem contents <gem>, npm ls <pkg>, pip show -f <pkg>, go list -m -f '{{.Dir}}' <module>. To find a file by name anywhere, query the file index: mdfind -name <file> on macOS, locate <file> elsewhere."
-
-# allow-comment: dd_nrs_start_hint prints the operator's preferred starting directories for a search, read from ${LAICLUSE_HOME:-~/.laicluse}/dont-do-that/search-roots (one path per line, # comments and blank lines ignored, leading ~ expands to the home directory). Entries that are themselves guarded roots are skipped, so the hint never points at a tree the guard denies.
-dd_nrs_start_hint() {
-  local file="${LAICLUSE_HOME:-$HOME/.laicluse}/dont-do-that/search-roots" line path limit shown=""
-  [ -f "$file" ] || return 0
-  while IFS= read -r line || [ -n "$line" ]; do
-    line="${line%%#*}"
-    line="${line#"${line%%[![:space:]]*}"}"
-    line="${line%"${line##*[![:space:]]}"}"
-    [ -z "$line" ] && continue
-    path=$(dd_nrs_normalize "$line" "") || continue
-    limit=$(dd_nrs_root_limit "$path") && continue
-    shown="${shown:+$shown, }$line"
-  done < "$file"
-  [ -n "$shown" ] && printf ' When you do not know where it lives, start the search in: %s.' "$shown"
-}
+DD_NRS_ADVICE="The filesystem root and the home directory are never a place to start a search: walking them reads other apps' private data (on macOS one privacy prompt per app for the operator) and takes many minutes. Decide first where the answer logically lives, then search only there. The project's own code lives in the current repository. An installed dependency lives where its package manager says: bundle show <gem>, gem contents <gem>, npm ls <pkg>, pip show -f <pkg>, go list -m -f '{{.Dir}}' <module>. A tool's files live in its own config or install directory. A file whose name you know is in the file index: mdfind -name <file> on macOS, locate <file> elsewhere. If you cannot name the directory that should hold the answer, you are guessing: ask the operator or narrow the question instead of widening the search."
 
 guard_no_root_search() {
   local input="$1" cmd
@@ -522,5 +506,5 @@ guard_no_root_search() {
   dd_nrs_inspect "$cmd"
   [ -z "$DD_NRS_HIT" ] && return 0
 
-  dd_emit_deny no-root-search "Whole-disk search blocked: $DD_NRS_HIT. $DD_NRS_ADVICE$(dd_nrs_start_hint) A shallow listing (-maxdepth 1) passes. Append '# allow-root-search' only when the operator asked for a search of that whole tree."
+  dd_emit_deny no-root-search "Whole-disk search blocked: $DD_NRS_HIT. $DD_NRS_ADVICE A shallow listing (-maxdepth 1) passes. Append '# allow-root-search' only when the operator asked for a search of that whole tree."
 }

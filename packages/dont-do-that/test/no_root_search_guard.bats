@@ -210,19 +210,13 @@ allowed() {
   allowed
 }
 
-@test "the configured search roots appear in the deny as the place to start" {
-  mkdir -p "$LAICLUSE_HOME/dont-do-that"
-  printf '# where code lives\n~/github.com\n\n~\n/opt/src  # vendored\n' > "$LAICLUSE_HOME/dont-do-that/search-roots"
+@test "the deny sends the agent to where the answer logically lives" {
   bash_search "$PROJECT" 'find / -name "puma-*"'
   denied
-  [[ "$output" == *"start the search in: ~/github.com, /opt/src."* ]]
+  [[ "$output" == *"never a place to start a search"* ]]
+  [[ "$output" == *"Decide first where the answer logically lives"* ]]
+  [[ "$output" == *"you are guessing"* ]]
   tool_search Grep "$HOME" '{"pattern":"puma"}'
   denied
-  [[ "$output" == *"start the search in: ~/github.com, /opt/src."* ]]
-}
-
-@test "without configured search roots the deny names no starting directory" {
-  bash_search "$PROJECT" 'find / -name "puma-*"'
-  denied
-  [[ "$output" != *"start the search in"* ]]
+  [[ "$output" == *"Decide first where the answer logically lives"* ]]
 }
