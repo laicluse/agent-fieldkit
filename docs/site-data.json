@@ -172,7 +172,7 @@
 		},
 		{
 			"name": "bonsai",
-			"version": "2.0.37",
+			"version": "2.0.38",
 			"category": "workflow",
 			"summary": "Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.",
 			"support": [
@@ -187,9 +187,9 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.33",
+				"version": "v2.0.38",
 				"type": "Fixed",
-				"summary": "A handed-out worktree is labelled with its branch again."
+				"summary": "A new worktree branch no longer tracks the default branch."
 			}
 		},
 		{
@@ -671,11 +671,11 @@
 		},
 		{
 			"plugin": "bonsai",
-			"packageVersion": "2.0.37",
+			"packageVersion": "2.0.38",
 			"detailPath": "agent-fieldkit/bonsai/",
-			"version": "v2.0.33",
+			"version": "v2.0.38",
 			"type": "Fixed",
-			"summary": "A handed-out worktree is labelled with its branch again.",
+			"summary": "A new worktree branch no longer tracks the default branch.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/bonsai/CHANGELOG.md"
 		},
 		{

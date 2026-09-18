@@ -89,6 +89,22 @@ run_bonsai() { "$NODE_BIN" "$BONSAI" "$@"; }
   [ "$(git -C "$FIX" rev-parse from-origin-head)" != "$main_sha" ]
 }
 
+@test "create leaves the new branch untracked instead of tracking the default branch" {
+  ORIGIN="$BATS_TEST_TMPDIR/origin.git"
+  git init -q --bare -b main "$ORIGIN"
+  git -C "$FIX" remote add origin "$ORIGIN"
+  git -C "$FIX" push -q origin main
+  git -C "$FIX" fetch -q origin
+  git -C "$FIX" symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+  git -C "$FIX" config branch.autoSetupMerge always
+
+  run run_bonsai create untracked-start --repo "$FIX" --json
+  [ "$status" -eq 0 ]
+  run git -C "$FIX" rev-parse --abbrev-ref untracked-start@{upstream}
+  [ "$status" -ne 0 ]
+  [ -z "$(git -C "$FIX" config --get branch.untracked-start.merge)" ]
+}
+
 @test "create uses configured local default when origin HEAD is absent" {
   main_sha="$(git -C "$FIX" rev-parse main)"
   git -C "$FIX" checkout -q -b trunk

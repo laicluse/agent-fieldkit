@@ -253,7 +253,7 @@ export async function createWorktree({ repo, branch, base, dir }) {
   if (refExists(root, `refs/heads/${branch}`)) {
     throw new Error(`branch ${branch} already exists in ${root}; wrap and tear down that work first, never a numbered branch`);
   }
-  git(root, ['worktree', 'add', '-b', branch, worktree, resolvedBase]);
+  git(root, ['worktree', 'add', '--no-track', '-b', branch, worktree, resolvedBase]);
   const lock = await claimWorktreeLock(worktree, branch);
   return { worktree, branch, base: resolvedBase, baseSha, port: computePort(dirName), lock };
 }

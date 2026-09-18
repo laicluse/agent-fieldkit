@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.38]
+
+### Fixed
+
+- **A new worktree branch no longer tracks the default branch.** `create` branched from `origin/<default>`, and git's default tracking made that remote default the new branch's upstream. Status then reported the branch as up to date with the default, and a pull, a rebase or an upstream push aimed at it. The branch now starts untracked, and the first push sets its upstream the way the user's own git configuration does.
+
 ## [v2.0.33]
 
 ### Fixed
