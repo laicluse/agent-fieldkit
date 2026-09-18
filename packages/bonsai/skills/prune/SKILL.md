@@ -41,6 +41,27 @@ removing anything. `--force` overrides the gate and also deletes an unmerged
 branch; reach for it only on a deliberate throwaway, and never wire it into an
 unattended caller.
 
+## A kept worktree is a finding, not a status
+
+`removed: false` ends the teardown, not the review. Reporting "kept: modified
+files" or "kept: held by a dead process" hands the operator a to-do they cannot
+act on without redoing the look you skipped. Before reporting a kept worktree
+or branch, open what keeps it:
+
+```bash
+git -C <worktree> status --short
+git -C <worktree> diff                               # the uncommitted change itself
+git log --oneline -S "<distinctive line>" <default>  # is it already in another commit?
+git grep -n "<distinctive line>" <default>           # does the default carry it elsewhere?
+```
+
+Classify each kept item as residue (generated churn, a change the default
+already carries, a scratch file) or unique work (content found nowhere on the
+default or in its history), and report that verdict with one concrete next
+step: remove the residue, or commit the unique work to a branch and open a PR before the
+teardown. A dibs claim whose holder process is dead is abandoned work, not a
+live lock: it is exactly the case to inspect, because nobody else will.
+
 ## Superseded, not merged
 
 A branch can be finished without being an ancestor of the default branch: its

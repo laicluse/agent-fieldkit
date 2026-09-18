@@ -172,7 +172,7 @@
 		},
 		{
 			"name": "bonsai",
-			"version": "2.0.36",
+			"version": "2.0.37",
 			"category": "workflow",
 			"summary": "Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.",
 			"support": [
@@ -671,7 +671,7 @@
 		},
 		{
 			"plugin": "bonsai",
-			"packageVersion": "2.0.36",
+			"packageVersion": "2.0.37",
 			"detailPath": "agent-fieldkit/bonsai/",
 			"version": "v2.0.33",
 			"type": "Fixed",
