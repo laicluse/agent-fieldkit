@@ -207,8 +207,7 @@ passes() {
   payload=$(jq -cn --arg cwd "$repo" '{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, tool_input:{command:"git push origin main"}}')
   run env HOME="$BATS_TEST_TMPDIR/home" PATH="$FAKEBIN:$PATH" VAULTSYNC_BIN="$FAKEBIN/vaultsync" bash -c 'printf "%s" "$1" | bash "$2"' _ "$payload" "$DISPATCH"
   held
-  [[ "$output" == *"Local installs read this checkout (Claude: local-kit, Codex: local-kit)"* ]]
-  [[ "$output" == *"need no push"* ]]
+  [[ "$output" == *"Local plugin installs read this checkout and need no push."* ]]
 }
 
 @test "a release push of a repository no local marketplace reads stays silent about local installs" {
@@ -217,5 +216,5 @@ passes() {
   payload=$(jq -cn --arg cwd "$repo" '{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, tool_input:{command:"git push origin main"}}')
   run env HOME="$BATS_TEST_TMPDIR/home" PATH="$FAKEBIN:$PATH" VAULTSYNC_BIN="$FAKEBIN/vaultsync" bash -c 'printf "%s" "$1" | bash "$2"' _ "$payload" "$DISPATCH"
   held
-  [[ "$output" != *"Local installs read this checkout"* ]]
+  [[ "$output" != *"Local plugin installs"* ]]
 }

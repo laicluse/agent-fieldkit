@@ -471,7 +471,7 @@ export function judgeInvocation(invocation, env = process.env) {
       }
       if (facts.mode === 'gated-trunk') {
         const localInstall = facts.localMarketplaces.length > 0
-          ? ` Local installs read this checkout (${facts.localMarketplaces.join(', ')}) and need no push.`
+          ? ' Local plugin installs read this checkout and need no push.'
           : '';
         consider(agree(`'${target.name}' is a release here: other people and their installs receive it.${localInstall}`));
         continue;
