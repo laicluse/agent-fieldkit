@@ -161,7 +161,7 @@ One clear source of truth beats mirrored reminders.
 2. Walk the enforcement ladder and choose the strongest fitting target.
 3. Walk the scope ladder and choose the broadest correct source.
 4. Locate existing sources with `rg`/file search before creating anything.
-5. Apply the smallest durable edit; prune duplicates in the same pass.
+5. Make the smallest durable, actionable edit. Use a concrete failure example, not broad restrictions; preserve judgment elsewhere.
 6. Rebuild generated adapters or instruction targets when the repo provides a
    build/check command.
 7. Run focused tests or validation for the changed surface.

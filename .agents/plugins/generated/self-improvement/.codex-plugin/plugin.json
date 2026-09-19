@@ -1,6 +1,6 @@
 {
   "name": "self-improvement",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Routes user feedback about agent behavior to the strongest durable target: hooks, skills, project code, or instruction files.",
   "author": {
     "name": "local"

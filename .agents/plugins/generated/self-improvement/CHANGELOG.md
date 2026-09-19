@@ -15,6 +15,12 @@ Categories:
 - **Changed**: non-breaking adjustments worth knowing about
 - **Fixed**: silent unless the bug was user-visible
 
+## [v2.0.10]
+
+### Changed
+
+- **Corrections stay concise.** Durable fixes use one actionable rule and a concrete failure example without restricting unrelated judgment.
+
 ## [v2.0.0]
 
 ### Changed
