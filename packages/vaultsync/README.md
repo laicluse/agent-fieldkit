@@ -72,7 +72,7 @@ Registrations created by older Vaultsync releases remain valid. A non-empty `ver
 
 vaultsync resolves `dibs` dynamically at runtime. `DIBS_BIN` remains an explicit override, otherwise vaultsync checks the installed plugin cache, `PATH`, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed `dibs` binary.
 
-`runtime install` republishes the calling plugin version only when it is newer than the active machine runtime. Publication stages a complete runtime release before atomically changing the active pointer. If a LaunchAgent is already installed, a successful upgrade rewrites and restarts it through the stable launcher. This command is normally invoked by the plugin session hook.
+`runtime install` republishes the calling plugin version only when it is newer than the active machine runtime. Publication stages a complete runtime release before atomically changing the active pointer. Repeated startup hooks leave byte-identical launcher and pointer files untouched, so macOS does not repeatedly rediscover the same background item. If a LaunchAgent is already installed, a successful upgrade rewrites and restarts it through the stable launcher. This command is normally invoked by the plugin session hook.
 
 `pause` always has an automatic resume deadline. The default is 120 minutes. If a pause expires while another live `dibs` holder still owns the checkout, vaultsync extends the pause by 60 minutes and repeats that rule until the lock clears.
 
