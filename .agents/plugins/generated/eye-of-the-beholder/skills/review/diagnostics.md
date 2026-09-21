@@ -29,6 +29,14 @@ Resolve ambiguity in this order: topology and proximity, control wording, visual
 
 During review, scan every visible sentence with three questions: does it provide information that changes for this object, is it needed to choose the next action, and would it still earn its space on the hundredth repetition? If all three answers are no, remove it rather than fading it. Secondary styling lowers contrast; it does not lower reading cost enough to rescue redundant copy.
 
+## Close over the surface and its states
+
+A reported defect identifies where the review starts, not where it ends. In the fresh render, inspect the whole visible viewport from top to bottom before claiming closure. Classify every persistent sentence and affordance as primary decision information, object-specific detail, occasional help, or unexplained residue. This inventory prevents a successful local edit from hiding an unchanged failure elsewhere in the same workflow.
+
+Review the state combinations that alter the touched surface rather than only its richest happy path. For repeated-object interfaces, exercise empty, partial and populated content and the transition to the next item or object. An affordance promises a useful outcome: hide it when its content is absent, and decide explicitly whether open, selected or focused state should carry across an object transition. Never promote inherited implementation behavior into the visual-language record before these states have been observed.
+
+Two operator corrections on the same visual surface trigger a premise reset. Stop point-fixing, restate the user's repeated task and scan the full surface and state matrix before changing code again. Treat a third symptom as evidence that the prior model was incomplete, not as another isolated patch target.
+
 ## The core: observation before explanation
 
 **After every layout change: screenshot. Describe what you see BEFORE looking back at the CSS.**

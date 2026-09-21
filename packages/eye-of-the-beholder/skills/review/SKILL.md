@@ -28,6 +28,8 @@ Assess separately:
 
 Success on one dimension cannot compensate for failure on another. Point to concrete regions and visible differences. Do not invent aesthetic scores or infer measured colors from visual guesses. Independent review can challenge a reading, but agreement among uncalibrated reviewers is not evidence of user acceptance.
 
-For a known defect, fix the demonstrated cause, render again and compare with both the target and best prior version. For an unresolved or repeatedly rejected direction, return to [explore](../explore/SKILL.md). Do not continue adding decoration to avoid reconsidering the premise.
+For a known defect, fix the demonstrated cause, then review the whole visible surface in the fresh render, not only the changed or reported region. Exercise the states that can change the meaning of the touched surface; for repeated-object interfaces this includes populated, partial and empty content plus the transition to the next item. A control or affordance without content or a useful outcome is a defect, even when it was outside the original callout.
+
+After two operator corrections on the same visual surface, stop point-fixing and reopen the premise before another implementation pass. Re-establish the user's task, the information that must survive repeated use, and the relevant state matrix; then review the full surface from that model. For an unresolved or repeatedly rejected direction, return to [explore](../explore/SKILL.md). Do not continue adding decoration to avoid reconsidering the premise.
 
 Report what was verified and what remains uncertain. Update the canonical visual-language record and image links with the current accepted rendering. Keep rejected treatments clearly scoped and excluded from future recommendations unless the user explicitly reopens them.
