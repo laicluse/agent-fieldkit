@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.23]
+
+### Changed
+
+- **Views are queries; deliberate actions are commands.** `programming-philosophy` now applies Command-Query Separation to page loads, refreshes, polling, previews, route handlers, and UI affordances so merely viewing state cannot mutate it.
+
 ## [v2.0.22]
 
 ### Changed
