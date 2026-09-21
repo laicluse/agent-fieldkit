@@ -415,7 +415,7 @@ continuation is the safety net after you stop driving, not the starter.
 Free-form text may also describe optional integrations. Parse phrases where the operator names a specific skill with a role, and record it as an integration:
 
 - A notifier skill to message after the loop ends: `notify_on_done: <skill>`
-- A review-bot skill to run after a Draft PR goes up, on the PR-bound path only: `reviewbot: <skill>`
+- A review-bot skill to run after a PR goes up, on the PR-bound path only: `reviewbot: <skill>`
 - A commit-splitter skill to run before STOW closes: `commit_splitter: <skill>`
 
 For each parsed integration, verify the skill or binary exists before recording it. Use the `has_skill` helper from `decide`. When an operator-mentioned integration is not installed, do not silently skip: log a loud line to the loop file so the operator notices on any later read. Example: `[HH:MM] Setup: operator mentioned <skill> but it is not installed. Integration disabled.`
@@ -584,7 +584,9 @@ If STOW uncovers something that requires a logic change (for example, a "prematu
 
 When the diff is clean and the cleanup commit has landed, transition to STANDBY.
 
-PR creation is not a rover default. The rover commits the work locally on the mission branch. A Draft PR is only created when either the Dispatch explicitly asks for one, or the project's documented convention in its active instruction files treats every mission as PR-bound. When neither holds, the rover stops at local commits and any remote-side workflow is the operator's. If `reviewbot` is configured AND a PR was created, invoke it after the PR is up.
+PR creation is not a rover default. The rover commits the work locally on the mission branch. A PR is only created when either the Dispatch explicitly asks for one, or the project's documented convention in its active instruction files treats every mission as PR-bound. When neither holds, the rover stops at local commits and any remote-side workflow is the operator's. If `reviewbot` is configured AND a PR was created, invoke it after the PR is up.
+
+Open a completed, verified change as ready for review. Draft means the change is not yet ready for others to review; use it only while that is true or when the operator explicitly requests it. Pending merge approval, deployment, or CI is not by itself a reason for draft status. If a PR was opened early as a draft, mark it ready as soon as the work is reviewable, before handing it off.
 
 **STANDBY**
 
@@ -635,7 +637,7 @@ Commits: autonomous. The operator approved them by starting the loop. Commit per
 
 Pushes, merges, deploys: not the rover's move, and not the rover's concern either. The rover's deliverable is commits on the mission branch. Where those commits go afterwards is a workflow decision that belongs to whoever runs the mission: a conveyor run resolves it in its own `deliver` station, and an interactive mission ends with the operator taking it from there. By default the rover therefore has no push step to defer, which means there is no push-ready state to log and nothing to leave as homework in the communiqué.
 
-The one exception is the PR-bound path in STOW: when the Dispatch asks for a PR, or the project's active instruction files make every mission PR-bound, the rover pushes the mission branch and opens the Draft PR as part of the mission. That push is a step the rover takes, not one it hands over. Outside that path it says nothing about remotes at all.
+The one exception is the PR-bound path in STOW: when the Dispatch asks for a PR, or the project's active instruction files make every mission PR-bound, the rover pushes the mission branch and opens the PR as part of the mission. That push is a step the rover takes, not one it hands over. Outside that path it says nothing about remotes at all.
 
 ### Timestamps and mission duration
 
@@ -672,7 +674,7 @@ Trunk-based or feature-branch workflow is not a per-mission decision inside the 
 A loop runs without any of these. They are conveniences the operator plugs in at invocation time. Only use if detected at setup:
 
 - **notify_on_done.** After auto-stop or explicit stop, if a notifier skill is configured and installed, invoke it with a brief summary. The plugin itself ships none of these.
-- **reviewbot.** Only on the PR-bound path in STOW: once the Draft PR is up, if a review-bot skill is configured and installed, invoke it. No PR, no reviewbot.
+- **reviewbot.** Only on the PR-bound path in STOW: once the PR is up, if a review-bot skill is configured and installed, invoke it. No PR, no reviewbot.
 - **commit_splitter.** If the loop produced uncommitted changes spanning multiple concerns and a commit-splitter skill is configured and installed, invoke it before STOW closes.
 
 If a user mentions an integration at setup that turns out not to be installed, log a loud line at that time (see "Parsing" above). Do not fail silently when running.
