@@ -21,6 +21,14 @@ A user rarely reports a defect in the vocabulary of the fix. They report a feeli
 
 The translation is a hypothesis: state it ("you said it feels busy, so I am scanning density and hierarchy") so a wrong mapping gets corrected at the axis, not the pixels.
 
+## Repetition multiplies copy cost
+
+Judge interface copy at the frequency where the user encounters it. A sentence that helps once can become dominant noise in a review, triage, checkout, or data-entry loop repeated dozens of times. Before adding a visible label, caption, helper sentence, or disclosure, multiply its reading cost by the expected repetitions in one session.
+
+Resolve ambiguity in this order: topology and proximity, control wording, visual hierarchy, then persistent explanatory copy. If the field sits with its one submit action and the action names the outcome, a visible sentence explaining what the field does is usually redundant; preserve an accessible name without charging every sighted user the repetition cost. Put genuinely occasional instruction behind contextual help. Keep disclosures for details about the current object, not generic definitions or navigation hidden one click deeper.
+
+During review, scan every visible sentence with three questions: does it provide information that changes for this object, is it needed to choose the next action, and would it still earn its space on the hundredth repetition? If all three answers are no, remove it rather than fading it. Secondary styling lowers contrast; it does not lower reading cost enough to rescue redundant copy.
+
 ## The core: observation before explanation
 
 **After every layout change: screenshot. Describe what you see BEFORE looking back at the CSS.**
