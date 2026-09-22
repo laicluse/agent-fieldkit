@@ -53,6 +53,12 @@ setup() {
   grep -q 'Do not detach' "$SKILL"
 }
 
+@test "canonical deployment checkout stays attached to its default branch" {
+  grep -q 'must remain attached to its named default branch' "$SKILL"
+  grep -q 'Never check out a raw commit SHA there' "$SKILL"
+  grep -q 'the default branch ref itself must point at that SHA' "$SKILL"
+}
+
 @test "review skills use the same configured local default contract" {
   local intervision_codex="$REPO_ROOT/packages/intervision/skills/second-opinion/SKILL.codex.md"
   local intervision_claude="$REPO_ROOT/packages/intervision/skills/second-opinion/SKILL.claude.md"

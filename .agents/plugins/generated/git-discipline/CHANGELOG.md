@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.82]
+
+### Changed
+
+- **Canonical deploy checkouts stay on their named default branch.** Previewing or deploying an exact commit no longer permits detaching HEAD in the checkout that serves the product. The default branch itself must point at the intended SHA, keeping the running state attributable and leaving the checkout intelligible to the next session.
+
 ## [v2.0.79]
 
 ### Added

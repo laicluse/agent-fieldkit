@@ -83,7 +83,9 @@ Before deployment, inspect the canonical deploy checkout's occupancy and Git sta
 
 Do not detach, stash, reset, rebase, merge, publish unrelated work, or substitute the authoring worktree to get around that contention. Resume only the deployment step once the canonical checkout is available and can be updated to the exact merged SHA.
 
-Deployment is repository-specific and must use the exact merged SHA from a clean deploy checkout, never this authoring worktree.
+The canonical deploy checkout must remain attached to its named default branch throughout preview and deployment. Never check out a raw commit SHA there, even temporarily: detached HEAD hides which line owns the running product and leaves the checkout in a surprising state for the next session. When deployment requires an exact merged SHA, the default branch ref itself must point at that SHA and the clean canonical checkout must have that branch checked out. If either condition is false, stop instead of manufacturing an unnamed checkout state.
+
+Deployment is repository-specific and must use the exact merged SHA from that clean, attached deploy checkout, never this authoring worktree.
 
 ## Remove the source worktree and branch right after merge
 

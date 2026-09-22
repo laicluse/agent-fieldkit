@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.81",
+			"version": "2.0.82",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 4,
 			"hookFileCount": 30,
 			"latestChange": {
-				"version": "v2.0.79",
-				"type": "Added",
-				"summary": "A push is judged by where it goes before it runs."
+				"version": "v2.0.82",
+				"type": "Changed",
+				"summary": "Canonical deploy checkouts stay on their named default branch."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.81",
+			"packageVersion": "2.0.82",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.79",
-			"type": "Added",
-			"summary": "A push is judged by where it goes before it runs.",
+			"version": "v2.0.82",
+			"type": "Changed",
+			"summary": "Canonical deploy checkouts stay on their named default branch.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
@@ -688,15 +688,6 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
 		},
 		{
-			"plugin": "house-rules",
-			"packageVersion": "2.0.23",
-			"detailPath": "agent-fieldkit/house-rules/",
-			"version": "v2.0.23",
-			"type": "Changed",
-			"summary": "Views are queries; deliberate actions are commands.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
-		},
-		{
 			"plugin": "vaultsync",
 			"packageVersion": "2.0.24",
 			"detailPath": "agent-fieldkit/vaultsync/",
@@ -704,6 +695,15 @@
 			"type": "Fixed",
 			"summary": "Repeated session startup no longer re-registers an unchanged macOS background item.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
+		},
+		{
+			"plugin": "house-rules",
+			"packageVersion": "2.0.23",
+			"detailPath": "agent-fieldkit/house-rules/",
+			"version": "v2.0.23",
+			"type": "Changed",
+			"summary": "Views are queries; deliberate actions are commands.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
 			"plugin": "intervision",
