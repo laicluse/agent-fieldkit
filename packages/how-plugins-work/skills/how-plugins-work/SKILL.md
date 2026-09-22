@@ -186,19 +186,19 @@ model router; the secondary reader is a human picker or autocomplete UI. Search
 engines and GEO are not direct readers of `SKILL.md` frontmatter unless another
 system publishes that text onto a web page.
 
-Keep descriptions short: one sentence is the normal shape, and under 160
-characters is a good working target. Front-load the task and natural trigger
-words, then stop. Include one boundary only when it prevents wrong activation.
-Procedures, examples, edge cases, installation details, internal routing, and
-long alias lists belong in the body because the body is loaded only after the
-skill is selected.
+Anthropic's [skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices#writing-effective-descriptions) set the shape: the description says what the skill does and when to use it, in third person, within 1,024 characters. "What it does" is the result the caller gets, not the steps the skill takes to get there. "When to use it" names the situations, requests and key terms that should select the skill. Anthropic's own examples take the form `<result>. Use when <situation>.` and run to about 170 characters.
 
-Two anti-patterns to avoid:
+```yaml
+description: Generate descriptive commit messages by analyzing git diffs. Use when the user asks for help writing commit messages or reviewing staged changes.
+```
 
-- **"Use when the user types /X to ..." prefix.** When the skill has `disable-model-invocation: true`, the slash command is the only way in, so the prefix is redundant. When the skill is model-triggerable, the trigger lives in the auto-invocation criteria the rest of the description describes; restating the slash form is noise.
-- **Embedding the skill body in the description.** Disambiguation rules, edge cases, and step-by-step procedures belong in the body, not the description. The description is read on every turn the skill list is loaded; the body is read only when the skill is invoked.
+Keep it as short as those two parts allow; every skill description is loaded on every turn. Include one boundary only when it prevents wrong activation. Procedures, edge cases, installation details, internal routing, and long alias lists belong in the body, which loads only after the skill is selected.
 
-Lean reference: `dont-do-that:just-a-question` describes what the skill enforces in two short sentences and parks the rest in the body.
+Three anti-patterns to avoid:
+
+- **A compressed procedure.** "Inventory X, classify it by content, and remove the approved rows" tells the router how the skill works, not what the caller walks away with or when to reach for it. State the outcome and the situation instead.
+- **"Use when the user types /X" prefix.** When the skill has `disable-model-invocation: true`, the slash command is the only way in, so the prefix is redundant. When the skill is model-triggerable, name the situation, not the slash form.
+- **Embedding the skill body in the description.** Disambiguation rules, edge cases, and step-by-step procedures belong in the body, not the description.
 
 ### Frontmatter must be strict YAML
 

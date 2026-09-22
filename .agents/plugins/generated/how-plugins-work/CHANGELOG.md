@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.43]
+
+### Changed
+
+- **Skill descriptions now lead with the result and selection situation.** The authoring guidance uses Anthropic's documented shape and a concrete example while keeping procedures, edge cases, and routing details in the skill body.
+
 ## [v2.0.39]
 
 ### Fixed

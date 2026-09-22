@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.42",
+			"version": "2.0.43",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -165,9 +165,9 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.39",
-				"type": "Fixed",
-				"summary": "Local Codex marketplace changes now finish by integration, not reinstallation."
+				"version": "v2.0.43",
+				"type": "Changed",
+				"summary": "Skill descriptions now lead with the result and selection situation."
 			}
 		},
 		{
@@ -662,11 +662,11 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.42",
+			"packageVersion": "2.0.43",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
-			"version": "v2.0.39",
-			"type": "Fixed",
-			"summary": "Local Codex marketplace changes now finish by integration, not reinstallation.",
+			"version": "v2.0.43",
+			"type": "Changed",
+			"summary": "Skill descriptions now lead with the result and selection situation.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/how-plugins-work/CHANGELOG.md"
 		},
 		{
