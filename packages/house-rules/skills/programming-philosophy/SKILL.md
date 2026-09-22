@@ -1,7 +1,7 @@
 ---
 name: programming-philosophy
 description: >-
-  Use when writing, refactoring, or reviewing code, especially state gates, root-cause fixes, DRY, and error handling.
+  Use when writing, refactoring, or reviewing code, especially command-query separation, state gates, root-cause fixes, DRY, and error handling.
 user-invocable: true
 ---
 
@@ -208,6 +208,16 @@ action that already lives elsewhere: grep on the action name, reuse that call
 site, or factor it out into a shared helper. Two paths for one action drift
 apart over time. On discovering duplication after the fact: converge explicitly
 on one implementation.
+
+## Command-Query Separation: views do not change state
+
+Apply Bertrand Meyer's Command-Query Separation (CQS) at every public boundary. A **query** returns information and leaves observable state unchanged. A **command** changes state and is invoked as a deliberate action. Keep them as separate methods, routes, jobs, messages, and UI affordances; do not hide a command inside a query for convenience.
+
+For web applications, rendering a view is a query. `GET`, page load, refresh, polling, previews, and link traversal must never create, update, delete, enqueue, mark, settle, regenerate, or otherwise advance domain state. Repeating or prefetching the same view must be safe. Rails-style resource actions make the boundary visible: `show` and `index` read; `create`, `update`, and `destroy` mutate through an explicit form or button using the corresponding non-GET request.
+
+The characteristic violation is an `ensure*`, `find_or_create*`, generation call, write, or mutating callback reached while assembling a view. A page that needs missing state shows that state and offers the command that creates it; it does not run the command because the page was opened. Client-side code that fires a mutating request on mount is the same violation with the call moved to JavaScript.
+
+Before accepting a view or query path, trace its complete call graph to storage and external adapters. Name every operation that can write, enqueue, send, or change lifecycle state. Move each one behind an explicit command boundary and test the invariant at the route or public API: invoking the query repeatedly leaves domain state unchanged, while the command changes it only when deliberately invoked.
 
 ## Single source of truth for cross-boundary state
 
