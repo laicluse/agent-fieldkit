@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
@@ -53,6 +53,24 @@ test('independent plugin versions only move the active machine runtime forward',
   assert.equal(activeMachineRuntime(env).version, '2.1.0');
   const result = spawnSync(machineLauncherPath(env), [], { encoding: 'utf8', env });
   assert.equal(result.stdout, 'newest\n');
+});
+
+test('republishing the active version preserves stable runtime files', () => {
+  const root = mkdtempSync(join(tmpdir(), 'vaultsync-machine-runtime-'));
+  const env = { ...process.env, HOME: join(root, 'home'), LAICLUSE_HOME: join(root, 'state'), VAULTSYNC_BIN_DIR: join(root, 'bin') };
+  const sourceRoot = sourceFixture(root, '2.0.17', 'current');
+
+  const installed = installMachineRuntime({ sourceRoot, version: '2.0.17', env });
+  const pointerPath = join(env.LAICLUSE_HOME, 'vaultsync', 'runtime', 'current.json');
+  const unchangedSince = new Date('2020-01-01T00:00:00.000Z');
+  utimesSync(installed.launcher, unchangedSince, unchangedSince);
+  utimesSync(pointerPath, unchangedSince, unchangedSince);
+
+  const repeated = installMachineRuntime({ sourceRoot, version: '2.0.17', env });
+
+  assert.equal(repeated.installed, false);
+  assert.equal(statSync(installed.launcher).mtime.toISOString(), unchangedSince.toISOString());
+  assert.equal(statSync(pointerPath).mtime.toISOString(), unchangedSince.toISOString());
 });
 
 test('the active pointer only names a complete immutable release', () => {

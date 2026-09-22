@@ -46,6 +46,27 @@ dibs() {
   echo "$output" | grep -qi "alive"
 }
 
+@test "check distinguishes lock age from recent dirty-file activity" {
+  git -C "$DIR" init -q
+  printf 'first\n' > "$DIR/note.md"
+  git -C "$DIR" add note.md
+  git -C "$DIR" -c user.name=Test -c user.email=test@example.invalid commit -qm initial
+  printf 'second\n' >> "$DIR/note.md"
+  "$NODE_BIN" -e 'require("node:fs").utimesSync(process.argv[1], new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-01T00:00:00.000Z"))' "$DIR/note.md"
+  dibs claim "$DIR" --pid $$ --agent claude --description "inspect worktree activity" --json >/dev/null
+
+  run dibs check "$DIR" --json
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q '"worktreeActivity"'
+  echo "$output" | grep -q '"lastModifiedAt": "2020-01-01T00:00:00.000Z"'
+  echo "$output" | grep -Eq '"relativeAge": "[0-9]+ days ago"'
+
+  run dibs check "$DIR"
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -qi 'latest dirty-file change'
+  echo "$output" | grep -qi 'days ago'
+}
+
 @test "check on a non-existent directory errors clearly" {
   run dibs check "$BATS_TEST_TMPDIR/nope"
   [ "$status" -ne 0 ]

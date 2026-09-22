@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.24]
+
+### Fixed
+
+- **Repeated session startup no longer re-registers an unchanged macOS background item.** Runtime publication preserves byte-identical launcher and pointer files, avoiding needless filesystem identity changes that made macOS show the Vaultsync background-activity notification again.
+
 ## [v2.0.23]
 
 ### Fixed

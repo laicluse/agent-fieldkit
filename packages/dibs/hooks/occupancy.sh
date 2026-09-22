@@ -220,7 +220,7 @@ occ_legacy_codex_reclaim() {
 occ_holder_pid() { dibs_holder_pid "$@"; }
 
 occ_holder_line() {
-  jq -r 'if .holder then "held by \(.holder.agent) (pid \(.holder.pid)) on \(.holder.hostname) since \(.holder.acquiredAt)" + (if .holder.description then "; work: \(.holder.description)" else "" end) else "another live agent holds this directory" end' 2>/dev/null
+  jq -r 'if .holder then "held by \(.holder.agent) (pid \(.holder.pid)) on \(.holder.hostname) since \(.holder.acquiredAt)" + (if .holder.description then "; work: \(.holder.description)" else "" end) + (if .worktreeActivity.lastModifiedAt then "; latest dirty-file change \(.worktreeActivity.relativeAge) at \(.worktreeActivity.lastModifiedAt)" else "" end) else "another live agent holds this directory" end' 2>/dev/null
 }
 
 occ_refusal_suggestion() {
@@ -380,7 +380,7 @@ occ_gate() {
     # allow-comment: load-bearing. A cross-session refusal and a missing-description error both exit non-zero, so branch on the payload not rc: a refusal carries state:refused, the description error an error naming "work description".
     case "$rc" in 2 | 3) continue ;; esac
     if occ_refused_by_other "$input" "$out"; then
-      printf '[dibs/occupancy] %s; another live agent occupies this directory. Surface this to the operator now (which agent, its pid, and its work, shown above) so they know another of their agents is active here; report it, do not silently route around it. %s If that holder is stale, inspect it with '\''dibs check %s'\'' and clear it with '\''dibs release %s'\''.\n' "$(printf '%s' "$out" | occ_holder_line)" "$(printf '%s' "$out" | occ_refusal_suggestion)" "$dir" "$dir" >&2
+      printf '[dibs/occupancy] %s; another live agent occupies this directory. Surface this to the operator now (which agent, its pid, its work, and how long ago the latest dirty-file change occurred, shown above) so they can distinguish a recently active worktree from an old dirty one; report it, do not silently route around it. %s If that holder is stale, inspect it with '\''dibs check %s'\'' and clear it with '\''dibs release %s'\''.\n' "$(printf '%s' "$out" | occ_holder_line)" "$(printf '%s' "$out" | occ_refusal_suggestion)" "$dir" "$dir" >&2
       exit 2
     fi
     if printf '%s' "$out" | grep -q 'work description is required'; then

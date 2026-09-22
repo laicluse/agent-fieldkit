@@ -64,6 +64,19 @@ function atomicWrite(path, content, mode) {
   }
 }
 
+function atomicWriteIfChanged(path, content, mode) {
+  try {
+    if (readFileSync(path, 'utf8') === content) {
+      if (mode !== undefined && (statSync(path).mode & 0o777) !== mode) chmodSync(path, mode);
+      return false;
+    }
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  atomicWrite(path, content, mode);
+  return true;
+}
+
 function processIsAlive(pid) {
   if (!Number.isInteger(pid) || pid <= 0) return false;
   try {
@@ -214,9 +227,9 @@ export function installMachineRuntime({ sourceRoot, version, env = process.env }
     }
     validateRelease(releaseRoot, version);
 
-    atomicWrite(launcher, launcherSource(), 0o755);
+    atomicWriteIfChanged(launcher, launcherSource(), 0o755);
     const installed = !active || compareVersions(active.version, version) < 0;
-    atomicWrite(join(root, 'current.json'), `${JSON.stringify({ version, release }, null, 2)}\n`, 0o600);
+    atomicWriteIfChanged(join(root, 'current.json'), `${JSON.stringify({ version, release }, null, 2)}\n`, 0o600);
     return { installed, version, launcher, releaseRoot };
   });
 }

@@ -1,7 +1,8 @@
-import { mkdirSync, writeFileSync, readFileSync, readdirSync, realpathSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, readdirSync, realpathSync, rmSync, existsSync, lstatSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { homedir, hostname } from 'node:os';
 import { createHash, randomBytes } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 
 const MAX_CLAIM_ATTEMPTS = 3;
 const STABLE_READ_TRIES = 10;
@@ -220,6 +221,61 @@ export function formatHolder(record) {
   return `held by ${record.agent} (pid ${record.pid}) on ${record.hostname} since ${record.acquiredAt}${work}`;
 }
 
+function relativeAge(timestamp, now = Date.now()) {
+  const seconds = Math.max(0, Math.floor((now - Date.parse(timestamp)) / 1000));
+  if (seconds < 60) return `${seconds} second${seconds === 1 ? '' : 's'} ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
+function inspectWorktreeActivity(realpath) {
+  if (!realpath || !gitWorktreeRoot(realpath)) return null;
+  const status = spawnSync('git', [
+    '--no-optional-locks',
+    '-C', realpath,
+    'status',
+    '--porcelain=v1',
+    '-z',
+    '--untracked-files=all',
+  ], {
+    encoding: 'utf8',
+    env: { ...process.env, GIT_OPTIONAL_LOCKS: '0' },
+  });
+  if (status.status !== 0) return null;
+
+  const records = status.stdout.split('\0');
+  let dirtyPathCount = 0;
+  let latest = null;
+  for (let index = 0; index < records.length; index += 1) {
+    const record = records[index];
+    if (record.length < 4) continue;
+    const state = record.slice(0, 2);
+    const relativePath = record.slice(3);
+    dirtyPathCount += 1;
+    if (state.includes('R') || state.includes('C')) index += 1;
+    try {
+      const modifiedAt = lstatSync(join(realpath, relativePath)).mtimeMs;
+      if (latest === null || modifiedAt > latest) latest = modifiedAt;
+    } catch {}
+  }
+
+  if (dirtyPathCount === 0) return { dirty: false, dirtyPathCount: 0 };
+  if (latest === null) return { dirty: true, dirtyPathCount, lastModifiedAt: null, relativeAge: null };
+  const lastModifiedAt = new Date(latest).toISOString();
+  return { dirty: true, dirtyPathCount, lastModifiedAt, relativeAge: relativeAge(lastModifiedAt) };
+}
+
+export function formatWorktreeActivity(activity) {
+  if (!activity) return '';
+  if (!activity.dirty) return 'worktree clean';
+  if (!activity.lastModifiedAt) return 'dirty worktree; latest dirty-file change unavailable';
+  return `latest dirty-file change ${activity.relativeAge} (${activity.lastModifiedAt})`;
+}
+
 function refusalResult(path, holder, reason) {
   return {
     ok: false,
@@ -227,6 +283,7 @@ function refusalResult(path, holder, reason) {
     path,
     holder,
     reason,
+    worktreeActivity: inspectWorktreeActivity(holder?.realpath),
     suggestion: BLOCKED_DIRECTORY_SUGGESTION,
   };
 }
@@ -454,5 +511,6 @@ export function check({ dir, maxAgeHours, session, owner, agent }) {
     stale: decision.breakable,
     self: mine.self,
     selfReason: mine.reason,
+    worktreeActivity: inspectWorktreeActivity(realpath),
   };
 }

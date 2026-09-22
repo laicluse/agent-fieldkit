@@ -53,25 +53,10 @@ node "$DIBS" include     <dir> [--json]   # the inverse: lock <dir> again
 node "$DIBS" excludes    [--json]         # list defaults + configured
 ```
 
-- **claim** takes exclusive occupancy of the nearest git worktree root when the
-  directory lives inside git, otherwise the directory itself. It exits 0 when it
-  claims a free target, re-claims one you already hold (`held-by-self`),
-  reclaims one with the same stable owner (`reclaimed-by-owner`), or takes over
-  a stale lock whose holder is dead (`took-over-stale`). It exits non-zero and
-  names the holder (`refused: held by <agent> (pid <pid>) since <acquired-at>`)
-  when a live holder exists. When the holder recorded a description, refusal
-  and `check` output include it as `work: <text>`, so a blocked session can
-  inspect whether an old stale lock's work has already been completed. A
-  refusal means the current checkout is not your working tree: create a separate
-  git worktree on a new branch (prefer `bonsai:bonsai`, or plain `git worktree`
-  when bonsai is unavailable), then claim and work in that path. Do not copy the
-  repository to a loose non-git directory as a substitute; that is only a spike
-  and must not be presented as integrated work.
+- **claim** takes exclusive occupancy of the nearest git worktree root when the directory lives inside git, otherwise the directory itself. It exits 0 when it claims a free target, re-claims one you already hold (`held-by-self`), reclaims one with the same stable owner (`reclaimed-by-owner`), or takes over a stale lock whose holder is dead (`took-over-stale`). It exits non-zero and names the holder (`refused: held by <agent> (pid <pid>) since <acquired-at>`) when a live holder exists. When the holder recorded a description, refusal and `check` output include it as `work: <text>`, so a blocked session can inspect whether an old stale lock's work has already been completed. For a Git worktree, they separately report how long ago the latest observable dirty-file change occurred. Surface both ages to the operator: `acquiredAt` says when occupancy began, while dirty-file activity distinguishes minutes of active work from hours or days of untouched state. A refusal means the current checkout is not your working tree: create a separate git worktree on a new branch (prefer `bonsai:bonsai`, or plain `git worktree` when bonsai is unavailable), then claim and work in that path. Do not copy the repository to a loose non-git directory as a substitute; that is only a spike and must not be presented as integrated work.
 - **release** deletes the lock only if you are the holder; on the same host, PID, exact session, or stable owner plus agent can identify that holder. A retained Codex shell reads its session from `CODEX_THREAD_ID`. Releasing a lock held by someone else is refused and exits non-zero; releasing an unheld directory is a no-op.
 - **release-all** releases every lock whose holder identifies as this session in one sweep, across all directories. Every supplied selector narrows the match: `--pid`, `--session`, and `--owner`+`--agent` must all match the same holder when combined. It takes no `<dir>` and needs at least one selector. A session holds more than one lock when it edits files in several git roots, so this is how the host's session-end and the `undibs` skill free all of them at once; locks held by a *different* live agent are never touched.
-- **check** prints `free` or the holder plus its liveness and staleness for the
-  same resolved target that `claim` would use, or `excluded` when the directory
-  is on the exclude list.
+- **check** prints `free` or the holder plus its liveness, staleness, and Git worktree activity for the same resolved target that `claim` would use, or `excluded` when the directory is on the exclude list.
 - **exclude / include** are an imperative pair, mirroring **claim / release**:
   `exclude <dir>` adds a directory to the per-machine never-lock list, `include
   <dir>` is the inverse and drops it again. `excludes` prints the built-in

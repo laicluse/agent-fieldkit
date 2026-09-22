@@ -76,6 +76,9 @@ init_bash_target_repo() {
 }
 
 @test "gate hard-denies a write when a live other-session agent holds the dir" {
+  init_test_repo "$DIR"
+  printf 'pending\n' >> "$DIR/README.md"
+  "$NODE_BIN" -e 'require("node:fs").utimesSync(process.argv[1], new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-01T00:00:00.000Z"))' "$DIR/README.md"
   tail -f /dev/null >/dev/null 2>&1 & local other=$!
   dibs claim "$DIR" --pid "$other" --agent codex --session other-sess --description "stale dibs lock cleanup" >/dev/null
   export DIBS_HOLDER_PID=$$
@@ -86,6 +89,8 @@ init_bash_target_repo() {
   echo "$output" | grep -qi "held by codex"
   echo "$output" | grep -qi "work: stale dibs lock cleanup"
   echo "$output" | grep -qi "since"
+  echo "$output" | grep -qi "latest dirty-file change"
+  echo "$output" | grep -qi "days ago"
   echo "$output" | grep -qi "surface this to the operator"
   echo "$output" | grep -qi "git worktree"
   echo "$output" | grep -qi "new branch"
