@@ -82,6 +82,9 @@ dibs() {
 }
 
 @test "a second live claimer is refused and told who holds it and since when" {
+  git -C "$DIR" init -q
+  printf 'pending\n' > "$DIR/pending.md"
+  "$NODE_BIN" -e 'require("node:fs").utimesSync(process.argv[1], new Date("2020-01-01T00:00:00.000Z"), new Date("2020-01-01T00:00:00.000Z"))' "$DIR/pending.md"
   dibs claim "$DIR" --pid $$ --agent claude --description "stale dibs lock cleanup" --json
   tail -f /dev/null >/dev/null 2>&1 & local other=$!
   run dibs claim "$DIR" --pid "$other" --agent codex
@@ -91,6 +94,8 @@ dibs() {
   echo "$output" | grep -qi "held by claude"
   echo "$output" | grep -qi "work: stale dibs lock cleanup"
   echo "$output" | grep -qi "since"
+  echo "$output" | grep -qi "latest dirty-file change"
+  echo "$output" | grep -qi "days ago"
   echo "$output" | grep -qi "git worktree"
   echo "$output" | grep -qi "new branch"
   echo "$output" | grep -qi "claim that worktree path"

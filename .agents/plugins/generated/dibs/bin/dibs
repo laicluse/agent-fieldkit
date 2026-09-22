@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
-import { claim, release, releaseAll, check, formatHolder, listExcludes, excludeDir, includeDir, resolveContext } from './dibs-lib.mjs';
+import { claim, release, releaseAll, check, formatHolder, formatWorktreeActivity, listExcludes, excludeDir, includeDir, resolveContext } from './dibs-lib.mjs';
 
 const USAGE = `usage: dibs <command> <dir> [options]
 
@@ -163,7 +163,8 @@ function claimRefusalMessage(result) {
   const holder = result.holder
     ? formatHolder(result.holder)
     : 'another live agent holds this directory';
-  return `refused: ${holder}. ${result.suggestion}`;
+  const activity = formatWorktreeActivity(result.worktreeActivity);
+  return `refused: ${holder}${activity ? `; ${activity}` : ''}. ${result.suggestion}`;
 }
 
 try {
@@ -204,7 +205,8 @@ try {
     else if (result.state === 'corrupt') emit(result, `corrupt lock for ${result.realpath}; the next claimer will break it`);
     else {
       const liveness = result.sameHost ? (result.alive ? 'alive' : 'dead') : 'foreign-host';
-      emit(result, `${formatHolder(result.holder)} [${liveness}${result.stale ? ', stale' : ''}]`);
+      const activity = formatWorktreeActivity(result.worktreeActivity);
+      emit(result, `${formatHolder(result.holder)} [${liveness}${result.stale ? ', stale' : ''}]${activity ? `; ${activity}` : ''}`);
     }
   }
 } catch (err) {

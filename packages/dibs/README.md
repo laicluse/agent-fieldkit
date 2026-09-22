@@ -41,18 +41,10 @@ a clear error rather than a silently divergent key. `release-all` is the
 exception: it operates on the lock store directly, reading each lock's recorded
 realpath, so it still frees a worktree that has since been pruned.
 
-- **claim** takes exclusive occupancy of the resolved lock target: the nearest
-  git worktree root when one exists, otherwise the requested directory realpath.
-  Exits 0 on a fresh claim, on an idempotent re-claim by the same holder
-  (`held-by-self`), or on taking over a stale lock whose holder pid is dead
-  (`took-over-stale`). Exits non-zero and reports the holder when a live holder
-  exists. A refused claim also suggests creating a separate git worktree on a
-  new branch (for example with `bonsai:bonsai`, or plain `git worktree` if you
-  do not have it) and claiming that worktree path.
+- **claim** takes exclusive occupancy of the resolved lock target: the nearest git worktree root when one exists, otherwise the requested directory realpath. Exits 0 on a fresh claim, on an idempotent re-claim by the same holder (`held-by-self`), or on taking over a stale lock whose holder pid is dead (`took-over-stale`). Exits non-zero and reports the holder when a live holder exists. For a Git worktree, refused claims and `check` distinguish the lock's acquisition time from the latest observable mtime among dirty files and show the latter as a relative age. A refused claim also suggests creating a separate git worktree on a new branch (for example with `bonsai:bonsai`, or plain `git worktree` if you do not have it) and claiming that worktree path.
 - **release** deletes the lock only if you are the holder. On the same host, the holder is recognized by its PID, exact session, or stable owner plus agent; a retained Codex shell also reads its session from `CODEX_THREAD_ID`. A supplied nonce must still match. Releasing a lock held by another is refused; releasing an unheld directory is a no-op.
 - **release-all** releases every lock whose holder identifies as the caller's session in one sweep, across all directories. Every supplied selector narrows the match: `--pid`, `--session`, and `--owner` with `--agent` must all match the same holder when combined. It takes no `<dir>` and requires at least one selector so it can never blindly clear the whole store. A session that edits files in several git roots holds several locks; this is how SessionEnd and the `undibs` skill free all of them at once. Locks belonging to a different live agent are never touched.
-- **check** reports `free`, or the holder with its liveness and staleness, or
-  `excluded` when the directory is on the exclude list.
+- **check** reports `free`, or the holder with its liveness, staleness, and Git worktree activity, or `excluded` when the directory is on the exclude list.
 - **exclude** never locks `<dir>` again; **include** is its inverse and starts
   locking it again; **excludes** lists the built-in defaults plus the configured
   entries. See *Excludes* below.
