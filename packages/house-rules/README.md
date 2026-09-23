@@ -27,11 +27,7 @@ lives in `skills/naming-is-hard/references/naming-doctrine.md`.
 
 ### `programming-philosophy`
 
-Principles for writing, refactoring, and reviewing code: intent-revealing
-names, source-of-truth predicates and correlated-proxy detection, the downgrade
-and feature-disable bans, DRY with judgment, vertical slicing, cruft tolerance,
-scope discipline, error handling, and host-owned capability contracts (ports and
-adapters) for published agent tooling. Model-invocable.
+Principles for planning, writing, refactoring, and reviewing software: make reversible decisions quickly and irreversible decisions slowly, use intent-revealing names, keep scope tied to the requested outcome, and apply vertical slicing, DRY with judgment, error handling, and host-owned capability contracts for published agent tooling. Model-invocable.
 
 ### `testing-philosophy`
 

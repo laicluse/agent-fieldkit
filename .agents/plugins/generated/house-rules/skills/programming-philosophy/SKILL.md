@@ -1,7 +1,7 @@
 ---
 name: programming-philosophy
 description: >-
-  Use when writing, refactoring, or reviewing code, especially command-query separation, state gates, root-cause fixes, DRY, and error handling.
+  Use when planning, writing, refactoring, or reviewing software, especially reversible decisions, scope, command-query separation, root-cause fixes, DRY, and error handling.
 ---
 
 # Programming Philosophy
@@ -24,6 +24,12 @@ Distilled from more than 25 years of programming in this tradition.
 Treat these works as shared knowledge. When a situation is not covered by the
 specific rules below, fall back on these principles.
 
+## Make reversible decisions quickly, irreversible decisions slowly
+
+Start with the smallest working choice that meets the current user goal. Ask what it would cost to change after real use. If a value, label, algorithm, or local implementation can be changed without losing data or breaking a published contract, choose a reasonable default and test it in use. Do not build configuration, versioning, migration, compatibility, or exception handling for an imagined future change.
+
+Slow down where a choice can destroy or reinterpret stored data, cross a public or external boundary, or leave users unable to recover. Preserve the necessary evidence and make those transitions explicit. Complexity needs a concrete current requirement, observed failure, or measured cost; a peer's hypothetical edge case is a question to evaluate, not automatically a new requirement. This applies while planning and reviewing as well as while coding.
+
 ## Simplest thing is not the quickest hack
 
 Simple is the opposite of complex, not the opposite of hard. Spaghetti is
@@ -33,19 +39,11 @@ not the cheapest shortcut. Using an existing, proven library is simpler than 20
 lines of custom code that half-cover the same ground. A proper model is simpler
 than a hash threaded through three methods.
 
-RLHF training pushes toward minimal code and quick fixes. That is the opposite
-of what these three authors teach. Haste makes waste. When you are torn between
-a quick solution and a structural one, choose structural. Always.
+Do the structural work needed for the current behavior and its known constraints. A shortcut that leaves today's behavior broken is not simpler. A general framework for possible later behaviors is not simpler either. When the choice is reversible, implement the smaller working structure and change it when evidence warrants it.
 
-## Rank alternatives by quality, not by simplicity
+## Rank alternatives by present quality and cost of change
 
-"Option 1 is the simplest" is not a recommendation; it is the RLHF reflex that
-confuses "least code" with "best solution." The right criteria are: clean
-(separation of concerns, single responsibility), robust (does not break on the
-first extension), and future-proof (fits the direction the codebase is
-evolving). Present the best solution first and justify why it is best. If a
-simpler solution happens to also be the best, name why it is structurally
-better, not just that it has fewer lines.
+"Option 1 has the fewest lines" is not a recommendation. Compare whether each option solves the present problem, keeps today's boundaries clear, and can be revised at a reasonable cost. Spend complexity on an extension only when that extension is requested, already present, or supported by concrete evidence. Present the best fitting solution first and explain the relevant trade-off.
 
 ## Presenting choices is not collaborating
 
@@ -304,18 +302,11 @@ directories when the first content lands in them.
 
 The self-inflicted species of cruft, the residue your own iterative fixing leaves behind across code, changelogs, commits, PRs, and tests, is scar tissue; cut it in a deliberate pass before you hand work over. The scar-tissue skill carries that discipline.
 
-## Later does not exist
+## Finish current work; defer speculative work
 
-If it is worth noting, it is worth doing now. "First iteration, improve later",
-"works for now", "B now, A later": later does not come. There is no backlog for
-naming nits. Always present the best solution. The user decides scope and
-timing, not you.
+Finish the requested behavior and fix defects your change causes. A known gap in that behavior cannot be excused with "improve later." A possible future requirement is different: leave it out until the operator requests it or evidence makes it current. The user decides scope and timing, not you.
 
-**"For now" is a red flag.** When you hear yourself thinking "the quick fix for
-now", "temporary", "as an interim step", or "the bigger change comes later":
-stop. That is the reflex that defers the real work. Solving the observable
-problem ("stop the job") instead of the structural one ("make the builder
-incremental") is not pragmatism, it is deferral disguised as action.
+**"For now" needs a concrete check.** Does the choice meet the requested use and remain easy to change, or does it hide a known defect or irreversible cost? Keep the former; repair the latter. Do not turn a reversible starting value into a permanent abstraction merely because it may change.
 
 **"Overkill" is a scope opinion.** When you label something the user asks for as
 "overkill", that is not a technical assessment, it is resistance to work.
@@ -324,10 +315,7 @@ analysis is NOT the work. The work is building.
 
 ## Scope is not a shield
 
-When you come across an improvement: fix it, or plan it (open an issue). "Not in
-this PR", "follow-up candidate", "known limitation" are all forms of skipping.
-If it is visible to the user, fix it now. The user decides on exceptions, not
-you.
+Keep the requested outcome as the scope boundary. Fix problems your change introduces and adjacent defects that prevent that outcome from working. Report unrelated findings without silently adding them to the work or creating tracking work the operator did not request. The user decides whether to expand scope.
 
 **New code has no scope argument.** When you introduce a new concept in a PR (a
 new class, a new module, a new system) and a reviewer finds a flaw, then the fix
