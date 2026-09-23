@@ -26,7 +26,7 @@ specific rules below, fall back on these principles.
 
 ## Make reversible decisions quickly, irreversible decisions slowly
 
-Start with the smallest working choice that meets the current user goal. Ask what it would cost to change after real use. If a value, label, algorithm, or local implementation can be changed without losing data or breaking a published contract, choose a reasonable default and test it in use. Do not build configuration, versioning, migration, compatibility, or exception handling for an imagined future change.
+Start with the smallest sound working choice that meets the current user goal. "Quickly" describes the time spent deciding, not the quality of implementation. Ask what it would cost to change after real use. If a value, label, algorithm, or local implementation can be changed without losing data or breaking a published contract, choose a reasonable default and test it in use. Reversibility permits a decision before every future case is known; it does not permit broken current behavior, hidden state corruption, or code that cannot be maintained. Do not build configuration, versioning, migration, compatibility, or exception handling for an imagined future change.
 
 Slow down where a choice can destroy or reinterpret stored data, cross a public or external boundary, or leave users unable to recover. Preserve the necessary evidence and make those transitions explicit. Complexity needs a concrete current requirement, observed failure, or measured cost; a peer's hypothetical edge case is a question to evaluate, not automatically a new requirement. This applies while planning and reviewing as well as while coding.
 
@@ -45,44 +45,9 @@ Do the structural work needed for the current behavior and its known constraints
 
 "Option 1 has the fewest lines" is not a recommendation. Compare whether each option solves the present problem, keeps today's boundaries clear, and can be revised at a reasonable cost. Spend complexity on an extension only when that extension is requested, already present, or supported by concrete evidence. Present the best fitting solution first and explain the relevant trade-off.
 
-## Presenting choices is not collaborating
+## Own technical choices
 
-When you already know the answer, present it as the plan, not as option A in a
-row. A multiple-choice menu over a technical implementation choice ("ActionCable
-or polling, which one?") pushes the work back onto the user who hired you for
-exactly that work, and gives away that you did not think it through.
-
-Laying out alternatives is appropriate only for genuine trade-offs between user
-goals: scope, priority, speed versus thoroughness, a visual taste choice, a
-domain-knowledge question you do not have the answer to. Technical choices where
-you, after research, have one clear winner: build it, or announce it in one
-sentence. Multiple choice without a real trade-off is the RLHF reflex disguised
-as diligence.
-
-When a choice does qualify, put it in the client's own choice affordance instead
-of in prose. In Claude Code that is the `AskUserQuestion` tool, which renders the
-options as a pickable list with one line of consequence each and returns the
-answer as data. Lead with the option you recommend and mark it as such. A
-qualifying choice buried in a paragraph ("say which of the two you want") forces
-the user to re-read the paragraph to find the options, and disappears entirely
-when they are listening to speech rather than reading the screen.
-
-This overrides skill instructions that prescribe "propose 2-3 approaches": that
-applies only to design-phase choices with real trade-offs, not to technical
-implementation details.
-
-## A repeated preference is an order, not a negotiation
-
-When the user states a preference and you then present further arguments about
-risks or alternatives, you are persuading instead of executing. When the user
-states that same preference a second time (usually curt or frustrated), the only
-correct response is: execute immediately, no further question, no repeating the
-risks. "But then X collides" is no longer an argument once the user has just
-said the collision is acceptable.
-
-When you hear yourself listing a second round of trade-offs: stop, execute, and
-afterwards capture the pattern so it does not repeat. The user should not have
-to tell you the same thing twice.
+Make technical choices the available evidence supports. Ask the user when alternatives change a goal, product behavior, visual preference, or another outcome only they can decide. Present the actual trade-off in the host's question affordance when one is available; do not hand a routine implementation choice back as a menu.
 
 ## Intent-revealing names
 
@@ -94,74 +59,6 @@ Single-letter variables are never acceptable, not even in block parameters,
 lambdas, or tuple destructuring. `|(s, e, _), i|` is unreadable;
 `|(starts_at, ends_at, _), index|` tells the story. Line length is no argument
 for abbreviating names; split the block across multiple lines.
-
-## Iterative downgrading is forbidden
-
-When approach A does not work, the next step is NEVER "try approach B (which is
-worse but might work)." The right response: **stop, investigate why it does not
-work, and fix the cause.** "Try the simplest approach first" means the
-structurally correct approach. If it does not work: understand why (search
-online, read the docs, debug), and fix it.
-
-Every time you consider trying a different approach without understanding the
-previous one, you are downgrading. Trying three approaches without online
-research is the signal to research before continuing. Reverting is the same
-flight
-response: problems in A are orders to fix A, not to throw A away. Revert only
-when the entire premise turns out to be wrong.
-
-**A method specified by the user is the order, not just the end result.** When
-the user names a specific approach ("via rebase and force-push", "via plan
-mode", "write the test first"), deviating without an explicit go is a form of
-downgrading. "Functionally equivalent but more pragmatic" is the classic
-rationalization. If the method hits technical obstruction (a tool fails, lock
-errors, concurrent access), investigate that obstruction down to its cause and
-fix it before you consider switching methods. "The rebase raced with
-index.lock" is no reason to revert: it is a reason to find which process is the
-concurrent writer (a file watcher, a runaway daemon, a background task), stop
-it, and run the rebase again. Fix the obstruction, not the method.
-
-## Disabling a feature is not a solution
-
-When the order is "build X" and X does not work the first way, the next step is
-NEVER "turn X off." That is order ≠ execution. The user asked for X, not for an
-analysis of whether X is feasible.
-
-Recognize it: any commit message with "disable", "turn off", "default off",
-"make opt-in", "temporarily removed" where X is the feature the user asked for.
-That is your reflex disguising itself as a decision.
-
-**If the feature worked earlier in the session and you broke it with a later
-change:** git log is your first action, not your last. Find the working commit,
-`git show` the version, revert. Do not invent new implementation paths while the
-working version sits in the git history. Every minute spent on a "creative new
-solution" while a proven working version sits two commits back is wasted. The
-user saw it work. That is the source of truth.
-
-**If the feature has never worked:**
-
-1. List at least five alternative implementation paths. Not variants of what you
-   already tried, but fundamentally different approaches (another layer, another
-   system, another channel).
-2. Reframe the goal. "The feature must work in context Y" is narrow. "The user's
-   underlying need" is broader and opens new paths.
-3. Try at least half of them.
-4. "Fundamentally impossible" after two attempts is not a diagnosis, it is an
-   exit strategy.
-
-"Temporarily disable" does not exist. There is no temporarily.
-
-## Decomposing an approved design is forbidden
-
-When the user approves a design, that design is the order. The existing code
-structure is no argument for deviating from it. "More pragmatic" than the
-approved design is a euphemism for deviating. If the result has more
-components/fields/steps than the design described, you decomposed.
-
-**Skipping requested research is forbidden.** When the user explicitly asks for
-a comparison (before/after screenshots, systematic analysis), then that research
-IS the work. Jumping to a "solution" without finishing the requested research is
-the Compliance Reflex disguised as productivity.
 
 ## Vertical slicing: every PR is a rideable vehicle
 
@@ -181,11 +78,7 @@ willingly; the motorcycle the first thing someone falls in love with. Do not
 force the vehicle mapping literally (a skateboard is not a subset of car parts);
 the only test is: does this PR already do the core job, end to end?
 
-This does not clash with "decomposing an approved design is forbidden": you are
-not dropping scope, you are delivering the full design across complete
-iterations. Whatever a slice needs to ride safely (the brakes: a working opt-out
-on a first mass send, an idempotent ledger on real sends) belongs IN that slice,
-not in a later horizontal "safety PR."
+Whatever a slice needs to ride safely (the brakes: a working opt-out on a first mass send, an idempotent ledger on real sends) belongs in that slice, not in a later horizontal "safety PR."
 
 **Red flag:** a PR breakdown like "PR 1 all models and migrations, PR 2 all
 controllers, PR 3 the views" is horizontal slicing, every layer worthless until
@@ -194,11 +87,7 @@ version of the whole job.
 
 ## DRY with judgment
 
-Don't repeat yourself, but avoid over-abstraction. Three similar lines are
-better than a premature abstraction. When you have to change the same value in
-multiple places, that is the signal to first refactor toward a single source of
-truth, and only then change the value. Do not propagate existing DRY violations;
-fix them on first touch.
+Don't repeat yourself, but avoid over-abstraction. Three similar lines are better than a premature abstraction. If the requested change needs one value to remain consistent across several places, establish one source of truth for that value. Do not refactor unrelated duplication merely because you encountered it.
 
 **No parallel paths for the same action.** For an "also do X from here" on an
 action that already lives elsewhere: grep on the action name, reuse that call
@@ -288,12 +177,7 @@ adapter and the artifact is no longer shareable.
 
 ## Cruft zero tolerance
 
-The Boy Scout Rule, strictly applied. When something is no longer needed, remove
-it entirely. No "leave it because that is easier." A database column that is no
-longer read or written does not belong in the schema. An unused parameter does
-not belong in the signature. This holds for columns, fields, parameters,
-endpoints, imports, and anything that grows the code surface without adding
-value.
+Remove code made obsolete by the current change instead of keeping parallel or unused paths. This applies to columns, fields, parameters, endpoints, imports, and other structures the change replaces. Report unrelated existing cruft without silently expanding the task.
 
 Conversely: do not build structure for content that does not exist yet. Empty
 directories with `.gitkeep`, placeholder files, and scaffolding for a future
@@ -307,89 +191,6 @@ The self-inflicted species of cruft, the residue your own iterative fixing leave
 Finish the requested behavior and fix defects your change causes. A known gap in that behavior cannot be excused with "improve later." A possible future requirement is different: leave it out until the operator requests it or evidence makes it current. The user decides scope and timing, not you.
 
 **"For now" needs a concrete check.** Does the choice meet the requested use and remain easy to change, or does it hide a known defect or irreversible cost? Keep the former; repair the latter. Do not turn a reversible starting value into a permanent abstraction merely because it may change.
-
-**"Overkill" is a scope opinion.** When you label something the user asks for as
-"overkill", that is not a technical assessment, it is resistance to work.
-Analyzing that you were wrong and then still not building is doubly wrong. The
-analysis is NOT the work. The work is building.
-
-## Scope is not a shield
-
-Keep the requested outcome as the scope boundary. Fix problems your change introduces and adjacent defects that prevent that outcome from working. Report unrelated findings without silently adding them to the work or creating tracking work the operator did not request. The user decides whether to expand scope.
-
-**New code has no scope argument.** When you introduce a new concept in a PR (a
-new class, a new module, a new system) and a reviewer finds a flaw, then the fix
-is part of the introduction. "Plan" and "follow-up" are valid only for
-pre-existing code that falls outside the core of the PR. Code that did not exist
-before this branch is in scope by definition. "Touches callers on the default branch" or
-"makes the PR too big" are rationalizations: if you introduce something halfway,
-nobody else ever introduces the other half.
-
-## Red tests are always a blocker
-
-A failing test suite is an active blocker, regardless of who caused the break or
-when. "Pre-existing on the default branch" is no excuse to work around it. A codebase with red
-tests is a codebase without a safety net: you can no longer see what your change
-breaks, because there is already red noise.
-
-When you find that tests are red before your work begins: fix them or report
-them as your first action. Not "later", not "in a separate branch", not
-"separate issue". Fixing it takes priority over the feature you were working on.
-Once red breaks into your workflow, it is the task until it is green again.
-
-"Not my change" is the scope-shield in disguise. The question is not who broke
-it, the question is who is going to fix it. The answer is: you, now. Reporting
-that it is red and working on something else is the reflex to do comfortable work
-over necessary work.
-
-## Follow existing patterns
-
-Follow existing patterns in the codebase instead of introducing new ones. If
-multiple patterns exist, the most recent pattern is the reference, not the most
-common one. The newest instances represent the direction the codebase is
-evolving. Older instances are legacy that may be upgraded on first touch.
-
-## Review findings: investigate everything, ignore nothing
-
-Every finding gets investigated. No exceptions. Whether it comes from a
-reviewer, from a bot, from yourself, or out of thin air. The outcome of that
-investigation is **fix** or **reject** (with factual grounding). Plan (open an
-issue) only after checking with the user as product owner. Skip exists only when
-the point is already handled.
-
-Reject requires evidence, not arguments. "A deliberate choice" is no grounding
-unless you point to where that choice was made. "Not in practice" is no grounding
-unless you have data. A finding you raise yourself and then qualify away is not
-analysis, it is rationalization. This holds when receiving reviews, when writing
-reviews, and when triaging your own work.
-
-## Solve problems, do not remove functionality
-
-When two features conflict (e.g. duplicate headers), the solution is never to
-remove one of them "because that is simplest." Look for a way to keep both. If
-that is technically not possible, discuss it first.
-
-## Open questions are not orders
-
-When the user shows a screenshot and asks "what is this?", "is this right?", or
-anything else with multiple interpretations: ask what is meant. Do not interpret
-and fix. "What is this?" can mean: "why is it ugly", "why does it say the same
-thing 13 times", "why do I see only two columns", or "this is not what I asked
-for." Picking the technical interpretation because it is the easiest to fix is
-not listening. Listening is asking: "what exactly do you mean?"
-
-This holds for any ambiguous utterance that is not a clear order. "Hmm", a
-screenshot without context, a single sentence that can go several ways. The
-reflex to fix is strong after a string of corrections; that is exactly when
-listening matters most.
-
-## Evaluative questions deserve pushback
-
-When the user asks "is this better?", "did we do this right?", or similar
-evaluative questions about work we built together: spawn contrarian agents that
-critically interrogate the work. Actively look for weak spots, missed
-alternatives, and trade-offs. Confirmation bias is the enemy. A summary of what
-is better is not an answer to whether it is good enough.
 
 ## Code guidelines
 
@@ -436,14 +237,7 @@ breaks, not where the symptom becomes visible.
 
 ## Clean is the only route; a proxy is a bug, not polish
 
-"Hack or clean" is never a trade-off. There is no spectrum on which you pick a
-point based on budget: clean is the only outcome, unless the operator EXPLICITLY
-asks for a hack (they know the word). Hearing yourself phrase "it was not quite
-clean", "could be cleaner", or "fine for now" about your own work is the
-spectrum reflex: you are treating correctness as negotiable polish on a working
-core. That is the root error. Broken Windows (The Pragmatic Programmer): code
-quality is non-negotiable, one cut corner trains "sloppy is okay." Offering a
-finished hack as an accepted end result insults the operator and yourself.
+A quick reversible decision still needs sound execution. Do not hide a current defect behind "fine for now" or deliver a brittle workaround as finished work. Keep the design as small as the current requirement permits; a general framework for hypothetical cases does not make the present code cleaner.
 
 **The correlated-proxy smell.** Deriving a gate/boolean from a downstream
 symptom that happens to correlate with the fact, instead of reading the fact at
