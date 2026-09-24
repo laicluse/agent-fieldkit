@@ -23,7 +23,7 @@
 
 set -uo pipefail
 
-PLUGIN_PATH="__PLUGIN_INSTALL_PATH__"
+PLUGIN_PATH="${GIT_DISCIPLINE_RUNTIME_ROOT:-__PLUGIN_INSTALL_PATH__}"
 CLASSIFY_LIB="$PLUGIN_PATH/hooks/lib/layer-classify.sh"
 UI_TOUCH_LIB="$PLUGIN_PATH/hooks/lib/ui-touch.sh"
 

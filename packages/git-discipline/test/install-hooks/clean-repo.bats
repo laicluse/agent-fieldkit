@@ -48,7 +48,8 @@ JSON
   run_install "$TEST_REPO"
 
   [ "$status" -eq 0 ]
-  grep -q "PLUGIN_PATH=\"$REPO_ROOT/packages/git-discipline\"" "$(hook_target_path commit-msg)"
+  grep -q 'GIT_DISCIPLINE_RUNTIME_ROOT:-' "$(hook_target_path commit-msg)"
+  grep -q "PLUGIN_PATH=.*$REPO_ROOT/packages/git-discipline" "$(hook_target_path commit-msg)"
   ! grep -q "$stale" "$(hook_target_path commit-msg)"
 }
 
@@ -56,8 +57,8 @@ JSON
   run_install "$TEST_REPO"
 
   [ "$status" -eq 0 ]
-  # post-commit is self-contained; its content matches the source verbatim.
-  diff -q "$SOURCE_HOOKS_DIR/post-commit" "$(hook_target_path post-commit)"
+  grep -q 'runtime/git-discipline-hook' "$(hook_target_path post-commit)"
+  grep -q 'post-commit' "$(hook_target_path post-commit)"
 }
 
 @test "second run is an idempotent no-op (no errors, no extra writes)" {

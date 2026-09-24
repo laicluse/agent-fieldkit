@@ -1,5 +1,13 @@
 {
-	"hooks": {
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          { "type": "command", "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/install-runtime.sh" }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash|Edit|Write|MultiEdit|apply_patch",

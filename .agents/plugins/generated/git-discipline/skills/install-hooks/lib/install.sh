@@ -127,6 +127,10 @@ if [[ -z "$node_executable" ]] || [[ ! -x "$node_executable" ]]; then
   exit 1
 fi
 
+if [[ "$dry_run" -eq 0 ]]; then
+  "$node_executable" "$PLUGIN_ROOT/bin/git-discipline" runtime install >/dev/null
+fi
+
 # ---------------------------------------------------------------------------
 # Hooks to install
 # ---------------------------------------------------------------------------
@@ -160,6 +164,13 @@ fi
 rendered_source() {
   local hook="$1"
   local src="$SOURCE_HOOKS_DIR/$hook"
+  cat <<EOF
+#!/bin/bash
+runtime_launcher="\${LAICLUSE_HOME:-\$HOME/.laicluse}/git-discipline/runtime/git-discipline-hook"
+if [[ -x "\$runtime_launcher" ]]; then
+  exec "\$runtime_launcher" "$hook" "\$@"
+fi
+EOF
   # sed -i not portable across BSD/GNU; render to stdout instead.
   sed \
     -e "s|__PLUGIN_INSTALL_PATH__|$plugin_install_path|g" \

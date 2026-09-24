@@ -5,6 +5,8 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, renameSync, rmSync, 
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { publishGitDisciplineRuntime } from './machine-runtime.mjs';
 
 class GitDisciplineError extends Error {
   constructor(message, exitCode = 1) {
@@ -453,11 +455,18 @@ function printHelp() {
   git-discipline merge (--local|--remote)
   git-discipline guard-commit
   git-discipline guard-push
+  git-discipline runtime install
 `);
 }
 
 function main() {
   const [command, ...argumentsList] = process.argv.slice(2);
+  if (command === 'runtime' && argumentsList[0] === 'install') {
+    const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+    const result = publishGitDisciplineRuntime(sourceRoot);
+    process.stdout.write(`git-discipline: machine runtime ${result.version} ${result.installed ? 'installed' : 'already newer'} at ${result.launcher}\n`);
+    return;
+  }
   switch (command) {
     case 'default':
       process.stdout.write(`${defaultBranch()}\n`);

@@ -52,7 +52,7 @@
 					<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.83</span>
+						<span>2.0.84</span>
 						<span>13 skills</span>
 					</div>
 				</div>
@@ -175,6 +175,7 @@ Resolves: https://example.org/backlog/issues/1234</code></pre>
 </ul>
 <p>See <code>/git-discipline:commit-discipline</code> for the full schema, opt-out matrix, and troubleshooting guide.</p>
 <h2 id="test-suite">Test suite</h2>
+<p>The git-native hooks installed by <code>git-discipline:install-hooks</code> dispatch through <code>${LAICLUSE_HOME:-$HOME/.laicluse}/git-discipline/runtime</code>. A SessionStart hook publishes the complete hook and validator set as an immutable release and atomically advances its pointer. Existing repositories keep their installed hook entrypoints while older plugin sessions use the newest published release. <code>git-discipline runtime install</code> publishes the calling plugin version.</p>
 <pre><code class="language-bash">bash packages/git-discipline/test/run-bats              # 500+ BATS cases
 bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smoke</code></pre>
 <p>The BATS suite is split per concern:</p>

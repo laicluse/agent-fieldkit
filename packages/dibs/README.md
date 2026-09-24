@@ -190,6 +190,12 @@ every file inside it, the same scope `claim` would otherwise lock.
 
 ## Library
 
+The SessionStart hook publishes the plugin's CLI and `bash-write-targets` parser
+to `${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/runtime`. A stable launcher routes
+older plugin sessions to the newest published release. Releases are immutable,
+and an older install cannot replace a newer runtime. Set `DIBS_BIN` to keep an
+explicit CLI override.
+
 `bin/dibs-lib.mjs` exports `claim`, `release`, `releaseAll`, `check`, and
 `formatHolder` as pure node ES modules with no third-party imports. Consumers in the same
 marketplace import it directly so there is a single lock implementation and no

@@ -52,7 +52,7 @@
 					<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.61</span>
+						<span>2.0.62</span>
 						<span>2 skills</span>
 					</div>
 				</div>
@@ -118,6 +118,7 @@ dibs exclude ~/project   # never lock this directory again
 dibs include ~/project   # lock it again (the inverse of exclude)</code></pre>
 <p>Matching is by resolved realpath: an excluded git worktree root also excludes every file inside it, the same scope <code>claim</code> would otherwise lock.</p>
 <h2 id="library">Library</h2>
+<p>The SessionStart hook publishes the plugin's CLI and <code>bash-write-targets</code> parser to <code>${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/runtime</code>. A stable launcher routes older plugin sessions to the newest published release. Releases are immutable, and an older install cannot replace a newer runtime. Set <code>DIBS_BIN</code> to keep an explicit CLI override.</p>
 <p><code>bin/dibs-lib.mjs</code> exports <code>claim</code>, <code>release</code>, <code>releaseAll</code>, <code>check</code>, and <code>formatHolder</code> as pure node ES modules with no third-party imports. Consumers in the same marketplace import it directly so there is a single lock implementation and no parallel path:</p>
 <pre><code class="language-js">import { claim } from '../../dibs/bin/dibs-lib.mjs';
 

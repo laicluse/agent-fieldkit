@@ -131,6 +131,8 @@ occ_bash_command() {
 
 occ_bash_write_targets() {
 	local command="$1" cwd="$2" parser="$OCC_DIR/bin/bash-write-targets"
+	local machine_parser="${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/runtime/bash-write-targets"
+	[ -x "$machine_parser" ] && parser="$machine_parser"
 	[ -f "$parser" ] || return 1
 	command -v node >/dev/null 2>&1 || return 1
 	printf '%s' "$command" | node "$parser" "$cwd" 2>/dev/null
@@ -171,6 +173,8 @@ occ_gate_dirs() {
 
 occ_dibs_bin() {
   if [ -n "${DIBS_BIN:-}" ] && [ -e "$DIBS_BIN" ]; then printf '%s\n' "$DIBS_BIN"; return 0; fi
+  local machine_runtime="${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/runtime/dibs"
+  if [ -x "$machine_runtime" ]; then printf '%s\n' "$machine_runtime"; return 0; fi
   if [ -e "$OCC_DIR/bin/dibs" ]; then printf '%s\n' "$OCC_DIR/bin/dibs"; return 0; fi
   if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -e "$CLAUDE_PLUGIN_ROOT/bin/dibs" ]; then printf '%s\n' "$CLAUDE_PLUGIN_ROOT/bin/dibs"; return 0; fi
   if command -v codex >/dev/null 2>&1; then

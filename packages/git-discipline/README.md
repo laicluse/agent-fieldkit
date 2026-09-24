@@ -209,6 +209,13 @@ troubleshooting guide.
 
 ## Test suite
 
+The git-native hooks installed by `git-discipline:install-hooks` dispatch
+through `${LAICLUSE_HOME:-$HOME/.laicluse}/git-discipline/runtime`. A
+SessionStart hook publishes the complete hook and validator set as an immutable
+release and atomically advances its pointer. Existing repositories keep their
+installed hook entrypoints while older plugin sessions use the newest published
+release. `git-discipline runtime install` publishes the calling plugin version.
+
 ```bash
 bash packages/git-discipline/test/run-bats              # 500+ BATS cases
 bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smoke

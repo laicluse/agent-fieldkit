@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 83,
-		"hookFiles": 67
+		"hookFiles": 70
 	},
 	"install": {
 		"claude": [
@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.61",
+			"version": "2.0.62",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -206,12 +206,12 @@
 			"sourcePath": "packages/dibs",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/dibs",
 			"skillCount": 2,
-			"commandCount": 4,
-			"hookFileCount": 3,
+			"commandCount": 5,
+			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.61",
-				"type": "Changed",
-				"summary": "A live lock now reports the age of its dirty work separately."
+				"version": "v2.0.62",
+				"type": "Added",
+				"summary": "Older Dibs sessions now use the latest published CLI and write-target parser."
 			}
 		},
 		{
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.83",
+			"version": "2.0.84",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -250,12 +250,12 @@
 			"sourcePath": "packages/git-discipline",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline",
 			"skillCount": 13,
-			"commandCount": 4,
-			"hookFileCount": 30,
+			"commandCount": 5,
+			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.82",
-				"type": "Changed",
-				"summary": "Canonical deploy checkouts stay on their named default branch."
+				"version": "v2.0.84",
+				"type": "Added",
+				"summary": "Installed Git hooks now use the newest published hook runtime."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.83",
+			"packageVersion": "2.0.84",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.82",
-			"type": "Changed",
-			"summary": "Canonical deploy checkouts stay on their named default branch.",
+			"version": "v2.0.84",
+			"type": "Added",
+			"summary": "Installed Git hooks now use the newest published hook runtime.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
@@ -653,11 +653,11 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.61",
+			"packageVersion": "2.0.62",
 			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.61",
-			"type": "Changed",
-			"summary": "A live lock now reports the age of its dirty work separately.",
+			"version": "v2.0.62",
+			"type": "Added",
+			"summary": "Older Dibs sessions now use the latest published CLI and write-target parser.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{

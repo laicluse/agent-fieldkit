@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.62]
+
+### Added
+
+- **Older Dibs sessions now use the latest published CLI and write-target parser.** Each SessionStart publishes an immutable machine runtime under `~/.laicluse/dibs/runtime`; its stable launchers advance only to newer plugin versions, while `DIBS_BIN` remains an explicit override.
+
 ## [v2.0.61]
 
 ### Changed

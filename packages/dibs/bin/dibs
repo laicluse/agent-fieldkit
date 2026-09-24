@@ -1,7 +1,29 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { claim, release, releaseAll, check, formatHolder, formatWorktreeActivity, listExcludes, excludeDir, includeDir, resolveContext } from './dibs-lib.mjs';
+import { dibsRuntimeVersion, forwardToActiveDibs, publishDibsRuntime } from './machine-runtime.mjs';
+
+const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const [, , initialCommand, ...initialArgs] = process.argv;
+if (initialCommand === 'runtime' && initialArgs[0] === 'install') {
+  try {
+    const result = publishDibsRuntime(sourceRoot);
+    console.log(`dibs: machine runtime ${result.version} ${result.installed ? 'installed' : 'already newer'} at ${result.launcher}`);
+    process.exit(0);
+  } catch (error) {
+    console.error(`dibs: could not install machine runtime: ${error.message}`);
+    process.exit(1);
+  }
+}
+try {
+  forwardToActiveDibs(dibsRuntimeVersion(sourceRoot));
+} catch (error) {
+  console.error(`dibs: could not resolve machine runtime: ${error.message}`);
+  process.exit(1);
+}
 
 const USAGE = `usage: dibs <command> <dir> [options]
 

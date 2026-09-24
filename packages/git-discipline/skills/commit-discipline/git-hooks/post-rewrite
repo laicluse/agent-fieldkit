@@ -17,7 +17,7 @@
 
 set -uo pipefail
 
-PLUGIN_PATH="__PLUGIN_INSTALL_PATH__"
+PLUGIN_PATH="${GIT_DISCIPLINE_RUNTIME_ROOT:-__PLUGIN_INSTALL_PATH__}"
 VALIDATOR="$PLUGIN_PATH/hooks/lib/validate-body.sh"
 WIP_LIB="$PLUGIN_PATH/hooks/lib/wip-gate.sh"
 

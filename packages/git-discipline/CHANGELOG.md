@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.84]
+
+### Added
+
+- **Installed Git hooks now use the newest published hook runtime.** SessionStart publishes the CLI, validators, and native hooks as an immutable machine release; existing hook entrypoints dispatch through its stable launcher.
+
 ## [v2.0.82]
 
 ### Changed
