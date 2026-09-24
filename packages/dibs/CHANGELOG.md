@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.63]
+
+### Fixed
+
+- **The stable Dibs launcher now starts its published CLI payload.** Runtime releases resolve their version from the included release marker, so the executable no longer depends on a plugin manifest beside itself.
+
 ## [v2.0.62]
 
 ### Added

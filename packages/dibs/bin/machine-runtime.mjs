@@ -143,7 +143,7 @@ function atomicWrite(path, content, mode) {
 }
 
 export function dibsRuntimeVersion(sourceRoot) {
-  const manifestPath = [join(sourceRoot, '.claude-plugin', 'plugin.json'), join(sourceRoot, '.codex-plugin', 'plugin.json')].find(existsSync);
+  const manifestPath = [join(sourceRoot, '.claude-plugin', 'plugin.json'), join(sourceRoot, '.codex-plugin', 'plugin.json'), join(sourceRoot, '.dibs-runtime.json')].find(existsSync);
   if (!manifestPath) throw new Error('Dibs plugin manifest not found');
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
   const version = String(manifest.version || '').replace(/\+codex\.hooks\.\d+$/, '');

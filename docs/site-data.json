@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.62",
+			"version": "2.0.63",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 5,
 			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.62",
-				"type": "Added",
-				"summary": "Older Dibs sessions now use the latest published CLI and write-target parser."
+				"version": "v2.0.63",
+				"type": "Fixed",
+				"summary": "The stable Dibs launcher now starts its published CLI payload."
 			}
 		},
 		{
@@ -653,11 +653,11 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.62",
+			"packageVersion": "2.0.63",
 			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.62",
-			"type": "Added",
-			"summary": "Older Dibs sessions now use the latest published CLI and write-target parser.",
+			"version": "v2.0.63",
+			"type": "Fixed",
+			"summary": "The stable Dibs launcher now starts its published CLI payload.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{

@@ -44,6 +44,13 @@ try {
   assert.equal(noDowngrade.installed, false);
   assert.equal(noDowngrade.version, '99.0.0');
   assert.equal(dibsRuntimePath(env), published.launcher);
+
+  const actualEnv = { ...env, HOME: join(tempRoot, 'actual-home') };
+  const actualRuntime = publishDibsRuntime(packageRoot, undefined, actualEnv);
+  assert.equal(actualRuntime.version, dibsRuntimeVersion(packageRoot));
+  const activeCli = spawnSync(dibsRuntimePath(actualEnv), ['--help'], { encoding: 'utf8', env: actualEnv });
+  assert.equal(activeCli.status, 0, activeCli.stderr);
+  assert.match(activeCli.stdout, /usage: dibs/);
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }
