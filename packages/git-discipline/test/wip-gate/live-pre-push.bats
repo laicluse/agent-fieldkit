@@ -81,6 +81,38 @@ BODY
   [[ "$output" == *"[git-discipline/pre-push]"* ]] || [[ "$output" == *"wip commits in push range"* ]]
 }
 
+@test "first push of a new branch only scans commits absent from remote refs" {
+  run_install
+
+  pushd "$TEST_REPO" >/dev/null
+  printf 'base\n' > base.txt
+  git add base.txt
+  git -c commit.gpgsign=false commit --no-verify -q -m "Seed the published history"
+  git push -q -u origin main
+
+  git checkout -q -b feature
+  printf 'feature\n' > feature.txt
+  git add feature.txt
+  cat > "$BATS_TEST_TMPDIR/feature-msg" <<'BODY'
+Add feature file
+
+Explain the user-visible change in this feature branch.
+Keep the branch body valid while exercising the first-push candidate scan.
+
+Tests: n/a (docs-only)
+Slice: docs-only
+Red-then-green: n/a (no executable behaviour changed)
+Verified: local fake-remote push
+BODY
+  git -c commit.gpgsign=false commit --no-verify -q -F "$BATS_TEST_TMPDIR/feature-msg"
+
+  run git push -u origin feature
+  popd >/dev/null
+
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Body schema misses in push range"* ]]
+}
+
 @test "GIT_DISCIPLINE_ALLOW_WIP_PUSH=1 lets the push through and logs the bypass" {
   run_install
   make_wip_commit
