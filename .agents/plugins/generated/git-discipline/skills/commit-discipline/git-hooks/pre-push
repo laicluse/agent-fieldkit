@@ -92,7 +92,14 @@ while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
   range=$(wip_gate_parse_range "$remote_sha" "$local_sha")
   [[ -z "$range" ]] && continue
 
-  wip=$(wip_gate_find_wip_commits "$range")
+  if [[ "$remote_sha" = "$zero_sha" ]]; then
+    commits=$(git rev-list "$local_sha" --not --remotes 2>/dev/null || true)
+  else
+    commits=$(git rev-list "$range" 2>/dev/null || true)
+  fi
+  [[ -z "$commits" ]] && continue
+
+  wip=$(wip_gate_find_wip_commits_from_list "$commits")
   if [[ -n "$wip" ]]; then
     if [[ -z "$all_wip" ]]; then
       all_wip="$wip"
@@ -111,7 +118,7 @@ while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
       bsub=$(git log -1 --pretty=format:%s "$bsha" 2>/dev/null || true)
       bshort=$(git rev-parse --short "$bsha" 2>/dev/null || printf '%s' "${bsha:0:7}")
       all_body="$all_body"$'\n'"  $bshort \"$bsub\": $bline"
-    done < <(git rev-list "$range" 2>/dev/null || true)
+    done <<< "$commits"
   fi
 done <<< "$push_updates"
 

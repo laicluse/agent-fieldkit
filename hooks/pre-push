@@ -1,12 +1,159 @@
-#!/bin/sh
+#!/bin/bash
+# packages/git-discipline/skills/commit-discipline/git-hooks/pre-push
 #
-# Setup: git config core.hooksPath hooks
+# git-native pre-push hook. Reads refspec lines from stdin (git's pre-push
+# protocol: "<local-ref> <local-sha> <remote-ref> <remote-sha>" per line) and
+# blocks the push when any commit in any of the ranges carries a Slice: wip
+# trailer.
+#
+# Mirrors the PreToolUse:Bash guard at hooks/guards/push-wip-gate.sh; both
+# share hooks/lib/wip-gate.sh so the verdict is identical regardless of which
+# path fires first. The Claude-side guard catches Claude pushes; this hook
+# catches everything else (manual git push, scripts, other clients).
+#
+# At install time, /git-discipline:install-hooks substitutes /Users/eric-paul/github.com/laicluse/agent-fieldkit/packages/git-discipline
+# with the absolute path of the active git-discipline plugin install. Same scheme as
+# the commit-msg hook.
+#
+# Bypass paths.
+#   - GIT_DISCIPLINE_ALLOW_WIP_PUSH=1 in the environment of the `git push` invocation.
+#   - There is no magic-comment bypass at the git-native layer; the magic
+#     comment lives in Claude's bash command string, which git never sees.
+#   - --no-verify on `git push` continues to bypass (git's own escape).
 
-# Hand over to the operator's global hooks (git-discipline) once the
-# repo-owned checks pass. A repo-local core.hooksPath replaces the global
-# one instead of stacking on it, so without this exec every global hook
-# would silently stop running in this repository.
-global_hooks=$(git config --global core.hooksPath 2>/dev/null || true)
-if [ -n "$global_hooks" ] && [ -x "$global_hooks/pre-push" ]; then
-  exec "$global_hooks/pre-push" "$@"
+set -uo pipefail
+
+PLUGIN_PATH="/Users/eric-paul/github.com/laicluse/agent-fieldkit/packages/git-discipline"
+NODE_EXECUTABLE="/Users/eric-paul/.asdf/installs/nodejs/22.16.0/bin/node"
+LIB="$PLUGIN_PATH/hooks/lib/wip-gate.sh"
+DENY_LIB="$PLUGIN_PATH/hooks/lib/deny-check.sh"
+GIT_DISCIPLINE="$PLUGIN_PATH/bin/git-discipline"
+push_updates=$(cat)
+
+# /git-discipline:disable-git lock check. Runs before the wip-gate so a locked repo
+# cannot push at all. Soft-fails (no-op) when the helper is missing.
+if [[ -f "$DENY_LIB" ]]; then
+  # shellcheck disable=SC1090
+  . "$DENY_LIB"
+  deny_check "push"
 fi
+
+if [[ ! -x "$GIT_DISCIPLINE" ]]; then
+  printf 'git-discipline/pre-push: no executable git-discipline at %s\n' "$GIT_DISCIPLINE" >&2
+  printf '  That path holds the installed plugin, so check that it exists and is\n' >&2
+  printf '  executable, or re-run /git-discipline:install-hooks to point the hook at\n' >&2
+  printf '  the current install.\n' >&2
+  exit 1
+fi
+
+if ! printf '%s\n' "$push_updates" | "$NODE_EXECUTABLE" "$GIT_DISCIPLINE" guard-push; then
+  exit 1
+fi
+
+if [[ ! -f "$LIB" ]]; then
+  printf 'git-discipline/pre-push: wip-gate lib not found at %s\n' "$LIB" >&2
+  printf '  Re-run /git-discipline:install-hooks to refresh the plugin path, or\n' >&2
+  printf '  use git push --no-verify to bypass this check.\n' >&2
+  exit 1
+fi
+
+# shellcheck disable=SC1090
+. "$LIB"
+
+# allow-comment: the body validator is the same lib the commit-msg hook and the
+# allow-comment: Claude push-body-gate use; sourcing it here gives Codex/CLI
+# allow-comment: pushes the body gate Claude already had. Soft-fail when missing
+# allow-comment: (older install) so the wip-gate still runs.
+VALIDATOR="$PLUGIN_PATH/hooks/lib/validate-body.sh"
+have_body_validator=0
+if [[ -f "$VALIDATOR" ]]; then
+  # shellcheck disable=SC1090
+  . "$VALIDATOR"
+  have_body_validator=1
+fi
+me=$(git config user.email 2>/dev/null || true)
+
+zero_sha="0000000000000000000000000000000000000000"
+
+all_wip=""
+all_body=""
+seen_branch=""
+
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  # Skip deletes (local_sha == zero).
+  [[ "$local_sha" = "$zero_sha" ]] && continue
+  [[ -z "$local_sha" ]] && continue
+
+  # Track a representative branch label for logging.
+  if [[ -z "$seen_branch" ]]; then
+    seen_branch="${local_ref#refs/heads/}"
+  fi
+
+  range=$(wip_gate_parse_range "$remote_sha" "$local_sha")
+  [[ -z "$range" ]] && continue
+
+  if [[ "$remote_sha" = "$zero_sha" ]]; then
+    commits=$(git rev-list "$local_sha" --not --remotes 2>/dev/null || true)
+  else
+    commits=$(git rev-list "$range" 2>/dev/null || true)
+  fi
+  [[ -z "$commits" ]] && continue
+
+  wip=$(wip_gate_find_wip_commits_from_list "$commits")
+  if [[ -n "$wip" ]]; then
+    if [[ -z "$all_wip" ]]; then
+      all_wip="$wip"
+    else
+      all_wip="$all_wip"$'\n'"$wip"
+    fi
+  fi
+
+  if [[ "$have_body_validator" -eq 1 ]]; then
+    while IFS= read -r bsha; do
+      [[ -z "$bsha" ]] && continue
+      wip_gate_commit_is_ours "$bsha" "$me" || continue
+      if bline=$(vb_validate_commit "$bsha"); then
+        continue
+      fi
+      bsub=$(git log -1 --pretty=format:%s "$bsha" 2>/dev/null || true)
+      bshort=$(git rev-parse --short "$bsha" 2>/dev/null || printf '%s' "${bsha:0:7}")
+      all_body="$all_body"$'\n'"  $bshort \"$bsub\": $bline"
+    done <<< "$commits"
+  fi
+done <<< "$push_updates"
+
+if [[ -n "$all_body" ]]; then
+  {
+    printf '\n[git-discipline/pre-push] Body schema misses in push range:'
+    printf '%s\n' "$all_body"
+    printf '\nAmend or rebase each commit to fix the body, then retry push.\n'
+    printf 'Use git push --no-verify (logged) only as an emergency bypass.\n'
+  } >&2
+  exit 1
+fi
+
+# No wip commits -> let the push through.
+if [[ -z "$all_wip" ]]; then
+  exit 0
+fi
+
+count=$(printf '%s\n' "$all_wip" | grep -c .)
+
+# At the git-native layer, only the env-var bypass applies (the magic-comment
+# bypass lives in the Claude-side bash command string, which git never sees).
+# Pass an empty string for command so wip_gate_should_block ignores comments.
+if ! wip_gate_should_block "" "$count"; then
+  # Bypass active; log and allow.
+  sha_csv=$(printf '%s' "$all_wip" | tr '\n' ',' | sed 's/,$//')
+  wip_gate_log_bypass "$sha_csv" "${seen_branch:-unknown}" "env"
+  exit 0
+fi
+
+{
+  printf '\n'
+  printf '[git-discipline/pre-push] '
+  wip_gate_format_message "$all_wip"
+  printf '\n'
+} >&2
+
+exit 1

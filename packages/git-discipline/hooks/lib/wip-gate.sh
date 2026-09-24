@@ -183,6 +183,14 @@ wip_gate_find_wip_commits() {
 
   local commits sha body slice_value
   commits=$(git rev-list "$range" 2>/dev/null || true)
+  wip_gate_find_wip_commits_from_list "$commits"
+}
+
+wip_gate_find_wip_commits_from_list() {
+  local commits="$1"
+  [[ -z "$commits" ]] && return 0
+
+  local sha body slice_value
   [[ -z "$commits" ]] && return 0
 
   local me
