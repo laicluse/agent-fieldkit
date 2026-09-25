@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.84",
+			"version": "2.0.85",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.84",
-				"type": "Added",
-				"summary": "Installed Git hooks now use the newest published hook runtime."
+				"version": "v2.0.85",
+				"type": "Changed",
+				"summary": "A merge to the default ends with the merged SHA running."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.84",
+			"packageVersion": "2.0.85",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.84",
-			"type": "Added",
-			"summary": "Installed Git hooks now use the newest published hook runtime.",
+			"version": "v2.0.85",
+			"type": "Changed",
+			"summary": "A merge to the default ends with the merged SHA running.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{

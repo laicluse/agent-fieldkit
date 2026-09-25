@@ -80,6 +80,12 @@ The executable owns this operation end to end, so whatever it reports is the out
 
 Never finish a refused step by hand with direct Git commands, and never substitute an adjacent action for the one that turned out to be unnecessary. A step that had nothing left to do is a complete result; hand-finishing it converts a no-op into a state change nobody ordered.
 
+## A merge ends with the merged SHA running
+
+When the repository has a deploy path (an Ansible playbook, a deploy script, a `.test` start flow, an autodeploy poller), the merge is not finished until that path runs the exact merged SHA. Deploying is part of the merge order, not a separate release decision, and it does not need a push: run the repository's deploy path from the clean canonical checkout on the local default. Publishing the default to its remote stays governed by the mode table above; the two decisions are independent.
+
+Failure case this prevents: a local-only merge reported as "merged, not deployed", while the operator kept seeing the old behaviour in the live product. In a repository whose autodeploy poller reads the remote default and skips while the local default is ahead of it, a local-only merge also stalls every later deploy of that repository; deploy through the playbook directly and say in the report that the poller stays paused on that repository until the default is published.
+
 ## Deployment checkout contention means wait
 
 Before deployment, inspect the canonical deploy checkout's occupancy and Git state. If it is held by another session, dirty with unrelated changes, or contains committed-but-unintegrated work, stop deployment and wait for that owner to finish and release it. Report the occupied checkout and the work blocking deployment; do not turn this ordinary wait into a workaround.
@@ -94,4 +100,4 @@ Deployment is repository-specific and must use the exact merged SHA from that cl
 
 The merge is what the worktree existed for, so removing it belongs to this step rather than to a later tidy-up: hand the worktree and its branch to `bonsai:prune` as soon as the merge is reported. A reported merge is proven, and nothing else gates the removal.
 
-Report the candidate SHA, verified base SHA, merge SHA, target, race retries, the removed worktree, and deployment state when deployment was part of the order.
+Report the candidate SHA, verified base SHA, merge SHA, target, race retries, the removed worktree, and the deployed SHA with the proof that the running process started on it. "Not deployed" is only a valid report when the repository has no deploy path.

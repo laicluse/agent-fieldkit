@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.85]
+
+### Changed
+
+- **A merge to the default ends with the merged SHA running.** When a repository has a deploy path, `merge-to-default` now deploys the merged SHA from the clean local checkout as part of the merge, without requiring a push, and reports the running SHA instead of "not deployed".
+
 ## [v2.0.84]
 
 ### Added
