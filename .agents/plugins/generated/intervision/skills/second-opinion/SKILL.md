@@ -19,6 +19,18 @@ the whole point; a peer trained the same way as you would only echo you. Run it
 with `DD_HEADLESS=1 --setting-sources "" --tools ""` so local Claude Code stop
 hooks and user instructions do not overwrite the peer's actual answer.
 
+Both families ship in three tiers, and the peer is chosen by tier. Claude:
+**Sonnet** (fast, cheap), **Opus** (the Claude default), **Fable** (frontier).
+Codex: **Luna**, **Sol**, **Astra** in the same order. A second opinion runs
+one tier below the session's own by default: a Codex session on Sol or Astra
+asks Claude on Sonnet (`--model sonnet`) and escalates one tier per round
+(`--model opus`, then `--model fable`) only when the cheaper pass says the
+context is too large or uncertain, misses a concrete concern you can point
+to, the change is high-risk, or the operator asks for a deeper pass. Reach
+for Fable only when Opus still leaves a disagreement standing and the
+decision is hard to reverse. Two frontier models agreeing on a routine diff
+is not worth the spend.
+
 ## The peer has to be there
 
 Before asking, confirm the peer exists:
@@ -65,7 +77,7 @@ Do not summarize the work first:
   git diff --no-ext-diff
   printf '\n## untracked files\n'
   git ls-files --others --exclude-standard
-} | DD_HEADLESS=1 claude -p --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools ""
 ```
 
 For a branch or single commit, replace the diff block with the concrete range:
@@ -82,12 +94,12 @@ fi
 {
   printf 'Peer review this branch diff. Report findings first and do not edit files.\n\n'
   git diff --no-ext-diff "$DEFAULT"...HEAD
-} | DD_HEADLESS=1 claude -p --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools ""
 
 {
   printf 'Peer review this commit. Report findings first and do not edit files.\n\n'
   git show --stat --patch <sha>
-} | DD_HEADLESS=1 claude -p --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools ""
 ```
 
 **2. Weigh a design just discussed, when there is no code yet.** Give Claude
@@ -95,7 +107,7 @@ the actual design context on stdin. Keep the shaky parts in; a flattering
 summary buys a flattering review.
 
 ```bash
-DD_HEADLESS=1 claude -p --input-format text --setting-sources "" --tools "" <<'PROMPT'
+DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools "" <<'PROMPT'
 Peer review this plan before we build it. Do not edit files.
 <paste the design, the trade-off, the open question, including the parts we are unsure about>
 PROMPT
@@ -104,10 +116,11 @@ PROMPT
 **3. Go back and forth.** A single answer is consultation; intervision is a
 conversation. Continue with a fresh `claude -p` handoff that quotes the peer's
 prior finding and your evidence. Do not loop on vibes; push one concrete point
-at a time.
+at a time. To escalate, keep the same prompt with the Sonnet answer quoted
+underneath and move `--model` one tier up.
 
 ```bash
-DD_HEADLESS=1 claude -p --input-format text --setting-sources "" --tools "" <<'PROMPT'
+DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools "" <<'PROMPT'
 You flagged X as a race. The lock at <file:line> already serialises that path.
 Does that change your read? Do not edit files.
 PROMPT

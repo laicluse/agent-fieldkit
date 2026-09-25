@@ -20,6 +20,16 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.18]
+
+### Changed
+
+- **Peers are picked by tier: Luna, Sol, Astra.** The Codex catalog no longer
+  lists a Spark or mini coding model, so the helper resolves the newest Luna
+  slug for the routine pass and `--tier sol` / `--tier astra` for escalation,
+  failing closed when a tier is missing. The skill names the Claude ladder
+  (Sonnet, Opus, Fable) alongside it.
+
 ## [v2.0.16]
 
 ### Fixed

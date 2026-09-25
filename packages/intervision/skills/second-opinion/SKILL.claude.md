@@ -37,17 +37,28 @@ the same repository, on its own login, with its own model behind it. That
 independence is the whole point; a peer trained the same way as you would only
 echo you.
 
-Start on the cheap coding model returned by
-`${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model`. The helper reads
-`codex debug models`, prefers the visible Codex Spark or ultra-fast coding
-model, falls back to a visible mini coding model, and only uses the legacy
-Spark slug when the model catalog cannot be read. This keeps routine second
-opinions off the frontier session model without tying the skill to one OpenAI
-model slug. Escalate by rerunning the same handoff on the configured Codex
-default (omit `--model`, or name the stronger model explicitly) only when the
-cheap pass says the context is too large or uncertain, misses a concrete
-concern you can point to, the change is high-risk, or the operator asks for a
-deeper pass.
+Both families ship in three tiers, and the peer is chosen by tier, never by
+one hard-coded slug. Codex: **Luna** (fast, cheap), **Sol** (the Codex
+default), **Astra** (frontier). Claude: **Sonnet**, **Opus**, **Fable** in
+the same order. A second opinion runs one tier below the session's own by
+default: routine consultations go to Luna (a Claude session on Opus or Fable
+asking Codex) or to Sonnet (a Codex session asking Claude); escalation moves
+one tier up per round.
+
+Resolve the Codex tier with `${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model`.
+Without arguments it returns the newest visible Luna slug from
+`codex debug models` (today `gpt-6-luna`; a `gpt-5.6-luna` in the same
+catalog loses on generation), and only when no Luna tier is listed it falls
+back to a Codex Spark or mini coding model, or to the legacy Spark slug when
+the catalog cannot be read. `--tier sol` and `--tier astra` resolve the
+higher tiers the same way and fail closed when that tier is absent, so an
+escalation never silently lands on the cheap model or on whatever Codex
+happens to default to. Escalate to Sol when the Luna pass says the context
+is too large or uncertain, misses a concrete concern you can point to, the
+change is high-risk, or the operator asks for a deeper pass. Reach for Astra
+only when Sol still leaves a disagreement standing and the decision is hard
+to reverse (a data contract, a public interface, a deploy shape). Two
+frontier models agreeing on a routine diff is not worth the spend.
 
 ## The peer has to be there
 
@@ -64,7 +75,7 @@ Then resolve the cheap first-pass model before any handoff:
 ```bash
 : "${CLAUDE_PLUGIN_ROOT:?CLAUDE_PLUGIN_ROOT not set; intervision needs its installed plugin helper}"
 CODEX_PEER_MODEL="$("${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model" INTERVISION_CODEX_MODEL)" || {
-  echo "no cheap Codex coding model found; stop instead of using the expensive Codex default"
+  echo "no Codex Luna model found; stop instead of guessing a slug or using the expensive Codex default"
   exit 1
 }
 ```
@@ -109,9 +120,18 @@ You flagged X as a race. The lock at <file:line> already serialises that path. D
 PROMPT
 ```
 
-To escalate, start a fresh default-model handoff with the same original prompt
-and the cheap peer's answer quoted underneath. Do not resume the cheap session
-for the escalation; resuming keeps that consultation on the same cheap model.
+To escalate, resolve the next tier and start a fresh handoff with the same
+original prompt and the cheaper peer's answer quoted underneath:
+
+```bash
+CODEX_PEER_MODEL="$("${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model" --tier sol)" || exit 1
+codex exec --model "$CODEX_PEER_MODEL" -s read-only - <<'PROMPT'
+<the original prompt, then the Luna answer under a heading "Earlier pass (Luna)">
+PROMPT
+```
+
+Do not resume the cheaper session for the escalation; resuming keeps that
+consultation on the same model. `--tier astra` is the last rung.
 
 Keep resuming until each disagreement is either resolved or sharpened into a question the operator should decide. If two rounds pass with no movement, stop and surface the disagreement to the operator with both positions rather than looping.
 

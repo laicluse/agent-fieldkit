@@ -24,6 +24,30 @@ run_helper() {
   PATH="$FAKE_BIN:$NODE_DIR:/usr/bin:/bin" "$NODE_BIN" "$HELPER" "$@"
 }
 
+@test "chooses the newest Luna tier as the cheap peer" {
+  printf '%s\n' '{"models":[{"slug":"gpt-6-astra","display_name":"GPT-6-Astra","visibility":"list"},{"slug":"gpt-5.6-luna","display_name":"GPT-5.6-Luna","visibility":"list"},{"slug":"gpt-6-luna","display_name":"GPT-6-Luna","visibility":"list"},{"slug":"gpt-6-sol","display_name":"GPT-6-Sol","visibility":"list"}]}' > "$MODELS"
+  run run_helper
+  [ "$status" -eq 0 ]
+  [ "$output" = "gpt-6-luna" ]
+}
+
+@test "resolves the Sol and Astra tiers on request" {
+  printf '%s\n' '{"models":[{"slug":"gpt-6-astra","display_name":"GPT-6-Astra","visibility":"list"},{"slug":"gpt-6-luna","display_name":"GPT-6-Luna","visibility":"list"},{"slug":"gpt-5.6-sol","display_name":"GPT-5.6-Sol","visibility":"list"},{"slug":"gpt-6-sol","display_name":"GPT-6-Sol","visibility":"list"}]}' > "$MODELS"
+  run run_helper --tier sol
+  [ "$status" -eq 0 ]
+  [ "$output" = "gpt-6-sol" ]
+  run run_helper --tier astra
+  [ "$status" -eq 0 ]
+  [ "$output" = "gpt-6-astra" ]
+}
+
+@test "a missing Sol tier fails closed instead of falling back to Spark" {
+  printf '%s\n' '{"models":[{"slug":"gpt-6.1-codex-spark","display_name":"GPT-6.1 Codex Spark","description":"Ultra-fast coding model","visibility":"list"}]}' > "$MODELS"
+  run run_helper --tier sol
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"no Codex sol model"* ]]
+}
+
 @test "chooses the advertised Codex Spark slug" {
   printf '%s\n' '{"models":[{"slug":"gpt-6.1-codex-spark","display_name":"GPT-6.1 Codex Spark","description":"Ultra-fast coding model","visibility":"list"}]}' > "$MODELS"
   run run_helper
@@ -49,5 +73,5 @@ run_helper() {
   printf '%s\n' '{"models":[{"slug":"gpt-6.1","display_name":"GPT-6.1","description":"Frontier model","visibility":"list"}]}' > "$MODELS"
   run run_helper
   [ "$status" -eq 2 ]
-  [[ "$output" == *"no cheap Codex coding model"* ]]
+  [[ "$output" == *"no Codex luna model"* ]]
 }

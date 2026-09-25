@@ -23,10 +23,10 @@ codex plugin add intervision@laicluse-agent-fieldkit
 ### `/intervision:second-opinion`
 
 Hands the recent work to the other agent and talks it through. Claude uses
-`codex exec` on the cheap coding model advertised by `codex debug models`
-first, preferring Codex Spark and then mini, and escalates to the configured
-Codex default only when the cheap pass is uncertain, misses a concrete concern,
-or the work is high-risk. Codex uses `claude -p`. Three shapes, picked by what
+`codex exec` on the Luna tier advertised by `codex debug models` first and
+escalates one tier at a time (Sol, then Astra) only when the cheaper pass is
+uncertain, misses a concrete concern, or the work is high-risk. The Claude
+ladder mirrors it as Sonnet, Opus, Fable. Codex uses `claude -p`. Three shapes, picked by what
 just happened:
 
 - **Work just done (a diff):** the peer reviews the actual change set.
@@ -48,5 +48,7 @@ The peer CLI must be installed and logged in: Claude needs `codex`; Codex needs
 real billed call. The skill preflights for the CLI and stops with a plain
 message when no peer is available.
 
-Claude-side Codex model selection lives in `bin/codex-fast-coding-model`.
+Claude-side Codex model selection lives in `bin/codex-fast-coding-model`: no
+argument resolves the newest Luna slug, `--tier sol` and `--tier astra` the
+higher tiers, each failing closed when the catalog lacks that tier.
 `INTERVISION_CODEX_MODEL` can override the catalog choice for one run.

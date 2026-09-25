@@ -3,15 +3,28 @@ import { execFileSync } from 'node:child_process';
 
 const MODEL_ID = /^[A-Za-z0-9._:-]+$/;
 const LEGACY_SPARK = 'gpt-5.3-codex-spark';
+const TIERS = ['luna', 'sol', 'astra'];
 
-const overrideName = /^[A-Z0-9_]+$/.test(process.argv[2] || '')
-  ? process.argv[2]
+const args = process.argv.slice(2);
+let tier = 'luna';
+const tierIndex = args.indexOf('--tier');
+if (tierIndex >= 0) {
+  tier = String(args[tierIndex + 1] || '').toLowerCase();
+  if (!TIERS.includes(tier)) {
+    console.error(`unknown tier ${JSON.stringify(args[tierIndex + 1] || '')}; use one of ${TIERS.join(', ')}`);
+    process.exit(2);
+  }
+  args.splice(tierIndex, 2);
+}
+
+const overrideName = /^[A-Z0-9_]+$/.test(args[0] || '')
+  ? args[0]
   : 'CODEX_FAST_CODING_MODEL';
 const override = process.env[overrideName] || process.env.CODEX_FAST_CODING_MODEL || '';
 
 if (override) {
   if (!MODEL_ID.test(override)) {
-    console.error(`invalid ${overrideName}; use a plain model id such as gpt-5.3-codex-spark`);
+    console.error(`invalid ${overrideName}; use a plain model id such as gpt-6-luna`);
     process.exit(2);
   }
   console.log(override);
@@ -35,8 +48,24 @@ function visibleModels(catalog) {
   });
 }
 
-function selectFastCodingModel(catalog) {
+function generation(model) {
+  const match = /(\d+(?:\.\d+)?)/.exec(model.slug);
+  return match ? Number(match[1]) : 0;
+}
+
+function newestTierModel(models, name) {
+  const pattern = new RegExp(`(^|[-_ ])${name}($|[-_ ])`);
+  return models
+    .filter((model) => pattern.test(model.slug.toLowerCase()))
+    .sort((left, right) => generation(right) - generation(left))[0];
+}
+
+function selectFastCodingModel(catalog, wantedTier) {
   const models = visibleModels(catalog);
+  const tiered = newestTierModel(models, wantedTier);
+  if (tiered) return tiered.slug;
+  if (wantedTier !== 'luna') return '';
+
   const spark = models.find((model) => {
     const text = modelText(model);
     return /codex[-_ ]?spark/.test(text)
@@ -60,13 +89,17 @@ try {
     timeout: 5000,
   }));
 } catch {
+  if (tier !== 'luna') {
+    console.error(`cannot read codex debug models to resolve the ${tier} tier`);
+    process.exit(2);
+  }
   console.log(LEGACY_SPARK);
   process.exit(0);
 }
 
-const model = selectFastCodingModel(catalog);
+const model = selectFastCodingModel(catalog, tier);
 if (!model) {
-  console.error('no cheap Codex coding model found in codex debug models');
+  console.error(`no Codex ${tier} model found in codex debug models`);
   process.exit(2);
 }
 

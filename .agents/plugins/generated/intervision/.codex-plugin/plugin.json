@@ -1,6 +1,6 @@
 {
   "name": "intervision",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "Bring another coding agent in as a peer to review work just done or just discussed. Claude hands work to Codex; Codex hands work to Claude. Intervision is peer consultation among equals, not supervision from above.",
   "author": {
     "name": "local"
