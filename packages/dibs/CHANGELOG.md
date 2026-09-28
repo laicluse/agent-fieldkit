@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.65]
+
+### Fixed
+
+- **A Bash write after `cd` now gates the directory it changed into.** `cd <repo> && git commit` no longer counts as a write in the starting directory, so a lock another session holds there cannot block work in a different repository.
+
 ## [v2.0.63]
 
 ### Fixed

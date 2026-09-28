@@ -839,6 +839,36 @@ cp a.docx b.docx'
 	echo "$target_lock" | grep -q "\"pid\": $$"
 }
 
+@test "Bash git after cd gates the directory it changed into, not an occupied cwd" {
+	local cwd_repo="$BATS_TEST_TMPDIR/cwd"
+	export HOME="$BATS_TEST_TMPDIR/home"
+	local target_repo="$HOME/other"
+	init_bash_target_repo "$cwd_repo"
+	init_bash_target_repo "$target_repo"
+
+	tail -f /dev/null >/dev/null 2>&1 & local other_pid=$!
+	dibs claim "$cwd_repo" --pid "$other_pid" --agent codex --session other-sess >/dev/null
+	export DIBS_HOLDER_PID=$$
+	DIR="$cwd_repo"
+	run_bash_hook 'cd ~/other && git add -A && git commit -q -m "x"'
+	local hook_status=$status hook_output="$output"
+	run dibs check "$target_repo" --json
+	local target_lock="$output"
+	kill "$other_pid" 2>/dev/null || true
+
+	[ "$hook_status" -eq 0 ]
+	[ -z "$hook_output" ]
+	echo "$target_lock" | grep -q "\"pid\": $$"
+}
+
+@test "Bash relative write after cd resolves against the new directory" {
+	export HOME="$BATS_TEST_TMPDIR/home"
+	mkdir -p "$HOME/other/sub"
+	run bash -c "printf '%s' 'cd ~/other; cd sub && touch out.txt' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$HOME/other/sub/out.txt" ]
+}
+
 @test "Bash git commit ignores message-file and heredoc path text" {
 	local cwd_repo="$BATS_TEST_TMPDIR/cwd"
 	local decoy_repo="$BATS_TEST_TMPDIR/decoy"

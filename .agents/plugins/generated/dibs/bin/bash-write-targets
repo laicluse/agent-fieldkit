@@ -484,9 +484,21 @@ function commandTargets(words, base) {
 	return [];
 }
 
+function changedDirectory(words, base, activeEnvironment) {
+	if (!["cd", "pushd"].includes(words[0]?.text)) return null;
+	const operands = words.slice(1).filter((word) => !/^-[LPe@]+$/.test(word.text));
+	if (operands.length === 0) return activeEnvironment.HOME ? path.resolve(activeEnvironment.HOME) : base;
+	if (operands[0].unresolved || operands[0].text === "-") {
+		implicitTargetSeen = true;
+		return base;
+	}
+	return path.resolve(base, operands[0].text);
+}
+
 function extractTargets(source) {
 	const activeEnvironment = { ...environment };
 	const targets = [];
+	let base = cwd;
 	for (const segment of splitSegments(tokenize(stripHeredocBodies(source)))) {
 		const words = [];
 		for (let index = 0; index < segment.length; index += 1) {
@@ -497,7 +509,7 @@ function extractTargets(source) {
 			}
 			const targetToken = segment[index + 1];
 			if (!targetToken || targetToken.type !== "word") continue;
-			const target = targetPath(expandWord(targetToken, activeEnvironment), cwd);
+			const target = targetPath(expandWord(targetToken, activeEnvironment), base);
 			if ([">", ">>", ">|", "&>", "&>>"].includes(token.operator) && target && target !== "/dev" && !target.startsWith("/dev/")) targets.push(target);
 			index += 1;
 		}
@@ -516,7 +528,13 @@ function extractTargets(source) {
 			}
 			continue;
 		}
-		targets.push(...commandTargets(words, cwd));
+		const nextBase = changedDirectory(words, base, activeEnvironment);
+		if (nextBase) {
+			base = nextBase;
+			activeEnvironment.PWD = base;
+			continue;
+		}
+		targets.push(...commandTargets(words, base));
 	}
 	return [...new Set(targets.filter(Boolean))];
 }
