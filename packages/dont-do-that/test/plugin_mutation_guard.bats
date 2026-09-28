@@ -13,12 +13,30 @@ run_guard() {
 
 @test "updating an installed plugin is ordinary work, in any permission mode" {
   for mode in default auto bypassPermissions; do
-    for command in "claude plugins update dibs@example" "codex plugin update dibs@example"; do
+    for command in "claude plugins update dibs@example"; do
       run_guard "$(pre_bash_payload "$BATS_TEST_TMPDIR" "$command" "$mode")"
       [ "$status" -eq 0 ]
       [ -z "$output" ]
     done
   done
+}
+
+@test "codex plugin add refreshes an installed plugin without asking" {
+  mkdir -p "$BATS_TEST_TMPDIR/codex/plugins/cache/example/dibs"
+  payload="$(pre_bash_payload "$BATS_TEST_TMPDIR" "codex plugin add dibs@example" "bypassPermissions")"
+  run bash -c 'printf "%s" "$1" | CODEX_HOME="$3" DD_AGENT=claude DD_ONLY_PRETOOLUSE_GUARDS=plugin-mutation bash "$2"' _ "$payload" "$DISPATCH" "$BATS_TEST_TMPDIR/codex"
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "codex plugin add of a plugin that is not installed stays gated" {
+  mkdir -p "$BATS_TEST_TMPDIR/codex/plugins/cache/example"
+  payload="$(pre_bash_payload "$BATS_TEST_TMPDIR" "codex plugin add dibs@example" "bypassPermissions")"
+  run bash -c 'printf "%s" "$1" | CODEX_HOME="$3" DD_AGENT=claude DD_ONLY_PRETOOLUSE_GUARDS=plugin-mutation bash "$2"' _ "$payload" "$DISPATCH" "$BATS_TEST_TMPDIR/codex"
+
+  [ "$status" -ne 0 ] || [ -n "$output" ]
+  [[ "$output" == *"plugin-mutation"* ]]
 }
 
 @test "enabling an installed plugin is ordinary work" {

@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.69]
+
+### Fixed
+
+- **Refreshing an installed Codex plugin no longer asks the operator.** Codex has no update verb, so `codex plugin add` of a plugin whose cache already exists now passes the plugin-mutation guard like `claude plugins update`; adding a plugin that is not installed stays gated.
+
 ## [v2.0.68]
 
 ### Changed
