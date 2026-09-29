@@ -131,11 +131,12 @@ occ_bash_command() {
 
 occ_bash_write_targets() {
 	local command="$1" cwd="$2" parser="$OCC_DIR/bin/bash-write-targets"
+	shift 2
 	local machine_parser="${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/runtime/bash-write-targets"
 	[ -x "$machine_parser" ] && parser="$machine_parser"
 	[ -f "$parser" ] || return 1
 	command -v node >/dev/null 2>&1 || return 1
-	printf '%s' "$command" | node "$parser" "$cwd" 2>/dev/null
+	printf '%s' "$command" | node "$parser" "$cwd" "$@" 2>/dev/null
 }
 
 occ_bash_mutates() {
@@ -317,17 +318,16 @@ occ_block_no_dibs() {
 }
 
 occ_codex_bash_target_is_ambiguous() {
-  local input="$1" command cwd workdir parser targets
+  local input="$1" command cwd workdir targets
   [ "$(occ_agent_label)" = "codex" ] || return 1
   workdir="$(jq -r '.tool_input.workdir // .tool_input.cwd // empty' <<< "$input" 2>/dev/null)"
   [ -z "$workdir" ] || return 1
   command="$(occ_bash_command "$input")"
   cwd="$(occ_cwd "$input")"
-  parser="$OCC_DIR/bin/bash-write-targets"
-  [ -n "$command" ] && [ -n "$cwd" ] && [ -f "$parser" ] || return 1
+  [ -n "$command" ] && [ -n "$cwd" ] || return 1
   targets="$(occ_bash_write_targets "$command" "$cwd")"
   [ -n "$targets" ] || return 1
-  printf '%s' "$command" | node "$parser" "$cwd" --require-explicit >/dev/null 2>&1
+  occ_bash_write_targets "$command" "$cwd" --require-explicit >/dev/null 2>&1
   [ "$?" -eq 3 ]
 }
 

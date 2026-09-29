@@ -4,6 +4,14 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.67]
+
+### Fixed
+
+- An absolute `cd` or `pushd` now supplies explicit Git context when Codex omits `workdir`, so a claim on the target repository is recognized.
+- Heredoc delimiters no longer count as relative write targets.
+- Codex ambiguity checks use the same published parser as write-target extraction, avoiding disagreement after runtime updates.
+
 ## [v2.0.66]
 
 ### Fixed

@@ -311,11 +311,11 @@ function parseOperands(argumentsList, valueOptions = new Set(), attachedValueOpt
 	return operands;
 }
 
-function gitTargets(words, base) {
+function gitTargets(words, base, hasExplicitDirectoryContext) {
 	let gitCwd = base;
 	let gitDir = null;
 	let workTree = null;
-	let hasGitContext = false;
+	let hasGitContext = hasExplicitDirectoryContext;
 	let index = 1;
 
 	while (index < words.length) {
@@ -467,7 +467,7 @@ function packageManagerTargets(commandName, argumentsList, base) {
 	return actions.has(action) ? [packageCwd] : [];
 }
 
-function commandTargets(words, base) {
+function commandTargets(words, base, hasExplicitDirectoryContext) {
 	if (words.length === 0) return [];
 	let commandIndex = 0;
 	while (/^[A-Za-z_][A-Za-z0-9_]*=/.test(words[commandIndex]?.text || "")) commandIndex += 1;
@@ -478,27 +478,36 @@ function commandTargets(words, base) {
 	}
 	const commandName = path.basename(words[commandIndex]?.text || "");
 	const argumentsList = words.slice(commandIndex + 1);
-	if (commandName === "git") return gitTargets(words.slice(commandIndex), base);
+	if (commandName === "git") return gitTargets(words.slice(commandIndex), base, hasExplicitDirectoryContext);
 	if (["rm", "rmdir", "unlink", "mkdir", "touch", "truncate", "tee", "cp", "mv", "ln", "install"].includes(commandName)) return fileCommandTargets(commandName, argumentsList, base);
 	if (["npm", "pnpm", "yarn", "bun", "bundle"].includes(commandName)) return packageManagerTargets(commandName, argumentsList, base);
 	return [];
 }
 
 function changedDirectory(words, base, activeEnvironment) {
-	if (!["cd", "pushd"].includes(words[0]?.text)) return null;
+	if (!["cd", "pushd", "popd"].includes(words[0]?.text)) return null;
+	if (words[0].text === "popd" || (words[0].text === "pushd" && words.some((word) => word.text === "-n"))) {
+		implicitTargetSeen = true;
+		return { path: base, explicit: false };
+	}
 	const operands = words.slice(1).filter((word) => !/^-[LPe@]+$/.test(word.text));
-	if (operands.length === 0) return activeEnvironment.HOME ? path.resolve(activeEnvironment.HOME) : base;
+	if (words[0].text === "pushd" && (operands.length === 0 || /^[+-]\d+$/.test(operands[0].text))) {
+		implicitTargetSeen = true;
+		return { path: base, explicit: false };
+	}
+	if (operands.length === 0) return { path: activeEnvironment.HOME ? path.resolve(activeEnvironment.HOME) : base, explicit: Boolean(activeEnvironment.HOME && path.isAbsolute(activeEnvironment.HOME)) };
 	if (operands[0].unresolved || operands[0].text === "-") {
 		implicitTargetSeen = true;
-		return base;
+		return { path: base, explicit: false };
 	}
-	return path.resolve(base, operands[0].text);
+	return { path: path.resolve(base, operands[0].text), explicit: path.isAbsolute(operands[0].text) };
 }
 
 function extractTargets(source) {
 	const activeEnvironment = { ...environment };
 	const targets = [];
 	let base = cwd;
+	let hasExplicitDirectoryContext = false;
 	for (const segment of splitSegments(tokenize(stripHeredocBodies(source)))) {
 		const words = [];
 		for (let index = 0; index < segment.length; index += 1) {
@@ -509,8 +518,10 @@ function extractTargets(source) {
 			}
 			const targetToken = segment[index + 1];
 			if (!targetToken || targetToken.type !== "word") continue;
-			const target = targetPath(expandWord(targetToken, activeEnvironment), base);
-			if ([">", ">>", ">|", "&>", "&>>"].includes(token.operator) && target && target !== "/dev" && !target.startsWith("/dev/")) targets.push(target);
+			if ([">", ">>", ">|", "&>", "&>>"].includes(token.operator)) {
+				const target = targetPath(expandWord(targetToken, activeEnvironment), base);
+				if (target && target !== "/dev" && !target.startsWith("/dev/")) targets.push(target);
+			}
 			index += 1;
 		}
 
@@ -530,11 +541,12 @@ function extractTargets(source) {
 		}
 		const nextBase = changedDirectory(words, base, activeEnvironment);
 		if (nextBase) {
-			base = nextBase;
+			hasExplicitDirectoryContext = nextBase.explicit || (hasExplicitDirectoryContext && !implicitTargetSeen);
+			base = nextBase.path;
 			activeEnvironment.PWD = base;
 			continue;
 		}
-		targets.push(...commandTargets(words, base));
+		targets.push(...commandTargets(words, base, hasExplicitDirectoryContext));
 	}
 	return [...new Set(targets.filter(Boolean))];
 }

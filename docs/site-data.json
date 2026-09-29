@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.66",
+			"version": "2.0.67",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 5,
 			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.66",
+				"version": "v2.0.67",
 				"type": "Fixed",
-				"summary": "Relative Codex writes in an explicitly excluded directory no longer require a claim when the hook omits workdir."
+				"summary": "An absolute cd or pushd now supplies explicit Git context when Codex omits workdir, so a claim on the target repository is recognized."
 			}
 		},
 		{
@@ -653,11 +653,11 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.66",
+			"packageVersion": "2.0.67",
 			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.66",
+			"version": "v2.0.67",
 			"type": "Fixed",
-			"summary": "Relative Codex writes in an explicitly excluded directory no longer require a claim when the hook omits workdir.",
+			"summary": "An absolute cd or pushd now supplies explicit Git context when Codex omits workdir, so a claim on the target repository is recognized.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{

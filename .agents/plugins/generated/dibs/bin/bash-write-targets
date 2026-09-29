@@ -485,8 +485,16 @@ function commandTargets(words, base, hasExplicitDirectoryContext) {
 }
 
 function changedDirectory(words, base, activeEnvironment) {
-	if (!["cd", "pushd"].includes(words[0]?.text)) return null;
+	if (!["cd", "pushd", "popd"].includes(words[0]?.text)) return null;
+	if (words[0].text === "popd" || (words[0].text === "pushd" && words.some((word) => word.text === "-n"))) {
+		implicitTargetSeen = true;
+		return { path: base, explicit: false };
+	}
 	const operands = words.slice(1).filter((word) => !/^-[LPe@]+$/.test(word.text));
+	if (words[0].text === "pushd" && (operands.length === 0 || /^[+-]\d+$/.test(operands[0].text))) {
+		implicitTargetSeen = true;
+		return { path: base, explicit: false };
+	}
 	if (operands.length === 0) return { path: activeEnvironment.HOME ? path.resolve(activeEnvironment.HOME) : base, explicit: Boolean(activeEnvironment.HOME && path.isAbsolute(activeEnvironment.HOME)) };
 	if (operands[0].unresolved || operands[0].text === "-") {
 		implicitTargetSeen = true;

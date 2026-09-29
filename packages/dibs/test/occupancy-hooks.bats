@@ -366,6 +366,26 @@ init_bash_target_repo() {
 	echo "$output" | grep -q 'another live agent'
 }
 
+@test "a commit heredoc delimiter is not a write target or an implicit repository" {
+	local conversation_repo="$BATS_TEST_TMPDIR/conversation-repo"
+	local target_repo="$BATS_TEST_TMPDIR/target-repo"
+	local command
+	init_bash_target_repo "$conversation_repo"
+	init_bash_target_repo "$target_repo"
+	export DIBS_HOLDER_PID=$$ PLUGIN_ROOT="$REPO_ROOT/packages/dibs"
+	command="$(printf 'git --git-dir=%s/.git --work-tree=%s commit -m "$(cat <<'\''EOF'\''\nSubject\n\nBody.\nEOF\n)"' "$target_repo" "$target_repo")"
+	jq -nc --arg cwd "$conversation_repo" --arg command "$command" \
+		'{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, session_id:"sess-1", tool_input:{command:$command}}' > "$BATS_TEST_TMPDIR/in.json"
+
+	run "$HOOK" < "$BATS_TEST_TMPDIR/in.json"
+	[ "$status" -eq 0 ]
+	[ -z "$output" ]
+	run dibs check "$target_repo" --json
+	echo "$output" | jq -e '.state == "held" and .holder.session == "sess-1"' >/dev/null
+	run dibs check "$conversation_repo" --json
+	echo "$output" | jq -e '.state == "free"' >/dev/null
+}
+
 @test "Codex refuses an unresolved Bash target when its hook payload omits workdir" {
 	local conversation_repo="$BATS_TEST_TMPDIR/conversation-repo"
 	init_bash_target_repo "$conversation_repo"
@@ -1072,4 +1092,46 @@ MSG"
 
 	[ "$hook_status" -eq 0 ]
 	[ -z "$hook_output" ]
+}
+
+@test "Codex recognizes an absolute cd as the claimed Git context without workdir" {
+	local conversation_repo="$BATS_TEST_TMPDIR/conversation-repo"
+	local target_repo="$BATS_TEST_TMPDIR/target-repo"
+	init_bash_target_repo "$conversation_repo"
+	init_bash_target_repo "$target_repo"
+	export DIBS_HOLDER_PID=$$ PLUGIN_ROOT="$REPO_ROOT/packages/dibs"
+	dibs claim "$target_repo" --pid $$ --agent codex --session sess-1 --owner sess-1 --description "switch the target branch" >/dev/null
+	jq -nc --arg cwd "$conversation_repo" --arg target "$target_repo" \
+		'{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, session_id:"sess-1", tool_input:{command:("cd " + $target + " && git switch -c example")}}' > "$BATS_TEST_TMPDIR/in.json"
+	run "$HOOK" < "$BATS_TEST_TMPDIR/in.json"
+	[ "$status" -eq 0 ]
+	[ -z "$output" ]
+	run dibs check "$conversation_repo" --json
+	echo "$output" | jq -e '.state == "free"' >/dev/null
+}
+
+@test "explicit directory context recognizes cd and pushd but retains unresolved targets" {
+	local parser="$REPO_ROOT/packages/dibs/bin/bash-write-targets"
+	for directory_command in cd pushd; do
+		run bash -c 'printf "%s\n" "$1" | node "$2" /conversation --require-explicit' _ "$directory_command /target && git switch -c example" "$parser"
+		[ "$status" -eq 0 ]
+		[ "$output" = /target ]
+	done
+	for command in 'cd /target && popd && git switch -c example' 'pushd -n /target && git switch -c example' 'pushd && git switch -c example' 'cd /target && pushd +1 && git switch -c example' 'cd relative && git switch -c example' 'cd "$DIBS_MISSING_TARGET" && git switch -c example' 'cd /target && touch relative.md && git switch -c example'; do
+		run bash -c 'printf "%s\n" "$1" | node "$2" /conversation --require-explicit' _ "$command" "$parser"
+		[ "$status" -eq 3 ]
+	done
+}
+
+@test "Codex ambiguity checks use the same published parser as target extraction" {
+	local runtime="$LAICLUSE_HOME/dibs/runtime"
+	local stale="$BATS_TEST_TMPDIR/stale-plugin"
+	mkdir -p "$runtime" "$stale/bin"
+	cp "$REPO_ROOT/packages/dibs/bin/bash-write-targets" "$runtime/bash-write-targets"
+	printf '#!/usr/bin/env node\nprocess.exit(3);\n' > "$stale/bin/bash-write-targets"
+	export PLUGIN_ROOT="$REPO_ROOT/packages/dibs"
+	jq -nc --arg cwd "$DIR" \
+		'{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, session_id:"sess-1", tool_input:{command:"cd /target && git switch -c example"}}' > "$BATS_TEST_TMPDIR/in.json"
+	run bash -c 'source "$1"; OCC_DIR="$2"; occ_codex_bash_target_is_ambiguous "$(cat "$3")"' _ "$HOOK" "$stale" "$BATS_TEST_TMPDIR/in.json"
+	[ "$status" -eq 1 ]
 }
