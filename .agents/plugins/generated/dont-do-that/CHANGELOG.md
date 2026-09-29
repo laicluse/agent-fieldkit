@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.70]
+
+### Fixed
+
+- **Opening a document no longer triggers the UI automation guard.** macOS `open`, including `open -a Preview`, is allowed. App scripting, simulated input and screen capture remain blocked, including automation chained to a file-opening command.
+
 ## [v2.0.69]
 
 ### Fixed

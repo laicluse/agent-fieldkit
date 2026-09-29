@@ -106,13 +106,9 @@ Stop guards block weak final answers and make the agent continue:
 
 ### `no-shell-ui-control`
 
-Denies Bash tool calls that activate host apps, send host mouse or keyboard input,
-or capture the host screen. Covered commands include `osascript`, macOS `open`,
-`cliclick`, `xdotool`, `ydotool`, `wtype`, `screencapture`, `gnome-screenshot`,
-and `scrot`, including wrapper and command-substitution forms. A denied route may
-not be replaced with an equivalent command. Pass condition: use an explicit
-host-owned UI or browser capability, or a project-native command path that does
-not touch user-facing desktop state.
+Denies shell commands that script host apps, send host mouse or keyboard input, or capture the host screen. Covered commands include `osascript`, `cliclick`, `xdotool`, `ydotool`, `wtype`, `screencapture`, `gnome-screenshot`, and `scrot`, including wrapper and command-substitution forms. A denied automation route may not be replaced with an equivalent command. Use an explicit host-owned UI or browser capability for those operations.
+
+Opening a file or URL with macOS `open` is allowed, including choosing a viewer with `open -a Preview`. Launching a viewer is not scripted interaction with its interface. Other commands in the same shell call are still checked: opening a file does not permit chained or substituted UI automation.
 
 ### `no-root-search`
 

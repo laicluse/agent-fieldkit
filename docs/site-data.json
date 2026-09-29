@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.69",
+			"version": "2.0.70",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 31,
 			"latestChange": {
-				"version": "v2.0.69",
+				"version": "v2.0.70",
 				"type": "Fixed",
-				"summary": "Refreshing an installed Codex plugin no longer asks the operator."
+				"summary": "Opening a document no longer triggers the UI automation guard."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.69",
+			"packageVersion": "2.0.70",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.69",
+			"version": "v2.0.70",
 			"type": "Fixed",
-			"summary": "Refreshing an installed Codex plugin no longer asks the operator.",
+			"summary": "Opening a document no longer triggers the UI automation guard.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

@@ -10,9 +10,7 @@ guard_no_shell_ui_control() {
   local assignments='([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]+[[:space:]]+)*'
   local wrappers='((command|exec|nohup|sudo|doas|arch)([[:space:]]+-[^[:space:]]+)*[[:space:]]+|env([[:space:]]+-[^[:space:]]+|[[:space:]]+[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]+)*[[:space:]]+)*'
   local target='([[:alnum:]_.\/-]+\/)?(osascript|cliclick|xdotool|ydotool|wtype|screencapture|gnome-screenshot|scrot)([[:space:]]|$)'
-  local mac_open='([[:alnum:]_.\/-]+\/)?open([[:space:]]|$)'
-
-  if grep -Eq "${prefix}${assignments}${wrappers}(${target}|${mac_open})" <<< "$cmd"; then
-    dd_emit_deny no-shell-ui-control "Shell-driven host UI control blocked: do not activate apps, send host mouse/keyboard input, or capture the host screen from shell commands, and do not substitute an equivalent after one route is denied. Use the host's explicit UI/browser capability; use project-native commands only when they do not touch user-facing desktop state."
+  if grep -Eq "${prefix}${assignments}${wrappers}${target}" <<< "$cmd"; then
+    dd_emit_deny no-shell-ui-control "Shell-driven host UI automation blocked: do not script apps, send host mouse/keyboard input, or capture the host screen from shell commands. Use the host's explicit UI/browser capability for those operations. Opening files with open is allowed; it does not authorize a chained automation command."
   fi
 }

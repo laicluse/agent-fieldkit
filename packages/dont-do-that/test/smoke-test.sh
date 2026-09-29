@@ -615,8 +615,24 @@ expect_deny "no-shell-ui-control: cliclick keyboard input blocked" \
   "$(pretool_bash 'cliclick kp:cmd+l')" \
   "no-shell-ui-control"
 
-expect_deny "no-shell-ui-control: macOS app activation blocked" \
-  "$(pretool_bash "open -a Arc 'https://example.test'")" \
+expect_allow "no-shell-ui-control: opening a file passes" \
+  "$(pretool_bash "open '/tmp/design study.png'")"
+
+expect_allow "no-shell-ui-control: opening several files in a chosen app passes" \
+  "$(pretool_bash "open -a Preview '/tmp/agenda.png' '/tmp/patient record.png'")"
+
+expect_allow "no-shell-ui-control: wrapped absolute file opener passes" \
+  "$(pretool_bash "command /usr/bin/open '/tmp/design.pdf'")"
+
+expect_allow "no-shell-ui-control: standard URL opener passes" \
+  "$(pretool_bash "open -a Arc 'https://example.test'")"
+
+expect_deny "no-shell-ui-control: opening a file does not permit chained automation" \
+  "$(pretool_bash "open '/tmp/design.png' && osascript -e 'return 1'")" \
+  "no-shell-ui-control"
+
+expect_deny "no-shell-ui-control: opening a file does not permit substituted automation" \
+  "$(pretool_bash 'open "$(osascript -e "return 1")"')" \
   "no-shell-ui-control"
 
 expect_deny "no-shell-ui-control: host screen capture blocked" \
