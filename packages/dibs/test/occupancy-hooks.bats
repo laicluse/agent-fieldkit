@@ -330,6 +330,42 @@ init_bash_target_repo() {
 	[ -z "$output" ]
 }
 
+@test "Codex accepts relative writes in an excluded repo without a claim or description" {
+	local conversation_repo="$BATS_TEST_TMPDIR/concurrent-vault"
+	init_bash_target_repo "$conversation_repo"
+	dibs exclude "$conversation_repo" >/dev/null
+	unset DIBS_DESCRIPTION
+	export DIBS_HOLDER_PID=$$ PLUGIN_ROOT="$REPO_ROOT/packages/dibs"
+	jq -nc --arg cwd "$conversation_repo" \
+		'{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, session_id:"sess-1", tool_input:{command:"touch note.md"}}' > "$BATS_TEST_TMPDIR/in.json"
+
+	run "$HOOK" < "$BATS_TEST_TMPDIR/in.json"
+	[ "$status" -eq 0 ]
+	[ -z "$output" ]
+	run dibs check "$conversation_repo" --json
+	[ "$status" -eq 0 ]
+	echo "$output" | jq -e '.state == "excluded" and .path == null' >/dev/null
+}
+
+@test "an excluded Codex cwd does not bypass a different target's live lock" {
+	local conversation_repo="$BATS_TEST_TMPDIR/concurrent-vault"
+	local protected_repo="$BATS_TEST_TMPDIR/protected-repo"
+	init_bash_target_repo "$conversation_repo"
+	init_bash_target_repo "$protected_repo"
+	dibs exclude "$conversation_repo" >/dev/null
+	tail -f /dev/null >/dev/null 2>&1 & local other=$!
+	dibs claim "$protected_repo" --pid "$other" --agent codex --session other-sess \
+		--description "protect the other repository" >/dev/null
+	export DIBS_HOLDER_PID=$$ PLUGIN_ROOT="$REPO_ROOT/packages/dibs"
+	jq -nc --arg cwd "$conversation_repo" --arg target "$protected_repo/note.md" \
+		'{hook_event_name:"PreToolUse", tool_name:"Bash", cwd:$cwd, session_id:"sess-1", tool_input:{command:("touch note.md " + $target)}}' > "$BATS_TEST_TMPDIR/in.json"
+
+	run "$HOOK" < "$BATS_TEST_TMPDIR/in.json"
+	kill "$other" 2>/dev/null || true
+	[ "$status" -eq 2 ]
+	echo "$output" | grep -q 'another live agent'
+}
+
 @test "Codex refuses an unresolved Bash target when its hook payload omits workdir" {
 	local conversation_repo="$BATS_TEST_TMPDIR/conversation-repo"
 	init_bash_target_repo "$conversation_repo"

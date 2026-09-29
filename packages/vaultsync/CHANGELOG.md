@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.25]
+
+### Fixed
+
+- Authoring instructions now respect excluded directories: concurrent vault edits need no exclusive claim or release before the normal debounce cycle.
+
 ## [v2.0.24]
 
 ### Fixed

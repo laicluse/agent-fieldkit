@@ -7,8 +7,7 @@ description: >-
 # dibs
 
 Calling dibs on a directory: a small, vendor-neutral, cross-platform lock so
-only one coding agent mutates a git worktree or standalone working directory at
-a time. A Claude and a Codex contend for the same lock through the same on-disk
+only one coding agent mutates a protected git worktree or standalone working directory at a time. Explicitly excluded directories allow concurrent authoring without a lock; Markdown vaults can use that policy independently of production-code checkouts. A Claude and a Codex contend for the same lock through the same on-disk
 artifact, so neither needs to know about the other's hooks.
 
 The lock is a file created with an atomic exclusive create
@@ -69,8 +68,7 @@ homes `~/.claude`, `~/.codex`, `~/.config/opencode`, always excluded and not
 removable) and a plain-text file at `${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/excludes` (one
 path per line, `#` comments and blank lines ignored, leading `~` expands to
 `$HOME`). `claim` and `check` on an excluded directory or any path inside it
-return state `excluded` and write no lock, so the occupancy hook lets the edit
-through without a second lock path. Matching is by resolved realpath: excluding a
+return state `excluded` and write no lock, so the occupancy hook lets the edit through without a second lock path. `excluded` is a successful policy result, not a failed claim. Workflows must respect it: do not remove an exclusion, create a substitute lock, or ask for temporary locking merely because their instructions mention a claim. Same-file conflicts remain the writers' responsibility; reread a file before replacing it and reconcile concurrent changes. Matching is by resolved realpath: excluding a
 git worktree root excludes every file inside it.
 
 `release` is also the final cleanup step when a coding agent has completed its work and hands control back for genuinely new instructions. Do not release merely because the current task is committed or tests are green: the work may still continue. Nothing releases a lock on your behalf at the end of a turn, so say so with `undibs` when you are done with a directory. `SessionEnd`, pid-liveness, and owner reclaim remain the fallbacks for interrupted sessions.
@@ -119,7 +117,7 @@ acquisition points are:
 
 - **Pre-mutation hook.** A coding agent claims the directory at its first
   mutating file edit (`Edit`/`Write`/`MultiEdit`/`apply_patch`) or a `Bash`
-  command it detects as writing, not when the session starts. Relative write targets resolve from the tool call's own workdir. When Codex omits that workdir, an existing claim lets normal target analysis use the conversation directory as its fallback basis. Without that claim, Dibs refuses ambiguous relative or implicit mutations and never claims the conversation directory silently; explicit absolute targets remain available. Occupancy only
+  command it detects as writing, not when the session starts. Relative write targets resolve from the tool call's own workdir. When Codex omits that workdir, an existing claim or explicit directory exclusion lets normal target analysis use the conversation directory as its fallback basis. Without either, Dibs refuses ambiguous relative or implicit mutations and never claims the conversation directory silently; explicit absolute targets remain available. Occupancy only
   gates the write-output: several agents may read, think, and run commands from
   the same directory, and dibs only arbitrates who may write. Because a claim needs a description, an
   agent that writes before administering a dibs is told to run

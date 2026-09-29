@@ -1,5 +1,5 @@
 #!/bin/bash
-# allow-comment: load-bearing contract. dibs occupancy enforcement gates the write-output at PreToolUse: a file edit (Edit/Write/MultiEdit/apply_patch) always, and a Bash command that occ_bash_mutates classifies as writing. Write targets resolve from the tool call's own workdir. When Codex omits that workdir, an existing claim lets the normal target analysis use the conversation directory as its fallback basis; without that claim, ambiguous Bash mutations remain refused and Dibs never claims the conversation directory silently. Several agents may read and think in the same directory; dibs only arbitrates who writes. A claim needs a work description the agent composes (from DIBS_DESCRIPTION); a write with no administered dibs is hard-denied telling the agent to run `dibs claim <dir> --description ...`, and a write into a directory a DIFFERENT live session holds is hard-denied with the holder. Read-only work passes untouched. A lock lasts as long as the session that took it: it is released by SessionEnd, by an explicit undibs, or by dibs pid-liveness once the holding process is gone. Deliberately NOT at the end of a turn. Reading intent out of the assistant's closing prose was tried and reverted: the marker set it recognised (a trailing ?, ？ or 🚧) never matched the house convention of opening a closing line with 🏁 or 🚦, so every turn silently swept every lock the session held and the directory read as free to the next agent. A lock that outlives its usefulness costs one undibs; a lock that vanishes mid-work costs a collision nobody sees coming. No lock logic lives here; every verb shells out to this plugin's own dibs CLI, and the gate fails open on infra faults (missing dibs binary, unresolvable dir) so a broken lock never blocks. Opt out per session with DIBS_OCCUPANCY=off.
+# allow-comment: load-bearing contract. dibs occupancy enforcement gates the write-output at PreToolUse: a file edit (Edit/Write/MultiEdit/apply_patch) always, and a Bash command that occ_bash_mutates classifies as writing. Write targets resolve from the tool call's own workdir. When Codex omits that workdir, an existing claim or explicit exclusion lets normal target analysis use the conversation directory as its fallback basis; without either, ambiguous Bash mutations remain refused and Dibs never claims the conversation directory silently. Several agents may read and think in the same directory; dibs only arbitrates who writes. A claim needs a work description the agent composes (from DIBS_DESCRIPTION); a write with no administered dibs is hard-denied telling the agent to run `dibs claim <dir> --description ...`, and a write into a directory a DIFFERENT live session holds is hard-denied with the holder. Read-only work passes untouched. A lock lasts as long as the session that took it: it is released by SessionEnd, by an explicit undibs, or by dibs pid-liveness once the holding process is gone. Deliberately NOT at the end of a turn. Reading intent out of the assistant's closing prose was tried and reverted: the marker set it recognised (a trailing ?, ？ or 🚧) never matched the house convention of opening a closing line with 🏁 or 🚦, so every turn silently swept every lock the session held and the directory read as free to the next agent. A lock that outlives its usefulness costs one undibs; a lock that vanishes mid-work costs a collision nobody sees coming. No lock logic lives here; every verb shells out to this plugin's own dibs CLI, and the gate fails open on infra faults (missing dibs binary, unresolvable dir) so a broken lock never blocks. Opt out per session with DIBS_OCCUPANCY=off.
 
 OCC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # allow-comment: load-bearing. Share one holder-pid walk with the undibs skill so claim and release agree on the recorded pid.
@@ -332,12 +332,16 @@ occ_codex_bash_target_is_ambiguous() {
 }
 
 # allow-comment: load-bearing. Ownership is decided by the dibs library, never re-derived here. The hook passes the identity it resolved and reads the verdict; a second implementation in bash is how the two came to disagree about who held a directory. The recorded pid stays out of it: it says whether a holder still runs, not whose holder it is.
-occ_current_session_holds_dir() {
+occ_current_session_can_mutate_dir() {
   local input="$1" dir="$2" dibs out
   dibs="$(occ_dibs_bin)" || return 1
   [ -n "$dir" ] || return 1
   out="$(node "$dibs" check "$dir" --session "$(occ_session "$input")" --owner "$(occ_owner "$input")" --agent "$(occ_agent_label)" --json 2>/dev/null)" || return 1
-  [ "$(printf '%s' "$out" | jq -r '.state // empty' 2>/dev/null)" = "held" ] || return 1
+  case "$(printf '%s' "$out" | jq -r '.state // empty' 2>/dev/null)" in
+    excluded) return 0 ;;
+    held) ;;
+    *) return 1 ;;
+  esac
   [ "$(printf '%s' "$out" | jq -r '.self // false' 2>/dev/null)" = "true" ]
 }
 
@@ -369,7 +373,7 @@ occ_field() {
 occ_gate() {
   local input="$1" out rc dir dirs
   occ_resolve "$input" || true
-  if [ "$(occ_tool "$input")" = "Bash" ] && occ_codex_bash_target_is_ambiguous "$input" && ! occ_current_session_holds_dir "$input" "$(occ_cwd "$input")"; then
+  if [ "$(occ_tool "$input")" = "Bash" ] && occ_codex_bash_target_is_ambiguous "$input" && ! occ_current_session_can_mutate_dir "$input" "$(occ_cwd "$input")"; then
     occ_block_ambiguous_bash_target "$(occ_cwd "$input")"
     exit $?
   fi

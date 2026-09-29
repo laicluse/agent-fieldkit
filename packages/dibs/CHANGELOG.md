@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.66]
+
+### Fixed
+
+- Relative Codex writes in an explicitly excluded directory no longer require a claim when the hook omits `workdir`. Additional write targets still follow their own directory policies.
+
 ## [v2.0.65]
 
 ### Fixed

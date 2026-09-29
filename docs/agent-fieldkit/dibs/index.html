@@ -52,7 +52,7 @@
 					<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.65</span>
+						<span>2.0.66</span>
 						<span>2 skills</span>
 					</div>
 				</div>
@@ -111,7 +111,7 @@ dibs excludes    [--json]</code></pre>
 dibs claim &quot;&lt;repo&gt;&quot; --description &quot;&lt;the change you are making here&gt;&quot;</code></pre>
 <p>Opt out of enforcement for a session with <code>DIBS_OCCUPANCY=off</code>. <code>bonsai</code>'s claim-at-handout is unaffected and complementary.</p>
 <h2 id="excludes">Excludes</h2>
-<p>Some directories should never take an occupancy lock: the agent-config homes, where two sessions each editing their own runtime config must not steer each other aside and the git-native commit hook is the backstop. dibs keeps a per-machine exclude list. <code>claim</code> and <code>check</code> on an excluded directory (or any path inside it) return state <code>excluded</code> and write no lock, so the occupancy hook passes the edit through untouched. Exclusion lives in the CLI, not the hook, so there is a single decision point.</p>
+<p>Some directories should never take an occupancy lock, including agent-config homes where independent sessions edit their own runtime config and Markdown vaults that permit concurrent authoring. Dibs keeps a per-machine exclude list. <code>claim</code> and <code>check</code> on an excluded directory or any path inside it return state <code>excluded</code> and write no lock. This is a successful concurrency policy result, not a failed claim; workflows must not re-enable locking or invent another lock to continue. The occupancy hook uses that policy for normal target analysis even when Codex omits <code>workdir</code>, while checking other write targets independently. Exclusion lives in the CLI, not the hook, so there is a single decision point.</p>
 <p>The list is the union of built-in defaults and a plain-text config file at <code>${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/excludes</code> (one path per line, <code>#</code> comments and blank lines ignored, a leading <code>~</code> expands to <code>$HOME</code>). Every install ships with <code>/tmp</code> (transient scratch) and the agent-config homes (<code>~/.claude</code>, <code>~/.codex</code>, <code>~/.config/opencode</code>) excluded by default; those cannot be included back. Manage the rest with the imperative pair <code>exclude</code>/<code>include</code>:</p>
 <pre><code class="language-bash">dibs excludes            # list built-in defaults and configured entries
 dibs exclude ~/project   # never lock this directory again

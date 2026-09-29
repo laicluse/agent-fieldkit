@@ -164,13 +164,7 @@ claim-at-handout is unaffected and complementary.
 
 ## Excludes
 
-Some directories should never take an occupancy lock: the agent-config homes,
-where two sessions each editing their own runtime config must not steer each
-other aside and the git-native commit hook is the backstop. dibs keeps a
-per-machine exclude list. `claim` and `check` on an excluded directory (or any
-path inside it) return state `excluded` and write no lock, so the occupancy hook
-passes the edit through untouched. Exclusion lives in the CLI, not the hook, so
-there is a single decision point.
+Some directories should never take an occupancy lock, including agent-config homes where independent sessions edit their own runtime config and Markdown vaults that permit concurrent authoring. Dibs keeps a per-machine exclude list. `claim` and `check` on an excluded directory or any path inside it return state `excluded` and write no lock. This is a successful concurrency policy result, not a failed claim; workflows must not re-enable locking or invent another lock to continue. The occupancy hook uses that policy for normal target analysis even when Codex omits `workdir`, while checking other write targets independently. Exclusion lives in the CLI, not the hook, so there is a single decision point.
 
 The list is the union of built-in defaults and a plain-text config file at
 `${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/excludes` (one path per line, `#`

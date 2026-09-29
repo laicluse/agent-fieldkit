@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.65",
+			"version": "2.0.66",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 5,
 			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.65",
+				"version": "v2.0.66",
 				"type": "Fixed",
-				"summary": "A Bash write after cd now gates the directory it changed into."
+				"summary": "Relative Codex writes in an explicitly excluded directory no longer require a claim when the hook omits workdir."
 			}
 		},
 		{
@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.24",
+			"version": "2.0.25",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.24",
+				"version": "v2.0.25",
 				"type": "Fixed",
-				"summary": "Repeated session startup no longer re-registers an unchanged macOS background item."
+				"summary": "Authoring instructions now respect excluded directories: concurrent vault edits need no exclusive claim or release before the normal debounce cycle."
 			}
 		},
 		{
@@ -653,11 +653,11 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.65",
+			"packageVersion": "2.0.66",
 			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.65",
+			"version": "v2.0.66",
 			"type": "Fixed",
-			"summary": "A Bash write after cd now gates the directory it changed into.",
+			"summary": "Relative Codex writes in an explicitly excluded directory no longer require a claim when the hook omits workdir.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
@@ -698,11 +698,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.24",
+			"packageVersion": "2.0.25",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.24",
+			"version": "v2.0.25",
 			"type": "Fixed",
-			"summary": "Repeated session startup no longer re-registers an unchanged macOS background item.",
+			"summary": "Authoring instructions now respect excluded directories: concurrent vault edits need no exclusive claim or release before the normal debounce cycle.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
