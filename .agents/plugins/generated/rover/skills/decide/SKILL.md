@@ -73,7 +73,7 @@ Use before committing to a factual statement about tools, APIs, or system intern
 Use when you hit a technical threshold you cannot cross from training alone. Library you do not know, pattern you have not seen, protocol you are guessing at. Medium cost, saves backtracks.
 
 **`/gurus`** (spare, for architecture forks).
-Use once per loop at most. When a genuinely structural choice is in front of you and the research so far has not converged. Expensive, worth it when the decision shapes the whole implementation.
+Use once per loop at most. When a genuinely structural choice is in front of you and the research so far has not converged. Expensive, worth it when the decision shapes the whole implementation. In a rover mission, pair a gurus consultation with an optional `intervision:second-opinion` attempt under the rover cross-lab contract. The peer must be from another frontier lab; if it is unavailable, log why and make the decision through the existing framework without blocking or substituting your own lab.
 
 **Fallback: `/brainstorming`** if present.
 When the decision is creative rather than technical (naming, framing, scope), brainstorming works better than the research skills above.

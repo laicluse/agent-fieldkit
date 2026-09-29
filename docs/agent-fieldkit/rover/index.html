@@ -52,7 +52,7 @@
 					<p class="lede">Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.28</span>
+						<span>2.0.29</span>
 						<span>8 skills</span>
 					</div>
 				</div>
@@ -66,6 +66,9 @@
 <h2 id="dependencies">Dependencies</h2>
 <ul>
 <li><strong><code>gurus@laicluse-agent-fieldkit</code></strong> (same marketplace): the rover invokes <code>gurus:gurus</code> once per mission at INSPECT for opinionated panel review; the orchestrator routes to <code>gurus:software</code>, <code>gurus:council</code>, <code>gurus:writers</code>, or any future panel.</li>
+</ul>
+<ul>
+<li><strong><code>intervision@laicluse-agent-fieldkit</code></strong> (optional, same marketplace): with each gurus review, attempt a second opinion from the other frontier lab. Codex asks Claude and Claude asks Codex through the host-specific <code>intervision:second-opinion</code> skill. The peer needs its own working CLI/login and available quota. If it is unavailable, record the reason and continue with the existing review workflow; never substitute a reviewer from the executing lab.</li>
 </ul>
 <p>No other hard dependencies. Optional integrations (notifier, reviewbot, commit-splitter) are user-named at invocation and only used when installed.</p>
 <h2 id="user-invocable-skills">User-invocable skills</h2>

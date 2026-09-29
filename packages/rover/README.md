@@ -39,6 +39,8 @@ quiet persistent run.
   orchestrator routes to `gurus:software`, `gurus:council`, `gurus:writers`,
   or any future panel.
 
+- **`intervision@laicluse-agent-fieldkit`** (optional, same marketplace): with each gurus review, attempt a second opinion from the other frontier lab. Codex asks Claude and Claude asks Codex through the host-specific `intervision:second-opinion` skill. The peer needs its own working CLI/login and available quota. If it is unavailable, record the reason and continue with the existing review workflow; never substitute a reviewer from the executing lab.
+
 No other hard dependencies. Optional integrations (notifier, reviewbot,
 commit-splitter) are user-named at invocation and only used when installed.
 
