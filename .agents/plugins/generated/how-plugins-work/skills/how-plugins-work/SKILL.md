@@ -113,18 +113,18 @@ Important differences from Claude:
 - In the Codex app, plugin and skill invocation also has an `@` surface, and
   enabled skills may appear in the slash command list. Treat that as an app UI
   behavior, not as proof that Codex CLI accepts `/<skill>`.
-- `codex plugin list --json` is the authoritative local view for what Codex has installed and enabled right now. Its `source.path` determines the delivery model. When a local marketplace points into the primary checkout, integrating the generated files updates the source used by future sessions; do not reinstall the plugin. A cache-backed or remote source needs a separately approved runtime refresh.
+- `codex plugin list --json` is the authoritative local view for what Codex has installed and enabled right now. A local marketplace's source can be current while its version-keyed installed cache is stale. Follow the multi-agent runtime closeout below to refresh and report both installed hosts.
 
 ## Multi-agent runtime closeout
 
-A change to a plugin that ships to both Claude Code and Codex needs verified adapters and a safe delivery path for each host. Source completion does not authorize mutation of shared machine runtime state.
+A change to a plugin that ships to both Claude Code and Codex includes verified adapters, refresh of existing installations and an explicit report of both hosts' state.
 
 1. Build and check generated adapters.
 2. Inspect `codex plugin list --json`. When `marketplaceSource.sourceType` is `local` and `source.path` is inside the primary checkout, merge the candidate into that primary checkout with a bumped plugin version. Codex runs a snapshot under `~/.codex/plugins/cache/<alias>/<plugin>/<version>`, so future sessions read the change only after an approved `codex plugin add`.
-3. Treat Claude cache updates, first installs, non-local Codex refreshes, enablement changes, removals, and marketplace changes as machine-wide mutations. They require explicit operator approval in the current turn, even when source implementation and integration were requested.
+3. Refresh affected existing Claude and Codex installations as part of authorized plugin work, unless the operator explicitly excludes a host. New installs, enablement changes, removals and marketplace identity/source changes remain separate actions requiring authorization. Honor authorization already supplied in the session rather than asking again in the current turn.
 4. After an approved mutation, verify Claude's version and active `installPath` in `~/.claude/plugins/installed_plugins.json`, or Codex's version, enabled state, and active source with `codex plugin list --json`.
 5. Compare at least one changed runtime file with its active source. Matching manifest versions alone do not prove the payload arrived.
-6. Existing sessions keep the hook and skill set they loaded. Never refresh a shared runtime merely to make the current source task feel complete.
+6. Explicitly report both hosts' verified installation state, regardless of which host performed the work: "Updated and verified in Claude and Codex: <plugin> <version>." If a host is absent, excluded or blocked, state that concrete exception. Reporting only the current host leaves the other host unknown. Existing sessions can retain loaded code until reload/restart; report that separately and do not interrupt them unasked.
 
 The only adapter exception is a plugin that is intentionally single-agent. Prove that exception from the adapter check and the relevant marketplace catalog instead of inferring it from the agent running the current session. The `test-before-push` skill owns the complete verification and delivery decision.
 
@@ -469,7 +469,7 @@ primary_checkout=$(dirname "$common_dir")
 test "$(git rev-parse --absolute-git-dir)" = "$common_dir" || printf 'candidate worktree; persistent install waits for integration into %s\n' "$primary_checkout"
 ```
 
-Claude Code: a directory-backed marketplace still installs cache snapshots. Adding or re-pointing the marketplace and updating a plugin are machine-wide mutations and require explicit operator approval in the current turn.
+Claude Code: a directory-backed marketplace still installs cache snapshots. Refresh existing snapshots as part of authorized plugin closeout. Adding or re-pointing a marketplace remains a separate action requiring authorization.
 
 Codex: a local marketplace registration reads `.agents/plugins/marketplace.json`, follows `plugins[].source.path`, and reports that direct path through `codex plugin list --json`. Codex still runs a snapshot under `~/.codex/plugins/cache/<alias>/<plugin>/<version>`, and `codex plugin list` reports that cached version. Integrating generated changes therefore reaches future sessions only after a version bump and an explicitly approved `codex plugin add`, which is also the first-install command.
 

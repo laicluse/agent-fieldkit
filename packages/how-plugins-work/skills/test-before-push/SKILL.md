@@ -2,12 +2,12 @@
 name: test-before-push
 user-invocable: true
 description: >-
-  Verify plugin candidates and integrate them without automatically mutating shared agent runtimes.
+  Verify plugin candidates, refresh existing installations, and report Claude and Codex freshness.
 ---
 
 # Test before push
 
-Run this procedure after every multi-agent marketplace plugin change before declaring the source change complete, whether or not a push is planned. A linked worktree may verify a candidate but may never become a persistent marketplace source. Plugin installs, updates, removals, enablement changes, and marketplace mutations affect every live coding session on the machine and are a separate operator-approved action.
+Run this procedure after every multi-agent marketplace plugin change before declaring the change complete, whether or not a push is planned. A linked worktree may verify a candidate but may never become a persistent marketplace source. Refresh existing installations as part of authorized plugin work; new installations and unrelated configuration changes remain separately authorized actions.
 
 ## When to use
 
@@ -55,7 +55,7 @@ if [ "$git_dir" != "$common_dir" ]; then
 fi
 ```
 
-Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, that merge only updates the source: Codex runs a snapshot under `~/.codex/plugins/cache/<alias>/<plugin>/<version>`, so future sessions see the change only after a version bump and a refresh through the gate below.
+Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, that merge only updates the source: Codex runs a version-keyed snapshot, so future sessions see the change only after a version bump and existing-install refresh below.
 
 ## Detect the Codex source mode
 
@@ -78,18 +78,24 @@ case "$codex_source" in
 esac
 ```
 
-When this check passes, merge the candidate into that primary checkout with a bumped plugin version and regenerated Codex adapters. `codex plugin list` reports the cached version, not the manifest in the checkout, so a lower version than the manifest means the install is stale. `codex plugin marketplace upgrade` does not apply to a local marketplace; the refresh is `codex plugin add` under the gate below, and it can invalidate hook paths held by running Codex sessions.
+When this check passes, integrate the candidate into that primary checkout with a bumped plugin version and regenerated Codex adapters. The listed cached version can still be stale; refresh the existing installation as described below. A local marketplace uses the canonical checkout rather than a remote upgrade. Running sessions may retain old hook paths until reload/restart.
 
-## Shared runtime mutation gate
+## Existing installation refresh
 
-Claude Code normally executes an installed cache snapshot. Codex may also use a cache or need a first install instead of the direct local source above. Updating either host is machine-wide state, not a routine source-closeout step. Run the relevant command only after explicit operator approval in the current turn, naming the exact plugin and host:
+Claude Code and Codex execute installed cache snapshots. Refreshing an already-installed plugin is part of authorized plugin work unless the operator explicitly excludes it; do not request the same authorization again. Inspect both hosts regardless of which host performed the edit. A first install remains a separate action requiring authorization.
 
 ```bash
 claude plugins update "$plugin@$alias"  # or install on first use
 codex plugin add "$plugin@$alias"       # first install, or a refresh of the version-keyed cache
 ```
 
-Do not infer approval from a request to fix, test, integrate, commit, or merge a plugin. Those actions do not authorize changing shared agent runtime state. Marketplace add, remove, or upgrade commands require the same explicit approval.
+Keep new installations, removals, enablement changes and marketplace identity/source changes within their own authorization boundaries. Use the existing registered source and respect repository publication policy; never publish or repoint a marketplace simply to bypass a release gate.
+
+## Report both hosts
+
+Before declaring plugin work complete, verify the existing installation on both Claude Code and Codex: version, installed/enabled state where exposed, active source/cache path, and at least one changed runtime file compared with its canonical host-specific source. Then explicitly tell the operator which version is current on each host, even when both updates succeeded. Reporting only the executing host leaves the other host's state unknown and creates avoidable drift concerns. A command's successful exit or matching source manifests alone does not prove the installed payload arrived.
+
+Use one concise report such as "Updated and verified in Claude and Codex: <plugin> <version>; existing sessions need reload/restart." If one host is absent, excluded or blocked, name that exact state instead of implying parity. Report any required session reload separately from installed-cache freshness; do not interrupt live sessions unasked.
 
 ## Fresh session check
 
@@ -114,4 +120,4 @@ remove cascade-uninstalls plugins under that alias.
 
 ## Contract
 
-Source verification and integration have no confirmation step. Machine-wide plugin or marketplace mutation always pauses for explicit operator approval in the current turn.
+Source verification, integration and refresh of existing installations are part of authorized plugin work. Completion includes an explicit report of both hosts' verified state. New installations and unrelated runtime configuration changes retain their authorization boundaries.

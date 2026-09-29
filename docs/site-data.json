@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.43",
+			"version": "2.0.44",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -662,7 +662,7 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.43",
+			"packageVersion": "2.0.44",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
 			"version": "v2.0.43",
 			"type": "Changed",
