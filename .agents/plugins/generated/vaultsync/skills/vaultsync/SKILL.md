@@ -99,3 +99,7 @@ Do NOT, after writing to a managed vault:
 - run `git add`/`git commit`/`git push` by hand.
 
 The debounce window is intentional (commonly ~300s): a commit that has not appeared "yet" is the daemon working as designed, not a failure. Manual git in a managed vault fights the daemon's own commit, verify, and conflict-resolution cycle. Write, release dibs, move on. Only reach for `vaultsync status` or `vaultsync now` if the operator reports the sync is actually broken.
+
+## Generated files
+
+Mark reproducible output with `linguist-generated` in Git attributes and configure `--pre-sync` with its generator. During a rebase, vaultsync retains the upstream projection temporarily and regenerates it from the combined source after integration. Generated output never enters the content-conflict resolver. Without a configured generator, a generated conflict blocks the cycle; vaultsync does not discard authored content or silently publish stale output. Keep ordinary Markdown conflict resolution separate from regeneration.

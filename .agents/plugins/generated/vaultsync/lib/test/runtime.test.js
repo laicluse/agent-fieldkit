@@ -865,6 +865,77 @@ it('generates after rebasing when both peers changed the generated file', () => 
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
 });
 
+function generatedConflictFixture(name, generate) {
+  const fixture = syncFixture(name);
+  writeFileSync(join(fixture.local, 'viewer.html'), '<main>baseline</main>\n');
+  git(fixture.local, ['add', 'viewer.html']);
+  git(fixture.local, ['commit', '-q', '-m', 'Seed generated viewer']);
+  git(fixture.local, ['push', '-q']);
+  const peer = join(tmp, `${name}-peer`);
+  git(tmp, ['clone', '-q', fixture.remote, peer]);
+  git(peer, ['config', 'core.hooksPath', '/dev/null']);
+  writeFileSync(join(peer, 'remote.md'), '# Remote\n');
+  writeFileSync(join(peer, 'viewer.html'), '<main># Remote</main>\n');
+  git(peer, ['add', 'remote.md', 'viewer.html']);
+  git(peer, [
+    'commit', '-q',
+    '-m', 'Refresh remote viewer',
+    '-m', 'Change remote source and its generated projection together so the local cycle must integrate both before regenerating.',
+    '-m', 'Slice: docs-only',
+  ]);
+  git(peer, ['push', '-q']);
+  const generator = join(tmp, `${name}-generator.mjs`);
+  if (generate) writeFileSync(generator, [
+    '#!/usr/bin/env node',
+    'import { existsSync, readFileSync, writeFileSync } from "node:fs";',
+    'const read = (path) => existsSync(path) ? readFileSync(path, "utf8").trim() : "";',
+    'writeFileSync("viewer.html", `<main>${[read("local.md"), read("remote.md")].filter(Boolean).join(" | ")}</main>\\n`);',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const llm = join(tmp, `${name}-llm.mjs`);
+  writeFileSync(llm, [
+    '#!/usr/bin/env node',
+    'let input = "";',
+    'process.stdin.on("data", (chunk) => input += chunk);',
+    'process.stdin.on("end", () => {',
+    '  const payload = JSON.parse(input);',
+    '  if (payload.task === "commit_message") process.stdout.write(JSON.stringify({ message: "Refresh generated viewer\\n\\nRecord the combined viewer after remote integration.\\n\\nSlice: docs-only" }));',
+    '  else if (payload.task === "resolve_conflict") process.exit(19);',
+    '  else process.exit(2);',
+    '});',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({
+    ...installed,
+    llmCommand: `${process.execPath} ${llm}`,
+    preSyncCommand: generate ? `${process.execPath} ${generator}` : null,
+  }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, '.git', 'info', 'attributes'), 'viewer.html linguist-generated\n');
+  writeFileSync(join(fixture.local, 'viewer.html'), '<main># Local</main>\n');
+  writeFileSync(join(fixture.local, 'local.md'), '# Local\n');
+  git(fixture.local, ['add', 'local.md']);
+  git(fixture.local, ['commit', '-q', '-m', 'Retain local Markdown']);
+
+  return { ...fixture, installed };
+}
+
+it('regenerates an explicitly generated conflict without sending it to the content resolver', () => {
+  const fixture = generatedConflictFixture('generated-conflict', true);
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Local | # Remote</main>\n');
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+});
+
+it('refuses a generated conflict without a configured generator', () => {
+  const fixture = generatedConflictFixture('generated-no-generator', false);
+  assert.throws(() => runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }), /requires a pre-sync generator/);
+  assert.equal(readFileSync(join(fixture.local, 'viewer.html'), 'utf8'), '<main># Local</main>\n');
+  assert.equal(readFileSync(join(fixture.local, 'local.md'), 'utf8'), '# Local\n');
+  assert.equal(git(fixture.local, ['branch', '--show-current']), fixture.installed.branchAtInstall);
+});
+
 it('reruns pre-sync after verifier repairs', () => {
   const fixture = syncFixture('pre-sync-post-verification');
   const generator = join(tmp, 'pre-sync-post-verification.mjs');

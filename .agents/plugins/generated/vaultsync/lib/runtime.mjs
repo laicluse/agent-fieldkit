@@ -825,7 +825,20 @@ function safeGitInfo(root, fn) {
 }
 
 function resolveConflictFile(registration, path) {
-  const fullPath = join(registration.rootRealpath, path);
+  const root = registration.rootRealpath;
+  const attribute = gitOut(root, ['check-attr', '-z', 'linguist-generated', '--', path]).split('\0')[2];
+  if (attribute === 'set' || attribute === 'true') {
+    if (!registration.preSyncCommand) throw new Error(`Generated conflict ${path} requires a pre-sync generator`);
+    const upstream = git(root, ['cat-file', '-e', `:2:${path}`], { allowFailure: true });
+    if (upstream.status === 0) {
+      git(root, ['checkout', '--ours', '--', path]);
+      git(root, ['add', '--', path]);
+    } else {
+      git(root, ['rm', '--', path]);
+    }
+    return;
+  }
+  const fullPath = join(root, path);
   const content = readFileSync(fullPath, 'utf8');
   const result = callLlm(registration, {
     protocol: 'vaultsync.llm.v1',
