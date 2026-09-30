@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.73",
+			"version": "2.0.74",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -643,6 +643,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
+			"plugin": "dont-do-that",
+			"packageVersion": "2.0.74",
+			"detailPath": "agent-fieldkit/dont-do-that/",
+			"version": "v2.0.73",
+			"type": "Fixed",
+			"summary": "pr-discipline also checks a body passed with --body-file or -F.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
+		},
+		{
 			"plugin": "dibs",
 			"packageVersion": "2.0.73",
 			"detailPath": "agent-fieldkit/dibs/",
@@ -650,15 +659,6 @@
 			"type": "Fixed",
 			"summary": "Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
-		},
-		{
-			"plugin": "dont-do-that",
-			"packageVersion": "2.0.73",
-			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.73",
-			"type": "Fixed",
-			"summary": "pr-discipline also checks a body passed with --body-file or -F.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",

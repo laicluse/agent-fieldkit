@@ -949,6 +949,30 @@ expect_deny "no-code-comments: Edit adds # comment after left-shift (not a hered
   "$(pretool_edit "/tmp/x.rb" "x = 1" $'arr << thing\n# real comment')" \
   "no-code-comments"
 
+expect_allow "no-code-comments: Edit adds nested quotes inside #{} interpolation in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'x = "list:\\n#{links.map { |link| "  - #{link}" }.join("\\n")}"\ny = "a #{b} #{c}"')"
+
+expect_allow "no-code-comments: Edit adds a double quote inside a %r{} regex in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'safe = title.gsub(%r{[\\\\/:*?"<>|#^]}, \' \')\nz = "sinds #{since}. #{total} in totaal."')"
+
+expect_allow "no-code-comments: Edit adds a double quote inside a /regex/ in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'ok = value.match?(/"quoted/)\nz = "sinds #{since}. #{total} in totaal."')"
+
+expect_allow "no-code-comments: Edit adds a # inside %w[] in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'tags = %w[a #b c]\ny = 2')"
+
+expect_deny "no-code-comments: Edit adds # comment after division in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'rate = total / count\n# real comment')" \
+  "no-code-comments"
+
+expect_deny "no-code-comments: Edit adds # comment after modulo in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'rest = total % count # real comment')" \
+  "no-code-comments"
+
+expect_deny "no-code-comments: Edit adds # comment after interpolated string in .rb" \
+  "$(pretool_edit "/tmp/x.rb" "x = 1" $'x = "#{a} and #{"b"}"\n# real comment')" \
+  "no-code-comments"
+
 expect_allow "no-code-comments: Edit adds @ts-ignore pragma in .ts" \
   "$(pretool_edit "/tmp/x.ts" "let x = any;" $'// @ts-ignore\nlet x = any;')"
 

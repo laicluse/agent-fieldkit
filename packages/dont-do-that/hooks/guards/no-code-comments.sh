@@ -107,14 +107,14 @@ dd_ncc_mode_for() {
     *.dart)                                   echo slash ;;
     *.m|*.mm)                                 echo slash ;;
     *.py|*.pyi)                               echo hash ;;
-    *.rb|*.rake|*.gemspec)                    echo hash ;;
+    *.rb|*.rake|*.gemspec)                    echo ruby ;;
     *.sh|*.bash|*.zsh)                        echo hash ;;
     *.pl|*.pm)                                echo hash ;;
     *.ex|*.exs)                               echo hash ;;
-    *.cr)                                     echo hash ;;
+    *.cr)                                     echo ruby ;;
     *)
       case "$base" in
-        Rakefile|Gemfile|Brewfile|Capfile|Guardfile|Vagrantfile) echo hash ;;
+        Rakefile|Gemfile|Brewfile|Capfile|Guardfile|Vagrantfile) echo ruby ;;
         *)                                                       echo "" ;;
       esac
       ;;
