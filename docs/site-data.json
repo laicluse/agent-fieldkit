@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.25",
+			"version": "2.0.26",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -538,9 +538,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.23",
+				"version": "v2.0.26",
 				"type": "Changed",
-				"summary": "Views are queries; deliberate actions are commands."
+				"summary": "Living documents do not report state they do not own."
 			}
 		},
 		{
@@ -688,6 +688,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
 		},
 		{
+			"plugin": "house-rules",
+			"packageVersion": "2.0.26",
+			"detailPath": "agent-fieldkit/house-rules/",
+			"version": "v2.0.26",
+			"type": "Changed",
+			"summary": "Living documents do not report state they do not own.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
+		},
+		{
 			"plugin": "vaultsync",
 			"packageVersion": "2.0.26",
 			"detailPath": "agent-fieldkit/vaultsync/",
@@ -695,15 +704,6 @@
 			"type": "Fixed",
 			"summary": "Conflicts in files explicitly marked linguist-generated are resolved through the configured pre-sync generator after rebasing, rather than sending generated output to the Markdown conflict resolver.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
-		},
-		{
-			"plugin": "house-rules",
-			"packageVersion": "2.0.25",
-			"detailPath": "agent-fieldkit/house-rules/",
-			"version": "v2.0.23",
-			"type": "Changed",
-			"summary": "Views are queries; deliberate actions are commands.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
 			"plugin": "intervision",

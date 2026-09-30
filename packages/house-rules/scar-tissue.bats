@@ -44,6 +44,16 @@ section() {
   [[ "$output" =~ named[[:space:]]+current[[:space:]]+reader ]] || return 1
 }
 
+@test "living docs do not report state they do not own" {
+  run section "Give living documents a present-tense identity"
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ not[[:space:]]+about[[:space:]]+the[[:space:]]+world[[:space:]]+around[[:space:]]+it ]] || return 1
+  [[ "$output" =~ become[[:space:]]+false[[:space:]]+while[[:space:]]+this[[:space:]]+file[[:space:]]+stays[[:space:]]+untouched ]] || return 1
+  [[ "$output" =~ handoff[[:space:]]+message ]] || return 1
+  [[ "$output" =~ artifact\'s[[:space:]]+own[[:space:]]+state[[:space:]]+stays ]] || return 1
+  [[ "$output" =~ not[[:space:]]+yet ]] || return 1
+}
+
 @test "shared artifacts do not retain their editing worklog" {
   run section "Remove the worklog from the artifact"
   [ "$status" -eq 0 ]

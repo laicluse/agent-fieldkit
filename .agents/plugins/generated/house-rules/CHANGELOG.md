@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.26]
+
+### Changed
+
+- **Living documents do not report state they do not own.** `scar-tissue` now treats a sentence as residue in advance when it can become false while the file stays untouched, such as which consumers have adopted a project. That status belongs in the handoff message, the pull request, or the backlog.
+
 ## [v2.0.23]
 
 ### Changed
