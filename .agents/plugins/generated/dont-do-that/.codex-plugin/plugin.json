@@ -1,7 +1,7 @@
 {
   "name": "dont-do-that",
-  "version": "2.0.71+codex.hooks.2",
-  "description": "Guardrail hooks plus /duh, /just-a-question, and /not-your-monkey correction skills for Claude Code and Codex.",
+  "version": "2.0.72+codex.hooks.2",
+  "description": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /next skills for Claude Code and Codex.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Dont Do That",
-    "shortDescription": "Guardrail hooks plus /duh, /just-a-question, and /not-your-monkey correction skills for Claude Code and Codex.",
-    "longDescription": "Guardrail hooks plus /duh, /just-a-question, and /not-your-monkey correction skills for Claude Code and Codex.",
+    "shortDescription": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /next skills for Claude Code and Codex.",
+    "longDescription": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /next skills for Claude Code and Codex.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

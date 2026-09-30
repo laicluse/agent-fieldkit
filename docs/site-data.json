@@ -93,7 +93,7 @@
 		"codexPackages": 21,
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
-		"skillEntries": 83,
+		"skillEntries": 84,
 		"hookFiles": 70
 	},
 	"install": {
@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.68",
+			"version": "2.0.73",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.71",
+			"version": "2.0.72",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -271,7 +271,7 @@
 			"detailPath": "agent-fieldkit/dont-do-that/",
 			"sourcePath": "packages/dont-do-that",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/dont-do-that",
-			"skillCount": 3,
+			"skillCount": 4,
 			"commandCount": 2,
 			"hookFileCount": 31,
 			"latestChange": {
@@ -643,22 +643,22 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
-			"plugin": "dont-do-that",
-			"packageVersion": "2.0.71",
-			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.71",
-			"type": "Fixed",
-			"summary": "/duh and /just-a-question now work anywhere in a message.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
-		},
-		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.68",
+			"packageVersion": "2.0.73",
 			"detailPath": "agent-fieldkit/dibs/",
 			"version": "v2.0.68",
 			"type": "Fixed",
 			"summary": "Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
+		},
+		{
+			"plugin": "dont-do-that",
+			"packageVersion": "2.0.72",
+			"detailPath": "agent-fieldkit/dont-do-that/",
+			"version": "v2.0.71",
+			"type": "Fixed",
+			"summary": "/duh and /just-a-question now work anywhere in a message.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",

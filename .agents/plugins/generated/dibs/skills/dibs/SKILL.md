@@ -52,7 +52,7 @@ node "$DIBS" include     <dir> [--json]   # the inverse: lock <dir> again
 node "$DIBS" excludes    [--json]         # list defaults + configured
 ```
 
-- **claim** takes exclusive occupancy of the nearest git worktree root when the directory lives inside git, otherwise the directory itself. It exits 0 when it claims a free target, re-claims one you already hold (`held-by-self`), reclaims one with the same stable owner (`reclaimed-by-owner`), or takes over a stale lock whose holder is dead (`took-over-stale`). It exits non-zero and names the holder (`refused: held by <agent> (pid <pid>) since <acquired-at>`) when a live holder exists. When the holder recorded a description, refusal and `check` output include it as `work: <text>`, so a blocked session can inspect whether an old stale lock's work has already been completed. For a Git worktree, they separately report how long ago the latest observable dirty-file change occurred. Surface both ages to the operator: `acquiredAt` says when occupancy began, while dirty-file activity distinguishes minutes of active work from hours or days of untouched state. A live-but-old holder is not just a data point to relay: when `acquiredAt` is hours old, the worktree is clean, and the specific change you are blocked on (a commit you want to push, for instance) has its own timestamp that predates both, weigh those together and say what they add up to (`this looks like finished, forgotten work, not a live conflict`) instead of only handing the operator an open yes/no. A refusal means the current checkout is not your working tree: create a separate git worktree on a new branch (prefer `bonsai:bonsai`, or plain `git worktree` when bonsai is unavailable), then claim and work in that path. Do not copy the repository to a loose non-git directory as a substitute; that is only a spike and must not be presented as integrated work.
+- **claim** takes exclusive occupancy of the nearest git worktree root when the directory lives inside git, otherwise the directory itself. It exits 0 when it claims a free target, re-claims one you already hold (`held-by-self`), reclaims one with the same stable owner (`reclaimed-by-owner`), or takes over a stale lock whose holder is dead (`took-over-stale`). It exits non-zero and names the holder (`refused: held by <agent> (pid <pid>) since <acquired-at>`) when a live holder exists. When the holder recorded a description, refusal and `check` output include it as `work: <text>`. On any live-holder refusal, before switching worktrees or closing the turn, report the holder, the exact claim description, lock time, and latest observable activity to the operator. If the description is generic or absent, say that the work's purpose is unknown; do not substitute an inferred task. Run `check` for dirty-file activity; if the worktree is clean, report that explicitly and check the latest commit time instead. Distinguish the age of the lock from the age of the work, and state whether the evidence indicates active work or an idle checkout. A refusal means the current checkout is not your working tree: create a separate git worktree on a new branch (prefer `bonsai:bonsai`, or plain `git worktree` when bonsai is unavailable), then claim and work in that path. Do not copy the repository to a loose non-git directory as a substitute; that is only a spike and must not be presented as integrated work.
 - **release** deletes the lock only if you are the holder; on the same host, PID, exact session, or stable owner plus agent can identify that holder. A retained Codex shell reads its session from `CODEX_THREAD_ID`. Releasing a lock held by someone else is refused and exits non-zero; releasing an unheld directory is a no-op.
 - **release-all** releases every lock whose holder identifies as this session in one sweep, across all directories. Every supplied selector narrows the match: `--pid`, `--session`, and `--owner`+`--agent` must all match the same holder when combined. It takes no `<dir>` and needs at least one selector. A session holds more than one lock when it edits files in several git roots, so this is how the host's session-end and the `undibs` skill free all of them at once; locks held by a *different* live agent are never touched.
 - **check** prints `free` or the holder plus its liveness, staleness, and Git worktree activity for the same resolved target that `claim` would use, or `excluded` when the directory is on the exclude list.
@@ -83,32 +83,7 @@ from `DIBS_OWNER`, then for Codex from `CMUX_TAB_ID`, `CMUX_WORKSPACE_ID`,
 `CODEX_THREAD_ID`, or the hook session id, so a Codex resume can reclaim its own
 old lock even when pid, host, or thread id changed.
 
-`--description` is the short human work description stored in the lock, and it
-is **required**: `claim` refuses to create a lock without one, so no lock is
-ever anonymous and a blocked agent can always tell the operator which session a
-lock belongs to. The claiming agent composes it itself, the way it would name a
-branch: a compact phrase of a few words, such as `dibs lock descriptions`. The
-CLI compacts whitespace, turns separators such as `-`, `_`, and `/` into
-spaces, and caps it at 80 characters. Re-claiming a lock you already hold
-(`held-by-self`) keeps the existing description and needs no new one. `bonsai`
-supplies the branch name as words for the worktree it hands out, and that beats
-any environment default.
-
-### Name the change, not the activity
-
-The description exists for one reader: whoever finds this lock still standing
-weeks later and has to decide whether the work finished or died halfway. Write
-the phrase that answers them. `revert the stop-release trigger` and `finish the
-plugin install` answer it. `session work`, `coding`, and `editing files` do
-not, because the activity is the same in every directory a coding agent ever
-locks, so naming it discriminates nothing.
-
-`DIBS_DESCRIPTION` is the channel for a non-interactive runner that knows its
-task before it starts, such as a scheduled mission: set it per run, to that
-run's task. Pinning one value for every session is worse than leaving it
-unset, because it satisfies the requirement while making every lock read alike
-and it suppresses the prompt that would otherwise ask the agent for something
-specific.
+Before each new claim, describe the intended work in that directory with a short, concrete phrase drawn from the current request, such as `fix Dibs lock reporting`. The description is a snapshot of intent at claim time; later changes in scope do not make that snapshot wrong. Do not use an agent identity, session label, or generic activity as the description. Pass it with `--description`; a non-interactive runner may set `DIBS_DESCRIPTION` for one run, never as a session-wide default. The CLI requires a nonempty description, normalizes whitespace and separators, and caps it at 80 characters. Re-claiming a lock already held by the same process retains its original description. `bonsai` supplies the branch name for a worktree claim.
 
 ## Who calls dibs
 
