@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.73]
+
+### Fixed
+
+- **`pr-discipline` also checks a body passed with `--body-file` or `-F`.** Blob image links, template headers and attribution footers in a body file used to pass unseen, because only the command text was checked.
+
 ## [v2.0.71]
 
 ### Fixed

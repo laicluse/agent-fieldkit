@@ -97,6 +97,30 @@ advance_base() {
   [ -z "$output" ]
 }
 
+@test "pr-discipline reads the body from --body-file" {
+  printf '%s\n' 'Beeld:' '' '![monitor](https://github.com/o/r/blob/feature/doc/monitor.png)' > "$REPO/body.md"
+  run_guard "gh pr edit 12 --body-file $REPO/body.md"
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"?raw=true"* ]]
+}
+
+@test "pr-discipline reads a relative --body-file from the working directory" {
+  printf '%s\n' '## Summary' 'Iets.' > "$REPO/body.md"
+  run_guard "gh pr create --title 'Patients keep their notes' --base main --body-file body.md"
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"## Summary"* ]]
+}
+
+@test "pr-discipline accepts a clean --body-file" {
+  printf '%s\n' '![a](https://github.com/o/r/raw/main/doc/a.png)' > "$REPO/body.md"
+  run_guard "gh pr edit 12 --body-file $REPO/body.md"
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
 @test "pr-discipline lets a deliberate image link through with the escape" {
   run_guard 'gh pr edit 12 --body "[monitor.png](https://github.com/o/r/blob/feature/doc/monitor.png)" # allow-image-link'
 

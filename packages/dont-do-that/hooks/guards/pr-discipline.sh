@@ -17,6 +17,21 @@ guard_pr_discipline() {
   done < <(dd_command_segments "$cmd")
   [ -n "$pr_call" ] || return 0
 
+  # The body text is checked wherever it comes from: inline --body or a file
+  # passed with --body-file / -F. The command string alone misses the latter.
+  local content="$cmd" body_file
+  body_file=$(dd_pr_flag_value "$pr_call" --body-file)
+  [ -n "$body_file" ] || body_file=$(dd_pr_flag_value "$pr_call" -F)
+  if [ -n "$body_file" ] && [ "$body_file" != "-" ]; then
+    body_file="${body_file/#\~/$HOME}"
+    if [[ "$body_file" != /* ]]; then
+      local base_dir
+      base_dir=$(dd_pr_target_dir "$input" "$pr_call")
+      [ -n "$base_dir" ] && body_file="$base_dir/$body_file"
+    fi
+    [ -r "$body_file" ] && content="$cmd"$'\n'"$(cat "$body_file")"
+  fi
+
   local title
   title=$(grep -oE -- "--title[[:space:]]+(\"[^\"]*\"|'[^']*'|[^[:space:]]+)" <<< "$pr_call" \
     | head -1 \
@@ -32,19 +47,19 @@ guard_pr_discipline() {
     shopt -u nocasematch
   fi
 
-  if grep -qE '##[[:space:]]+(Summary|Test plan)[[:space:]]*$' <<< "$cmd"; then
+  if grep -qE '##[[:space:]]+(Summary|Test plan)[[:space:]]*$' <<< "$content"; then
     dd_emit_deny pr-discipline "PR body contains '## Summary' or '## Test plan' header. The body should be one or two paragraphs about why the change matters, not a fixed-section template."
   fi
 
-  if grep -qE '(^|[[:space:]])(🤖[[:space:]]+)?Generated with[[:space:]]' <<< "$cmd"; then
+  if grep -qE '(^|[[:space:]])(🤖[[:space:]]+)?Generated with[[:space:]]' <<< "$content"; then
     dd_emit_deny pr-discipline "PR body contains a generated-with footer. That signals AI authorship to the reviewer in a way the operator does not want; remove it."
   fi
 
-  if grep -qE 'Co-Authored-By:[[:space:]]+[^<]*<[^>]*@anthropic\.com>' <<< "$cmd"; then
+  if grep -qE 'Co-Authored-By:[[:space:]]+[^<]*<[^>]*@anthropic\.com>' <<< "$content"; then
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
 
-  dd_pr_image_links "$cmd"
+  dd_pr_image_links "$content"
 
   # Currency check runs last: the content checks above are local and cheap,
   # this one costs a fetch. Only offering a PR counts, so `edit` is exempt.
@@ -57,16 +72,8 @@ guard_pr_discipline() {
 dd_pr_behind_base() {
   local input="$1" pr_call="$2"
 
-  local target=""
-  if [[ "$pr_call" =~ ^[[:space:]]*cd[[:space:]]+(\"[^\"]+\"|\'[^\']+\'|[^[:space:]\&]+)[[:space:]]*\&\& ]]; then
-    target="${BASH_REMATCH[1]}"
-    target="${target#\"}"; target="${target%\"}"
-    target="${target#\'}"; target="${target%\'}"
-    target="${target/#\~/$HOME}"
-  fi
-  if [ -z "$target" ]; then
-    target=$(jq -r '.cwd // .tool_input.cwd // empty' <<< "$input" 2>/dev/null)
-  fi
+  local target
+  target=$(dd_pr_target_dir "$input" "$pr_call")
   if [ -n "$target" ] && [ -d "$target" ]; then
     cd "$target" 2>/dev/null || true
   fi
@@ -98,6 +105,18 @@ dd_pr_behind_base() {
   [ "$behind" -gt 0 ] 2>/dev/null || return 0
 
   dd_emit_deny pr-discipline "This branch is ${behind} commit(s) behind ${base}. A pull request is offered against the tip of its base, so rebase onto ${base} and resolve any conflicts before opening it; leaving that to the reviewer hands them a diff that differs from what merging would produce. GitHub reporting MERGEABLE or CLEAN answers 'does it conflict', never 'is it current'. For a deliberate exception, append '# allow-behind-default' to the command."
+}
+
+dd_pr_target_dir() {
+  local input="$1" pr_call="$2" target=""
+  if [[ "$pr_call" =~ ^[[:space:]]*cd[[:space:]]+(\"[^\"]+\"|\'[^\']+\'|[^[:space:]\&]+)[[:space:]]*\&\& ]]; then
+    target="${BASH_REMATCH[1]}"
+    target="${target#\"}"; target="${target%\"}"
+    target="${target#\'}"; target="${target%\'}"
+    target="${target/#\~/$HOME}"
+  fi
+  [ -n "$target" ] || target=$(jq -r '.cwd // .tool_input.cwd // empty' <<< "$input" 2>/dev/null)
+  printf '%s' "$target"
 }
 
 dd_pr_flag_value() {
