@@ -376,6 +376,11 @@ function gitTargets(words, base, hasExplicitDirectoryContext) {
 	if (["init", "clone"].includes(subcommand)) mutates = true;
 	if (!mutates) return [];
 
+	// Deleting a branch, writing a tag, or pruning stale worktree records only changes the repository's shared refs and administration, which every worktree shares; no checkout's files, index, or HEAD move, so no checkout's occupancy applies.
+	const branchDeleteFlags = new Set(["-d", "-D", "--delete"]);
+	const onlyDeletesBranches = subcommand === "branch" && subcommandArguments.every((argument) => !branchMutationFlags.has(argument.text) || branchDeleteFlags.has(argument.text));
+	if (onlyDeletesBranches || subcommand === "tag" || (subcommand === "worktree" && subcommandArguments[0]?.text === "prune")) return [];
+
 	if (subcommand === "init") {
 		const operands = parseOperands(subcommandArguments, new Set(["--separate-git-dir", "--object-format", "--ref-format", "-b", "--initial-branch"]));
 		const target = targetPath(operands[0], gitCwd);
@@ -399,10 +404,13 @@ function gitTargets(words, base, hasExplicitDirectoryContext) {
 	if (subcommand !== "worktree") return contextTargets;
 	const action = subcommandArguments[0]?.text;
 	const operands = parseOperands(subcommandArguments.slice(1), new Set(["-b", "-B", "--detach", "--checkout", "--lock", "--reason"]));
-	if (action === "add" && operands[0]) contextTargets.push(targetPath(operands[0], gitCwd));
-	if (["remove", "repair"].includes(action)) contextTargets.push(...operands.map((operand) => targetPath(operand, gitCwd)));
-	if (action === "move") contextTargets.push(...operands.slice(0, 2).map((operand) => targetPath(operand, gitCwd)));
-	return contextTargets.filter(Boolean);
+	// A named worktree operand is the checkout this command writes; the checkout it runs from only gains shared administration.
+	let worktreeTargets = [];
+	if (action === "add" && operands[0]) worktreeTargets = [targetPath(operands[0], gitCwd)];
+	if (["remove", "repair"].includes(action)) worktreeTargets = operands.map((operand) => targetPath(operand, gitCwd));
+	if (action === "move") worktreeTargets = operands.slice(0, 2).map((operand) => targetPath(operand, gitCwd));
+	worktreeTargets = worktreeTargets.filter(Boolean);
+	return worktreeTargets.length > 0 ? worktreeTargets : contextTargets.filter(Boolean);
 }
 
 function fileCommandTargets(commandName, argumentsList, base) {
