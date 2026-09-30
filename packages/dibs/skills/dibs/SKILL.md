@@ -84,32 +84,7 @@ from `DIBS_OWNER`, then for Codex from `CMUX_TAB_ID`, `CMUX_WORKSPACE_ID`,
 `CODEX_THREAD_ID`, or the hook session id, so a Codex resume can reclaim its own
 old lock even when pid, host, or thread id changed.
 
-`--description` is the short human work description stored in the lock, and it
-is **required**: `claim` refuses to create a lock without one, so no lock is
-ever anonymous and a blocked agent can always tell the operator which session a
-lock belongs to. The claiming agent composes it itself, the way it would name a
-branch: a compact phrase of a few words, such as `dibs lock descriptions`. The
-CLI compacts whitespace, turns separators such as `-`, `_`, and `/` into
-spaces, and caps it at 80 characters. Re-claiming a lock you already hold
-(`held-by-self`) keeps the existing description and needs no new one. `bonsai`
-supplies the branch name as words for the worktree it hands out, and that beats
-any environment default.
-
-### Name the change, not the activity
-
-The description exists for one reader: whoever finds this lock still standing
-weeks later and has to decide whether the work finished or died halfway. Write
-the phrase that answers them. `revert the stop-release trigger` and `finish the
-plugin install` answer it. `session work`, `coding`, and `editing files` do
-not, because the activity is the same in every directory a coding agent ever
-locks, so naming it discriminates nothing.
-
-`DIBS_DESCRIPTION` is the channel for a non-interactive runner that knows its
-task before it starts, such as a scheduled mission: set it per run, to that
-run's task. Pinning one value for every session is worse than leaving it
-unset, because it satisfies the requirement while making every lock read alike
-and it suppresses the prompt that would otherwise ask the agent for something
-specific.
+Before each new claim, describe the intended work in that directory with a short, concrete phrase drawn from the current request, such as `fix Dibs lock reporting`. The description is a snapshot of intent at claim time; later changes in scope do not make that snapshot wrong. Do not use an agent identity, session label, or generic activity as the description. Pass it with `--description`; a non-interactive runner may set `DIBS_DESCRIPTION` for one run, never as a session-wide default. The CLI requires a nonempty description, normalizes whitespace and separators, and caps it at 80 characters. Re-claiming a lock already held by the same process retains its original description. `bonsai` supplies the branch name for a worktree claim.
 
 ## Who calls dibs
 
