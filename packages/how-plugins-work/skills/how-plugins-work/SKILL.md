@@ -174,7 +174,9 @@ T = H["user-invocable"] === void 0 ? !0 : G0H(H["user-invocable"])
 
 ### disable-model-invocation
 
-When `true`: the model cannot auto-activate the skill based on context. The skill is then only reachable via explicit slash command. Useful for skills that should never be auto-triggered (e.g. `/clipboard`, `/saysay`). Reduces the active context budget in `skill-budget`.
+When `true`: the model cannot auto-activate the skill based on context. The skill is then only reachable via explicit slash command. Reduces the active context budget in `skill-budget`.
+
+**The flag also blocks the operator's own mid-message invocations.** Claude Code only expands a slash command at the start of a message. In `Do you agree? /plugin:skill` the command reaches the model as text, the model calls the Skill tool, and the harness refuses it for this flag and forbids replicating the workflow. Operator correction skills that get appended to a sentence (`/duh`, `/just-a-question`) must therefore stay model-invocable, with a description that names the explicit trigger. Reserve the flag for skills whose side effects make an unrequested run harmful and that are typed as a message of their own (e.g. `/clipboard`, `/saysay`).
 
 **The flag replaces "Use ONLY when..." prose in the description.** A description like `Use ONLY when the operator types /foo. Do not auto-invoke. <what it does>` is two layers of the same intent: the prose tries to talk Claude out of auto-triggering, while the harness already enforces it via `disable-model-invocation: true`. Pick the flag, drop the prose, and let the description describe what the skill does. Every "Use ONLY when..." token costs every session that loads the skill list, forever; the flag costs nothing.
 

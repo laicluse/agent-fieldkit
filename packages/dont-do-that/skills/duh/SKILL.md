@@ -3,7 +3,6 @@ name: duh
 user-invocable: true
 description: >-
   Explicit /duh: execute the assistant's previous proposal instead of explaining it again.
-disable-model-invocation: true
 ---
 
 <post-update-broadcast>

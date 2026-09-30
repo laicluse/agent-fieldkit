@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.71]
+
+### Fixed
+
+- **`/duh` and `/just-a-question` now work anywhere in a message.** Claude Code only expands a slash command at the start of a message; a mention later in the message reaches the model as text. Both skills refused that route, so the correction silently did not apply. The model can now load them when the operator names them.
+
 ## [v2.0.70]
 
 ### Fixed

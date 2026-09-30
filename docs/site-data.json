@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.44",
+			"version": "2.0.45",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -165,9 +165,9 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.43",
+				"version": "v2.0.45",
 				"type": "Changed",
-				"summary": "Skill descriptions now lead with the result and selection situation."
+				"summary": "The authoring guidance now warns that disable-model-invocation blocks mid-message slash commands."
 			}
 		},
 		{
@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.70",
+			"version": "2.0.71",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 31,
 			"latestChange": {
-				"version": "v2.0.70",
+				"version": "v2.0.71",
 				"type": "Fixed",
-				"summary": "Opening a document no longer triggers the UI automation guard."
+				"summary": "/duh and /just-a-question now work anywhere in a message."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.70",
+			"packageVersion": "2.0.71",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.70",
+			"version": "v2.0.71",
 			"type": "Fixed",
-			"summary": "Opening a document no longer triggers the UI automation guard.",
+			"summary": "/duh and /just-a-question now work anywhere in a message.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{
@@ -662,11 +662,11 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.44",
+			"packageVersion": "2.0.45",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
-			"version": "v2.0.43",
+			"version": "v2.0.45",
 			"type": "Changed",
-			"summary": "Skill descriptions now lead with the result and selection situation.",
+			"summary": "The authoring guidance now warns that disable-model-invocation blocks mid-message slash commands.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/how-plugins-work/CHANGELOG.md"
 		},
 		{

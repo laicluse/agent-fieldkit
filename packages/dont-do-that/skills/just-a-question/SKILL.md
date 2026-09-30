@@ -3,7 +3,6 @@ name: just-a-question
 user-invocable: true
 description: >-
   Explicit question-only guard: treat the turn as read-only even if it sounds like a fix request.
-disable-model-invocation: true
 ---
 
 # just-a-question

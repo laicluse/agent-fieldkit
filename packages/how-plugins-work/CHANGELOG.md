@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.45]
+
+### Changed
+
+- **The authoring guidance now warns that `disable-model-invocation` blocks mid-message slash commands.** Claude Code only expands a slash command at the start of a message, so a flagged skill named later in a sentence is refused. Correction skills that operators append to a message should stay model-invocable.
+
 ## [v2.0.43]
 
 ### Changed

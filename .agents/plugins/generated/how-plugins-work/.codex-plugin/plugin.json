@@ -1,6 +1,6 @@
 {
   "name": "how-plugins-work",
-  "version": "2.0.44",
+  "version": "2.0.45",
   "description": "Reference for plugin naming, skill resolution, Claude/Codex adapter sync, marketplace aliases, runtime caches, and plugin:skill invocation.",
   "author": {
     "name": "local"
