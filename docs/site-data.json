@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.69",
+			"version": "2.0.70",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -653,7 +653,7 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.69",
+			"packageVersion": "2.0.70",
 			"detailPath": "agent-fieldkit/dibs/",
 			"version": "v2.0.68",
 			"type": "Fixed",

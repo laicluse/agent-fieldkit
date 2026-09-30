@@ -180,6 +180,16 @@ init_bash_target_repo() {
   echo "$output" | grep -q '"state": "free"'
 }
 
+@test "gate blocks a write when the description is a session-wide placeholder" {
+  export DIBS_DESCRIPTION="Claude Code session work (see current task for specifics)"
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  echo "$output" | grep -qi 'no dibs registered for you'
+  run dibs check "$DIR" --json
+  echo "$output" | grep -q '"state": "free"'
+}
+
 # This refusal is where most agents compose a description, so it has to carry
 # the bar and not only the syntax. Asking for the activity produced the same
 # label in every directory, which is the failure this wording exists to avoid.

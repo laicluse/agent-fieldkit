@@ -35,6 +35,13 @@ dibs() {
   [ ! -d "$LAICLUSE_HOME/locks" ] || [ "$(ls "$LAICLUSE_HOME/locks" 2>/dev/null | wc -l)" -eq 0 ]
 }
 
+@test "claim rejects a session-wide placeholder instead of storing it as work" {
+  run dibs_raw claim "$DIR" --pid $$ --agent claude --description "Claude Code session work (see current task for specifics)" --json
+  [ "$status" -ne 0 ]
+  echo "$output" | grep -q 'name the intended work'
+  [ ! -d "$LAICLUSE_HOME/locks" ] || [ "$(ls "$LAICLUSE_HOME/locks" 2>/dev/null | wc -l)" -eq 0 ]
+}
+
 @test "re-claiming a lock this process already holds needs no new description" {
   dibs claim "$DIR" --pid $$ --agent claude --description "first claim with a label" --json >/dev/null
   run dibs_raw claim "$DIR" --pid $$ --agent claude --json

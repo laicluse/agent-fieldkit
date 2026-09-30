@@ -391,7 +391,7 @@ occ_gate() {
       printf '[dibs/occupancy] %s; another live agent occupies this directory. Surface this to the operator now (which agent, its pid, its work, and how long ago the latest dirty-file change occurred, shown above) so they can distinguish a recently active worktree from an old dirty one; report it, do not silently route around it. %s If that holder is stale, inspect it with '\''dibs check %s'\'' and clear it with '\''dibs release %s'\''.\n' "$(printf '%s' "$out" | occ_holder_line)" "$(printf '%s' "$out" | occ_refusal_suggestion)" "$dir" "$dir" >&2
       exit 2
     fi
-    if printf '%s' "$out" | grep -q 'work description is required'; then
+    if printf '%s' "$out" | grep -Eq 'work description is required|name the intended work'; then
       occ_block_no_dibs "$dir" "$input"
       exit 2
     fi

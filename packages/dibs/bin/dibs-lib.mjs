@@ -393,8 +393,12 @@ export function claim({ dir, pid, agent, session, owner, description, maxAgeHour
   if (priorHold && priorHold.hostname === hostname() && priorHold.pid === pid) {
     return { ok: true, state: 'held-by-self', path, holder: priorHold };
   }
-  if (!normalizeDescription(description)) {
+  const workDescription = normalizeDescription(description);
+  if (!workDescription) {
     throw new Error('a work description is required: run `dibs claim <dir> --description "<the change you are making here>"`. Name the change, not the activity, because whoever finds this lock weeks from now reads it to decide whether the work finished: "revert the stop-release trigger" passes, "session work" tells them nothing. A non-interactive runner that knows its task up front may pass it in DIBS_DESCRIPTION for that run; a value pinned once for every session makes every lock read alike and is worse than none. dibs will not create an anonymous lock.');
+  }
+  if (workDescription.toLowerCase() === 'claude code session work (see current task for specifics)') {
+    throw new Error('name the intended work in --description; a session-wide placeholder gives other agents no basis for a conflict decision.');
   }
   ensureLocksDir();
   const record = buildRecord({ realpath, pid, agent, session, owner, description });
