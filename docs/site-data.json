@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.71",
+			"version": "2.0.73",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -643,6 +643,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
+			"plugin": "dibs",
+			"packageVersion": "2.0.73",
+			"detailPath": "agent-fieldkit/dibs/",
+			"version": "v2.0.68",
+			"type": "Fixed",
+			"summary": "Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
+		},
+		{
 			"plugin": "dont-do-that",
 			"packageVersion": "2.0.72",
 			"detailPath": "agent-fieldkit/dont-do-that/",
@@ -650,15 +659,6 @@
 			"type": "Fixed",
 			"summary": "/duh and /just-a-question now work anywhere in a message.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
-		},
-		{
-			"plugin": "dibs",
-			"packageVersion": "2.0.71",
-			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.68",
-			"type": "Fixed",
-			"summary": "Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",
