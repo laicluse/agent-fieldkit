@@ -116,6 +116,15 @@ feature names, command names, CLI names, class names, module names, method
 names, config keys, file names, branch names, worktree names, commit subjects,
 and PR titles when the project uses English PR titles.
 
+Markdown vault content is the exception. A note, folder or attachment in an
+Obsidian-style vault is read by people, so its name is a title in the vault's
+language: sentence-case capitals, spaces and diacritics, such as
+`Gap-analyse visuele taal.md` instead of `gap-analyse-2026-09-30.md`. When a
+date or sequence distinguishes siblings, it goes in front with ` · `, as Tilt
+names its ideas: `2026-09-30 · Gap-analyse visuele taal`, `01 · Agenda.png`.
+Conventional files such as `README.md`, instruction files and code inside a
+vault keep their code names.
+
 Dutch communication can and should code-switch. Keep established technical
 terms in English: framework names, library names, protocol names, gem/package
 names, product names, and domain jargon. Do not translate `soft-delete`,
