@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.68]
+
+### Fixed
+
+- **Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout.** These commands only change refs that every worktree shares, so another session's lock on the main checkout no longer blocks cleanup. `git worktree remove <path>` now gates the removed worktree instead of the checkout it runs from. Renaming a branch still gates the checkout.
+
 ## [v2.0.67]
 
 ### Fixed

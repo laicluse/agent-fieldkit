@@ -1094,6 +1094,61 @@ MSG"
 	[ -z "$hook_output" ]
 }
 
+@test "Bash git writes to shared refs pass an occupied checkout" {
+	local target_repo="$BATS_TEST_TMPDIR/target"
+	init_bash_target_repo "$target_repo"
+
+	tail -f /dev/null >/dev/null 2>&1 & local other_pid=$!
+	dibs claim "$target_repo" --pid "$other_pid" --agent claude --session other-sess --description "other work" >/dev/null
+	export DIBS_HOLDER_PID=$$
+	DIR="$target_repo"
+	local command statuses=""
+	for command in "git branch -D merged" "git branch --delete merged" "git tag -d v1" "git tag -a v2 -m release" "git worktree prune"; do
+		run_bash_hook "$command"
+		statuses="$statuses[$command:$status:$output]"
+	done
+	kill "$other_pid" 2>/dev/null || true
+
+	[ "$statuses" = "[git branch -D merged:0:][git branch --delete merged:0:][git tag -d v1:0:][git tag -a v2 -m release:0:][git worktree prune:0:]" ]
+}
+
+@test "Bash git branch rename still gates an occupied checkout" {
+	local target_repo="$BATS_TEST_TMPDIR/target"
+	init_bash_target_repo "$target_repo"
+
+	tail -f /dev/null >/dev/null 2>&1 & local other_pid=$!
+	dibs claim "$target_repo" --pid "$other_pid" --agent claude --session other-sess --description "other work" >/dev/null
+	export DIBS_HOLDER_PID=$$
+	DIR="$target_repo"
+	run_bash_hook "git branch -m renamed"
+	local hook_status=$status hook_output="$output"
+	kill "$other_pid" 2>/dev/null || true
+
+	[ "$hook_status" -ne 0 ]
+	echo "$hook_output" | grep -q "held by claude"
+}
+
+@test "Bash git worktree remove gates the linked worktree, not the occupied main checkout" {
+	local main_repo="$BATS_TEST_TMPDIR/main"
+	local linked="$BATS_TEST_TMPDIR/main/worktrees/done"
+	init_bash_target_repo "$main_repo"
+	git -C "$main_repo" worktree add -q -b done "$linked"
+
+	tail -f /dev/null >/dev/null 2>&1 & local other_pid=$!
+	dibs claim "$main_repo" --pid "$other_pid" --agent claude --session other-sess --description "other work" >/dev/null
+	export DIBS_HOLDER_PID=$$
+	DIR="$main_repo"
+	run_bash_hook "git worktree remove --force worktrees/done"
+	local hook_status=$status hook_output="$output"
+	run dibs check "$linked" --json
+	local linked_lock="$output"
+	kill "$other_pid" 2>/dev/null || true
+
+	[ "$hook_status" -eq 0 ]
+	[ -z "$hook_output" ]
+	echo "$linked_lock" | grep -q "\"pid\": $$"
+}
+
 @test "Codex recognizes an absolute cd as the claimed Git context without workdir" {
 	local conversation_repo="$BATS_TEST_TMPDIR/conversation-repo"
 	local target_repo="$BATS_TEST_TMPDIR/target-repo"
