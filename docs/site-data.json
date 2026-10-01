@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.27",
+			"version": "2.0.28",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.27",
+				"version": "v2.0.28",
 				"type": "Fixed",
-				"summary": "A resolver that cannot start now names its own cause."
+				"summary": "The daemon stops when asked."
 			}
 		},
 		{
@@ -688,6 +688,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
 		},
 		{
+			"plugin": "vaultsync",
+			"packageVersion": "2.0.28",
+			"detailPath": "agent-fieldkit/vaultsync/",
+			"version": "v2.0.28",
+			"type": "Fixed",
+			"summary": "The daemon stops when asked.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
+		},
+		{
 			"plugin": "house-rules",
 			"packageVersion": "2.0.27",
 			"detailPath": "agent-fieldkit/house-rules/",
@@ -695,15 +704,6 @@
 			"type": "Changed",
 			"summary": "Living documents do not report state they do not own.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
-		},
-		{
-			"plugin": "vaultsync",
-			"packageVersion": "2.0.27",
-			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.27",
-			"type": "Fixed",
-			"summary": "A resolver that cannot start now names its own cause.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
 			"plugin": "intervision",

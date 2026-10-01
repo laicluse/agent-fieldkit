@@ -2,6 +2,13 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.28]
+
+### Fixed
+
+- **The daemon stops when asked.** Between cycles it now sleeps without blocking the event loop, so SIGTERM and SIGINT release the lease and exit within a second. Before, the signal waited forever, LaunchAgent restarts timed out, and an old runtime kept running after an upgrade.
+- **An orphaned daemon stops itself.** When the launcher that started it disappears, the daemon releases its lease and exits, so launchd can start a fresh one instead of losing track of a running process.
+
 ## [v2.0.27]
 
 ### Fixed

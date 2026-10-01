@@ -14,6 +14,7 @@ export const DIBS_PAUSE_EXTENSION_MINUTES = 60;
 export const SERVICE_LABEL = 'com.laicluse.vaultsync';
 const REGISTRATION_VERSION = 1;
 const DAEMON_SLEEP_MS = 10000;
+const DAEMON_PARENT_CHECK_MS = 1000;
 const MAX_REBASE_RESOLUTION_STEPS = 20;
 const MAX_VERIFICATION_REPAIR_STEPS = 5;
 const MAX_VERIFICATION_REPAIR_FILES = 1;
@@ -1928,14 +1929,23 @@ async function commandDaemon(args, env = process.env) {
   };
   process.on('SIGTERM', stop);
   process.on('SIGINT', stop);
+  const launcherPid = process.ppid;
   try {
     await daemonTick(env);
     while (true) {
-      sleepMs(DAEMON_SLEEP_MS);
+      await sleepUntilNextTick(launcherPid, stop);
       await daemonTick(env);
     }
   } finally {
     lease.release();
+  }
+}
+
+async function sleepUntilNextTick(launcherPid, stop) {
+  const deadline = Date.now() + DAEMON_SLEEP_MS;
+  while (Date.now() < deadline) {
+    if (process.ppid !== launcherPid) stop();
+    await new Promise((resolve) => setTimeout(resolve, Math.min(DAEMON_PARENT_CHECK_MS, deadline - Date.now())));
   }
 }
 
