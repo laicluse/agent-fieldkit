@@ -162,6 +162,7 @@ function tokenize(source) {
 				continue;
 			}
 			if (character === "$" && next === "(") {
+				if (word) word.commandSubstitution = true;
 				separator();
 				returnModes.push("double");
 				mode = "normal";
@@ -191,6 +192,7 @@ function tokenize(source) {
 			continue;
 		}
 		if (character === "$" && next === "(") {
+			if (word) word.commandSubstitution = true;
 			separator();
 			returnModes.push("normal");
 			index += 2;
@@ -263,7 +265,12 @@ function expandWord(word, activeEnvironment) {
 		if (activeEnvironment.HOME) text = path.join(activeEnvironment.HOME, text.slice(2));
 		else unresolved = true;
 	}
-	return { text, unresolved };
+	return { text, unresolved, commandSubstitution: Boolean(word.commandSubstitution) };
+}
+
+function assignVariable(activeEnvironment, name, value, assignment) {
+	if (assignment.commandSubstitution || assignment.unresolved) delete activeEnvironment[name];
+	else activeEnvironment[name] = value;
 }
 
 function targetPath(expanded, base) {
@@ -536,14 +543,14 @@ function extractTargets(source) {
 		if (words[0]?.text === "export") {
 			for (const assignment of words.slice(1)) {
 				const match = assignment.text.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
-				if (match) activeEnvironment[match[1]] = match[2];
+				if (match) assignVariable(activeEnvironment, match[1], match[2], assignment);
 			}
 			continue;
 		}
 		if (words.length > 0 && words.every((word) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(word.text))) {
 			for (const assignment of words) {
 				const separator = assignment.text.indexOf("=");
-				activeEnvironment[assignment.text.slice(0, separator)] = assignment.text.slice(separator + 1);
+				assignVariable(activeEnvironment, assignment.text.slice(0, separator), assignment.text.slice(separator + 1), assignment);
 			}
 			continue;
 		}

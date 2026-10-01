@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync, readFileSync, readdirSync, realpathSync, rmSync, existsSync, lstatSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { homedir, hostname } from 'node:os';
 import { createHash, randomBytes } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -166,6 +166,28 @@ function isAlive(pid) {
   } catch (err) {
     return err.code === 'EPERM';
   }
+}
+
+const AGENT_PROCESS = /claude|codex/i;
+const MAX_ANCESTOR_HOPS = 30;
+
+function processField(pid, field) {
+  const result = spawnSync('ps', ['-o', `${field}=`, '-p', String(pid)], { encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() : '';
+}
+
+// allow-comment: load-bearing. Same contract as bin/holder-pid.sh for callers that run in node: the lock must outlive the shell that ran the command, so it binds to the nearest Claude or Codex ancestor, not the topmost one, and DIBS_HOLDER_PID wins when a caller knows better.
+export function holderPid(env = process.env, start = process.ppid) {
+  const explicit = Number(env.DIBS_HOLDER_PID);
+  if (Number.isInteger(explicit) && explicit > 0) return explicit;
+  let pid = start;
+  for (let hops = 0; pid > 1 && hops < MAX_ANCESTOR_HOPS; hops += 1) {
+    if (AGENT_PROCESS.test(basename(processField(pid, 'comm')))) return pid;
+    const parent = Number(processField(pid, 'ppid'));
+    if (!Number.isInteger(parent) || parent <= 0) break;
+    pid = parent;
+  }
+  return start;
 }
 
 // allow-comment: load-bearing contract. One place turns a host's hook payload plus its environment into the fields dibs needs, so a host that supplies less produces one named gap instead of a patch at whichever call site noticed first. Every field a caller cannot determine is listed in `missing`, and callers decide what a gap means: `workdir` absent is why a Codex Bash target cannot be resolved, `description` absent is why a claim would be anonymous. `conversationDir` is reported separately from `workdir` on purpose, because the directory a conversation runs in is not evidence about what a command writes to.

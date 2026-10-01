@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.39]
+
+### Fixed
+
+- **A new worktree is immediately writable by the agent that created it.** The lock records the calling agent's process and session instead of the short-lived shell, so the occupancy hook recognises it and no second claim or stale takeover is needed.
+
 ## [v2.0.38]
 
 ### Fixed

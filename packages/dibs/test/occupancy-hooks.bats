@@ -943,6 +943,13 @@ cp a.docx b.docx'
 	[ "$output" = "$HOME/other/sub/out.txt" ]
 }
 
+@test "Bash variable assigned from a command substitution stays unresolved" {
+	run bash -c "printf '%s' 'H=\$(mktemp -d /tmp/scratch-XXXX); mkdir -p \$H/home' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" != "/home" ]
+	[ "$output" = "$DIR" ]
+}
+
 @test "Bash git commit ignores message-file and heredoc path text" {
 	local cwd_repo="$BATS_TEST_TMPDIR/cwd"
 	local decoy_repo="$BATS_TEST_TMPDIR/decoy"
