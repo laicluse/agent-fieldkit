@@ -1,9 +1,9 @@
 import { after, before, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_PAUSE_MINUTES,
@@ -1434,4 +1434,79 @@ it('probes the registered resolver when doctor runs on a managed vault', () => {
   const doctor = JSON.parse(runNode([fixture.cli, 'doctor', fixture.local, '--json'], { env: fixture.env }).stdout);
 
   assert.equal(doctor.llmProbe, true);
+});
+
+function daemonEnv(name) {
+  const env = { ...process.env, LAICLUSE_HOME: join(tmp, `${name}-state`), HOME: join(tmp, `${name}-home`) };
+  mkdirSync(env.HOME);
+  return env;
+}
+
+function waitFor(predicate, timeoutMs, label) {
+  return new Promise((resolve, reject) => {
+    const deadline = Date.now() + timeoutMs;
+    const poll = () => {
+      if (predicate()) return resolve();
+      if (Date.now() > deadline) return reject(new Error(`timed out waiting for ${label}`));
+      setTimeout(poll, 50);
+    };
+    poll();
+  });
+}
+
+function isAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+it('stops the daemon on SIGTERM while it sleeps between cycles and releases its lease', async () => {
+  const env = daemonEnv('daemon-sigterm');
+  const lease = join(env.LAICLUSE_HOME, 'vaultsync', 'daemon.lock');
+  const cli = fileURLToPath(new URL('../../bin/vaultsync', import.meta.url));
+  const daemon = spawn(process.execPath, [cli, 'daemon'], { env, stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    let output = '';
+    daemon.stdout.on('data', (chunk) => { output += chunk; });
+    await waitFor(() => /daemon running/.test(output) && existsSync(lease), 10000, 'daemon start');
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const exited = new Promise((resolve) => daemon.on('exit', resolve));
+
+    daemon.kill('SIGTERM');
+
+    await Promise.race([exited, new Promise((_, reject) => setTimeout(() => reject(new Error('daemon ignored SIGTERM')), 3000))]);
+    assert.equal(existsSync(lease), false);
+  } finally {
+    if (isAlive(daemon.pid)) daemon.kill('SIGKILL');
+  }
+});
+
+it('stops the daemon when the launcher that started it is killed', async () => {
+  const env = daemonEnv('daemon-orphan');
+  const lease = join(env.LAICLUSE_HOME, 'vaultsync', 'daemon.lock');
+  const cli = fileURLToPath(new URL('../../bin/vaultsync', import.meta.url));
+  const launcher = spawn(process.execPath, ['-e', [
+    "const { spawn } = require('node:child_process');",
+    `const child = spawn(process.execPath, [${JSON.stringify(cli)}, 'daemon'], { stdio: 'ignore' });`,
+    "process.stdout.write(`${child.pid}\\n`);",
+    'setInterval(() => {}, 1000);',
+  ].join('\n')], { env, stdio: ['ignore', 'pipe', 'inherit'] });
+  let daemonPid = null;
+  try {
+    let output = '';
+    launcher.stdout.on('data', (chunk) => { output += chunk; });
+    await waitFor(() => /^\d+\n/.test(output) && existsSync(lease), 10000, 'daemon start');
+    daemonPid = Number.parseInt(output, 10);
+
+    launcher.kill('SIGKILL');
+
+    await waitFor(() => !isAlive(daemonPid), 4000, 'orphaned daemon to stop');
+    assert.equal(existsSync(lease), false);
+  } finally {
+    if (isAlive(launcher.pid)) launcher.kill('SIGKILL');
+    if (daemonPid && isAlive(daemonPid)) process.kill(daemonPid, 'SIGKILL');
+  }
 });
