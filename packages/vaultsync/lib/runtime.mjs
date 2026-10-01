@@ -1,10 +1,11 @@
-import { accessSync, closeSync, constants, existsSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync, readdirSync, renameSync, rmSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
+import { accessSync, closeSync, constants, copyFileSync, existsSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync, readdirSync, renameSync, rmSync, statSync, truncateSync, unlinkSync, writeFileSync } from 'node:fs';
 import { delimiter, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { homedir, platform, userInfo } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
+import { runClaudeProvider } from './claude-provider.mjs';
 import { machineLauncherPath } from './machine-runtime.mjs';
 
 export const DEFAULT_DEBOUNCE_SECONDS = 300;
@@ -15,6 +16,7 @@ export const SERVICE_LABEL = 'com.laicluse.vaultsync';
 const REGISTRATION_VERSION = 1;
 const DAEMON_SLEEP_MS = 10000;
 const DAEMON_PARENT_CHECK_MS = 1000;
+const DAEMON_LOG_ROTATE_BYTES = 5 * 1024 * 1024;
 const MAX_REBASE_RESOLUTION_STEPS = 20;
 const MAX_VERIFICATION_REPAIR_STEPS = 5;
 const MAX_VERIFICATION_REPAIR_FILES = 1;
@@ -183,10 +185,11 @@ export function loadRegistrations(env = process.env) {
     });
 }
 
-export function saveRegistration(registration, env = process.env) {
+export function saveRegistration(registration, env = process.env, { create = false } = {}) {
   return withRegistrationLock(registration.key, env, () => {
     const path = registrationPathForKey(registration.key, env);
     const current = existsSync(path) ? readJsonFile(path) : null;
+    if (!current && !create) return registration;
     const validatorsChanged = current
       && JSON.stringify(current.validators || {}) !== JSON.stringify(registration.validators || {});
     const merged = validatorsChanged
@@ -749,7 +752,7 @@ function providerFailure(result, phase) {
   return err;
 }
 
-function callLlm(registration, payload, { mandatory = false, timeoutMs = 120000, phase = 'llm' } = {}) {
+function callLlm(registration, payload, { mandatory = false, timeoutMs = 120000, phase = 'llm', env = process.env } = {}) {
   if (!registration.llmCommand) {
     if (mandatory) throw new Error('llmCommand is required for this vaultsync task');
     return null;
@@ -759,6 +762,7 @@ function callLlm(registration, payload, { mandatory = false, timeoutMs = 120000,
     result = shellCommand(registration.llmCommand, {
       cwd: registration.rootRealpath,
       input: `${JSON.stringify(payload)}\n`,
+      env,
       timeoutMs,
     });
   } catch (err) {
@@ -774,7 +778,7 @@ function callLlm(registration, payload, { mandatory = false, timeoutMs = 120000,
   }
 }
 
-export function probeLlmCommand(llmCommand, rootRealpath = process.cwd()) {
+export function probeLlmCommand(llmCommand, rootRealpath = process.cwd(), env = process.env) {
   const registration = { llmCommand, rootRealpath };
   const result = callLlm(registration, {
     protocol: 'vaultsync.llm.v1',
@@ -793,7 +797,7 @@ export function probeLlmCommand(llmCommand, rootRealpath = process.cwd()) {
       '>>>>>>> upstream',
       '',
     ].join('\n'),
-  }, { mandatory: true, phase: 'llm-probe' });
+  }, { mandatory: true, phase: 'llm-probe', env });
   if (!result || typeof result.resolved !== 'string' || result.resolved.includes('<<<<<<<')) {
     throw new Error('LLM command probe failed: resolve_conflict must return JSON with a resolved string and no conflict markers');
   }
@@ -1580,7 +1584,7 @@ async function commandInstall(args, env = process.env) {
   if (existing?.validators) registration.validators = existing.validators;
   const registrationDibsBin = registrationDibsBinForInstall(dibsBin);
   if (registrationDibsBin) registration.dibsBin = registrationDibsBin;
-  const savedRegistration = saveRegistration(registration, env);
+  const savedRegistration = saveRegistration(registration, env, { create: true });
   const launchd = parsed.values['no-launchd'] ? { skipped: true } : installLaunchAgent(env);
   emit({
     installed: true,
@@ -1591,6 +1595,24 @@ async function commandInstall(args, env = process.env) {
     registration: registrationPathForKey(savedRegistration.key, env),
     launchd,
   }, parsed.values.json);
+}
+
+function commandUninstall(args, env = process.env) {
+  const parsed = parseArgs({
+    args,
+    allowPositionals: true,
+    options: { json: { type: 'boolean', default: false } },
+  });
+  const requested = resolve(parsed.positionals[0] || env.PWD || process.cwd());
+  const root = existsSync(requested) ? resolveGitRoot(requested, env) : requested;
+  const registration = loadRegistrations(env)
+    .filter((reg) => !reg.unreadable)
+    .find((reg) => reg.rootRealpath === root || reg.requestedCwd === root);
+  if (!registration) throw new Error(`vaultsync is not installed for ${root}`);
+  withRegistrationLock(registration.key, env, () => {
+    rmSync(registrationPathForKey(registration.key, env), { force: true });
+  });
+  emit({ uninstalled: true, root: registration.rootRealpath }, parsed.values.json);
 }
 
 function commandManaged(args, env = process.env) {
@@ -1768,6 +1790,25 @@ function pendingChanges(root) {
 
 function structuredStatus(reg) {
   const root = reg.rootRealpath;
+  if (!existsSync(root)) {
+    return {
+      key: reg.key,
+      root,
+      managed: true,
+      enabled: reg.enabled !== false,
+      state: 'missing',
+      failureSeverity: 'error',
+      failure: {
+        phase: 'checkout',
+        message: `The checkout ${root} no longer exists`,
+        detail: null,
+        recovery: `Run vaultsync uninstall ${root} to stop managing it, or restore the checkout.`,
+        secondary: [],
+      },
+      validators: [],
+      pending: null,
+    };
+  }
   try {
     const relation = aheadBehind(root);
     const pending = pendingChanges(root);
@@ -1902,6 +1943,15 @@ async function commandNow(args, env = process.env) {
   emit(result, target.json);
 }
 
+export function rotateDaemonLogs(env = process.env) {
+  for (const name of ['daemon.out.log', 'daemon.err.log']) {
+    const path = join(logsDir(env), name);
+    if (!existsSync(path) || statSync(path).size <= DAEMON_LOG_ROTATE_BYTES) continue;
+    copyFileSync(path, `${path}.1`);
+    truncateSync(path, 0);
+  }
+}
+
 async function commandDaemon(args, env = process.env) {
   const parsed = parseArgs({
     args,
@@ -1922,6 +1972,7 @@ async function commandDaemon(args, env = process.env) {
     emit({ state: 'already-running', label: SERVICE_LABEL }, parsed.values.json);
     return;
   }
+  rotateDaemonLogs(env);
   process.stdout.write(`vaultsync daemon running (${SERVICE_LABEL})\n`);
   const stop = () => {
     lease.release();
@@ -1954,6 +2005,10 @@ export async function daemonTick(env = process.env) {
   const results = [];
   for (const reg of registrations) {
     let cycleAttempted = false;
+    if (!existsSync(reg.rootRealpath)) {
+      results.push({ root: reg.rootRealpath, state: 'missing' });
+      continue;
+    }
     try {
       const dirty = isDirty(reg.rootRealpath);
       const now = Date.now();
@@ -1978,11 +2033,16 @@ export async function daemonTick(env = process.env) {
       }
       results.push({ root: reg.rootRealpath, state: dirty ? 'debouncing' : 'waiting' });
     } catch (err) {
-      let saved = null;
-      if (cycleAttempted) {
-	const latest = readJsonFile(registrationPathForKey(reg.key, env));
-	if (latest.lastError?.phase) saved = latest;
+      let latest;
+      try {
+        latest = readJsonFile(registrationPathForKey(reg.key, env));
+      } catch (readError) {
+        if (readError.code !== 'ENOENT') throw readError;
+        results.push({ root: reg.rootRealpath, state: 'removed' });
+        continue;
       }
+      let saved = null;
+      if (cycleAttempted && latest.lastError?.phase) saved = latest;
       if (!saved) {
 	if (!err.phase) err.phase = 'daemon';
 	saved = saveRegistration({ ...reg, lastError: errorRecord(err) }, env);
@@ -2119,6 +2179,8 @@ export async function runCommand(command, args, env = process.env) {
     case 'daemon': return commandDaemon(args, env);
     case 'doctor': return commandDoctor(args, env);
     case 'validator': return commandValidator(args, env);
+    case 'uninstall': return commandUninstall(args, env);
+    case 'llm-claude': return runClaudeProvider(env);
     default: throw new Error(`unknown command: ${command}`);
   }
 }

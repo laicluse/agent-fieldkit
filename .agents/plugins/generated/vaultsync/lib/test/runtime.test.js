@@ -1,6 +1,6 @@
 import { after, before, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
@@ -18,6 +18,8 @@ import {
   probeLlmCommand,
   registrationPathForRoot,
   repoKey,
+  rotateDaemonLogs,
+  saveRegistration,
   resolveGitRoot,
   vaultsyncDaemonPids,
 } from '../runtime.mjs';
@@ -1509,4 +1511,108 @@ it('stops the daemon when the launcher that started it is killed', async () => {
     if (isAlive(launcher.pid)) launcher.kill('SIGKILL');
     if (daemonPid && isAlive(daemonPid)) process.kill(daemonPid, 'SIGKILL');
   }
+});
+
+it('uninstalls a registered vault so status no longer lists it', () => {
+  const fixture = syncFixture('uninstall-registered');
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+
+  const result = JSON.parse(runNode([fixture.cli, 'uninstall', fixture.local, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(result.uninstalled, true);
+  assert.equal(existsSync(registrationPath), false);
+  const status = JSON.parse(runNode([fixture.cli, 'status', '--json'], { env: fixture.env }).stdout);
+  assert.equal(status.vaults.some((vault) => vault.root === realpathSync(fixture.local)), false);
+});
+
+it('uninstalls a vault whose checkout is already gone from disk', () => {
+  const fixture = syncFixture('uninstall-vanished');
+  const root = realpathSync(fixture.local);
+  const registrationPath = registrationPathForRoot(root, fixture.env);
+  rmSync(fixture.local, { recursive: true, force: true });
+
+  const result = JSON.parse(runNode([fixture.cli, 'uninstall', root, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(result.uninstalled, true);
+  assert.equal(result.root, root);
+  assert.equal(existsSync(registrationPath), false);
+});
+
+it('does not resurrect a registration that was removed while a cycle held its snapshot', () => {
+  const fixture = syncFixture('no-resurrection');
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const snapshot = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  rmSync(registrationPath);
+
+  saveRegistration({ ...snapshot, lastPollAt: new Date().toISOString() }, fixture.env);
+
+  assert.equal(existsSync(registrationPath), false);
+});
+
+it('reports a vanished checkout as missing with an uninstall hint instead of a git failure', () => {
+  const fixture = syncFixture('vanished-status');
+  const root = realpathSync(fixture.local);
+  rmSync(fixture.local, { recursive: true, force: true });
+
+  const tick = JSON.parse(runNode([fixture.cli, 'daemon', '--once', '--json'], { env: fixture.env }).stdout);
+  const status = JSON.parse(runNode([fixture.cli, 'status', '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(tick.find((entry) => entry.root === root).state, 'missing');
+  const vault = status.vaults.find((entry) => entry.root === root);
+  assert.equal(vault.state, 'missing');
+  assert.match(vault.failure.recovery, /vaultsync uninstall/);
+  const text = runNode([fixture.cli, 'status'], { env: fixture.env }).stdout;
+  assert.match(text, /auto-sync: missing/);
+});
+
+it('answers the resolver contract through the bundled claude provider', () => {
+  const fakeClaude = join(tmp, 'fake-claude.mjs');
+  writeFileSync(fakeClaude, [
+    '#!/usr/bin/env node',
+    'const args = process.argv.slice(2);',
+    'if (!args.includes("--json-schema") || args[args.indexOf("--output-format") + 1] !== "json") process.exit(3);',
+    'process.stdout.write(JSON.stringify({ type: "result", result: "ignored prose", structured_output: { resolved: "Remote truth line.\\n" } }));',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const cli = fileURLToPath(new URL('../../bin/vaultsync', import.meta.url));
+  const home = join(tmp, 'claude-provider-home');
+  mkdirSync(home);
+  const env = { ...process.env, CLAUDE_BIN: fakeClaude, HOME: home, LAICLUSE_HOME: join(home, '.laicluse') };
+
+  assert.equal(probeLlmCommand(`${process.execPath} ${cli} llm-claude`, tmp, env), true);
+});
+
+it('rotates an oversized daemon log while keeping the previous generation', () => {
+  const env = { LAICLUSE_HOME: join(tmp, 'log-rotation-state') };
+  const logs = join(env.LAICLUSE_HOME, 'vaultsync', 'logs');
+  mkdirSync(logs, { recursive: true });
+  writeFileSync(join(logs, 'daemon.err.log'), 'x'.repeat(6 * 1024 * 1024));
+  writeFileSync(join(logs, 'daemon.out.log'), 'small\n');
+
+  rotateDaemonLogs(env);
+
+  assert.equal(statSync(join(logs, 'daemon.err.log')).size, 0);
+  assert.equal(statSync(join(logs, 'daemon.err.log.1')).size, 6 * 1024 * 1024);
+  assert.equal(readFileSync(join(logs, 'daemon.out.log'), 'utf8'), 'small\n');
+  assert.equal(existsSync(join(logs, 'daemon.out.log.1')), false);
+});
+
+it('keeps the daemon running when a failing cycle finds its registration removed', () => {
+  const fixture = syncFixture('removed-during-failing-cycle');
+  const other = syncFixture('removed-during-failing-cycle-other');
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const remover = join(tmp, 'removed-during-failing-cycle-pre-sync.sh');
+  writeFileSync(remover, `#!/bin/sh\nrm -f '${registrationPath}'\nexit 1\n`, { mode: 0o755 });
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...installed, preSyncCommand: remover, debounceSeconds: 1, lastSeenDirtyAt: '2026-01-01T00:00:00Z' }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nChanged before removal.\n');
+  const env = { ...fixture.env, LAICLUSE_HOME: fixture.env.LAICLUSE_HOME };
+  const otherRegistration = registrationPathForRoot(realpathSync(other.local), other.env);
+  writeFileSync(registrationPathForRoot(realpathSync(other.local), env), readFileSync(otherRegistration));
+
+  const tick = JSON.parse(runNode([fixture.cli, 'daemon', '--once', '--json'], { env }).stdout);
+
+  assert.equal(existsSync(registrationPath), false);
+  assert.equal(tick.find((entry) => entry.root === realpathSync(fixture.local)).state, 'removed');
+  assert.ok(tick.some((entry) => (entry.root || entry.registration?.rootRealpath) === realpathSync(other.local)), JSON.stringify(tick));
 });

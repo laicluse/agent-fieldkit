@@ -85,6 +85,8 @@ Vaultsync includes the validator name in the request and only accepts repairs fo
 - `vaultsync now [path]` runs one immediate cycle without bypassing safety gates.
 - `vaultsync daemon` runs the long-lived loop. The install command writes a user-level LaunchAgent on macOS.
 - `vaultsync doctor [path] --llm-command '<command>'` runs preflight checks without registering the checkout. On a managed vault without `--llm-command`, it probes the registered LLM command.
+- `vaultsync uninstall [path]` stops managing a checkout, also when it is already gone from disk. Status reports such a checkout as `missing`.
+- `vaultsync llm-claude` is the bundled LLM command; register it as `"$HOME/.local/bin/vaultsync" llm-claude` so runtime upgrades keep the path stable.
 
 The LaunchAgent and any per-vault callback command must invoke the stable `vaultsync` launcher. Independent Claude and Codex plugin updates converge on the newest installed runtime; older sessions cannot downgrade it. The daemon holds a machine-level singleton lease, and LaunchAgent reconciliation terminates stale Vaultsync daemon processes from older releases before starting the current runtime. Vaultsync keeps its immutable releases and never cleans coding-agent plugin caches.
 

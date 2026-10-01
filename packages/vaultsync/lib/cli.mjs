@@ -9,6 +9,8 @@ export const COMMANDS = [
   'doctor',
   'validator',
   'runtime',
+  'uninstall',
+  'llm-claude',
 ];
 
 const SUMMARIES = {
@@ -22,6 +24,8 @@ const SUMMARIES = {
   doctor: 'run preflight checks for one checkout without registering it',
   validator: 'add, list, or remove named checkout validators',
   runtime: 'install the stable machine-owned runtime',
+  uninstall: 'stop managing one checkout, also when it is gone from disk',
+  'llm-claude': 'answer the vaultsync LLM command contract with the Claude CLI',
 };
 
 export function parseInvocation(argv) {
