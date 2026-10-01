@@ -2,6 +2,14 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.27]
+
+### Fixed
+
+- **A resolver that cannot start now names its own cause.** When the configured LLM command exits before reading its input, status reports the command's exit code and stderr (for example `bad interpreter`) with a recovery hint, instead of a bare `spawnSync /bin/sh EPIPE`. A resolver that exits successfully without reading its whole input is treated as a failure. Commit-message, conflict, probe and verifier-repair failures each carry their own phase.
+- **Status separates warnings from blocks.** A cycle that committed with the fallback message shows `warning during <phase>` and the additive `failureSeverity` field; `blocked during` is reserved for cycles that stopped.
+- **`doctor` probes the registered resolver.** On a managed vault, `vaultsync doctor <vault>` now tests the registered LLM command when no `--llm-command` or `VAULTSYNC_LLM_COMMAND` is given.
+
 ## [v2.0.26]
 
 ### Fixed
