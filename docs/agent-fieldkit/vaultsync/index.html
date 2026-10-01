@@ -52,7 +52,7 @@
 					<p class="lede">Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.28</span>
+						<span>2.0.29</span>
 						<span>1 skill</span>
 					</div>
 				</div>
@@ -94,10 +94,15 @@ vaultsync validator add &lt;name&gt; [path] --command '&lt;command&gt;' --repair
 vaultsync validator add &lt;name&gt; [path] --command '&lt;command&gt;' --repair automatic --repair-authority diagnostics
 vaultsync validator list [path] [--json]
 vaultsync validator remove &lt;name&gt; [path] [--json]
+vaultsync uninstall [path] [--json]
+vaultsync llm-claude
 vaultsync daemon
 vaultsync runtime install</code></pre>
 <p><code>install</code> resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.</p>
 <p><code>--pre-sync</code> registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock after integrating remote changes and before verification and publication, then reruns it after verifier repairs. A non-zero exit blocks push as a <code>pre-sync</code> failure while preserving any local source checkpoint for recovery. On unchanged daemon polls the command does not run; <code>vaultsync now</code> always runs it.</p>
+<p><code>uninstall</code> stops managing a checkout by removing its registration; the checkout itself is untouched. It also works when the checkout is already gone from disk, which <code>status</code> reports as <code>missing</code> with this command as the recovery step. A running daemon never recreates a removed registration.</p>
+<p><code>llm-claude</code> is the bundled LLM command: it reads one <code>vaultsync.llm.v1</code> request on stdin, answers it through the <code>claude</code> CLI on <code>PATH</code> (or <code>CLAUDE_BIN</code>), and writes the JSON answer to stdout. Register it through the stable launcher so upgrades never change the path: <code>vaultsync install &lt;path&gt; --llm-command '&quot;$HOME/.local/bin/vaultsync&quot; llm-claude'</code>. <code>VAULTSYNC_CLAUDE_MODEL</code> and <code>VAULTSYNC_CLAUDE_TIMEOUT_MS</code> tune the model and timeout.</p>
+<p>The daemon rotates <code>daemon.out.log</code> and <code>daemon.err.log</code> above 5 MB when it starts, keeping one previous generation as <code>.1</code>.</p>
 <p><code>managed</code> reports whether the requested path resolves to a vaultsync-managed checkout. It is the public integration point for tools that need to avoid operating inside vaultsync roots; they must call the CLI instead of depending on vaultsync's registration storage layout.</p>
 <p><code>validator add</code> creates or replaces only the named entry and leaves every other validator untouched, including when independent installers update different names concurrently. Repeating the same command is a no-op. <code>validator remove</code> is also idempotent. Repair policy is mandatory: <code>none</code> grants no write authority, while <code>automatic</code> first applies known mechanical fixes and may then ask the configured LLM command for replacements. Automatic repair requires either <code>diagnostics</code>, which authorizes only regular files named by that validator's own absolute or checkout-relative diagnostics, or <code>diagnostics-and-changed</code>, which additionally authorizes files in the current sync change set. Symlinks and paths escaping the checkout never become repair candidates. Validator commands run from the physical Git checkout root.</p>
 <p>Registrations created by older Vaultsync releases remain valid. A non-empty <code>verifyCommand</code>, including one created by <code>vaultsync install --verify</code>, is projected at read time as the reserved <code>legacy-verify</code> validator with the historical automatic repair behavior. Vaultsync does not rewrite the registration merely to normalize it, and named validators can coexist with that legacy field.</p>

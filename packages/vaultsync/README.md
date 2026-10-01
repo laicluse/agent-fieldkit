@@ -51,6 +51,8 @@ vaultsync validator add <name> [path] --command '<command>' --repair none
 vaultsync validator add <name> [path] --command '<command>' --repair automatic --repair-authority diagnostics
 vaultsync validator list [path] [--json]
 vaultsync validator remove <name> [path] [--json]
+vaultsync uninstall [path] [--json]
+vaultsync llm-claude
 vaultsync daemon
 vaultsync runtime install
 ```
@@ -58,6 +60,12 @@ vaultsync runtime install
 `install` resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.
 
 `--pre-sync` registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock after integrating remote changes and before verification and publication, then reruns it after verifier repairs. A non-zero exit blocks push as a `pre-sync` failure while preserving any local source checkpoint for recovery. On unchanged daemon polls the command does not run; `vaultsync now` always runs it.
+
+`uninstall` stops managing a checkout by removing its registration; the checkout itself is untouched. It also works when the checkout is already gone from disk, which `status` reports as `missing` with this command as the recovery step. A running daemon never recreates a removed registration.
+
+`llm-claude` is the bundled LLM command: it reads one `vaultsync.llm.v1` request on stdin, answers it through the `claude` CLI on `PATH` (or `CLAUDE_BIN`), and writes the JSON answer to stdout. Register it through the stable launcher so upgrades never change the path: `vaultsync install <path> --llm-command '"$HOME/.local/bin/vaultsync" llm-claude'`. `VAULTSYNC_CLAUDE_MODEL` and `VAULTSYNC_CLAUDE_TIMEOUT_MS` tune the model and timeout.
+
+The daemon rotates `daemon.out.log` and `daemon.err.log` above 5 MB when it starts, keeping one previous generation as `.1`.
 
 `managed` reports whether the requested path resolves to a vaultsync-managed
 checkout. It is the public integration point for tools that need to avoid

@@ -2,6 +2,19 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.29]
+
+### Added
+
+- **`vaultsync uninstall [path]`** stops managing a checkout, also when the checkout is already gone from disk.
+- **`vaultsync llm-claude`** is a bundled LLM command that answers the vaultsync contract through the `claude` CLI. Registered through the stable launcher, its path survives runtime upgrades and no longer depends on a hand-placed script with a hardcoded interpreter.
+
+### Fixed
+
+- **A running daemon no longer recreates a removed registration.** Only `install` creates registrations; a cycle that finishes after the file was deleted leaves it deleted.
+- **A vanished checkout shows as `missing`** with an uninstall hint, instead of a blocked cycle failing on `spawnSync git ENOENT`.
+- **Daemon logs rotate** above 5 MB when the daemon starts, keeping one previous generation.
+
 ## [v2.0.28]
 
 ### Fixed

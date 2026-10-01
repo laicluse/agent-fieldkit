@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { COMMANDS, helpText, parseInvocation } from '../cli.mjs';
 
 it('exposes the vaultsync command surface', () => {
-  assert.deepEqual(COMMANDS, ['install', 'managed', 'status', 'pause', 'resume', 'now', 'daemon', 'doctor', 'validator', 'runtime']);
+  assert.deepEqual(COMMANDS, ['install', 'managed', 'status', 'pause', 'resume', 'now', 'daemon', 'doctor', 'validator', 'runtime', 'uninstall', 'llm-claude']);
 });
 
 it('routes known subcommands and forwards arguments', () => {
