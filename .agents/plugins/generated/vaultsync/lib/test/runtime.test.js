@@ -1344,3 +1344,94 @@ it('asks the LLM command to repair verifier failures before pushing', () => {
   assert.match(repairCommit, /^Sync vault content/);
   assert.match(repairCommit, /Vaultsync-Reason: manual-verifier-repair/);
 });
+
+function resolverThatExitsBeforeReading(name, { status, stdout = '', stderr = '' }) {
+  const resolver = join(tmp, `${name}-resolver.sh`);
+  writeFileSync(resolver, [
+    '#!/bin/sh',
+    stdout ? `printf '%s' '${stdout}'` : ':',
+    stderr ? `printf '%s\\n' '${stderr}' >&2` : ':',
+    `exit ${status}`,
+    '',
+  ].join('\n'), { mode: 0o755 });
+  return resolver;
+}
+
+function useResolver(fixture, resolver) {
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...installed, llmCommand: resolver }, null, 2)}\n`);
+  return registrationPath;
+}
+
+function writePipeFillingChanges(local) {
+  for (let index = 0; index < 4; index += 1) {
+    writeFileSync(join(local, `bulk-${index}.md`), `# Bulk ${index}\n\n${`line ${index} of a large vault note\n`.repeat(1800)}`);
+  }
+}
+
+it('reports why the commit-message resolver could not start instead of a bare EPIPE', () => {
+  const fixture = syncFixture('resolver-cannot-start');
+  const resolver = resolverThatExitsBeforeReading('resolver-cannot-start', {
+    status: 126,
+    stderr: '/bin/sh: resolver.mjs: /missing/bin/node: bad interpreter: No such file or directory',
+  });
+  const registrationPath = useResolver(fixture, resolver);
+  writePipeFillingChanges(fixture.local);
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.match(git(tmp, ['--git-dir', fixture.remote, 'log', '-1', '--pretty=%s']), /^Sync vault content$/);
+  const registration = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  assert.equal(registration.lastError, null);
+  assert.equal(registration.lastWarning.phase, 'commit-message-generation', JSON.stringify(registration.lastWarning));
+  assert.match(registration.lastWarning.message, /bad interpreter/);
+  assert.doesNotMatch(registration.lastWarning.message, /EPIPE/);
+  assert.match(registration.lastWarning.recovery, /could not start/);
+
+  const status = JSON.parse(runNode([fixture.cli, 'status', fixture.local, '--json'], { env: fixture.env }).stdout);
+  assert.equal(status.vaults[0].state, 'degraded');
+  assert.equal(status.vaults[0].failureSeverity, 'warning');
+  const textStatus = runNode([fixture.cli, 'status', fixture.local], { env: fixture.env }).stdout;
+  assert.match(textStatus, /warning during commit-message-generation: .*bad interpreter/);
+  assert.doesNotMatch(textStatus, /blocked during/);
+});
+
+it('rejects a resolver answer when the resolver exited successfully without reading its whole input', () => {
+  const fixture = syncFixture('resolver-skips-input');
+  const resolver = resolverThatExitsBeforeReading('resolver-skips-input', {
+    status: 0,
+    stdout: '{"message":"Unread input message\\n\\nThis resolver never read the payload.\\n\\nSlice: docs-only"}',
+  });
+  const registrationPath = useResolver(fixture, resolver);
+  writePipeFillingChanges(fixture.local);
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.match(git(tmp, ['--git-dir', fixture.remote, 'log', '-1', '--pretty=%s']), /^Sync vault content$/);
+  const registration = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  assert.equal(registration.lastWarning.phase, 'commit-message-generation', JSON.stringify(registration.lastWarning));
+  assert.match(registration.lastWarning.message, /closed its input/);
+});
+
+it('gives a resolver startup failure the same diagnosis on the mandatory probe path', () => {
+  const resolver = resolverThatExitsBeforeReading('probe-cannot-start', {
+    status: 127,
+    stderr: 'sh: claude-json: command not found',
+  });
+
+  assert.throws(() => probeLlmCommand(resolver, tmp), (err) => {
+    assert.match(err.message, /command not found/);
+    assert.match(err.recovery, /could not start/);
+    assert.equal(err.phase, 'llm-probe');
+    return true;
+  });
+});
+
+it('probes the registered resolver when doctor runs on a managed vault', () => {
+  const fixture = syncFixture('doctor-registered-resolver');
+
+  const doctor = JSON.parse(runNode([fixture.cli, 'doctor', fixture.local, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(doctor.llmProbe, true);
+});

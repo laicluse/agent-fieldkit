@@ -46,7 +46,7 @@ vaultsync status [path] [--json]
 vaultsync now [path] [--json]
 vaultsync pause [path] [--minutes <n> | --until <time>] [--reason <text>]
 vaultsync resume [path]
-vaultsync doctor [path] --llm-command '<json command>'
+vaultsync doctor [path] [--llm-command '<json command>']
 vaultsync validator add <name> [path] --command '<command>' --repair none
 vaultsync validator add <name> [path] --command '<command>' --repair automatic --repair-authority diagnostics
 vaultsync validator list [path] [--json]
@@ -68,7 +68,7 @@ vaultsync's registration storage layout.
 
 Registrations created by older Vaultsync releases remain valid. A non-empty `verifyCommand`, including one created by `vaultsync install --verify`, is projected at read time as the reserved `legacy-verify` validator with the historical automatic repair behavior. Vaultsync does not rewrite the registration merely to normalize it, and named validators can coexist with that legacy field.
 
-`status --json` emits the canonical `vaultsync.status.v1` contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is `synced`, `pending`, `degraded`, `blocked`, `paused`, `disabled`, or `unmanaged`; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. The additive `validators` collection exposes each configured validator and its last independent result without changing existing status fields. Pending state separates uncommitted paths from unpushed commits, and `lastSuccessfulSyncAt` is not overwritten by a failed cycle.
+`status --json` emits the canonical `vaultsync.status.v1` contract. Consumers should use this output instead of registration files or daemon logs. Each vault status identifies whether sync is `synced`, `pending`, `degraded`, `blocked`, `paused`, `disabled`, or `unmanaged`; a failure keeps its primary phase, safely redacted message and detail, optional recovery action, and ordered secondary failures. The additive `failureSeverity` is `error` for a cycle that stopped and `warning` for a cycle that completed with a fallback, such as a commit message written without the LLM command. The additive `validators` collection exposes each configured validator and its last independent result without changing existing status fields. Pending state separates uncommitted paths from unpushed commits, and `lastSuccessfulSyncAt` is not overwritten by a failed cycle.
 
 vaultsync resolves `dibs` dynamically at runtime. `DIBS_BIN` remains an explicit override, otherwise vaultsync checks the installed plugin cache, `PATH`, and only then any legacy custom path in an older registration. New registrations do not pin versioned plugin-cache paths, so plugin updates do not leave vaultsync pointing at a removed `dibs` binary.
 

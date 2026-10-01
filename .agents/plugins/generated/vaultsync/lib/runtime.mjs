@@ -694,11 +694,22 @@ function shellCommand(command, { cwd, input, env = process.env, timeoutMs = 1200
     maxBuffer: 20 * 1024 * 1024,
   });
   if (result.error) {
-    const err = new Error(result.error.message);
+    if (failedBeforeReadingInput(result)) return result;
+    const err = new Error(result.error.code === 'EPIPE'
+      ? `Command closed its input before reading it completely (exit ${result.status ?? 'unknown'})`
+      : result.error.message);
+    err.detail = redactDiagnostic([result.stderr, result.stdout].filter(Boolean).join('\n')) || null;
     err.exitCode = result.status || 1;
     throw err;
   }
   return result;
+}
+
+function failedBeforeReadingInput(result) {
+  return result.error?.code === 'EPIPE'
+    && Number.isInteger(result.status)
+    && result.status !== 0
+    && result.signal == null;
 }
 
 function redactDiagnostic(value) {
@@ -714,7 +725,9 @@ function redactDiagnostic(value) {
     .trim();
 }
 
-function providerFailure(result) {
+const COMMAND_CANNOT_START = /bad interpreter|command not found|No such file or directory|Permission denied/i;
+
+function providerFailure(result, phase) {
   const detail = redactDiagnostic([result.stderr, result.stdout].filter(Boolean).join('\n')) || 'Configured provider command failed';
   const structured = detail.split('\n').map((line) => {
     try {
@@ -724,31 +737,34 @@ function providerFailure(result) {
     }
   }).find((entry) => entry?.protocol === 'vaultsync.llm.error.v1');
   const oauthExpired = /OAuth session expired/i.test(detail);
+  const cannotStart = (result.status === 126 || result.status === 127) && COMMAND_CANNOT_START.test(detail);
   const err = new Error(redactDiagnostic(structured?.message) || (oauthExpired ? 'OAuth session expired.' : detail.split('\n')[0]));
-  err.phase = 'commit-message-generation';
+  err.phase = phase;
   err.detail = detail;
-  err.recovery = redactDiagnostic(structured?.recovery) || (oauthExpired ? 'Re-authenticate the configured provider and retry sync.' : null);
+  err.recovery = redactDiagnostic(structured?.recovery)
+    || (oauthExpired ? 'Re-authenticate the configured provider and retry sync.' : null)
+    || (cannotStart ? `The configured llm command could not start (exit ${result.status}). Check its path and interpreter, then run vaultsync doctor <vault>.` : null);
   err.exitCode = result.status || 1;
   return err;
 }
 
-function callLlm(registration, payload, { mandatory = false, timeoutMs = 120000 } = {}) {
+function callLlm(registration, payload, { mandatory = false, timeoutMs = 120000, phase = 'llm' } = {}) {
   if (!registration.llmCommand) {
     if (mandatory) throw new Error('llmCommand is required for this vaultsync task');
     return null;
   }
-  const result = shellCommand(registration.llmCommand, {
-    cwd: registration.rootRealpath,
-    input: `${JSON.stringify(payload)}\n`,
-    timeoutMs,
-  });
-  if (result.status !== 0) {
-    if (!mandatory) throw providerFailure(result);
-    const err = new Error(redactDiagnostic(result.stderr || result.stdout) || 'LLM command failed');
-    err.detail = redactDiagnostic([result.stderr, result.stdout].filter(Boolean).join('\n'));
-    err.exitCode = result.status || 1;
+  let result;
+  try {
+    result = shellCommand(registration.llmCommand, {
+      cwd: registration.rootRealpath,
+      input: `${JSON.stringify(payload)}\n`,
+      timeoutMs,
+    });
+  } catch (err) {
+    err.phase = phase;
     throw err;
   }
+  if (result.status !== 0) throw providerFailure(result, phase);
   try {
     return JSON.parse(result.stdout);
   } catch (err) {
@@ -776,7 +792,7 @@ export function probeLlmCommand(llmCommand, rootRealpath = process.cwd()) {
       '>>>>>>> upstream',
       '',
     ].join('\n'),
-  }, { mandatory: true });
+  }, { mandatory: true, phase: 'llm-probe' });
   if (!result || typeof result.resolved !== 'string' || result.resolved.includes('<<<<<<<')) {
     throw new Error('LLM command probe failed: resolve_conflict must return JSON with a resolved string and no conflict markers');
   }
@@ -802,7 +818,7 @@ function llmCommitMessage(registration, diff, paths, reason) {
 	includeBody: true,
 	includeSliceTrailer: true,
       },
-    }, { mandatory: false });
+    }, { mandatory: false, phase: 'commit-message-generation' });
     if (!result || typeof result.message !== 'string') return { message: fallbackCommitMessage(reason, paths, diff), failure: null };
     const message = normalizeCommitMessage(result.message, reason, paths, diff);
     return {
@@ -854,7 +870,7 @@ function resolveConflictFile(registration, path) {
       sidecarPattern: '<name>.conflict-<extra-info>.md',
     },
     content,
-  }, { mandatory: true, timeoutMs: 240000 });
+  }, { mandatory: true, timeoutMs: 240000, phase: 'conflict-resolution' });
   if (!result || typeof result.resolved !== 'string' || result.resolved.includes('<<<<<<<')) {
     throw new Error(`LLM did not resolve conflict markers in ${path}`);
   }
@@ -1172,7 +1188,7 @@ function repairVerificationFailure(registration, validator, verificationError, c
       noToolAttribution: true,
     },
     files,
-  }, { mandatory: true, timeoutMs: 240000 });
+  }, { mandatory: true, timeoutMs: 240000, phase: 'verifier-repair' });
   const repairs = Array.isArray(result?.repairs) ? result.repairs : [];
   const written = [];
   for (const repair of repairs) {
@@ -1588,6 +1604,12 @@ function numberOption(value, fallback, name) {
   return n;
 }
 
+function registeredLlmCommand(rootRealpath, env = process.env) {
+  const path = registrationPathForRoot(rootRealpath, env);
+  if (!existsSync(path)) return null;
+  return readJsonFile(path).llmCommand || null;
+}
+
 function commandDoctor(args, env = process.env) {
   const parsed = parseArgs({
     args,
@@ -1599,7 +1621,7 @@ function commandDoctor(args, env = process.env) {
   });
   const preflight = preflightRepository(parsed.positionals[0] || env.PWD || process.cwd(), env);
   const dibsBin = findDibsBin(env);
-  const llmCommand = parsed.values['llm-command'] || env.VAULTSYNC_LLM_COMMAND;
+  const llmCommand = parsed.values['llm-command'] || env.VAULTSYNC_LLM_COMMAND || registeredLlmCommand(preflight.rootRealpath, env);
   const llmProbe = llmCommand ? probeLlmCommand(llmCommand, preflight.rootRealpath) : false;
   emit({ ...preflight, dibsBin, llmProbe }, parsed.values.json);
 }
@@ -1761,6 +1783,7 @@ function structuredStatus(reg) {
       managed: true,
       enabled: reg.enabled !== false,
       state,
+      failureSeverity: reg.lastError ? 'error' : (reg.lastWarning ? 'warning' : null),
       branch: branchName(root),
       upstream: optionalUpstreamName(root),
       ahead: relation.known ? relation.ahead : null,
@@ -1824,7 +1847,7 @@ function commandStatus(args, env = process.env) {
     lines.push(`  validators: ${status.validators.length}`);
     for (const validator of status.validators) lines.push(`    ${validator.name}: ${validator.lastResult?.state || 'not run'}; repair ${validator.repair.mode} (${validator.repair.authority})`);
     if (status.failure) {
-      lines.push(`  blocked during ${status.failure.phase}: ${status.failure.message}`);
+      lines.push(`  ${status.failureSeverity === 'warning' ? 'warning' : 'blocked'} during ${status.failure.phase}: ${status.failure.message}`);
       for (const secondary of status.failure.secondary || []) lines.push(`  secondary ${secondary.phase} failure: ${secondary.message}`);
       if (status.failure.recovery) lines.push(`  recovery: ${status.failure.recovery}`);
     }
