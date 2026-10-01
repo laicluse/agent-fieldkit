@@ -310,11 +310,19 @@ occ_refused_by_other() {
 # allow-comment: every directory, so naming it discriminates nothing. Ask for
 # allow-comment: the change instead, name the reader and the decision they face,
 # allow-comment: and show one description that passes beside one that fails.
+# allow-comment: load-bearing. The printed claim carries the identity the gate
+# allow-comment: itself claims with. Without --pid the CLI records the shell
+# allow-comment: that ran it, which is dead before the next write; the gate then
+# allow-comment: sees a stale lock, needs a description it does not have, and
+# allow-comment: refuses again. A session id alone does not make a lock self.
 occ_block_no_dibs() {
-  local dir="$1" input="${2:-}" sid binding=""
+  local dir="$1" input="${2:-}" sid owner binding
   sid="$(occ_session "$input")"
-  [ -n "$sid" ] && binding=" --session $sid"
-  printf '[dibs/occupancy] %s has no dibs registered for you, so this write is refused. Claim it first, then retry:\n  dibs claim %s%s --description "<the change you are making here>"\nThe description is what someone reads when they find this lock still standing weeks from now and have to decide whether the work finished or died halfway. Name the change, so that question is answerable: "revert the stop-release trigger" or "finish the plugin install" pass; "session work", "coding", "editing files" name an activity that is identical in every directory and tell that reader nothing. The session flag binds the lock to this conversation; a claim without it belongs to the shell that ran it and is gone before your next write.\n' "$dir" "$dir" "$binding" >&2
+  owner="$(occ_owner "$input")"
+  binding=" --pid $(occ_holder_pid "${OCC_PPID:-$PPID}") --agent $(occ_agent_label)"
+  [ -n "$sid" ] && binding="$binding --session $sid"
+  [ -n "$owner" ] && binding="$binding --owner $owner"
+  printf '[dibs/occupancy] %s has no dibs registered for you, so this write is refused. Claim it first, then retry:\n  dibs claim %s%s --description "<the change you are making here>"\nThe description is what someone reads when they find this lock still standing weeks from now and have to decide whether the work finished or died halfway. Name the change, so that question is answerable: "revert the stop-release trigger" or "finish the plugin install" pass; "session work", "coding", "editing files" name an activity that is identical in every directory and tell that reader nothing. Keep the --pid flag: it binds the lock to this agent process, so the lock lives as long as this session; a claim without it belongs to the shell that ran it and is gone before your next write.\n' "$dir" "$dir" "$binding" >&2
 }
 
 occ_codex_bash_target_is_ambiguous() {

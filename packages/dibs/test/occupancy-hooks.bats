@@ -160,6 +160,24 @@ init_bash_target_repo() {
   [[ "$output" == *"--session sess-from-payload"* ]]
 }
 
+@test "the claim the missing-dibs denial prints, run from a short-lived shell, lets the next write through" {
+  unset DIBS_DESCRIPTION
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  claim_line="$(printf '%s\n' "$output" | sed -n 's/^  dibs claim /claim /p')"
+  [ -n "$claim_line" ]
+  claim_line="${claim_line/<the change you are making here>/fix the hint}"
+
+  unset DIBS_HOLDER_PID
+  run bash -c "eval \"\$1 \$2\"" _ "\"$NODE_BIN\" \"$DIBS_BIN\"" "$claim_line"
+  [ "$status" -eq 0 ]
+
+  export DIBS_HOLDER_PID=$$
+  run_hook PreToolUse Write
+  [ "$status" -eq 0 ]
+}
+
 @test "gate records DIBS_DESCRIPTION on hook claims" {
   export DIBS_HOLDER_PID=$$ DIBS_DESCRIPTION="Fix Dibs Lock Labels"
   run_hook PreToolUse Write

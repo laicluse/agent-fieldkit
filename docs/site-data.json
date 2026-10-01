@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.73",
+			"version": "2.0.74",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 5,
 			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.68",
+				"version": "v2.0.74",
 				"type": "Fixed",
-				"summary": "Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout."
+				"summary": "The claim printed by a missing-dibs refusal now lets the next write through."
 			}
 		},
 		{
@@ -643,6 +643,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
+			"plugin": "dibs",
+			"packageVersion": "2.0.74",
+			"detailPath": "agent-fieldkit/dibs/",
+			"version": "v2.0.74",
+			"type": "Fixed",
+			"summary": "The claim printed by a missing-dibs refusal now lets the next write through.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
+		},
+		{
 			"plugin": "dont-do-that",
 			"packageVersion": "2.0.74",
 			"detailPath": "agent-fieldkit/dont-do-that/",
@@ -650,15 +659,6 @@
 			"type": "Fixed",
 			"summary": "pr-discipline also checks a body passed with --body-file or -F.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
-		},
-		{
-			"plugin": "dibs",
-			"packageVersion": "2.0.73",
-			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.68",
-			"type": "Fixed",
-			"summary": "Deleting a branch, writing a tag, or pruning worktree records no longer counts as a write in the current checkout.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",

@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.74]
+
+### Fixed
+
+- **The claim printed by a missing-dibs refusal now lets the next write through.** It passes `--pid` with the agent process the hook claims with, plus agent and owner. Without the pid the lock belonged to the short-lived shell that ran the claim, and the next write was refused again.
+
 ## [v2.0.68]
 
 ### Fixed
