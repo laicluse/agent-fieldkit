@@ -47,7 +47,7 @@ invoke_at_sha() {
 Slice: backend layer
 Red-then-green: n/a (test fixture, no spec applies)
 Verified: operator-confirmed
-Visual: /no/such/screenshot.png'
+Visual: the banner sits above the tab strip -> /no/such/screenshot.png'
   use_trailers "$trailers"
   local file
   file=$(write_fixture "vis-staged.txt" "$(_body "$trailers")")
@@ -63,7 +63,7 @@ Visual: /no/such/screenshot.png'
 Slice: backend layer
 Red-then-green: n/a (test fixture, no spec applies)
 Verified: operator-confirmed
-Visual: /no/such/screenshot.png'
+Visual: the banner sits above the tab strip -> /no/such/screenshot.png'
   use_trailers "$trailers"
   local file
   file=$(write_fixture "vis-sha.txt" "$(_body "$trailers")")

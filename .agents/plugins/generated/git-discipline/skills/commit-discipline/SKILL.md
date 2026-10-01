@@ -223,7 +223,7 @@ Soft nudges (subject 51-72 chars) are non-blocking and appear as context.
 | `Slice` | opt-out token or free-form text (see below) | always |
 | `Tests` | comma-separated list of spec paths | when `Slice` is not an opt-out token |
 | `Red-then-green` | `yes` or `n/a (reason >= 10 chars)` | when `Slice` is not `docs-only`, `config-only`, `migration-only`, `spec-only`, or `chore-deps` |
-| `Visual` | file path or `n/a (reason >= 10 chars)` | when the staged diff touches UI files (see heuristic below) |
+| `Visual` | `<checked assumption> -> <capture path>` or `n/a (reason >= 10 chars)` | when the staged diff touches UI files (see heuristic below) |
 | `Verified` | `operator-confirmed`, `agent-confirmed`, `<artefact path>`, `red-then-green`, or `n/a (reason)` | when `Slice` is not an opt-out token |
 | `Verified-how` | one sentence, `Due to <reason>, this was confirmed by <what the agent ran and saw>` (>= 20 chars) | when `Verified` is `agent-confirmed` |
 
@@ -261,13 +261,13 @@ closes the easiest leakage paths (bare `yes` self-attestation, random
 spec path not in this commit, hallucinated test name not in the staged
 file).
 
-**`Visual` rules:** a path value points to a screenshot or
-recording file that must exist in the worktree (`[[ -f "$path" ]]`). The
-value `n/a (reason)` is allowed with a rationale of at least 10
-characters; bare `n/a` without rationale is rejected. The trailer is only
-required when the heuristic below detects UI touches in the
-staged diff; backend-only commits do not see the rule and need not
-include `Visual`.
+**`Visual` rules:** the trailer exists so you look at the visual result of your own work before it is committed, pushed and published. Code and HTML that pass every test can still render wrong, and only looking shows it. The point is to test your own assumption about the result, not to hand the operator a picture.
+
+The value is `<what you expected to see, and saw> -> <capture path>`, for example `Visual: searching "reset button" lists the reset chapter first -> ~/notes/visual-checks/2026-10-01 · search order.png`. The sentence before `->` names the assumption you checked in the render (at least 15 characters); the path points to the screenshot or recording you looked at. At commit time the file must exist and must be newer than the newest UI file in the staged diff, so a capture from before the last change does not count. Relative paths resolve against the repo root; `~/` and absolute paths are allowed.
+
+Keep captures where this machine keeps visual checks. Before saving one, look among your available skills and the user's agent instructions for a shared notes vault meant for screenshots or visual checks; an Obsidian-compatible Markdown vault is a common setup. When it exists, save the capture there with one note per check that holds the assumption, the commit and the image, and point the trailer at it. Without such a place, use a folder the repository ignores. Whether captures are committed is the repository's choice; the check itself is what the trailer asks for.
+
+`n/a (reason)` is allowed with a rationale of at least 10 characters on commits without UI touches; bare `n/a` without rationale is rejected. The trailer is only required when the heuristic below detects UI touches in the staged diff; backend-only commits do not see the rule and need not include `Visual`.
 
 **`Verified n/a` closed enum:** the `n/a (reason)` form is only accepted when
 the rationale contains at least one of these category tokens (case-insensitive):
@@ -285,7 +285,7 @@ matches none of these tokens is rejected with `verified-rationale-vague`.
 |------|---------|
 | `operator-confirmed` | The operator confirmed the change works in this session (saw the UI flow run, ran the Siri Shortcut, hit the endpoint, etc.). The validator cannot anchor this claim, but the trailer makes it explicit so a later `git log` reader sees what backed the commit. |
 | `agent-confirmed` | The agent itself exercised the change this session (ran the code, smoke-tested, observed the output) rather than the operator. Requires a companion `Verified-how:` trailer with a concrete sentence (>= 20 chars) of the shape "Due to \<reason\>, this was confirmed by \<what the agent ran and saw\>". Because that sentence lands in git, it leaves a paper trail to catch a dishonest self-attestation later. |
-| `<path>` | A screenshot, recording, log dump, or curl-output stored in the repo. Resolved against repo root; the file must exist. Recognised extensions: `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.heic`, `.svg`, `.tiff`, `.bmp`, `.mov`, `.mp4`, `.webm`, `.pdf`, `.txt`, `.log`, `.md`, `.json`, `.html`. Any value containing `/` is also treated as a path. |
+| `<path>` | A screenshot, recording, log dump, or curl-output. Relative paths resolve against the repo root; `~/` and absolute paths are allowed; the file must exist. Recognised extensions: `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.heic`, `.svg`, `.tiff`, `.bmp`, `.mov`, `.mp4`, `.webm`, `.pdf`, `.txt`, `.log`, `.md`, `.json`, `.html`. Any value containing `/` is also treated as a path. |
 | `red-then-green` | The verification anchor is the `Red-then-green` trailer. Rejected when `Red-then-green` is itself `n/a (...)` (the chain is broken: tests cannot be both the verification and the not-applicable). |
 | `n/a (reason)` | Closed-enum rationale, same set as `Visual: n/a` (see `visual-rationale-vague` below). Bare `n/a` without rationale is rejected. |
 
@@ -339,21 +339,23 @@ over narrow:
 - `.swift` without visible UI symbols falls outside; watch out when the
   staged blob is not available (e.g. partial amend), because then the
   heuristic conservatively classifies the file as non-UI and you must
-  opt in yourself via `Visual: <path>` or `Visual: n/a (...)`.
+  opt in yourself via `Visual: <checked assumption> -> <path>` or `Visual: n/a (...)`.
 
 Error codes:
 
 | Code | When |
 |------|------|
 | `missing-visual` | UI-touch detected but trailer is absent, or trailer is bare `n/a`, or `n/a (reason)` with too short a rationale |
-| `visual-path-not-found` | Trailer is not an `n/a` form and the given path does not exist in the worktree |
-| `visual-rationale-defers` | The `n/a (rationale)` text uses deferral language (`later`, `follow-up`, `next iteration`, `to be captured`, `will capture`, `coming next`, `post-merge`, `saved for later`) that promises a screenshot at a future event. The trailer cannot validate that promise; either supply `Visual: <path>` now or rewrite the rationale to describe why a screenshot has no meaning for this change (extract-only refactor, accessibility metadata, debug-only surface, copy-only). |
+| `visual-path-not-found` | Trailer is not an `n/a` form and the capture path does not exist on disk |
+| `visual-rationale-defers` | The `n/a (rationale)` text uses deferral language (`later`, `follow-up`, `next iteration`, `to be captured`, `will capture`, `coming next`, `post-merge`, `saved for later`) that promises a screenshot at a future event. The trailer cannot validate that promise; either supply `Visual: <checked assumption> -> <path>` now or rewrite the rationale to describe why a screenshot has no meaning for this change (extract-only refactor, accessibility metadata, debug-only surface, copy-only). |
 | `visual-rationale-vague` | The `n/a (rationale)` text does not name a recognized non-applicable category. The closed enum is: `extract-only`, `accessibility-only`, `accessibility metadata`, `debug-only`, `spec-only`, `test-only`, `copy-only`, `copy change`, `metadata-only`, `no behaviour change`, `no visual change`, `no ui change`, `no visual impact`, `no ui impact`, `byte-identical`, `render unchanged`, `pixel-identical`, `backend rewrite`, `backend only`, `no ui touched`, `sound-only`, `audio-only`, `log-only`, `telemetry-only`. The rationale must contain at least one of these tokens (case-insensitive) so the claim "no screenshot has meaning here" is classified rather than narrated. |
 | `red-then-green-path-not-in-staged` | Trailer names a spec path that is not in `git diff --cached --name-only`. Either name a spec file this commit actually touches, or fall back to `n/a (reason)`. |
 | `red-then-green-test-not-found` | Trailer is `<path>:<line> # <test-name>` but the staged blob has no matching `it`, `test`, `describe`, `context`, `specify`, `@test`, `@Test`, `Scenario:`, `func name(`, or `def name(` declaration. Name the test as it appears in the file. |
 | `red-then-green-line-out-of-range` | Trailer is `<path>:<line> # <test-name>` but the staged file has fewer lines than `<line>`. Name a line that exists in the file as it stands in this commit. |
 | `red-then-green-bare-yes` | `Red-then-green: yes` is no longer accepted. Use `<path>` or `<path>:<line> # <test-name>`, or `n/a (reason)`. |
-| `visual-na-on-ui-touch` | `Visual: n/a (reason)` on UI-touched commits is rejected; capture a screenshot and supply `Visual: <path>`. |
+| `visual-na-on-ui-touch` | `Visual: n/a (reason)` on UI-touched commits is rejected; look at the render, capture it and supply `Visual: <checked assumption> -> <path>`. |
+| `visual-claim-missing` | The trailer gives a path without the checked assumption before ` -> `, or the assumption is shorter than 15 characters. |
+| `visual-stale` | The capture is older than the newest UI file in the staged diff; look at the render after the last change and capture that. |
 | `review-pass-batch` | The WHY block names a review pass (`pride pass`, `end-user pass`, `technical pass`, `review pass`, `review findings`, `pride contrarian`, `review contrarian`) and lists two or more findings as bullets. Review-pass commits should land one finding per commit so each fate (fix, reject-with-evidence) is its own reviewable unit; rewrite the WHY in prose for one finding and split the others into separate commits, or remove the review-pass keyword if this is not a review-pass commit. |
 
 ### Optional trailers
@@ -597,8 +599,9 @@ and now hosts the IAP teaser for unconfigured users.
 Tests: spec/views/onboarding_view_spec.rb
 Slice: frontend layer
 Red-then-green: spec/views/onboarding_view_spec.rb:18 # renders the banner above the tab strip
-Verified: doc/screenshots/onboarding-banner.png
-Visual: doc/screenshots/onboarding-banner.png
+Verified: agent-confirmed
+Verified-how: Due to the banner only showing in a running app, this was confirmed by opening onboarding in the simulator and seeing the banner above the tab strip.
+Visual: the banner sits above the tab strip and pushes nothing off screen -> ~/notes/visual-checks/2026-10-01 · onboarding banner.png
 ```
 
 `Visual:` may also be `n/a (reason)` for false positives of the

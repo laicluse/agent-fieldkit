@@ -91,7 +91,7 @@ template_block=""
 visual_line=""
 if declare -F _vb_is_ui_touch >/dev/null 2>&1; then
   if _vb_is_ui_touch; then
-    visual_line=$'\nVisual: <screenshot path or "n/a (reason >= 10 chars)">'
+    visual_line=$'\nVisual: <what you expected to see, and saw> -> <capture path>'
   fi
 fi
 

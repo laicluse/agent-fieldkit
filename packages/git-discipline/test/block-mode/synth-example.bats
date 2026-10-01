@@ -117,7 +117,7 @@ run_synth() {
 
   visual_line=$(printf '%s' "$result" | grep '^Visual:' || true)
   [[ -n "$visual_line" ]]
-  [[ "$visual_line" == *'screenshot-path'* ]] || [[ "$visual_line" == *'n/a'* ]]
+  [[ "$visual_line" == *'-> <capture path>'* ]]
 }
 
 @test "non-UI staged paths produce no Visual: line in the example" {

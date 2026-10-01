@@ -213,9 +213,9 @@ spec/util_spec.rb"
   mkdir -p "$TMPDIR_TEST/docs/screenshots"
   : > "$TMPDIR_TEST/docs/screenshots/foo.png"
 
-  use_trailers "$(_trailers_with_visual "docs/screenshots/foo.png")"
+  use_trailers "$(_trailers_with_visual "the banner sits above the tab strip -> docs/screenshots/foo.png")"
   local file
-  file=$(write_fixture "vis-relpath.txt" "$(_body_with_visual "docs/screenshots/foo.png")")
+  file=$(write_fixture "vis-relpath.txt" "$(_body_with_visual "the banner sits above the tab strip -> docs/screenshots/foo.png")")
 
   # Run from a different directory (HOME) to prove the check resolves
   # against repo root, not $PWD.
@@ -230,12 +230,78 @@ spec/util_spec.rb"
   local screenshot
   screenshot=$(write_visual_path "screenshots/onboarding-banner.png")
 
-  use_trailers "$(_trailers_with_visual "$screenshot")"
+  use_trailers "$(_trailers_with_visual "the banner sits above the tab strip -> $screenshot")"
   local file
-  file=$(write_fixture "vis-path.txt" "$(_body_with_visual "$screenshot")")
+  file=$(write_fixture "vis-path.txt" "$(_body_with_visual "the banner sits above the tab strip -> $screenshot")")
 
   run invoke_validator "$file"
   [ "$status" -eq 0 ]
+}
+
+@test "UI-touch + Visual path without a checked claim fails with visual-claim-missing" {
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="src/App.tsx"
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/views/onboarding_view_spec.rb"
+
+  local screenshot
+  screenshot=$(write_visual_path "screenshots/onboarding-banner.png")
+
+  use_trailers "$(_trailers_with_visual "$screenshot")"
+  local file
+  file=$(write_fixture "vis-no-claim.txt" "$(_body_with_visual "$screenshot")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"visual-claim-missing"* ]]
+}
+
+@test "UI-touch + Visual claim too short to name an assumption fails" {
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="src/App.tsx"
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/views/onboarding_view_spec.rb"
+
+  local screenshot
+  screenshot=$(write_visual_path "screenshots/onboarding-banner.png")
+
+  use_trailers "$(_trailers_with_visual "looks ok -> $screenshot")"
+  local file
+  file=$(write_fixture "vis-short-claim.txt" "$(_body_with_visual "looks ok -> $screenshot")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"visual-claim-missing"* ]]
+}
+
+@test "UI-touch + Visual capture under ~/ resolves against HOME" {
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="src/App.tsx"
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/views/onboarding_view_spec.rb"
+
+  mkdir -p "$HOME/visual-checks"
+  : > "$HOME/visual-checks/banner.png"
+
+  use_trailers "$(_trailers_with_visual "the banner sits above the tab strip -> ~/visual-checks/banner.png")"
+  local file
+  file=$(write_fixture "vis-home.txt" "$(_body_with_visual "the banner sits above the tab strip -> ~/visual-checks/banner.png")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
+@test "UI-touch + capture older than the changed UI file fails with visual-stale" {
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="src/App.tsx"
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/views/onboarding_view_spec.rb"
+
+  local screenshot
+  screenshot=$(write_visual_path "screenshots/onboarding-banner.png")
+  touch -t 202001010000 "$screenshot"
+  mkdir -p "$TMPDIR_TEST/src"
+  : > "$TMPDIR_TEST/src/App.tsx"
+
+  use_trailers "$(_trailers_with_visual "the banner sits above the tab strip -> $screenshot")"
+  local file
+  file=$(write_fixture "vis-stale.txt" "$(_body_with_visual "the banner sits above the tab strip -> $screenshot")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"visual-stale"* ]]
 }
 
 @test "UI-touch + Visual: n/a fails with visual-na-on-ui-touch (no escape on UI commits)" {
@@ -282,9 +348,9 @@ spec/util_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="src/App.tsx"
   export GIT_SHIM_LS_TREE_OUTPUT="spec/views/onboarding_view_spec.rb"
 
-  use_trailers "$(_trailers_with_visual "/no/such/screenshot.png")"
+  use_trailers "$(_trailers_with_visual "the banner sits above the tab strip -> /no/such/screenshot.png")"
   local file
-  file=$(write_fixture "vis-bad-path.txt" "$(_body_with_visual "/no/such/screenshot.png")")
+  file=$(write_fixture "vis-bad-path.txt" "$(_body_with_visual "the banner sits above the tab strip -> /no/such/screenshot.png")")
 
   run invoke_validator "$file"
   [ "$status" -eq 1 ]

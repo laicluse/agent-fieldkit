@@ -284,7 +284,11 @@ validate_body() {
   # allow-comment: validate_body emits every accumulated line on stderr and
   # allow-comment: returns 1 if any landed.
   local _vb_errors=()
-  _vb_err() { _vb_errors+=("$1"); }
+  _vb_mtime() {
+  stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null || printf '0'
+}
+
+_vb_err() { _vb_errors+=("$1"); }
   # allow-comment: path-existence checks (Tests/Red-then-green/Visual/Verified
   # allow-comment: paths resolving against the live tree or the filesystem) only
   # allow-comment: hold at commit time, where the context is the staged area or
@@ -607,30 +611,49 @@ validate_body() {
       if [[ -n "$visual_ui_touched" ]]; then
         local na_ui_files
         na_ui_files=$(printf '%s' "$visual_ui_touched" | tr '\n' ',' | sed 's/,$//;s/,/, /g')
-        _vb_err "$(printf 'visual-na-on-ui-touch: Visual: n/a is not accepted when UI files are touched (%s). Capture by any available route (browser drivers, OS-native utilities, simulator tools, project-launch flows) and supply Visual: <path>.' "$na_ui_files")"
+        _vb_err "$(printf 'visual-na-on-ui-touch: Visual: n/a is not accepted when UI files are touched (%s). Look at the render yourself, capture it by any available route (browser drivers, OS-native utilities, simulator tools, project-launch flows) and supply Visual: <what you expected to see, and saw> -> <path>.' "$na_ui_files")"
       fi
     elif [[ "$visual_value" = "n/a" ]]; then
       _vb_err 'missing-visual: bare "n/a" requires a rationale in parens: n/a (reason >= 10 chars)'
+    elif [[ "$visual_value" != *" -> "* ]]; then
+      _vb_err "$(printf 'visual-claim-missing: name the assumption you checked in the render before the capture path: Visual: <what you expected to see, and saw> -> <path>. Got: "%s"' "$visual_value")"
     else
-      # Resolve relative to repo root so the check is stable whether the
-      # caller is the git-native commit-msg hook (always repo root) or the
-      # PreToolUse:Bash dispatcher (whatever subdirectory Claude invoked
-      # from). Absolute paths in the trailer pass through unchanged.
+      local visual_claim="${visual_value%% -> *}"
+      local visual_path="${visual_value#* -> }"
+      if [[ ${#visual_claim} -lt 15 ]]; then
+        _vb_err "$(printf 'visual-claim-missing: the checked assumption before "->" must be a sentence of at least 15 chars (got: "%s")' "$visual_claim")"
+      fi
+      # allow-comment: paths resolve against the repo root so the check is
+      # stable from any subdirectory; "~/" and absolute paths reach a capture
+      # library outside the repository.
       local repo_root
       repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
-      local resolved="$visual_value"
-      if [[ -n "$repo_root" && "$resolved" != /* ]]; then
+      local resolved="$visual_path"
+      if [[ "$resolved" == "~/"* ]]; then
+        resolved="$HOME/${resolved#\~/}"
+      elif [[ -n "$repo_root" && "$resolved" != /* ]]; then
         resolved="$repo_root/$resolved"
       fi
       if [[ "$at_commit_time" -eq 1 && ! -f "$resolved" ]]; then
-        _vb_err "$(printf 'visual-path-not-found: Visual path "%s" was not found on disk (relative to repo root). Add the file or use Visual: n/a (rationale).' "$visual_value")"
+        _vb_err "$(printf 'visual-path-not-found: Visual capture "%s" was not found on disk. Relative paths resolve against the repo root; "~/" and absolute paths are allowed.' "$visual_path")"
+      elif [[ "$at_commit_time" -eq 1 && -n "$visual_ui_touched" ]]; then
+        local capture_time newest_ui="" newest_time=0 ui_file ui_time
+        capture_time=$(_vb_mtime "$resolved")
+        while IFS= read -r ui_file; do
+          [[ -n "$ui_file" && -f "$repo_root/$ui_file" ]] || continue
+          ui_time=$(_vb_mtime "$repo_root/$ui_file")
+          if [[ "$ui_time" -gt "$newest_time" ]]; then newest_time="$ui_time"; newest_ui="$ui_file"; fi
+        done <<< "$visual_ui_touched"
+        if [[ -n "$newest_ui" && "$capture_time" -lt "$newest_time" ]]; then
+          _vb_err "$(printf 'visual-stale: the capture "%s" is older than %s in this commit. Look at the render after the last change and capture that.' "$visual_path" "$newest_ui")"
+        fi
       fi
     fi
   elif [[ -n "$visual_ui_touched" ]]; then
     # Join the newline-separated list with ", " for the single-line error.
     local joined
     joined=$(printf '%s' "$visual_ui_touched" | tr '\n' ',' | sed 's/,$//;s/,/, /g')
-    _vb_err "$(printf 'missing-visual: Visual trailer is absent; UI files in this commit: %s. Capture by any available route (browser drivers, OS-native utilities, simulator tools, project-launch flows) and supply Visual: <path>.' "$joined")"
+    _vb_err "$(printf 'missing-visual: Visual trailer is absent; UI files in this commit: %s. Look at the render yourself, capture it by any available route (browser drivers, OS-native utilities, simulator tools, project-launch flows) and supply Visual: <what you expected to see, and saw> -> <path>. Keep the capture where this machine keeps visual checks; see the Visual rules in the commit-discipline skill.' "$joined")"
   fi
 
   # Rule: Verified trailer (self-assessment of how the behaviour change was

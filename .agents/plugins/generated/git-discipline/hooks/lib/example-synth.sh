@@ -73,7 +73,7 @@ git_discipline_synthesize_example() {
   # contract self-contained.
   local visual_value=""
   if _vb_is_ui_touch; then
-    visual_value='<screenshot-path or "n/a (reason >= 10 chars)">'
+    visual_value='<what you expected to see, and saw> -> <capture path>'
   fi
 
   # Print the synthesized example.
