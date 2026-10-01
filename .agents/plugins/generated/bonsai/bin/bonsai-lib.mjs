@@ -88,13 +88,14 @@ export async function claimWorktreeLock(dir, description) {
       : 'dibs not available; worktree handed out without an occupancy lock';
     return { ok: false, state: error ? 'error' : 'unavailable', warning };
   }
-  const pid = process.env.DIBS_HOLDER_PID ? Number(process.env.DIBS_HOLDER_PID) : process.ppid;
+  const pid = dibs.holderPid ? dibs.holderPid(process.env) : (process.env.DIBS_HOLDER_PID ? Number(process.env.DIBS_HOLDER_PID) : process.ppid);
+  const context = dibs.resolveContext ? dibs.resolveContext({}, process.env) : {};
   try {
     // The branch name says which change this worktree exists for, so it beats
     // DIBS_DESCRIPTION, which a caller may have pinned session-wide and which
     // then labels every worktree alike. The env var stays the fallback for a
     // caller that hands out a worktree without naming its branch.
-    const result = dibs.claim({ dir, pid, agent: process.env.DIBS_AGENT || 'bonsai', session: process.env.DIBS_SESSION, owner: process.env.DIBS_OWNER, description: description || process.env.DIBS_DESCRIPTION });
+    const result = dibs.claim({ dir, pid, agent: process.env.DIBS_AGENT || 'bonsai', session: context.session || process.env.DIBS_SESSION, owner: process.env.DIBS_OWNER || context.owner, description: description || process.env.DIBS_DESCRIPTION });
     if (!result.ok && result.holder) {
       return { ...result, warning: `worktree directory already ${dibs.formatHolder(result.holder)}` };
     }

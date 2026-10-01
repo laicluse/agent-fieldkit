@@ -172,7 +172,7 @@
 		},
 		{
 			"name": "bonsai",
-			"version": "2.0.38",
+			"version": "2.0.39",
 			"category": "workflow",
 			"summary": "Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.",
 			"support": [
@@ -187,14 +187,14 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.38",
+				"version": "v2.0.39",
 				"type": "Fixed",
-				"summary": "A new worktree branch no longer tracks the default branch."
+				"summary": "A new worktree is immediately writable by the agent that created it."
 			}
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.74",
+			"version": "2.0.75",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 5,
 			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.74",
+				"version": "v2.0.75",
 				"type": "Fixed",
-				"summary": "The claim printed by a missing-dibs refusal now lets the next write through."
+				"summary": "dibs claim without --pid binds to the agent, not the shell."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.74",
+			"packageVersion": "2.0.75",
 			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.74",
+			"version": "v2.0.75",
 			"type": "Fixed",
-			"summary": "The claim printed by a missing-dibs refusal now lets the next write through.",
+			"summary": "dibs claim without --pid binds to the agent, not the shell.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
@@ -671,11 +671,11 @@
 		},
 		{
 			"plugin": "bonsai",
-			"packageVersion": "2.0.38",
+			"packageVersion": "2.0.39",
 			"detailPath": "agent-fieldkit/bonsai/",
-			"version": "v2.0.38",
+			"version": "v2.0.39",
 			"type": "Fixed",
-			"summary": "A new worktree branch no longer tracks the default branch.",
+			"summary": "A new worktree is immediately writable by the agent that created it.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/bonsai/CHANGELOG.md"
 		},
 		{

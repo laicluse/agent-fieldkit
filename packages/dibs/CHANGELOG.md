@@ -4,6 +4,13 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.75]
+
+### Fixed
+
+- **`dibs claim` without `--pid` binds to the agent, not the shell.** The CLI now walks to the nearest Claude or Codex ancestor, as the occupancy hook already did, so a claim no longer dies with the shell that ran it.
+- **A variable assigned from a command substitution stays unknown.** `H=$(mktemp -d …); mkdir -p $H/home` no longer resolves its write target to `/home`; the target is treated as unresolved instead of as an empty prefix.
+
 ## [v2.0.74]
 
 ### Fixed

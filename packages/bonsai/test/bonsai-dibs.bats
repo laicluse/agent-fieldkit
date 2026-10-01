@@ -112,3 +112,9 @@ run_bonsai() { "$NODE_BIN" "$BONSAI" "$@"; }
   [ "$status" -eq 0 ]
   "$NODE_BIN" "$DIBS" check "$FIX/worktrees/owner-feature" --json | grep -q '"owner": "conveyor:some-run"'
 }
+
+@test "the claimed lock records the calling agent session so its hook recognises the worktree" {
+	DIBS_HOLDER_PID=$$ CLAUDE_CODE_SESSION_ID=bonsai-caller-session run run_bonsai create session-feature --repo "$FIX" --json
+	[ "$status" -eq 0 ]
+	"$NODE_BIN" "$DIBS" check "$FIX/worktrees/session-feature" --json | grep -q '"session": "bonsai-caller-session"'
+}

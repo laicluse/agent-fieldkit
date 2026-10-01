@@ -3,7 +3,7 @@ import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { claim, release, releaseAll, check, formatHolder, formatWorktreeActivity, listExcludes, excludeDir, includeDir, resolveContext } from './dibs-lib.mjs';
+import { claim, release, releaseAll, check, formatHolder, formatWorktreeActivity, listExcludes, excludeDir, includeDir, resolveContext, holderPid } from './dibs-lib.mjs';
 import { dibsRuntimeVersion, forwardToActiveDibs, publishDibsRuntime } from './machine-runtime.mjs';
 
 const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -174,7 +174,7 @@ if (!dir) die(`${command} needs a directory path`);
 
 const pid = values.pid !== undefined
   ? Number(values.pid)
-  : (process.env.DIBS_HOLDER_PID ? Number(process.env.DIBS_HOLDER_PID) : process.ppid);
+  : holderPid(process.env);
 if (!Number.isInteger(pid) || pid <= 0) die(`invalid --pid ${JSON.stringify(values.pid)}`);
 const maxAgeHours = values['max-age-hours'] !== undefined ? Number(values['max-age-hours']) : undefined;
 if (maxAgeHours !== undefined && (Number.isNaN(maxAgeHours) || maxAgeHours < 0)) {

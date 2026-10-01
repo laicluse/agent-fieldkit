@@ -258,3 +258,18 @@ dibs() {
   [ "$status" -eq 0 ]
   echo "$output" | grep -q '"state": "took-over-stale"'
 }
+
+@test "claim without --pid records the nearest agent process, not the shell that ran it" {
+	local agent="$BATS_TEST_TMPDIR/claude"
+	ln -s "$("$NODE_BIN" -p process.execPath)" "$agent"
+	run "$agent" -e '
+		const { spawnSync } = require("node:child_process");
+		const claim = spawnSync("sh", ["-c", "\"$0\" \"$1\" claim \"$2\" --description \"agent ancestor\" --json; true", process.argv[1], process.argv[2], process.argv[3]], { encoding: "utf8" });
+		process.stdout.write(JSON.stringify({ agentPid: process.pid, claim: JSON.parse(claim.stdout) }));
+	' "$NODE_BIN" "$DIBS" "$DIR"
+	[ "$status" -eq 0 ]
+	local agent_pid holder_pid
+	agent_pid="$(printf '%s' "$output" | jq -r .agentPid)"
+	holder_pid="$(printf '%s' "$output" | jq -r .claim.holder.pid)"
+	[ "$holder_pid" = "$agent_pid" ]
+}
