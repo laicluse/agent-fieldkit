@@ -2468,7 +2468,7 @@ pre code {
 .detail-page {
   background: var(--paper);
   color: var(--paper-ink);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .detail-hero {
