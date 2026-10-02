@@ -2653,7 +2653,10 @@ pre code {
 
 .sidebar-block h2 {
   max-width: none;
+  font-family: var(--sans);
   font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0;
 }
 
 .sidebar-block a {
