@@ -3160,8 +3160,20 @@ pre code {
 }
 
 .supermax-intro-section .split-heading {
-  grid-template-columns: minmax(0, 46rem);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
+}
+
+@media (min-width: 960px) {
+  .supermax-intro-section .split-heading {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .supermax-intro-copy {
+    max-width: 40rem;
+    padding-top: 1.6rem;
+  }
 }
 
 .supermax-animation-section .supermax-animation-frame {
