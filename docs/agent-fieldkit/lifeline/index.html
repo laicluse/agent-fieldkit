@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Three lifelines for when a first answer is not enough: research before choosing, verify doubtful claims, and rethink drifting projects from first principles.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=f37ac129b7">
+		<link rel="stylesheet" href="../../styles.css?v=c4a8eaf249">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -46,31 +46,19 @@
 		<main id="content" class="detail-page">
 			<section class="detail-hero">
 				<div class="detail-hero-inner">
-					<a class="back-link" href="../#catalog">Catalog</a>
-					<p class="eyebrow">Review and language</p>
-					<h1>lifeline</h1>
-					<p class="lede">Three lifelines for when a first answer is not enough: research before choosing, verify doubtful claims, and rethink drifting projects from first principles.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.3</span>
-						<span>3 skills</span>
+					<div class="detail-hero-copy">
+						<a class="back-link" href="../#catalog">Catalog</a>
+						<p class="eyebrow">Review and language</p>
+						<h1>lifeline</h1>
+						<p class="lede">Three lifelines for when a first answer is not enough: research before choosing, verify doubtful claims, and rethink drifting projects from first principles.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span>2.0.3</span>
+							<span>3 skills</span>
+							<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/lifeline">Package source</a>
+						</div>
 					</div>
-				</div>
-			</section>
-
-			<section class="detail-content-section">
-				<article class="readme-content">
-<p>Three ways to reach outside your own first answer when certainty, evidence, or project coherence runs out. <code>inspire</code> researches the wider world before choosing a direction. <code>ground</code> verifies a specific claim after doubt appears. <code>rethink</code> reconstructs a drifting project from its own history and lived behavior before writing a first-principles manifesto that can govern future decisions.</p>
-<h2 id="skills">Skills</h2>
-<h3 id="inspire"><code>/inspire</code></h3>
-<p>Online research that answers &quot;how do others do this?&quot;, &quot;what already exists?&quot;, &quot;what can we learn from published experience?&quot; before you commit to a path. Forward-looking and divergent: it widens the option space and ranks by quality of the end result, not ease of implementation. Triggers on <code>/inspire [topic]</code>, on unfamiliar territory, and on phrases like &quot;hoe doen anderen dit?&quot;.</p>
-<h3 id="ground"><code>/ground</code></h3>
-<p>Verify your own recent output against external sources when a claim is doubted. Backward-looking and convergent: generation and verification are separate processes, so it re-checks a specific claim with code search, file reads, and the web rather than re-asserting from model weights. Triggers on <code>/ground</code>, on skepticism signals like &quot;dat klopt niet&quot;, and on necessity claims that justify complexity.</p>
-<h3 id="rethink"><code>/rethink</code></h3>
-<p>Reconstruct a project's purpose, promises, responsibilities, and boundaries when recurring local fixes no longer form a coherent system. It excavates original design documents, code, repository history, runtime evidence, transcripts, and lived frustration; triangulates intended, actual, and experienced behavior; then drafts and independently stress-tests a non-prescriptive manifesto. It deliberately stops before refinement or implementation unless those are separately requested.</p>
-				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
+					<aside class="detail-install" aria-label="Install">
 						<h2>Install</h2>
 						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
 	<div class="agent-command-switch-head">
@@ -85,12 +73,21 @@
 <pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-lifeline-codex">codex plugin add lifeline@laicluse-agent-fieldkit</code></pre>
 	</div>
 </div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/lifeline">Package source</a>
-					</div>
-				</aside>
+					</aside>
+				</div>
+			</section>
+
+			<section class="detail-content-section">
+				<article class="readme-content">
+<p>Three ways to reach outside your own first answer when certainty, evidence, or project coherence runs out. <code>inspire</code> researches the wider world before choosing a direction. <code>ground</code> verifies a specific claim after doubt appears. <code>rethink</code> reconstructs a drifting project from its own history and lived behavior before writing a first-principles manifesto that can govern future decisions.</p>
+<h2 id="skills">Skills</h2>
+<h3 id="inspire"><code>/inspire</code></h3>
+<p>Online research that answers &quot;how do others do this?&quot;, &quot;what already exists?&quot;, &quot;what can we learn from published experience?&quot; before you commit to a path. Forward-looking and divergent: it widens the option space and ranks by quality of the end result, not ease of implementation. Triggers on <code>/inspire [topic]</code>, on unfamiliar territory, and on phrases like &quot;hoe doen anderen dit?&quot;.</p>
+<h3 id="ground"><code>/ground</code></h3>
+<p>Verify your own recent output against external sources when a claim is doubted. Backward-looking and convergent: generation and verification are separate processes, so it re-checks a specific claim with code search, file reads, and the web rather than re-asserting from model weights. Triggers on <code>/ground</code>, on skepticism signals like &quot;dat klopt niet&quot;, and on necessity claims that justify complexity.</p>
+<h3 id="rethink"><code>/rethink</code></h3>
+<p>Reconstruct a project's purpose, promises, responsibilities, and boundaries when recurring local fixes no longer form a coherent system. It excavates original design documents, code, repository history, runtime evidence, transcripts, and lived frustration; triangulates intended, actual, and experienced behavior; then drafts and independently stress-tests a non-prescriptive manifesto. It deliberately stops before refinement or implementation unless those are separately requested.</p>
+				</article>
 			</section>
 		</main>
 

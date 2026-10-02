@@ -220,16 +220,16 @@ NODE
   grep -q '<a class="back-link" href="../#catalog">Catalog</a>' "$REPO/docs/agent-fieldkit/dibs/index.html"
 }
 
-@test "detail page renders one sidebar install command switch" {
+@test "detail page renders one hero install command switch" {
   run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
 const fs = require("fs");
 const html = fs.readFileSync(process.argv[2], "utf8");
 const allSwitches = (html.match(/class="agent-command-switch"/g) || []).length;
-const sidebar = html.match(/<aside class="detail-sidebar"[\s\S]*?<\/aside>/);
-if (!sidebar) throw new Error("detail sidebar not found");
-const sidebarSwitches = (sidebar[0].match(/class="agent-command-switch"/g) || []).length;
+const install = html.match(/<aside class="detail-install"[\s\S]*?<\/aside>/);
+if (!install) throw new Error("detail install panel not found");
+const installSwitches = (install[0].match(/class="agent-command-switch"/g) || []).length;
 if (allSwitches !== 1) throw new Error(`expected one install command switch, got ${allSwitches}`);
-if (sidebarSwitches !== 1) throw new Error("sidebar does not own the install switch");
+if (installSwitches !== 1) throw new Error("install panel does not own the install switch");
 if (html.includes('<h2 id="installation">Installation</h2>')) throw new Error("README installation section still renders in the body");
 if (!html.includes('claude plugins install dibs@laicluse-agent-fieldkit')) throw new Error("missing Claude command");
 if (!html.includes('codex plugin add dibs@laicluse-agent-fieldkit')) throw new Error("missing Codex command");
@@ -244,9 +244,9 @@ NODE
   run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
 const fs = require("fs");
 const html = fs.readFileSync(process.argv[2], "utf8");
-const sidebar = html.match(/<aside class="detail-sidebar"[\s\S]*?<\/aside>/);
-if (!sidebar) throw new Error("detail sidebar not found");
-if (!sidebar[0].includes('class="agent-command-switch"')) throw new Error("sidebar install did not render as command switch");
+const install = html.match(/<aside class="detail-install"[\s\S]*?<\/aside>/);
+if (!install) throw new Error("detail install panel not found");
+if (!install[0].includes('class="agent-command-switch"')) throw new Error("install panel did not render as command switch");
 if (html.includes('<h2 id="installation">Installation</h2>')) throw new Error("README install section should be suppressed on detail pages");
 NODE
   [ "$status" -eq 0 ]

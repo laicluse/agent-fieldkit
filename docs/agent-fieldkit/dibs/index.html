@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=f37ac129b7">
+		<link rel="stylesheet" href="../../styles.css?v=c4a8eaf249">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -46,15 +46,34 @@
 		<main id="content" class="detail-page">
 			<section class="detail-hero">
 				<div class="detail-hero-inner">
-					<a class="back-link" href="../#catalog">Catalog</a>
-					<p class="eyebrow">Repository discipline</p>
-					<h1>dibs</h1>
-					<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.75</span>
-						<span>2 skills</span>
+					<div class="detail-hero-copy">
+						<a class="back-link" href="../#catalog">Catalog</a>
+						<p class="eyebrow">Repository discipline</p>
+						<h1>dibs</h1>
+						<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span>2.0.75</span>
+							<span>2 skills</span>
+							<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/dibs">Package source</a>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="dibs install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-dibs-claude">claude plugins install dibs@laicluse-agent-fieldkit</code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-dibs-codex">codex plugin add dibs@laicluse-agent-fieldkit</code></pre>
+	</div>
+</div>
+					</aside>
 				</div>
 			</section>
 
@@ -126,28 +145,6 @@ const result = claim({ dir, pid: process.ppid, agent: 'my-tool' });
 if (!result.ok) console.warn(`held by ${result.holder.agent}`);</code></pre>
 <p>An embedder that hands out a directory on behalf of a long-lived caller (as <code>bonsai</code> does) records that caller's pid, not its own short-lived process. <code>bonsai</code> reads <code>DIBS_HOLDER_PID</code>, <code>DIBS_AGENT</code>, and <code>DIBS_SESSION</code> to label the holder, <code>DIBS_OWNER</code> to preserve identity across resumes, <code>DIBS_DESCRIPTION</code> as the fallback work description when the caller names none, and <code>DIBS_LIB</code> to point at an alternate lib path. The CLI honours <code>DIBS_BIN</code> for a fixed binary path.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="dibs install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-dibs-claude">claude plugins install dibs@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-dibs-codex">codex plugin add dibs@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/dibs">Package source</a>
-					</div>
-				</aside>
 			</section>
 		</main>
 

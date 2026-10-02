@@ -2460,12 +2460,15 @@ pre code {
 
 .detail-hero {
   border-bottom: 1px solid var(--paper-line);
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .detail-hero-inner {
+  display: grid;
   width: min(1180px, calc(100vw - 2rem));
   margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem);
+  gap: clamp(2rem, 5vw, 4.5rem);
   padding: clamp(3rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3rem);
 }
 
@@ -2518,8 +2521,9 @@ pre code {
   display: grid;
   width: min(1180px, calc(100vw - 2rem));
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
-  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: minmax(0, 46rem);
+  justify-content: start;
+  gap: clamp(2rem, 5vw, 4.5rem);
   padding: clamp(3rem, 6vw, 5rem) 0;
 }
 
@@ -2530,15 +2534,15 @@ pre code {
 
 .readme-content h2,
 .readme-content h3,
-.detail-sidebar h2 {
+.detail-install h2 {
   color: var(--paper-ink);
 }
 
 .readme-content h2 {
   max-width: none;
-  margin-top: 2.8rem;
+  margin-top: 3.5rem;
   border-top: 1px solid var(--paper-line);
-  padding-top: 2rem;
+  padding-top: 2.25rem;
   font-size: clamp(1.7rem, 3vw, 2.7rem);
 }
 
@@ -2549,19 +2553,21 @@ pre code {
 }
 
 .readme-content h3 {
-  margin-top: 2rem;
-  font-size: 1.35rem;
+  margin-top: 2.25rem;
+  font-size: 1.08rem;
+  font-weight: 650;
 }
 
 .readme-content p,
 .readme-content li {
-  color: var(--paper-muted);
-  font-size: 1rem;
+  color: var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
 
 .readme-content a,
-.detail-sidebar a {
+.detail-source {
   color: var(--action-on-paper);
   font-weight: 720;
 }
@@ -2647,43 +2653,57 @@ pre code {
   font-size: 0.88em;
 }
 
+.readme-content h3 code:not(pre code) {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.readme-content > p,
+.readme-content > ul,
+.readme-content > ol,
+.readme-content > h3 {
+  max-width: 68ch;
+}
+
+.readme-content pre + p,
+.readme-content .code-panel + p {
+  margin-top: 1.1rem;
+}
+
 .readme-content pre,
-.sidebar-block pre {
+.detail-install pre {
   max-width: 100%;
 }
 
-.sidebar-block pre code {
+.readme-content pre {
+  margin: 1rem 0 1.4rem;
+}
+
+.detail-install pre code {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.detail-sidebar {
-  align-self: start;
-  position: sticky;
-  top: 5rem;
+.detail-install {
+  align-self: end;
+  min-width: 0;
 }
 
-.sidebar-block {
-  border-top: 1px solid var(--paper-line);
-  padding: 1.2rem 0;
-}
-
-.sidebar-block:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-
-.sidebar-block h2 {
+.detail-install h2 {
   max-width: none;
+  margin-bottom: 0.75rem;
   font-family: var(--sans);
   font-size: 1rem;
   font-weight: 650;
   letter-spacing: 0;
 }
 
-.sidebar-block a {
-  display: block;
-  margin-top: 0.6rem;
+.detail-source {
+  align-self: center;
+  font-size: 0.9rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2736,8 +2756,8 @@ pre code {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .detail-sidebar {
-    position: static;
+  .detail-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
