@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=22ed1a371d">
+		<link rel="stylesheet" href="../../styles.css?v=b7be0b92bd">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -91,15 +91,15 @@
 <h2 id="requirements">Requirements</h2>
 <p>macOS, with Node.js on <code>$PATH</code> (the <code>clipboard-copy</code> helper and the update-broadcast check are Node scripts). Plain text mode uses the built-in <code>pbcopy</code> and works out of the box; the skill calls the <code>clipboard-copy</code> helper that ships inside <code>bin/</code> of the active plugin install, so no PATH-level install step is needed. Claude resolves that root through <code>${CLAUDE_PLUGIN_ROOT}</code>; Codex resolves it through <code>codex plugin list --json</code>.</p>
 <p>Rich text mode (<code>/clipboard slack</code>) drives <code>pbcopy-html</code>, a Swift script shipped with the plugin. Copy it onto your <code>$PATH</code> if you want to invoke <code>pbcopy-html</code> directly from a shell; <code>clipboard-copy --html</code> already resolves it relative to its own location. The <code>jq</code> lookup below is a shell convenience for finding the active install from your terminal (where <code>${CLAUDE_PLUGIN_ROOT}</code> is not set); the skill itself never uses it, and the copy is repeated after each plugin update per the note below. The marketplace is symlink-free to keep Windows consumers working, so install with <code>cp -f</code>:</p>
-<pre><code class="language-bash">SRC=$(jq -r '.plugins[&quot;clipboard@laicluse-agent-fieldkit&quot;][0].installPath // empty' ~/.claude/plugins/installed_plugins.json)
-[ -n &quot;$SRC&quot; ] || { echo &quot;clipboard@laicluse-agent-fieldkit is not installed&quot;; exit 1; }
-cp -f &quot;$SRC/skills/clipboard/pbcopy-html.swift&quot; /usr/local/bin/pbcopy-html</code></pre>
+<pre><code class="language-bash">SRC=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;clipboard@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath // empty' ~/.claude/plugins/installed_plugins.json)
+<span class="code-unit">[ -n &quot;$SRC&quot; ]</span> || { echo &quot;clipboard@laicluse-agent-fieldkit is not installed&quot;; exit 1; }
+cp <span class="code-unit">-f</span> &quot;$SRC/skills/clipboard/pbcopy-html.swift&quot; /usr/local/bin/pbcopy-html</code></pre>
 <p>The script runs via its <code>#!/usr/bin/env swift</code> shebang; no compile step is needed.</p>
 <p>Re-run after each <code>claude plugins update clipboard@laicluse-agent-fieldkit</code> so the installed copy matches the updated plugin.</p>
 <h2 id="consuming-from-another-plugin">Consuming from another plugin</h2>
 <p>A skill in a different plugin cannot use <code>${CLAUDE_PLUGIN_ROOT}</code> to find this plugin's helper (that variable points at its own root). The canonical resolution idiom for cross-plugin consumers is one lookup against the harness's install index, with a graceful skip when clipboard is absent:</p>
-<pre><code class="language-bash">IP=$(jq -r '.plugins[&quot;clipboard@laicluse-agent-fieldkit&quot;][0].installPath // empty' ~/.claude/plugins/installed_plugins.json 2&gt;/dev/null)
-if [ -n &quot;$IP&quot; ] &amp;&amp; [ -x &quot;$IP/bin/clipboard-copy&quot; ]; then
+<pre><code class="language-bash">IP=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;clipboard@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath // empty' ~/.claude/plugins/installed_plugins.json 2&gt;/dev/null)
+if <span class="code-unit">[ -n &quot;$IP&quot; ]</span> &amp;&amp; <span class="code-unit">[ -x &quot;$IP/bin/clipboard-copy&quot; ]</span>; then
   printf 'content' | &quot;$IP/bin/clipboard-copy&quot;
 fi</code></pre>
 <p>Copy this idiom rather than inventing a variant; it is the one place the install key lives outside this plugin.</p>

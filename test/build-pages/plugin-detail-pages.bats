@@ -49,7 +49,7 @@ A single-occupancy lock for a working directory with an [external reference](htt
 ## CLI
 
 ```bash
-dibs claim <dir>
+dibs claim <dir> [--description <text>] [--json]
 ```
 
 ## Runnable example
@@ -313,6 +313,17 @@ const html = fs.readFileSync(process.argv[2], "utf8");
 const group = html.match(/<div class="readme-scan">[\s\S]*?<\/div>/);
 if (!group) throw new Error("short command definitions are not grouped");
 if (!group[0].includes("/dibs:claim") || !group[0].includes("/dibs:release")) throw new Error("group misses a command");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README code blocks keep each command option on one line" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+if (!html.includes('<span class="code-unit">[--description &lt;text&gt;]</span>')) {
+  throw new Error("bracketed option is not kept together");
+}
 NODE
   [ "$status" -eq 0 ]
 }

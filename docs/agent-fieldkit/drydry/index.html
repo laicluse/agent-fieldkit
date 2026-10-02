@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Finds parallel paths in code, prose, and process, then converges the duplication that actually drifts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=22ed1a371d">
+		<link rel="stylesheet" href="../../styles.css?v=b7be0b92bd">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -113,7 +113,7 @@ before this artefact was written)
   - drift_hypothesis: both write to `users.signed_up_at`; the rename
     to `users.activated_at` planned for next quarter will update
     only one path, silently misreporting signup activation
-  - verifier_command: `rg -n 'signed_up_at' app/services/`
+  - verifier_command: `rg <span class="code-unit">-n</span> 'signed_up_at' app/services/`
   - triage: cheap-and-safe
   - cost: 3 files, 0 public symbols, mechanical (rename + share)
 

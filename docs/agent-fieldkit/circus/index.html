@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=22ed1a371d">
+		<link rel="stylesheet" href="../../styles.css?v=b7be0b92bd">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -93,14 +93,14 @@ shared/*.md + specific/codex.md -&gt; ~/.codex/AGENTS.md</code></pre>
 <p><strong>Project level (<code>circus sync</code>).</strong> Keeps a repo's <code>CIRCUS.md</code> (visible committed ground truth), <code>CLAUDE.md</code>, and <code>AGENTS.md</code> identical. It is bidirectional: edit any of the three, and <code>circus sync</code> folds that edit into the other two using the last committed <code>CIRCUS.md</code> as the ancestor. On a real conflict (<code>CLAUDE.md</code> and <code>AGENTS.md</code> changed differently), the running agent merges; circus itself does not.</p>
 <p><strong>Plugin level (<code>circus plugins</code>).</strong> Applies the public <code>how-plugins-work</code> sync model to local marketplace repos. <code>SKILL.md</code> is shared source when behavior is agent-agnostic. <code>SKILL.claude.md</code> and <code>SKILL.codex.md</code> are agent-specific sources; they may exist as a pair for parity-by-variant, or singly when a multi-agent plugin has partial skill coverage. Claude manifests remain source; Codex manifests and <code>.agents/plugins/marketplace.json</code> are generated adapters. When suffix sources are present, circus materializes the runtime <code>SKILL.md</code> only for the agents that have source coverage. If Codex rejects a Claude-only frontmatter field, circus materializes a sanitized generated package under <code>.agents/plugins/generated/&lt;plugin&gt;/</code>. If Codex needs hooks, use <code>hooks/hooks.codex.json</code>; circus materializes it as runtime <code>hooks/hooks.json</code> in that generated package and keeps Claude-only hook metadata out of Codex's strict hook schema. Generated Codex hook commands retain the first runtime they use for each plugin version under the host-provided <code>PLUGIN_DATA</code> directory. A later plugin update can remove the old Codex cache directory without invalidating running or resumed sessions; a session that had not used its hook yet may adopt the one unambiguous active sibling version. Concurrent first invocations converge on one complete snapshot, and <code>.circus-source-version</code> records the version directory that supplied its files. Direct plugin roots stay direct. Hook-bearing generated manifests carry a <code>+codex.hooks.2</code> cachebuster so this adapter revision cannot be skipped as an unchanged source-package version. <code>PreToolUse</code> still fails closed when neither a retained nor active runtime exists, while other lifecycle events report that condition as a warning. Claude hooks keep using Claude Code's native version-retention window. Circus owns the executable adapter logic; generated manifests and runtime packages remain output.</p>
 <h2 id="usage">Usage</h2>
-<pre><code>circus build [--force] [name]   generate user targets from shared + specific
-circus sync [path]              sync project CIRCUS.md/CLAUDE.md/AGENTS.md
+<pre><code>circus build <span class="code-unit">[--force]</span> <span class="code-unit">[name]</span>   generate user targets from shared + specific
+circus sync <span class="code-unit">[path]</span>              sync project CIRCUS.md/CLAUDE.md/AGENTS.md
 circus check                    drift report (exit 1 on drift)
 circus diff                     show what a build would change
-circus plugins build [repo]     generate Codex plugin adapters from Claude metadata
-circus plugins check [repo]     drift check for generated plugin adapters
-circus plugins diff [repo]      show adapter diff without writing
-circus plugins versions {--check|--write|--bootstrap|--staged} [repo]  check or update marketplace plugin versions
+circus plugins build <span class="code-unit">[repo]</span>     generate Codex plugin adapters from Claude metadata
+circus plugins check <span class="code-unit">[repo]</span>     drift check for generated plugin adapters
+circus plugins diff <span class="code-unit">[repo]</span>      show adapter diff without writing
+circus plugins versions {<span class="code-unit">--check</span>|<span class="code-unit">--write</span>|<span class="code-unit">--bootstrap</span>|<span class="code-unit">--staged</span>} <span class="code-unit">[repo]</span>  check or update marketplace plugin versions
 circus list                     root, doctrine, specific, mapping
 circus edit                     open the source data in $EDITOR</code></pre>
 <h2 id="add-an-agent">Add an Agent</h2>

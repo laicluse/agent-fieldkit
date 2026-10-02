@@ -3224,3 +3224,7 @@ pre code {
 .readme-scan code:not(pre code) {
   background: var(--white);
 }
+
+.code-unit {
+  white-space: nowrap;
+}

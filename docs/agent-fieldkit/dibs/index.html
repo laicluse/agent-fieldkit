@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=22ed1a371d">
+		<link rel="stylesheet" href="../../styles.css?v=b7be0b92bd">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -82,13 +82,13 @@
 <p>A single-occupancy lock for a git worktree or standalone working directory. Two coding agents, often cross-vendor (a Claude and a Codex), can start working in the same repository at the same time and overwrite each other. dibs lets one agent take exclusive occupancy before mutation and makes the next mutating agent step aside. Any tool or agent can take the lock and any other can observe it, regardless of vendor or platform.</p>
 <p>It is deliberately not a git lock: it does not touch the index and still locks standalone non-git directories. When a requested path lives inside a git worktree, dibs locks that worktree root so two subdirectories in the same checkout cannot be occupied independently. <code>bonsai</code> creates worktrees and consumes dibs to claim the directory it hands out; the lock logic lives in exactly one place.</p>
 <h2 id="cli">CLI</h2>
-<pre><code>dibs claim       &lt;dir&gt; [--pid &lt;n&gt;] [--agent &lt;name&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt;] [--description &lt;text&gt;] [--max-age-hours &lt;n&gt;] [--json]
-dibs release     &lt;dir&gt; [--pid &lt;n&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt; --agent &lt;name&gt;] [--nonce &lt;hex&gt;] [--json]
-dibs release-all [--pid &lt;n&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt; --agent &lt;name&gt;] [--json]
-dibs check       &lt;dir&gt; [--max-age-hours &lt;n&gt;] [--json]
-dibs exclude     &lt;dir&gt; [--json]
-dibs include     &lt;dir&gt; [--json]
-dibs excludes    [--json]</code></pre>
+<pre><code>dibs claim       &lt;dir&gt; <span class="code-unit">[--pid &lt;n&gt;]</span> <span class="code-unit">[--agent &lt;name&gt;]</span> <span class="code-unit">[--session &lt;id&gt;]</span> <span class="code-unit">[--owner &lt;id&gt;]</span> <span class="code-unit">[--description &lt;text&gt;]</span> <span class="code-unit">[--max-age-hours &lt;n&gt;]</span> <span class="code-unit">[--json]</span>
+dibs release     &lt;dir&gt; <span class="code-unit">[--pid &lt;n&gt;]</span> <span class="code-unit">[--session &lt;id&gt;]</span> <span class="code-unit">[--owner &lt;id&gt; --agent &lt;name&gt;]</span> <span class="code-unit">[--nonce &lt;hex&gt;]</span> <span class="code-unit">[--json]</span>
+dibs release-all <span class="code-unit">[--pid &lt;n&gt;]</span> <span class="code-unit">[--session &lt;id&gt;]</span> <span class="code-unit">[--owner &lt;id&gt; --agent &lt;name&gt;]</span> <span class="code-unit">[--json]</span>
+dibs check       &lt;dir&gt; <span class="code-unit">[--max-age-hours &lt;n&gt;]</span> <span class="code-unit">[--json]</span>
+dibs exclude     &lt;dir&gt; <span class="code-unit">[--json]</span>
+dibs include     &lt;dir&gt; <span class="code-unit">[--json]</span>
+dibs excludes    <span class="code-unit">[--json]</span></code></pre>
 <p>The directory-keyed verbs (<code>claim</code>, <code>release</code>, <code>check</code>) require the directory to exist. If the path is inside a git worktree, dibs walks upward to the nearest <code>.git</code> marker and keys the lock by that worktree root's realpath. Outside git, the requested directory's realpath remains the key. A missing path is therefore a clear error rather than a silently divergent key. <code>release-all</code> is the exception: it operates on the lock store directly, reading each lock's recorded realpath, so it still frees a worktree that has since been pruned.</p>
 <ul>
 <li><strong>claim</strong> takes exclusive occupancy of the resolved lock target: the nearest git worktree root when one exists, otherwise the requested directory realpath. Exits 0 on a fresh claim, on an idempotent re-claim by the same holder (<code>held-by-self</code>), or on taking over a stale lock whose holder pid is dead (<code>took-over-stale</code>). Exits non-zero and reports the holder when a live holder exists. For a Git worktree, refused claims and <code>check</code> distinguish the lock's acquisition time from the latest observable mtime among dirty files and show the latter as a relative age. A refused claim also suggests creating a separate git worktree on a new branch (for example with <code>bonsai:bonsai</code>, or plain <code>git worktree</code> if you do not have it) and claiming that worktree path.</li>
@@ -126,8 +126,8 @@ dibs excludes    [--json]</code></pre>
 <pre><code class="language-bash">git config laicluse.requireWorktree true</code></pre>
 <p>When that config is true, the occupancy hook denies mutating the primary checkout and still allows linked worktrees for the same repository. This is local git config by design: dibs stays a general lock by default, and only repos that explicitly ask for worktree-only mutation get the extra guard.</p>
 <p>If the operator explicitly asks an agent to work without a worktree, or a linked worktree would break path-dependent behavior such as a content vault or locally referenced symlinks, disable only the worktree requirement and keep the occupancy lock:</p>
-<pre><code class="language-bash">git -C &quot;&lt;repo&gt;&quot; config laicluse.requireWorktree false
-dibs claim &quot;&lt;repo&gt;&quot; --description &quot;&lt;the change you are making here&gt;&quot;</code></pre>
+<pre><code class="language-bash">git <span class="code-unit">-C</span> &quot;&lt;repo&gt;&quot; config laicluse.requireWorktree false
+dibs claim &quot;&lt;repo&gt;&quot; <span class="code-unit">--description</span> &quot;&lt;the change you are making here&gt;&quot;</code></pre>
 <p>Opt out of enforcement for a session with <code>DIBS_OCCUPANCY=off</code>. <code>bonsai</code>'s claim-at-handout is unaffected and complementary.</p>
 <h2 id="excludes">Excludes</h2>
 <p>Some directories should never take an occupancy lock, including agent-config homes where independent sessions edit their own runtime config and Markdown vaults that permit concurrent authoring. Dibs keeps a per-machine exclude list. <code>claim</code> and <code>check</code> on an excluded directory or any path inside it return state <code>excluded</code> and write no lock. This is a successful concurrency policy result, not a failed claim; workflows must not re-enable locking or invent another lock to continue. The occupancy hook uses that policy for normal target analysis even when Codex omits <code>workdir</code>, while checking other write targets independently. Exclusion lives in the CLI, not the hook, so there is a single decision point.</p>

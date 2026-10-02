@@ -475,7 +475,11 @@ function renderFencedCode(codeBlock) {
 	const className = codeBlock.language ? ` class="language-${attributeEscape(codeBlock.language)}"` : "";
 	const copyable = /(?:^|\s)(?:copy|copyable)(?:\s|$)/i.test(codeBlock.meta || "");
 	const preAttrs = copyable ? " data-copyable" : "";
-	return `<pre${preAttrs}><code${className}>${htmlEscape(codeBlock.lines.join("\n"))}</code></pre>`;
+	return `<pre${preAttrs}><code${className}>${keepOptionsWhole(htmlEscape(codeBlock.lines.join("\n")))}</code></pre>`;
+}
+
+function keepOptionsWhole(escapedCode) {
+	return escapedCode.replace(/\[[^\[\]\n]*\]|(?<![\w-])--?[\w][\w-]*/g, (unit) => `<span class="code-unit">${unit}</span>`);
 }
 
 function renderAgentCommandFence(lines, language) {

@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=22ed1a371d">
+		<link rel="stylesheet" href="../../styles.css?v=b7be0b92bd">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -92,9 +92,9 @@
 <h2 id="parallel-candidate-command">Parallel candidate command</h2>
 <p>The executable is the single implementation used by skills and native hooks:</p>
 <pre><code class="language-bash">git-discipline default
-git-discipline rebase --local|--remote
-git-discipline verify --local|--remote -- &lt;test-command&gt; [args...]
-git-discipline merge --local|--remote</code></pre>
+git-discipline rebase <span class="code-unit">--local</span>|<span class="code-unit">--remote</span>
+git-discipline verify <span class="code-unit">--local</span>|<span class="code-unit">--remote</span> -- &lt;test-command&gt; <span class="code-unit">[args...]</span>
+git-discipline merge <span class="code-unit">--local</span>|<span class="code-unit">--remote</span></code></pre>
 <p><code>--local</code> uses the configured local default ref and is intended for <code>local-only</code> repositories. <code>--remote</code> reads the actual <code>origin</code> default tip, fetches only that tip into <code>FETCH_HEAD</code> for rebases, and merges through a normal non-force push. Passing verification evidence lives under <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/candidates/</code> as recovery and visibility state. Git commits and refs remain the source of truth: evidence is rejected as soon as the candidate or default SHA changes.</p>
 <p>The merge commit always has the verified default tip as first parent, the candidate as second parent, and the candidate tree. A local merge uses <code>git update-ref</code> with an expected old SHA; a remote merge relies on the same topology plus a non-force push. If another candidate updates default first, the loser rebases and verifies again.</p>
 <h2 id="skills">Skills</h2>
@@ -208,11 +208,11 @@ bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smo
 <p>The smoke suite spins up disposable git repos and exercises the full hook chain end-to-end.</p>
 <h2 id="audit">Audit</h2>
 <p>Verify that no body-less commits slipped through. The script ships inside the plugin at <code>bin/audit-no-body-commits</code>; resolve its path from the active install so it survives plugin updates:</p>
-<pre><code class="language-bash">GIT_DISCIPLINE=$(jq -r '.plugins[&quot;git-discipline@laicluse-agent-fieldkit&quot;][0].installPath' \
+<pre><code class="language-bash">GIT_DISCIPLINE=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;git-discipline@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath' \
   ~/.claude/plugins/installed_plugins.json)
 python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot;
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; --branch main --since 2026-04-01
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; --exclude-trivial</code></pre>
+python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--branch</span> main <span class="code-unit">--since</span> 2026-04-01
+python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--exclude-trivial</span></code></pre>
 <p>Lists every commit on the branch with a single-line message (or below the trivial threshold), useful for checking that the push gate held.</p>
 				</article>
 				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-it-does">What it does</a></li><li><a href="#parallel-candidate-command">Parallel candidate command</a></li><li><a href="#skills">Skills</a></li><li><a href="#hooks">Hooks</a></li><li><a href="#example-commit-message">Example commit message</a></li><li><a href="#bypass">Bypass</a></li><li><a href="#test-suite">Test suite</a></li><li><a href="#audit">Audit</a></li></ol></nav>

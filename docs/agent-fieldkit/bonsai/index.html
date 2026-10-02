@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=22ed1a371d">
+		<link rel="stylesheet" href="../../styles.css?v=b7be0b92bd">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -83,9 +83,9 @@
 <p>It is deliberately distinct from raw <code>git worktree</code>: bonsai resolves the freshest Git default branch, refuses to use a vaultsync-managed checkout as a worktree factory, follows the <code>&lt;root&gt;/worktrees/&lt;dir&gt;</code> convention with a self-ignoring <code>.gitignore</code>, primes a tree from a <code>.bonsai</code> file list, and guards teardown. It emits facts (<code>--json</code>), never a start command or clipboard payload; whatever launches an agent in the worktree composes its own briefing.</p>
 <p>Use <code>bonsai</code> when an agent needs isolated workspace state without inventing a repo-specific worktree ritual. It is especially useful before starting parallel agent work, handing a mission to another runtime, or cleaning up old worktrees without losing unmerged commits.</p>
 <h2 id="cli">CLI</h2>
-<pre><code>bonsai create &lt;branch&gt; --repo &lt;root&gt; [--base &lt;ref&gt;] [--json]
-bonsai setup  &lt;worktree&gt; --repo &lt;root&gt; [--no-install] [--json]
-bonsai teardown &lt;worktree|branch&gt; --repo &lt;root&gt; [--force] [--dry-run] [--json]</code></pre>
+<pre><code>bonsai create &lt;branch&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--base &lt;ref&gt;]</span> <span class="code-unit">[--json]</span>
+bonsai setup  &lt;worktree&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--no-install]</span> <span class="code-unit">[--json]</span>
+bonsai teardown &lt;worktree|branch&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--force]</span> <span class="code-unit">[--dry-run]</span> <span class="code-unit">[--json]</span></code></pre>
 <ul>
 <li><strong>create</strong>: resolve the freshest Git default branch from <code>origin/HEAD</code> when available, refuse a vaultsync-managed checkout through the vaultsync CLI, make the worktree + branch (slashes in the branch flatten to dashes in the dir), refuse an existing branch, and print <code>{ worktree, branch, base, baseSha, port }</code>. The port is a deterministic dev-server hint in 3100-3999.</li>
 <li><strong>setup</strong>: copy the <code>.bonsai</code>-listed files from the canonical checkout (<code>--repo</code>) and install dependencies per directory by the manager each lockfile names. Install is best-effort; failures warn rather than block.</li>
