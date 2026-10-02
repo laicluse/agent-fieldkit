@@ -1,4 +1,8 @@
 :root {
+  --action: #31d994;
+  --action-on-paper: #0f7a54;
+  --label: var(--muted);
+  --label-on-paper: var(--paper-muted);
   --bg: #070807;
   --bg-raised: #101311;
   --bg-soft: #171b18;
@@ -15,7 +19,7 @@
   --blue: #70a7ff;
   --amber: #f6b44b;
   --red: #ff6f61;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -44,7 +48,7 @@ a {
 }
 
 a:hover {
-  color: var(--green);
+  color: var(--action);
 }
 
 code,
@@ -160,10 +164,7 @@ button {
 .hero {
   border-bottom: 1px solid var(--line);
   background:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     var(--bg);
-  background-size: 44px 44px;
 }
 
 .hero-grid {
@@ -182,12 +183,11 @@ button {
 
 .eyebrow {
   margin: 0 0 0.8rem;
-  color: var(--green);
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  font-weight: 760;
+  color: var(--label);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 560;
   letter-spacing: 0;
-  text-transform: uppercase;
 }
 
 h1,
@@ -251,10 +251,7 @@ h3 {
 .home-hero {
   border-bottom: 1px solid var(--line);
   background:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     var(--bg);
-  background-size: 44px 44px;
 }
 
 .home-hero-inner {
@@ -309,7 +306,7 @@ h3 {
 }
 
 .home-product-card .eyebrow {
-  color: #0f8058;
+  color: var(--label-on-paper);
 }
 
 .home-product-card h2 {
@@ -357,7 +354,7 @@ h3 {
   border: 1px solid rgba(15, 128, 88, 0.36);
   border-radius: 8px;
   background: rgba(15, 128, 88, 0.08);
-  color: #0f8058;
+  color: var(--action-on-paper);
   font-family: var(--mono);
   font-size: clamp(2rem, 5vw, 3.3rem);
   font-weight: 800;
@@ -405,7 +402,7 @@ h3 {
 }
 
 .home-card-link:hover {
-  color: #0f8058;
+  color: var(--action-on-paper);
 }
 
 .button {
@@ -454,23 +451,7 @@ h3 {
   color: var(--muted);
 }
 
-.console-top span {
-  width: 0.68rem;
-  height: 0.68rem;
-  border-radius: 999px;
-  background: var(--red);
-}
-
-.console-top span:nth-child(2) {
-  background: var(--amber);
-}
-
-.console-top span:nth-child(3) {
-  background: var(--green);
-}
-
 .console-top strong {
-  margin-left: 0.45rem;
   color: var(--ink);
   font-weight: 720;
 }
@@ -512,7 +493,7 @@ h3 {
 }
 
 .stat-row.muted strong {
-  color: var(--amber);
+  color: var(--ink);
 }
 
 .terminal-command {
@@ -540,11 +521,9 @@ h3 {
 .mini-label {
   display: block;
   margin-bottom: 0.6rem;
-  color: var(--blue);
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 760;
-  text-transform: uppercase;
+  color: var(--label);
+  font-size: 0.85rem;
+  font-weight: 560;
 }
 
 .hero-change strong {
@@ -602,7 +581,7 @@ h3 {
 }
 
 .principles-section .eyebrow {
-  color: #0f8058;
+  color: var(--label-on-paper);
 }
 
 .principles-grid {
@@ -615,18 +594,10 @@ h3 {
 }
 
 .principles-grid article {
-  min-height: 15rem;
+  min-height: 0;
   border-right: 1px solid var(--paper-line);
   border-bottom: 1px solid var(--paper-line);
   padding: 1rem;
-}
-
-.principle-number {
-  display: block;
-  margin-bottom: 2.5rem;
-  color: #0f8058;
-  font-family: var(--mono);
-  font-weight: 800;
 }
 
 .principles-grid p {
@@ -764,7 +735,7 @@ h3 {
 }
 
 .plugin-card h3 a:hover {
-  color: var(--green);
+  color: var(--action);
 }
 
 .plugin-head,
@@ -778,9 +749,8 @@ h3 {
 
 .plugin-category {
   margin: 0 0 0.35rem;
-  color: var(--blue);
-  font-family: var(--mono);
-  font-size: 0.72rem;
+  color: var(--label);
+  font-size: 0.8rem;
 }
 
 .plugin-summary {
@@ -788,7 +758,7 @@ h3 {
 }
 
 .version-pill {
-  color: var(--green);
+  color: var(--label);
 }
 
 .plugin-meta {
@@ -799,13 +769,12 @@ h3 {
 }
 
 .support-pill.both {
-  border-color: rgba(49, 217, 148, 0.45);
-  color: var(--green);
+  color: var(--ink);
 }
 
 .support-pill.claude {
-  border-color: rgba(246, 180, 75, 0.5);
-  color: var(--amber);
+  border-style: dashed;
+  color: var(--ink);
 }
 
 .latest-note {
@@ -953,7 +922,7 @@ h3 {
 
 .install-section .eyebrow,
 .changelog-section .eyebrow {
-  color: #0f8058;
+  color: var(--label-on-paper);
 }
 
 .install-section .split-heading p,
@@ -1005,8 +974,8 @@ h3 {
 }
 
 .install-block .button.secondary:hover {
-  border-color: #0f8058;
-  color: #0f8058;
+  border-color: var(--action-on-paper);
+  color: var(--action-on-paper);
 }
 
 .install-command-list {
@@ -1117,7 +1086,7 @@ h3 {
 .agent-command-copy:hover {
   border-color: rgba(15, 128, 88, 0.25);
   background: #ffffff;
-  color: #0f8058;
+  color: var(--action-on-paper);
 }
 
 .agent-command-single {
@@ -1237,7 +1206,7 @@ pre code {
 
 .change-item a {
   margin-top: auto;
-  color: #0f8058;
+  color: var(--action-on-paper);
   font-weight: 720;
 }
 
@@ -1286,7 +1255,7 @@ pre code {
 .vocalist-bubble > span {
   display: block;
   margin-bottom: 0.45rem;
-  color: #0f8058;
+  color: var(--action-on-paper);
   font-family: var(--mono);
   font-size: 0.75rem;
   font-weight: 760;
@@ -1305,7 +1274,7 @@ pre code {
   border: 1px solid rgba(15, 128, 88, 0.24);
   border-radius: 5px;
   background: #eef4ec;
-  color: #0f8058;
+  color: var(--action-on-paper);
   padding: 0.03rem 0.32rem;
   font-family: var(--mono);
   font-size: 0.82em;
@@ -1375,7 +1344,7 @@ pre code {
 }
 
 .vocalist-commands-section .eyebrow {
-  color: #0f8058;
+  color: var(--label-on-paper);
 }
 
 .vocalist-commands-section .split-heading p {
@@ -1482,7 +1451,7 @@ pre code {
 
 .vocalist-mic-note blockquote {
   margin: 0;
-  border-left: 3px solid #0f8058;
+  border-left: 3px solid var(--action-on-paper);
   background: #f8f6ee;
   color: var(--paper-ink);
   padding: 0.85rem 1rem;
@@ -1709,7 +1678,7 @@ pre code {
 }
 
 .supermax-intro-section .eyebrow {
-  color: #0f8058;
+  color: var(--label-on-paper);
 }
 
 .supermax-intro-copy {
@@ -1737,10 +1706,7 @@ pre code {
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     rgba(7, 8, 7, 0.98);
-  background-size: 44px 44px;
   padding: clamp(1rem, 3vw, 1.55rem);
   box-shadow: var(--shadow);
 }
@@ -2393,7 +2359,7 @@ pre code {
 }
 
 .supermax-source-section .eyebrow {
-  color: #0f8058;
+  color: var(--label-on-paper);
 }
 
 .supermax-source-section .split-heading p {
@@ -2444,16 +2410,19 @@ pre code {
 .back-link {
   display: inline-flex;
   margin-bottom: 2rem;
-  color: #0f8058;
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  font-weight: 760;
+  color: var(--paper-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
 }
 
 .back-link::before {
   content: "←";
   margin-right: 0.45rem;
+}
+
+.detail-page .eyebrow {
+  color: var(--label-on-paper);
 }
 
 .detail-hero h1 {
@@ -2475,14 +2444,12 @@ pre code {
   color: var(--paper-ink);
 }
 
-.detail-meta .support-pill.both {
-  border-color: rgba(15, 128, 88, 0.4);
-  color: #0f8058;
+.detail-meta .support-pill {
+  color: var(--paper-ink);
 }
 
 .detail-meta .support-pill.claude {
-  border-color: rgba(171, 109, 9, 0.4);
-  color: #895704;
+  border-style: dashed;
 }
 
 .detail-content-section {
@@ -2533,7 +2500,7 @@ pre code {
 
 .readme-content a,
 .detail-sidebar a {
-  color: #0f8058;
+  color: var(--action-on-paper);
   font-weight: 720;
 }
 
@@ -2881,10 +2848,6 @@ pre code {
 
   .principles-grid article {
     min-height: auto;
-  }
-
-  .principle-number {
-    margin-bottom: 1.2rem;
   }
 
   .plugin-card,
