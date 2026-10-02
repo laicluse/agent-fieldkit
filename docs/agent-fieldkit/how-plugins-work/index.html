@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=77a9b20ca2">
+		<link rel="stylesheet" href="../../styles.css?v=8e286dce57">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -82,10 +82,12 @@
 <p>Reference for Claude Code and Codex plugin naming, skill resolution, cross-agent skill sync, and the <code>plugin:skill</code> invocation pattern.</p>
 <p>Use it when plugin behavior is confusing: a slash command is missing, a skill resolves in one agent but not another, generated adapters drift, or a marketplace change needs to be tested in both runtimes before publication.</p>
 <h2 id="commands">Commands</h2>
+<div class="readme-scan">
 <h3 id="how-plugins-work"><code>/how-plugins-work</code></h3>
 <p>Loads the reference: how slash-command names map to plugins, how sub-skills resolve, when the <code>plugin:skill</code> form is required, how shared skills can be packaged for multiple agents, and where plugin caches fit.</p>
 <h3 id="test-before-push"><code>/test-before-push</code></h3>
 <p>Canonical procedure for rolling multi-agent marketplace changes out to Claude Code and Codex locally before declaring the work complete, whether or not a push follows.</p>
+</div>
 <h3 id="restart-claude-agents-claude-code"><code>/restart-claude-agents</code> (Claude Code)</h3>
 <p>Restarts running Claude Code background agents so a fresh process loads updated plugins, preserving each agent's conversation, permissions, and goal. The companion to <code>/test-before-push</code>: where that tests plugin changes before pushing, this rolls them into agents already running the old version. Lists the running background agents first, restarts the idle ones by default, takes agent ids to target specific ones, and never touches interactive sessions.</p>
 <h2 id="auto-trigger">Auto-trigger</h2>

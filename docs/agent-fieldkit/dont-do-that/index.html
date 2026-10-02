@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=77a9b20ca2">
+		<link rel="stylesheet" href="../../styles.css?v=8e286dce57">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -195,12 +195,14 @@
 <h2 id="stop-guards">Stop guards</h2>
 <h3 id="pre-existing-false-claims"><code>pre-existing</code> (<code>false-claims</code>)</h3>
 <p>Blocks Stop when recent assistant text relativizes a test or error as already existing before the current change. Also runs when <code>stop_hook_active</code> is true and keeps its own per-session line tracker. Pass condition: fix the failure, or formulate it as parallel work in the same directory when there is concrete evidence of a parallel session.</p>
+<div class="readme-scan">
 <h3 id="tool-error"><code>tool-error</code></h3>
 <p>Blocks Stop when the last significant transcript event was a failed tool call. Also runs when <code>stop_hook_active</code> is true. The guard has a hard cap of two nudges per session and uses line tracking so it only fires on new errors. Pass condition: analyse the error and retry instead of giving up.</p>
 <h3 id="cache"><code>cache</code></h3>
 <p>Blocks Stop when recent assistant text blames cache for a localhost problem. On a dev server, cache is rarely the root cause. Pass condition: investigate and name the actual root cause.</p>
 <h3 id="estimate"><code>estimate</code></h3>
 <p>Blocks Stop when assistant text frames effort or scope in hours, days, weeks, or months: &quot;een paar uur eerlijk werk&quot;, &quot;halve dag uitzoekwerk&quot;, &quot;dagje sleutelen&quot;, &quot;kost een week&quot;, &quot;takes a day&quot;, &quot;a few days of work&quot;, &quot;binnen een uur&quot;, or comparison frames such as &quot;option A is vandaag, option B is deze week&quot;.</p>
+</div>
 <p>The guard skips common false positives on the same line as past-tense markers, calendar and scheduling language, retention windows, measured duration, uptime/history language, legal or SLA facts, and absolute-time references such as &quot;tomorrow&quot; or &quot;morgen&quot;.</p>
 <p>Pass condition: drop the duration phrasing, replace it with concrete counts such as files touched and verifications run, prefix the turn with <code>🧭</code> for a deferred-judgment user choice, or close with <code>🚧</code> for work in progress.</p>
 <h3 id="prefer"><code>prefer</code></h3>

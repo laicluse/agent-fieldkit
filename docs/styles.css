@@ -2599,19 +2599,30 @@ pre code {
   width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
+  border-radius: 8px;
+  background: var(--sunken);
   margin: 1.3rem 0;
+  padding: 0.35rem 1rem;
 }
 
 .readme-content th,
 .readme-content td {
-  border: 1px solid var(--paper-line);
-  padding: 0.65rem 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--paper-line);
+  padding: 0.7rem 0.75rem 0.7rem 0;
   text-align: left;
   vertical-align: top;
 }
 
+.readme-content tr:last-child td {
+  border-bottom: 0;
+}
+
 .readme-content th {
-  background: #ffffff;
+  border-bottom: 1px solid var(--paper-ink);
+  color: var(--paper-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 @media (max-width: 640px) {
@@ -2653,8 +2664,21 @@ pre code {
     font-weight: 700;
     letter-spacing: 0.02em;
   }
+}
 
-  color: var(--paper-ink);
+.readme-scan {
+  border-radius: 8px;
+  background: var(--sunken);
+  margin: 1.3rem 0;
+  padding: 0.4rem 1.25rem 0.9rem;
+}
+
+.readme-scan h3 {
+  margin-top: 1.1rem;
+}
+
+.readme-scan h3 + p {
+  margin-top: 0.3rem;
 }
 
 .readme-content code:not(pre code) {

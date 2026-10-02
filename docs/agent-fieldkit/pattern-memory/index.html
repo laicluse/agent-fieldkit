@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=77a9b20ca2">
+		<link rel="stylesheet" href="../../styles.css?v=8e286dce57">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -93,6 +93,7 @@ SCHEMA.md
 INDEX.md
 patterns/example-map-like-canvas-interaction.md</code></pre>
 <h2 id="commands">Commands</h2>
+<div class="readme-scan">
 <h3 id="pattern-memory-init"><code>pattern-memory init</code></h3>
 <p>Creates the local Pattern Memory root, writes starter docs when missing, runs <code>git init</code> when needed, and generates <code>INDEX.md</code>.</p>
 <h3 id="pattern-memory-index"><code>pattern-memory index</code></h3>
@@ -101,6 +102,7 @@ patterns/example-map-like-canvas-interaction.md</code></pre>
 <p>Searches pattern titles, slugs, tags, triggers, exemplars, applicability fields, and body text. Output includes the matching file path and sanitized metadata, never private <code>precedents</code>.</p>
 <h3 id="pattern-memory-validate"><code>pattern-memory validate</code></h3>
 <p>Checks schema fields, allowed lifecycle values, the local root boundary, and index freshness.</p>
+</div>
 <h2 id="pattern-schema">Pattern Schema</h2>
 <p>Each pattern is a Markdown file with YAML-style frontmatter:</p>
 <pre><code class="language-yaml">---

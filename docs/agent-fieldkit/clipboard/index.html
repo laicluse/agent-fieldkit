@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=77a9b20ca2">
+		<link rel="stylesheet" href="../../styles.css?v=8e286dce57">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -82,10 +82,12 @@
 <p>Copy the core content of the last assistant answer to the macOS clipboard. Plain text is the default; Slack-flavored rich text is available on request.</p>
 <p>Use it when the answer itself is the artefact you need to paste elsewhere: a summary, command block, code snippet, Slack update, or short handoff. The skill tries to copy the useful body, not the chat wrapper around it.</p>
 <h2 id="commands">Commands</h2>
+<div class="readme-scan">
 <h3 id="clipboard"><code>/clipboard</code></h3>
 <p>Copies the relevant content of the last answer to the clipboard as plain text via the <code>clipboard-copy</code> helper (which wraps <code>pbcopy</code>). The skill picks the core content (code block, summary, answer body) rather than the full response wrapper.</p>
 <h3 id="clipboard-slack"><code>/clipboard slack</code></h3>
 <p>Copies as Slack rich text via <code>clipboard-copy --html</code> (which wraps <code>pbcopy-html</code>), preserving bold, italic, code spans, and code blocks when pasted into Slack.</p>
+</div>
 <h2 id="requirements">Requirements</h2>
 <p>macOS, with Node.js on <code>$PATH</code> (the <code>clipboard-copy</code> helper and the update-broadcast check are Node scripts). Plain text mode uses the built-in <code>pbcopy</code> and works out of the box; the skill calls the <code>clipboard-copy</code> helper that ships inside <code>bin/</code> of the active plugin install, so no PATH-level install step is needed. Claude resolves that root through <code>${CLAUDE_PLUGIN_ROOT}</code>; Codex resolves it through <code>codex plugin list --json</code>.</p>
 <p>Rich text mode (<code>/clipboard slack</code>) drives <code>pbcopy-html</code>, a Swift script shipped with the plugin. Copy it onto your <code>$PATH</code> if you want to invoke <code>pbcopy-html</code> directly from a shell; <code>clipboard-copy --html</code> already resolves it relative to its own location. The <code>jq</code> lookup below is a shell convenience for finding the active install from your terminal (where <code>${CLAUDE_PLUGIN_ROOT}</code> is not set); the skill itself never uses it, and the copy is repeated after each plugin update per the note below. The marketplace is symlink-free to keep Windows consumers working, so install with <code>cp -f</code>:</p>

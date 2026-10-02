@@ -83,6 +83,16 @@ Nested JS template literals (`` `${`inner //`}` ``) may close the outer template
 
 Inline HTML code keeps pipes literal: <code>rg -n 'a\\|b' src/</code> for raw matches.
 
+## Skills
+
+### `/dibs:claim`
+
+Claims a directory.
+
+### `/dibs:release`
+
+Releases it again.
+
 - Claims a directory.
 - Reports the current holder.
 MD
@@ -292,6 +302,17 @@ for (const id of ["commands", "parser-cases", "code-spans"]) {
 	if (!nav[0].includes(`href="#${id}"`)) throw new Error(`nav misses #${id}`);
 }
 if (nav[0].includes('href="#installation"')) throw new Error("nav lists the suppressed install section");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "short command definitions render as one scannable group" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const group = html.match(/<div class="readme-scan">[\s\S]*?<\/div>/);
+if (!group) throw new Error("short command definitions are not grouped");
+if (!group[0].includes("/dibs:claim") || !group[0].includes("/dibs:release")) throw new Error("group misses a command");
 NODE
   [ "$status" -eq 0 ]
 }
