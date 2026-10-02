@@ -3186,3 +3186,25 @@ pre code {
 .supermax-animation-section {
   padding-bottom: clamp(2.5rem, 5vw, 4rem);
 }
+
+.detail-meta {
+  align-items: center;
+  column-gap: 0.85rem;
+}
+
+.detail-meta .meta-fact {
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  color: var(--muted);
+}
+
+.detail-meta .meta-fact::before {
+  content: "\00b7";
+  margin-right: 0.85rem;
+  color: var(--muted);
+}
+
+.detail-hero .eyebrow {
+  color: var(--ink-soft);
+}

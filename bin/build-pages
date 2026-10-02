@@ -990,8 +990,8 @@ function buildPluginDetailPage(data, plugin, markdown, hash, assetVersions) {
 						<p class="lede">${htmlEscape(plugin.summary)}</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill ${plugin.codex ? "both" : "claude"}">${plugin.codex ? "Claude + Codex" : "Claude only"}</span>
-							<span>${htmlEscape(plugin.version)}</span>
-							<span>${plugin.skillCount} ${plugin.skillCount === 1 ? "skill" : "skills"}</span>
+							<span class="meta-fact">${htmlEscape(plugin.version)}</span>
+							<span class="meta-fact">${plugin.skillCount} ${plugin.skillCount === 1 ? "skill" : "skills"}</span>
 						</div>
 					</div>
 					<aside class="detail-install" aria-label="Install">
