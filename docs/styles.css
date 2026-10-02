@@ -2541,9 +2541,9 @@ pre code {
   display: grid;
   width: min(1180px, calc(100vw - 2rem));
   margin: 0 auto;
-  grid-template-columns: minmax(0, 46rem) minmax(12rem, 15rem);
-  justify-content: space-between;
-  gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
+  row-gap: clamp(2rem, 5vw, 4.5rem);
+  column-gap: clamp(2rem, 5vw, 4.5rem);
   padding: clamp(3rem, 6vw, 5rem) 0;
 }
 
