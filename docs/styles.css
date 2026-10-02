@@ -2467,7 +2467,7 @@ pre code {
   display: grid;
   width: min(1180px, calc(100vw - 2rem));
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem);
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
   gap: clamp(2rem, 5vw, 4.5rem);
   padding: clamp(3rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3rem);
 }
@@ -2683,6 +2683,7 @@ pre code {
 }
 
 .detail-install pre code {
+  font-size: 0.8rem;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -2906,20 +2907,17 @@ pre code {
   }
 
   .agent-command-switch-head {
-    align-items: stretch;
+    flex-wrap: nowrap;
+    align-items: center;
   }
 
   .agent-command-options {
-    width: 100%;
+    flex: 1 1 auto;
   }
 
   .agent-command-option {
     flex: 1 1 auto;
     justify-content: center;
-  }
-
-  .agent-command-copy {
-    margin-left: 0;
   }
 
   .stat-row {
