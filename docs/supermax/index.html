@@ -29,7 +29,7 @@
 		<meta name="twitter:image" content="https://laicluse.com/assets/supermax-og-image.png?v=45a1f25293">
 		<meta name="twitter:image:alt" content="Supermax package share card">
 
-		<link rel="stylesheet" href="../styles.css?v=c16184f55a">
+		<link rel="stylesheet" href="../styles.css?v=f3c0e8251f">
 		<script src="../code-panel-copy.js?v=3ee1e4c503"></script>
 	</head>
 	<body>
@@ -187,16 +187,16 @@
 							<h3>2. Describe cells</h3>
 						</div>
 						<p>Each cell declares a minimum, maximum, title, and optional zoomable anchor behavior.</p>
-						<pre data-copyable><code>import { CellCollection } from &quot;@laicluse/supermax&quot;;
-
-const cells = new CellCollection([
-  { id: &quot;menu&quot;, title: &quot;Menu&quot;, min: 3, max: 4 },
-  { id: &quot;list&quot;, title: &quot;List&quot;, min: 5, max: 10 },
-  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },
-  { id: &quot;notes&quot;, title: &quot;Notes&quot;, min: 6, max: 18 },
-]);
-
-const layout = cells.distribute(24, &quot;article&quot;);</code></pre>
+						<pre data-copyable><code><span class="code-line">import { CellCollection } from &quot;@laicluse/supermax&quot;;</span>
+<span class="code-line"></span>
+<span class="code-line">const cells = new CellCollection([</span>
+<span class="code-line">  { id: &quot;menu&quot;, title: &quot;Menu&quot;, min: 3, max: 4 },</span>
+<span class="code-line">  { id: &quot;list&quot;, title: &quot;List&quot;, min: 5, max: 10 },</span>
+<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>
+<span class="code-line">  { id: &quot;notes&quot;, title: &quot;Notes&quot;, min: 6, max: 18 },</span>
+<span class="code-line">]);</span>
+<span class="code-line"></span>
+<span class="code-line">const layout = cells.distribute(24, &quot;article&quot;);</span></code></pre>
 					</article>
 					<article class="install-block">
 						<div class="block-heading">

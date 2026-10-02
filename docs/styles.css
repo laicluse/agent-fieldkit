@@ -3241,7 +3241,7 @@ pre code {
   white-space: nowrap;
 }
 
-.readme-content pre .code-line {
+pre .code-line {
   display: inline-block;
   padding-left: 4ch;
   text-indent: -4ch;

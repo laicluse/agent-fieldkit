@@ -413,3 +413,7 @@ NODE
   run grep -E 'focused cmux|coding-agent surface|\\$ focused' "$REPO/docs/vocalist/index.html"
   [ "$status" -ne 0 ]
 }
+
+@test "the Supermax usage example renders hanging code lines" {
+  grep -q '<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>' "$REPO/docs/supermax/index.html"
+}

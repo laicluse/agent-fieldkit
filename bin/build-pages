@@ -475,8 +475,14 @@ function renderFencedCode(codeBlock) {
 	const className = codeBlock.language ? ` class="language-${attributeEscape(codeBlock.language)}"` : "";
 	const copyable = /(?:^|\s)(?:copy|copyable)(?:\s|$)/i.test(codeBlock.meta || "");
 	const preAttrs = copyable ? " data-copyable" : "";
-	const lines = codeBlock.lines.map((line) => `<span class="code-line">${keepOptionsWhole(htmlEscape(line))}</span>`);
-	return `<pre${preAttrs}><code${className}>${lines.join("\n")}</code></pre>`;
+	return `<pre${preAttrs}><code${className}>${hangingCodeLines(codeBlock.lines.join("\n"))}</code></pre>`;
+}
+
+function hangingCodeLines(code) {
+	return code
+		.split("\n")
+		.map((line) => `<span class="code-line">${keepOptionsWhole(htmlEscape(line))}</span>`)
+		.join("\n");
 }
 
 function breakInstallCommandsBetweenWords(switchHtml) {
@@ -1509,7 +1515,7 @@ const layout = cells.distribute(24, "article");`;
 							<h3>2. Describe cells</h3>
 						</div>
 						<p>Each cell declares a minimum, maximum, title, and optional zoomable anchor behavior.</p>
-						<pre data-copyable><code>${htmlEscape(usage)}</code></pre>
+						<pre data-copyable><code>${hangingCodeLines(usage)}</code></pre>
 					</article>
 					<article class="install-block">
 						<div class="block-heading">
