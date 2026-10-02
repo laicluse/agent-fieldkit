@@ -1859,8 +1859,8 @@ pre code {
   }
 
   .responsive-demo-stage .supermax-demo-cell {
-    padding: 0.08rem;
-    font-size: 0.34rem;
+    padding: 0.12rem;
+    font-size: 0.5rem;
   }
 }
 
@@ -1981,8 +1981,10 @@ pre code {
   font-size: 0.72rem;
   font-weight: 780;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  justify-content: flex-end;
 }
 
 .supermax-demo-cell.menu {
