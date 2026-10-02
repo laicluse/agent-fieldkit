@@ -81,6 +81,8 @@ codex plugin add dibs@laicluse-agent-fieldkit
 
 Nested JS template literals (`` `${`inner //`}` ``) may close the outer template state early.
 
+Inline HTML code keeps pipes literal: <code>rg -n 'a\\|b' src/</code> for raw matches.
+
 - Claims a directory.
 - Reports the current holder.
 MD
@@ -161,6 +163,16 @@ const bodyRow = rows[rows.length - 1];
 const bodyCells = [...bodyRow.matchAll(/<td[ >]/g)].length;
 if (bodyCells !== 3) throw new Error(`expected 3 body cells, got ${bodyCells}`);
 if (!bodyRow.includes("\\\\|kenteken")) throw new Error("escaped pipe moved out of regex cell");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README inline HTML code elements render as code" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+if (html.includes("&lt;code&gt;")) throw new Error("inline <code> was escaped into visible text");
+if (!html.includes("<code>rg -n 'a" + "\\".repeat(2) + "|b' src/</code>")) throw new Error("inline <code> content missing or unescaped");
 NODE
   [ "$status" -eq 0 ]
 }

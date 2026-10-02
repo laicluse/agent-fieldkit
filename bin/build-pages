@@ -309,8 +309,22 @@ function slugifyHeading(value) {
 		.replace(/^-|-$/g, "");
 }
 
+function decodeHtmlEntities(value) {
+	return value
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">")
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;/g, "'")
+		.replace(/&amp;/g, "&");
+}
+
 function renderInlineMarkdown(value) {
 	const codeSpans = [];
+	value = value.replace(/<code>([\s\S]*?)<\/code>/g, (_, code) => {
+		const token = `\u0000CODE${codeSpans.length}\u0000`;
+		codeSpans.push(`<code>${htmlEscape(decodeHtmlEntities(code))}</code>`);
+		return token;
+	});
 	let withCodeSpans = "";
 	for (let index = 0; index < value.length; index += 1) {
 		if (value[index] !== "`") {
