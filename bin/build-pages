@@ -1477,6 +1477,9 @@ const layout = cells.distribute(24, "article");`;
 							<h3>3. Render anywhere</h3>
 						</div>
 						<p>The result is plain data: actual width, visibility, hidden count, rightmost hidden title, and spare columns.</p>
+						<pre><code>layout.hiddenCount;          // 2
+layout.rightmostHiddenTitle; // "List"
+layout.spareColumns;         // 0</code></pre>
 					</article>
 				</div>
 			</section>

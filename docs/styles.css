@@ -51,6 +51,10 @@
   --machine-muted: #a8b0aa;
   --machine-line: rgba(255, 255, 255, 0.13);
   --machine-line-strong: rgba(255, 255, 255, 0.24);
+  --cell-menu: #2f6f68;
+  --cell-list: #5b5aa6;
+  --cell-article: #2e5d9a;
+  --cell-notes: #a3473a;
   --paper: #f6f4ec;
   --paper-ink: #171b18;
   --paper-muted: #5f6861;
@@ -450,17 +454,17 @@ h3 {
 
 .home-supermax-mark span:nth-child(1) {
   height: 42%;
-  background: #0f766e;
+  background: var(--cell-menu);
 }
 
 .home-supermax-mark span:nth-child(2) {
   height: 66%;
-  background: #7c3aed;
+  background: var(--cell-list);
 }
 
 .home-supermax-mark span:nth-child(3) {
   height: 88%;
-  background: #0b6bcb;
+  background: var(--cell-article);
 }
 
 .home-card-link {
@@ -1699,21 +1703,21 @@ pre code {
 }
 
 .supermax-preview-cell.source {
-  background: #0f766e;
+  background: var(--cell-menu);
 }
 
 .supermax-preview-cell.context {
-  background: #7c3aed;
+  background: var(--cell-list);
 }
 
 .supermax-preview-cell.board,
 .supermax-preview-cell.article {
-  background: #0b6bcb;
+  background: var(--cell-article);
 }
 
 .supermax-preview-cell.details,
 .supermax-preview-cell.notes {
-  background: #be123c;
+  background: var(--cell-notes);
 }
 
 .supermax-preview-note {
@@ -1902,25 +1906,25 @@ pre code {
 .standard-demo-tile {
   min-height: 3.35rem;
   border-radius: 5px;
-  background: rgba(246, 180, 75, 0.8);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .standard-demo-tile.hero {
   grid-column: 1 / -1;
   min-height: 4.1rem;
-  background: #31d994;
+  background: rgba(255, 255, 255, 0.34);
   animation: demoStandardHero 11s linear infinite;
 }
 
 .standard-demo-tile.wide {
   grid-column: span 2;
-  background: #70a7ff;
+  background: rgba(255, 255, 255, 0.28);
   animation: demoStandardWide 11s linear infinite;
 }
 
 .standard-demo-tile.tall {
   min-height: 6.5rem;
-  background: #be123c;
+  background: rgba(255, 255, 255, 0.22);
   animation: demoStandardTall 11s linear infinite;
 }
 
@@ -2014,28 +2018,28 @@ pre code {
 .supermax-demo-cell.menu {
   left: 0;
   width: 12%;
-  background: #0f766e;
+  background: var(--cell-menu);
   animation: demoSupermaxMenuCell 11s linear infinite;
 }
 
 .supermax-demo-cell.list {
   left: 14%;
   width: 20%;
-  background: #7c3aed;
+  background: var(--cell-list);
   animation: demoSupermaxListCell 11s linear infinite;
 }
 
 .supermax-demo-cell.article {
   left: 36%;
   width: 40%;
-  background: #0b6bcb;
+  background: var(--cell-article);
   animation: demoSupermaxArticleCell 11s linear infinite;
 }
 
 .supermax-demo-cell.notes {
   left: 78%;
   width: 22%;
-  background: #be123c;
+  background: var(--cell-notes);
   animation: demoSupermaxNotesCell 11s linear infinite;
 }
 
