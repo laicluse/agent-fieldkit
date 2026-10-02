@@ -85,7 +85,7 @@
 .hero-console,
 .vocalist-panel,
 .supermax-panel,
-.supermax-animation-frame,
+.supermax-animation-card,
 .responsive-demo-viewport,
 .terminal-command,
 pre {
@@ -3038,8 +3038,7 @@ pre code {
 .hero,
 .home-hero,
 .detail-hero,
-.install-section,
-.supermax-animation-section {
+.install-section {
   --bg: var(--machine-bg);
   --bg-raised: var(--machine-raised);
   --bg-soft: var(--machine-raised);
@@ -3171,6 +3170,16 @@ pre code {
 }
 
 .supermax-animation-section {
+  background: var(--sunken);
+  color: var(--paper-ink);
+}
+
+.supermax-animation-section .supermax-animation-card {
+  border-color: transparent;
+  background: var(--machine-bg);
+}
+
+.supermax-animation-section {
   padding-top: clamp(3rem, 6vw, 5rem);
 }
 
@@ -3179,7 +3188,7 @@ pre code {
 }
 
 .supermax-animation-section + .install-section {
-  border-top: 1px solid var(--machine-line);
+  border-top: 0;
   padding-top: clamp(2.5rem, 5vw, 4rem);
 }
 
