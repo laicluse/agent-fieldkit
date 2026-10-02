@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -102,21 +102,21 @@
 <li>When no upstream exists, skips remote operations and remains a local auto-commit vault.</li>
 </ul>
 <h2 id="commands">Commands</h2>
-<pre><code class="language-bash">vaultsync install <span class="code-unit">[path]</span> <span class="code-unit">--llm-command</span> '&lt;json command&gt;' <span class="code-unit">[--pre-sync '&lt;command&gt;']</span> <span class="code-unit">[--verify '&lt;command&gt;']</span>
-vaultsync managed <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span>
-vaultsync status <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span>
-vaultsync now <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span>
-vaultsync pause <span class="code-unit">[path]</span> <span class="code-unit">[--minutes &lt;n&gt; | --until &lt;time&gt;]</span> <span class="code-unit">[--reason &lt;text&gt;]</span>
-vaultsync resume <span class="code-unit">[path]</span>
-vaultsync doctor <span class="code-unit">[path]</span> <span class="code-unit">[--llm-command '&lt;json command&gt;']</span>
-vaultsync validator add &lt;name&gt; <span class="code-unit">[path]</span> <span class="code-unit">--command</span> '&lt;command&gt;' <span class="code-unit">--repair</span> none
-vaultsync validator add &lt;name&gt; <span class="code-unit">[path]</span> <span class="code-unit">--command</span> '&lt;command&gt;' <span class="code-unit">--repair</span> automatic <span class="code-unit">--repair-authority</span> diagnostics
-vaultsync validator list <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span>
-vaultsync validator remove &lt;name&gt; <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span>
-vaultsync uninstall <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span>
-vaultsync llm-claude
-vaultsync daemon
-vaultsync runtime install</code></pre>
+<pre><code class="language-bash"><span class="code-line">vaultsync install <span class="code-unit">[path]</span> <span class="code-unit">--llm-command</span> '&lt;json command&gt;' <span class="code-unit">[--pre-sync '&lt;command&gt;']</span> <span class="code-unit">[--verify '&lt;command&gt;']</span></span>
+<span class="code-line">vaultsync managed <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">vaultsync status <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">vaultsync now <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">vaultsync pause <span class="code-unit">[path]</span> <span class="code-unit">[--minutes &lt;n&gt; | --until &lt;time&gt;]</span> <span class="code-unit">[--reason &lt;text&gt;]</span></span>
+<span class="code-line">vaultsync resume <span class="code-unit">[path]</span></span>
+<span class="code-line">vaultsync doctor <span class="code-unit">[path]</span> <span class="code-unit">[--llm-command '&lt;json command&gt;']</span></span>
+<span class="code-line">vaultsync validator add &lt;name&gt; <span class="code-unit">[path]</span> <span class="code-unit">--command</span> '&lt;command&gt;' <span class="code-unit">--repair</span> none</span>
+<span class="code-line">vaultsync validator add &lt;name&gt; <span class="code-unit">[path]</span> <span class="code-unit">--command</span> '&lt;command&gt;' <span class="code-unit">--repair</span> automatic <span class="code-unit">--repair-authority</span> diagnostics</span>
+<span class="code-line">vaultsync validator list <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">vaultsync validator remove &lt;name&gt; <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">vaultsync uninstall <span class="code-unit">[path]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">vaultsync llm-claude</span>
+<span class="code-line">vaultsync daemon</span>
+<span class="code-line">vaultsync runtime install</span></code></pre>
 <p><code>install</code> resolves the requested path to the nearest Git worktree root and records that whole checkout. The current branch is the sync branch. The branch's upstream is recorded when present; missing upstream is allowed and means local-only mode.</p>
 <p><code>--pre-sync</code> registers a synchronous preparation command such as a tracked-file generator. Vaultsync runs it under the checkout's Dibs lock after integrating remote changes and before verification and publication, then reruns it after verifier repairs. A non-zero exit blocks push as a <code>pre-sync</code> failure while preserving any local source checkpoint for recovery. On unchanged daemon polls the command does not run; <code>vaultsync now</code> always runs it.</p>
 <p><code>uninstall</code> stops managing a checkout by removing its registration; the checkout itself is untouched. It also works when the checkout is already gone from disk, which <code>status</code> reports as <code>missing</code> with this command as the recovery step. A running daemon never recreates a removed registration.</p>
@@ -133,25 +133,25 @@ vaultsync runtime install</code></pre>
 <h2 id="llm-command-contract">LLM Command Contract</h2>
 <p>The configured LLM command reads one JSON object from stdin and writes one JSON object to stdout. The protocol field is <code>vaultsync.llm.v1</code>.</p>
 <p>For commit messages:</p>
-<pre><code class="language-json">{ &quot;message&quot;: &quot;Substantive English commit message body&quot; }</code></pre>
+<pre><code class="language-json"><span class="code-line">{ &quot;message&quot;: &quot;Substantive English commit message body&quot; }</span></code></pre>
 <p>When the provider command exits non-zero, vaultsync preserves its safely redacted stderr. A wrapper may supply a provider-specific message and recovery action as one stderr line without coupling vaultsync to that provider:</p>
-<pre><code class="language-json">{ &quot;protocol&quot;: &quot;vaultsync.llm.error.v1&quot;, &quot;message&quot;: &quot;OAuth session expired.&quot;, &quot;recovery&quot;: &quot;Re-authenticate the configured provider and retry sync.&quot; }</code></pre>
+<pre><code class="language-json"><span class="code-line">{ &quot;protocol&quot;: &quot;vaultsync.llm.error.v1&quot;, &quot;message&quot;: &quot;OAuth session expired.&quot;, &quot;recovery&quot;: &quot;Re-authenticate the configured provider and retry sync.&quot; }</span></code></pre>
 <p>Plain stderr remains supported. Vaultsync recognizes a generic expired OAuth session and recommends re-authenticating the configured provider; it does not name or hard-code a provider.</p>
 <p>vaultsync keeps the LLM-generated subject and body but canonicalizes the required trailers:</p>
-<pre><code class="language-text">Tests: n/a (docs-only)
-Slice: docs-only
-Red-then-green: n/a (no executable behaviour changed)
-Visual: &lt;changed HTML viewer, when present&gt;
-Vaultsync-Reason: &lt;cycle reason&gt;</code></pre>
+<pre><code class="language-text"><span class="code-line">Tests: n/a (docs-only)</span>
+<span class="code-line">Slice: docs-only</span>
+<span class="code-line">Red-then-green: n/a (no executable behaviour changed)</span>
+<span class="code-line">Visual: &lt;changed HTML viewer, when present&gt;</span>
+<span class="code-line">Vaultsync-Reason: &lt;cycle reason&gt;</span></code></pre>
 <p>For conflicts:</p>
-<pre><code class="language-json">{ &quot;resolved&quot;: &quot;full file content without conflict markers&quot; }</code></pre>
+<pre><code class="language-json"><span class="code-line">{ &quot;resolved&quot;: &quot;full file content without conflict markers&quot; }</span></code></pre>
 <p>Remote/upstream content is authoritative. If local-only material cannot be merged cleanly, the resolver may preserve it in a sidecar file named like <code>name.conflict-extra-info.md</code>, but the original path must keep the remote truth intact.</p>
 <p>For verifier failures:</p>
-<pre><code class="language-json">{ &quot;repairs&quot;: <span class="code-unit">[{ &quot;path&quot;: &quot;relative/path.md&quot;, &quot;content&quot;: &quot;full replacement content&quot;, &quot;reason&quot;: &quot;short reason&quot; }]</span> }</code></pre>
+<pre><code class="language-json"><span class="code-line">{ &quot;repairs&quot;: <span class="code-unit">[{ &quot;path&quot;: &quot;relative/path.md&quot;, &quot;content&quot;: &quot;full replacement content&quot;, &quot;reason&quot;: &quot;short reason&quot; }]</span> }</span></code></pre>
 <p>vaultsync only accepts repairs for files included in the request. Verifier-reported files are included first, followed by current sync paths as context, with fixed limits on repair rounds, file count, and file size.</p>
 <h2 id="verification">Verification</h2>
 <p>Run the package tests from the source checkout:</p>
-<pre><code class="language-bash">npm test <span class="code-unit">--prefix</span> packages/vaultsync</code></pre>
+<pre><code class="language-bash"><span class="code-line">npm test <span class="code-unit">--prefix</span> packages/vaultsync</span></code></pre>
 <p>The tests cover local-only installs without upstream, remote-backed sync cycles, managed sync hooks that explicitly permit <code>--no-verify</code>, untouched legacy registrations, mixed legacy and named validators, aggregate failures, idempotent validator management, repair boundaries, and verifier repair loops.</p>
 				</article>
 				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#capabilities">Capabilities</a></li><li><a href="#commands">Commands</a></li><li><a href="#llm-command-contract">LLM Command Contract</a></li><li><a href="#verification">Verification</a></li></ol></nav>

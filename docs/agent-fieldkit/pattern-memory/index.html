@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -83,15 +83,15 @@
 <p>The plugin ships the mechanism, not your private content. Real pattern files live in personal local state under <code>${LAICLUSE_HOME:-$HOME/.laicluse}/patterns</code> by default. Public docs and generated examples describe only sanitized mechanics; concrete app names, private repository paths, local paths, and origin stories stay in private <code>precedents</code> fields and must never be surfaced in public artifacts.</p>
 <h2 id="local-store">Local Store</h2>
 <p>The default store is:</p>
-<pre><code class="language-bash">${LAICLUSE_HOME:-$HOME/.laicluse}/patterns</code></pre>
+<pre><code class="language-bash"><span class="code-line">${LAICLUSE_HOME:-$HOME/.laicluse}/patterns</span></code></pre>
 <p>The store is a standalone git repository. It must sit outside project working trees so pattern files cannot be accidentally staged into a product repository.</p>
 <p>Initialize it from an installed plugin:</p>
-<pre><code class="language-bash">node &quot;$PLUGIN_ROOT/bin/pattern-memory&quot; init</code></pre>
+<pre><code class="language-bash"><span class="code-line">node &quot;$PLUGIN_ROOT/bin/pattern-memory&quot; init</span></code></pre>
 <p>The helper creates:</p>
-<pre><code class="language-text">README.md
-SCHEMA.md
-INDEX.md
-patterns/example-map-like-canvas-interaction.md</code></pre>
+<pre><code class="language-text"><span class="code-line">README.md</span>
+<span class="code-line">SCHEMA.md</span>
+<span class="code-line">INDEX.md</span>
+<span class="code-line">patterns/example-map-like-canvas-interaction.md</span></code></pre>
 <h2 id="commands">Commands</h2>
 <div class="readme-scan">
 <h3 id="pattern-memory-init"><code>pattern-memory init</code></h3>
@@ -105,25 +105,25 @@ patterns/example-map-like-canvas-interaction.md</code></pre>
 </div>
 <h2 id="pattern-schema">Pattern Schema</h2>
 <p>Each pattern is a Markdown file with YAML-style frontmatter:</p>
-<pre><code class="language-yaml">---
-slug: map-like-canvas-interaction
-type: pattern
-status: draft
-visibility: public-example
-triggers:
-  - canvas pan zoom
-  - wheel event
-  - trackpad pinch
-exemplars:
-  - map-like canvas
-precedents: <span class="code-unit">[]</span>
-applies_to:
-  - browser canvas
-tags:
-  - ui
-  - interaction
-last_verified: 2026-07-04
----</code></pre>
+<pre><code class="language-yaml"><span class="code-line">---</span>
+<span class="code-line">slug: map-like-canvas-interaction</span>
+<span class="code-line">type: pattern</span>
+<span class="code-line">status: draft</span>
+<span class="code-line">visibility: public-example</span>
+<span class="code-line">triggers:</span>
+<span class="code-line">  - canvas pan zoom</span>
+<span class="code-line">  - wheel event</span>
+<span class="code-line">  - trackpad pinch</span>
+<span class="code-line">exemplars:</span>
+<span class="code-line">  - map-like canvas</span>
+<span class="code-line">precedents: <span class="code-unit">[]</span></span>
+<span class="code-line">applies_to:</span>
+<span class="code-line">  - browser canvas</span>
+<span class="code-line">tags:</span>
+<span class="code-line">  - ui</span>
+<span class="code-line">  - interaction</span>
+<span class="code-line">last_verified: 2026-07-04</span>
+<span class="code-line">---</span></code></pre>
 <p>Use these body sections:</p>
 <ul>
 <li><code>Use when</code></li>

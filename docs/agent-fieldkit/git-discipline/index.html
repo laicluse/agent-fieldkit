@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -91,10 +91,10 @@
 <p>Reference for the schema, examples, escape-hatches, and troubleshooting: <code>/git-discipline:commit-discipline</code>.</p>
 <h2 id="parallel-candidate-command">Parallel candidate command</h2>
 <p>The executable is the single implementation used by skills and native hooks:</p>
-<pre><code class="language-bash">git-discipline default
-git-discipline rebase <span class="code-unit">--local</span>|<span class="code-unit">--remote</span>
-git-discipline verify <span class="code-unit">--local</span>|<span class="code-unit">--remote</span> -- &lt;test-command&gt; <span class="code-unit">[args...]</span>
-git-discipline merge <span class="code-unit">--local</span>|<span class="code-unit">--remote</span></code></pre>
+<pre><code class="language-bash"><span class="code-line">git-discipline default</span>
+<span class="code-line">git-discipline rebase <span class="code-unit">--local</span>|<span class="code-unit">--remote</span></span>
+<span class="code-line">git-discipline verify <span class="code-unit">--local</span>|<span class="code-unit">--remote</span> -- &lt;test-command&gt; <span class="code-unit">[args...]</span></span>
+<span class="code-line">git-discipline merge <span class="code-unit">--local</span>|<span class="code-unit">--remote</span></span></code></pre>
 <p><code>--local</code> uses the configured local default ref and is intended for <code>local-only</code> repositories. <code>--remote</code> reads the actual <code>origin</code> default tip, fetches only that tip into <code>FETCH_HEAD</code> for rebases, and merges through a normal non-force push. Passing verification evidence lives under <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/candidates/</code> as recovery and visibility state. Git commits and refs remain the source of truth: evidence is rejected as soon as the candidate or default SHA changes.</p>
 <p>The merge commit always has the verified default tip as first parent, the candidate as second parent, and the candidate tree. A local merge uses <code>git update-ref</code> with an expected old SHA; a remote merge relies on the same topology plus a non-force push. If another candidate updates default first, the loser rebases and verifies again.</p>
 <h2 id="skills">Skills</h2>
@@ -168,20 +168,20 @@ git-discipline merge <span class="code-unit">--local</span>|<span class="code-un
 </table>
 <p>Both layers source the same <code>hooks/lib/validate-body.sh</code>, so behavior never diverges between Claude-driven and CLI-driven commits.</p>
 <h2 id="example-commit-message">Example commit message</h2>
-<pre><code>Drop invalid meter reading on transaction events
-
-When StartTransaction or StopTransaction messages arrive with a
-meter reading that fails domain validation, we previously rejected
-the entire event, which masked session starts and stops in analytics.
-This change keeps the transaction event but discards just the bad
-reading, restoring the visibility we lost.
-
-Tests: spec/services/session_spec.rb#start_event_with_bad_reading,
-       spec/services/session_spec.rb#stop_event_with_bad_reading
-Slice: handler + service + spec
-Red-then-green: spec/services/session_spec.rb:42 # start_event drops invalid meter reading
-Verified: red-then-green
-Resolves: https://example.org/backlog/issues/1234</code></pre>
+<pre><code><span class="code-line">Drop invalid meter reading on transaction events</span>
+<span class="code-line"></span>
+<span class="code-line">When StartTransaction or StopTransaction messages arrive with a</span>
+<span class="code-line">meter reading that fails domain validation, we previously rejected</span>
+<span class="code-line">the entire event, which masked session starts and stops in analytics.</span>
+<span class="code-line">This change keeps the transaction event but discards just the bad</span>
+<span class="code-line">reading, restoring the visibility we lost.</span>
+<span class="code-line"></span>
+<span class="code-line">Tests: spec/services/session_spec.rb#start_event_with_bad_reading,</span>
+<span class="code-line">       spec/services/session_spec.rb#stop_event_with_bad_reading</span>
+<span class="code-line">Slice: handler + service + spec</span>
+<span class="code-line">Red-then-green: spec/services/session_spec.rb:42 # start_event drops invalid meter reading</span>
+<span class="code-line">Verified: red-then-green</span>
+<span class="code-line">Resolves: https://example.org/backlog/issues/1234</span></code></pre>
 <p>The <code>Slice</code> value can also be one of eight opt-out tokens: <code>docs-only</code>, <code>config-only</code>, <code>migration-only</code>, <code>spec-only</code>, <code>chore-deps</code>, <code>revert</code>, <code>merge</code>, <code>wip</code>. Opt-out commits drop the <code>Tests:</code> requirement; the documentation / config / chore-deps tokens additionally drop the <code>Red-then-green:</code> requirement.</p>
 <h2 id="bypass">Bypass</h2>
 <p>Escape-hatches, each logged for later auditing:</p>
@@ -195,8 +195,8 @@ Resolves: https://example.org/backlog/issues/1234</code></pre>
 <p>See <code>/git-discipline:commit-discipline</code> for the full schema, opt-out matrix, and troubleshooting guide.</p>
 <h2 id="test-suite">Test suite</h2>
 <p>The git-native hooks installed by <code>git-discipline:install-hooks</code> dispatch through <code>${LAICLUSE_HOME:-$HOME/.laicluse}/git-discipline/runtime</code>. A SessionStart hook publishes the complete hook and validator set as an immutable release and atomically advances its pointer. Existing repositories keep their installed hook entrypoints while older plugin sessions use the newest published release. <code>git-discipline runtime install</code> publishes the calling plugin version.</p>
-<pre><code class="language-bash">bash packages/git-discipline/test/run-bats              # 500+ BATS cases
-bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smoke</code></pre>
+<pre><code class="language-bash"><span class="code-line">bash packages/git-discipline/test/run-bats              # 500+ BATS cases</span>
+<span class="code-line">bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smoke</span></code></pre>
 <p>The BATS suite is split per concern:</p>
 <ul>
 <li><code>validate-body/</code> covers the body schema rules.</li>
@@ -208,11 +208,11 @@ bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smo
 <p>The smoke suite spins up disposable git repos and exercises the full hook chain end-to-end.</p>
 <h2 id="audit">Audit</h2>
 <p>Verify that no body-less commits slipped through. The script ships inside the plugin at <code>bin/audit-no-body-commits</code>; resolve its path from the active install so it survives plugin updates:</p>
-<pre><code class="language-bash">GIT_DISCIPLINE=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;git-discipline@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath' \
-  ~/.claude/plugins/installed_plugins.json)
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot;
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--branch</span> main <span class="code-unit">--since</span> 2026-04-01
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--exclude-trivial</span></code></pre>
+<pre><code class="language-bash"><span class="code-line">GIT_DISCIPLINE=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;git-discipline@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath' \</span>
+<span class="code-line">  ~/.claude/plugins/installed_plugins.json)</span>
+<span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot;</span>
+<span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--branch</span> main <span class="code-unit">--since</span> 2026-04-01</span>
+<span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--exclude-trivial</span></span></code></pre>
 <p>Lists every commit on the branch with a single-line message (or below the trivial threshold), useful for checking that the push gate held.</p>
 				</article>
 				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-it-does">What it does</a></li><li><a href="#parallel-candidate-command">Parallel candidate command</a></li><li><a href="#skills">Skills</a></li><li><a href="#hooks">Hooks</a></li><li><a href="#example-commit-message">Example commit message</a></li><li><a href="#bypass">Bypass</a></li><li><a href="#test-suite">Test suite</a></li><li><a href="#audit">Audit</a></li></ol></nav>

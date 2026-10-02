@@ -475,7 +475,8 @@ function renderFencedCode(codeBlock) {
 	const className = codeBlock.language ? ` class="language-${attributeEscape(codeBlock.language)}"` : "";
 	const copyable = /(?:^|\s)(?:copy|copyable)(?:\s|$)/i.test(codeBlock.meta || "");
 	const preAttrs = copyable ? " data-copyable" : "";
-	return `<pre${preAttrs}><code${className}>${keepOptionsWhole(htmlEscape(codeBlock.lines.join("\n")))}</code></pre>`;
+	const lines = codeBlock.lines.map((line) => `<span class="code-line">${keepOptionsWhole(htmlEscape(line))}</span>`);
+	return `<pre${preAttrs}><code${className}>${lines.join("\n")}</code></pre>`;
 }
 
 function keepOptionsWhole(escapedCode) {

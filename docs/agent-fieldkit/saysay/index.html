@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Speaks every response aloud on macOS, summarizing screen content into spoken language with a per-user phonetic dictionary and serialized, ducked playback across sessions.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -93,9 +93,9 @@
 <p>Optional: a &quot;Saysay Duck&quot; / &quot;Saysay Unduck&quot; pair of macOS Shortcuts lets saysay lower other audio while it speaks. When the shortcuts are absent, saysay simply skips ducking.</p>
 <h2 id="phonetic-mappings">Phonetic mappings</h2>
 <p><code>say-phonetic</code> keeps a per-user pronunciation dictionary so that names, acronyms, and code identifiers come out the way you want. Mappings live in <code>${LAICLUSE_HOME:-$HOME/.laicluse}/saysay/phonetics.json</code>. A dictionary left over from an earlier <code>~/.local/share/saysay/phonetics.json</code> install is migrated into the new root automatically on first use.</p>
-<pre><code class="language-bash">say-phonetic add &quot;laicluse&quot; &quot;lay-clue-zee&quot;
-say-phonetic remove &quot;laicluse&quot;
-say-phonetic list</code></pre>
+<pre><code class="language-bash"><span class="code-line">say-phonetic add &quot;laicluse&quot; &quot;lay-clue-zee&quot;</span>
+<span class="code-line">say-phonetic remove &quot;laicluse&quot;</span>
+<span class="code-line">say-phonetic list</span></code></pre>
 				</article>
 				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#commands">Commands</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#phonetic-mappings">Phonetic mappings</a></li></ol></nav>
 			</section>

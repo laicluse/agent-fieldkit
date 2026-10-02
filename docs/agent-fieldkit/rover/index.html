@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -110,7 +110,7 @@
 <p>The rover briefing.</p>
 </div>
 <h2 id="phase-machine">Phase machine</h2>
-<pre><code>SURVEY -&gt; DRIVE -&gt; INSPECT -&gt; STOW -&gt; STANDBY</code></pre>
+<pre><code><span class="code-line">SURVEY -&gt; DRIVE -&gt; INSPECT -&gt; STOW -&gt; STANDBY</span></code></pre>
 <p>The loop is autonomous. It does not ask questions mid-phase. When it hits a choice it invokes <code>decide</code>. Before any artefact leaves the rover (push, PR, handoff communiqué, research brief, generated doc, media, or any other deliverable) it invokes <code>pride</code>. Pushes themselves are never autonomous: the user must say &quot;push&quot; or equivalent.</p>
 <h2 id="loop-file">Loop file</h2>
 <p>Lives in <code>.autonomous/&lt;NAME&gt;.md</code> at the git root. Holds context, plan, Done criteria, decision audit trail, and a timestamped log. Tail it to watch progress. The format is unchanged from the old <code>autonomous</code> plugin, so existing loop files still wake.</p>

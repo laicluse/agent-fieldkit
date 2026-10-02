@@ -147,8 +147,8 @@ HTML
   grep -q '<h1>dibs</h1>' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q 'A single-occupancy lock for a working directory' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q '<h2 id="cli">CLI</h2>' "$REPO/docs/agent-fieldkit/dibs/index.html"
-  grep -q '<pre><code class="language-bash">dibs claim &lt;dir&gt;' "$REPO/docs/agent-fieldkit/dibs/index.html"
-  grep -q '<pre data-copyable><code class="language-bash">dibs check .' "$REPO/docs/agent-fieldkit/dibs/index.html"
+  grep -q '<pre><code class="language-bash"><span class="code-line">dibs claim &lt;dir&gt;' "$REPO/docs/agent-fieldkit/dibs/index.html"
+  grep -q '<pre data-copyable><code class="language-bash"><span class="code-line">dibs check .' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -Eq '<script src="../../code-panel-copy\.js\?v=[0-9a-f]{10}"></script>' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q '<a href="https://example.test/dibs">external reference</a>' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q '<table>' "$REPO/docs/agent-fieldkit/dibs/index.html"
@@ -323,6 +323,17 @@ const fs = require("fs");
 const html = fs.readFileSync(process.argv[2], "utf8");
 if (!html.includes('<span class="code-unit">[--description &lt;text&gt;]</span>')) {
   throw new Error("bracketed option is not kept together");
+}
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README code block lines render as hanging lines" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+if (!html.includes('<code class="language-bash"><span class="code-line">dibs claim &lt;dir&gt; ')) {
+  throw new Error("code block line is not wrapped as one hanging line");
 }
 NODE
   [ "$status" -eq 0 ]

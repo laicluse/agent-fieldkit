@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -234,7 +234,7 @@
 <p>This is for visual or interactive work: web apps, app screens, PDFs, images, generated screenshots, canvas output, responsive layouts, and similar artifacts where code review alone cannot prove the result. It does not lift normal gates; credentials, human-only account approvals, external irreversible operations, or inaccessible hardware still require the operator.</p>
 <h2 id="configuration">Configuration</h2>
 <p>The dispatcher always runs when the host calls the hook, but individual guards fire only when their pattern matches. To silence a guard durably for one agent, set that guard's <code>agents.&lt;agent&gt;</code> value to <code>disabled</code> in <code>hooks/guards.json</code> and run:</p>
-<pre><code class="language-bash">packages/circus/bin/circus plugins build .</code></pre>
+<pre><code class="language-bash"><span class="code-line">packages/circus/bin/circus plugins build .</span></code></pre>
 <p>For a one-off local silence, set <code>DD_SKIP_GUARDS=&lt;id&gt;</code> or an event-specific variant such as <code>DD_SKIP_STOP_GUARDS=&lt;id&gt;</code> on the dispatcher command in the hook manifest. <code>DD_ONLY_GUARDS</code> and event-specific <code>DD_ONLY_*_GUARDS</code> variants are available for focused local testing.</p>
 <p>To silence the plugin entirely, uninstall it:</p>
 <div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
@@ -276,9 +276,9 @@
 <h2 id="language">Language</h2>
 <p>Trigger patterns match Dutch and English phrasing. Messages are in English. Some escape tokens remain Dutch (<code>Bewust uitgesteld:</code>, <code>Geverifieerd:</code>) because they are deliberate trigger words that the agent must type verbatim to pass a guard.</p>
 <h2 id="tests">Tests</h2>
-<pre><code class="language-bash">bash packages/dont-do-that/test/smoke-test.sh
-bats packages/dont-do-that/test/guard-registry.bats
-bats test/build-pages</code></pre>
+<pre><code class="language-bash"><span class="code-line">bash packages/dont-do-that/test/smoke-test.sh</span>
+<span class="code-line">bats packages/dont-do-that/test/guard-registry.bats</span>
+<span class="code-line">bats test/build-pages</span></code></pre>
 <p>The smoke test drives every trigger case through <code>hooks/dispatch.sh</code> with an explicit <code>hook_event_name</code>, matching the real runtime path. The registry tests prove guard placement, per-agent policy, and README coverage. The build-pages tests prove the website page is regenerated from this README.</p>
 				</article>
 				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-it-installs">What it installs</a></li><li><a href="#agent-support">Agent support</a></li><li><a href="#guard-catalog">Guard catalog</a></li><li><a href="#bash-guards">Bash guards</a></li><li><a href="#file-edit-guard">File-edit guard</a></li><li><a href="#posttooluse-context-guards">PostToolUse context guards</a></li><li><a href="#stop-guards">Stop guards</a></li><li><a href="#operator-skills">Operator skills</a></li><li><a href="#configuration">Configuration</a></li><li><a href="#architecture">Architecture</a></li><li><a href="#adding-a-guard">Adding a guard</a></li><li><a href="#known-quirk">Known quirk</a></li><li><a href="#language">Language</a></li><li><a href="#tests">Tests</a></li></ol></nav>

@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Finds parallel paths in code, prose, and process, then converges the duplication that actually drifts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=0781e762bd">
+		<link rel="stylesheet" href="../../styles.css?v=c16184f55a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -90,39 +90,39 @@
 </ul>
 <h3 id="worked-example-full-audit-invocation">Worked example: full audit invocation</h3>
 <p>Operator types:</p>
-<pre><code>/drydry:drydry audit app/services/ for duplicated service-object responsibilities</code></pre>
+<pre><code><span class="code-line">/drydry:drydry audit app/services/ for duplicated service-object responsibilities</span></code></pre>
 <p>The orchestrator picks audit mode (rule 5 of the Routing table). It instructs the calling session to formulate the duplication checklist by reading <code>app/services/</code> against the formulation prompts (canonical-channel bypass, parallel utilities, predicate pairs, framework-seam boilerplate, commit-history clusters, user-facing copy variants, parallel UX surfaces, off-template project-specific patterns, parallel orchestrations above a shared leaf-call). The session writes a six-to-ten item checklist grounded in what <code>app/services/</code> actually contains. Then the orchestrator dispatches <code>drydry:sweep</code> over the scope with that session-formulated checklist, runs <code>drydry:triage</code> on the findings, applies the Chapter 7 contrarian gate to any <code>needs-design</code> verdicts, and writes <code>app-services-drydry-findings-2026-05-12T14-23.md</code> in the project root.</p>
 <p>The Rails seed templates from <code>drydry:checklist</code> are available as a starting point if the calling session asks for them (<code>/drydry:drydry audit app/services/ seed-from rails</code>); the session then rewrites the seed against the actual codebase before passing it to sweep. The seed is vocabulary, not verdict.</p>
 <p>The artefact has the shape:</p>
-<pre><code class="language-markdown">## Detection method chosen
-
-Scope: `app/services/` (excludes `app/services/legacy/`)
-Checklist: rails v2026-05-12T14-23 (seven baked patterns plus two
-operator-named seeds, plus `devise-helpers` extension from Gemfile)
-Detector: drydry:sweep (independent review pass), verifier-burden enforced
-locally (every finding's verifier_command was re-run by drydry:sweep
-before this artefact was written)
-
-## Findings
-
-### Pattern: service-objects -- overlapping responsibilities
-
-- Finding 1
-  - file_a: `app/services/user_creator.rb:8`
-  - file_b: `app/services/user_onboarder.rb:14`
-  - drift_hypothesis: both write to `users.signed_up_at`; the rename
-    to `users.activated_at` planned for next quarter will update
-    only one path, silently misreporting signup activation
-  - verifier_command: `rg <span class="code-unit">-n</span> 'signed_up_at' app/services/`
-  - triage: cheap-and-safe
-  - cost: 3 files, 0 public symbols, mechanical (rename + share)
-
-## Side quests
-
-The audit surfaced an out-of-scope follow-up: the `UserSession` model
-has its own activation logic in `app/models/user_session.rb:22` that
-matches the same pattern but lives outside `app/services/`. Recommend
-extending the next sweep to `app/models/`.</code></pre>
+<pre><code class="language-markdown"><span class="code-line">## Detection method chosen</span>
+<span class="code-line"></span>
+<span class="code-line">Scope: `app/services/` (excludes `app/services/legacy/`)</span>
+<span class="code-line">Checklist: rails v2026-05-12T14-23 (seven baked patterns plus two</span>
+<span class="code-line">operator-named seeds, plus `devise-helpers` extension from Gemfile)</span>
+<span class="code-line">Detector: drydry:sweep (independent review pass), verifier-burden enforced</span>
+<span class="code-line">locally (every finding's verifier_command was re-run by drydry:sweep</span>
+<span class="code-line">before this artefact was written)</span>
+<span class="code-line"></span>
+<span class="code-line">## Findings</span>
+<span class="code-line"></span>
+<span class="code-line">### Pattern: service-objects -- overlapping responsibilities</span>
+<span class="code-line"></span>
+<span class="code-line">- Finding 1</span>
+<span class="code-line">  - file_a: `app/services/user_creator.rb:8`</span>
+<span class="code-line">  - file_b: `app/services/user_onboarder.rb:14`</span>
+<span class="code-line">  - drift_hypothesis: both write to `users.signed_up_at`; the rename</span>
+<span class="code-line">    to `users.activated_at` planned for next quarter will update</span>
+<span class="code-line">    only one path, silently misreporting signup activation</span>
+<span class="code-line">  - verifier_command: `rg <span class="code-unit">-n</span> 'signed_up_at' app/services/`</span>
+<span class="code-line">  - triage: cheap-and-safe</span>
+<span class="code-line">  - cost: 3 files, 0 public symbols, mechanical (rename + share)</span>
+<span class="code-line"></span>
+<span class="code-line">## Side quests</span>
+<span class="code-line"></span>
+<span class="code-line">The audit surfaced an out-of-scope follow-up: the `UserSession` model</span>
+<span class="code-line">has its own activation logic in `app/models/user_session.rb:22` that</span>
+<span class="code-line">matches the same pattern but lives outside `app/services/`. Recommend</span>
+<span class="code-line">extending the next sweep to `app/models/`.</span></code></pre>
 <p><code>## Side quests</code> is the channel for out-of-scope follow-ups the audit surfaced without addressing. They are findings the operator should fold into the next sweep, a separate mission, or simply file for awareness; the audit does not address them.</p>
 <p>Six agent-only sub-skills handle the substance. Two of them implement the eight-chapter framework directly: <code>sweep</code> (Chapter 2 verifier-burden detection), <code>triage</code> (Chapter 5 three-bucket convergence). Chapter 3's allow-list is formulated by the calling session itself against the codebase in front of it, guided by the formulation prompts in <code>drydry:drydry</code> audit mode step 2; the plugin disciplines how the list is used, not what is on it. <code>checklist</code> is an opt-in seed source that returns starting-point templates per domain when the operator passes <code>seed-from &lt;domain&gt;</code>. The other three sub-skills are extensions outside the eight chapters that the operator can dispatch when the duplication question crosses an axis the core pipeline does not cover: <code>learn</code> (online research enriching the discipline's external vocabulary), <code>upstream</code> (operator code versus framework offerings; particularly valuable for native-platform code where the standard library or framework often offers the helper the operator just hand-rolled), <code>instructions</code> (agent instruction files as a duplication-cause). The operator does not invoke any sub-skill directly; the orchestrator routes. The operator can hint a sub-skill by name in the prompt and the orchestrator will dispatch (<code>/drydry:drydry upstream</code> audits only against frameworks; <code>/drydry:drydry instructions</code> audits only the instruction layer; <code>/drydry:drydry seed-from rails</code> fetches the Rails seed templates from <code>checklist</code>).</p>
 <h2 id="the-eight-chapters">The eight chapters</h2>
@@ -194,108 +194,108 @@ extending the next sweep to `app/models/`.</code></pre>
 <h2 id="example-checklist-seeds">Example checklist seeds</h2>
 <p>Two of the three example domains from the framework's original write-up appear below as a starting point. The full set of seed templates lives in <code>packages/drydry/skills/checklist/SKILL.md</code> and covers iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, and design tokens; the snippets here illustrate the <em>shape</em> of a seed so a new operator can extend the plugin for their domain.</p>
 <h3 id="example-a-code-rails">Example A: code (Rails)</h3>
-<pre><code class="language-markdown">## Checklist: rails v2026-05-12T14-00
-
-### service-objects: overlapping responsibilities
-
-Service classes whose names suggest a shared responsibility (UserCreator,
-UserOnboarder, UserRegistration) but whose boundaries have drifted.
-Drift typically manifests as one service writing a column the other
-service is supposed to own; over time the team forgets which one is
-canonical.
-
-Signatures to look for:
-- `class .*(Creator|Onboarder|Registration|Setup)\b`
-- `def create_user|def onboard_user|def register_user`
-
-### activerecord-scopes: parallel predicates
-
-Scopes encoding the same predicate (`active`, `enabled`, `not_archived`)
-across or within models. Drift typically manifests when a model adds a
-soft-delete column and only half the call-sites learn about it.
-
-Signatures to look for:
-- `scope :(active|enabled|not_archived|live|visible)`
-- `where\(.*archived_at.*nil\)`
-
-### authorisation-paths: two ways to authorise
-
-Pundit policies and `before_action :authenticate!` chains coexisting for
-the same endpoint. The drift manifests when a new endpoint copies one
-pattern and a refactor copies the other, leaving the codebase split.
-
-Signatures to look for:
-- `before_action :(authenticate|authorize)!`
-- `authorize @`</code></pre>
+<pre><code class="language-markdown"><span class="code-line">## Checklist: rails v2026-05-12T14-00</span>
+<span class="code-line"></span>
+<span class="code-line">### service-objects: overlapping responsibilities</span>
+<span class="code-line"></span>
+<span class="code-line">Service classes whose names suggest a shared responsibility (UserCreator,</span>
+<span class="code-line">UserOnboarder, UserRegistration) but whose boundaries have drifted.</span>
+<span class="code-line">Drift typically manifests as one service writing a column the other</span>
+<span class="code-line">service is supposed to own; over time the team forgets which one is</span>
+<span class="code-line">canonical.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `class .*(Creator|Onboarder|Registration|Setup)\b`</span>
+<span class="code-line">- `def create_user|def onboard_user|def register_user`</span>
+<span class="code-line"></span>
+<span class="code-line">### activerecord-scopes: parallel predicates</span>
+<span class="code-line"></span>
+<span class="code-line">Scopes encoding the same predicate (`active`, `enabled`, `not_archived`)</span>
+<span class="code-line">across or within models. Drift typically manifests when a model adds a</span>
+<span class="code-line">soft-delete column and only half the call-sites learn about it.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `scope :(active|enabled|not_archived|live|visible)`</span>
+<span class="code-line">- `where\(.*archived_at.*nil\)`</span>
+<span class="code-line"></span>
+<span class="code-line">### authorisation-paths: two ways to authorise</span>
+<span class="code-line"></span>
+<span class="code-line">Pundit policies and `before_action :authenticate!` chains coexisting for</span>
+<span class="code-line">the same endpoint. The drift manifests when a new endpoint copies one</span>
+<span class="code-line">pattern and a refactor copies the other, leaving the codebase split.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `before_action :(authenticate|authorize)!`</span>
+<span class="code-line">- `authorize @`</span></code></pre>
 <h3 id="example-b-prose">Example B: prose</h3>
-<pre><code class="language-markdown">## Checklist: markdown-prose v2026-05-12T14-00
-
-### duplicate-definitions: a term defined twice
-
-A glossary term defined in two places with slightly different wording.
-Drift manifests when the team updates one definition and forgets the
-other; readers find both and assume the inconsistency is intentional.
-
-Signatures to look for:
-- `^### .*: ` followed by a definition paragraph (use heading-level scan)
-- `&lt;dfn&gt;.*&lt;/dfn&gt;` in HTML body prose
-
-### redundant-safety-paragraphs: copy-pasted disclaimers
-
-A rate-limit or auth-required warning paragraph repeated across multiple
-guides. Drift manifests when one paragraph's retry-after value is
-updated and the others continue to cite the stale value, which then
-shows up in customer support tickets.
-
-Signatures to look for:
-- `rate.?limit|retry.?after|requires? authentication`
-- exact-match phrase search across all `*.md` files
-
-### terms-of-art-inconsistency: same concept, two terms
-
-The same domain concept named &quot;tenant&quot; in one place and &quot;customer&quot; in
-another within one doc set. Drift manifests in cross-references and
-breaks the reader's mental model when they switch sections.
-
-Signatures to look for:
-- `\b(tenant|customer|account|workspace)\b` with co-occurrence analysis</code></pre>
+<pre><code class="language-markdown"><span class="code-line">## Checklist: markdown-prose v2026-05-12T14-00</span>
+<span class="code-line"></span>
+<span class="code-line">### duplicate-definitions: a term defined twice</span>
+<span class="code-line"></span>
+<span class="code-line">A glossary term defined in two places with slightly different wording.</span>
+<span class="code-line">Drift manifests when the team updates one definition and forgets the</span>
+<span class="code-line">other; readers find both and assume the inconsistency is intentional.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `^### .*: ` followed by a definition paragraph (use heading-level scan)</span>
+<span class="code-line">- `&lt;dfn&gt;.*&lt;/dfn&gt;` in HTML body prose</span>
+<span class="code-line"></span>
+<span class="code-line">### redundant-safety-paragraphs: copy-pasted disclaimers</span>
+<span class="code-line"></span>
+<span class="code-line">A rate-limit or auth-required warning paragraph repeated across multiple</span>
+<span class="code-line">guides. Drift manifests when one paragraph's retry-after value is</span>
+<span class="code-line">updated and the others continue to cite the stale value, which then</span>
+<span class="code-line">shows up in customer support tickets.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `rate.?limit|retry.?after|requires? authentication`</span>
+<span class="code-line">- exact-match phrase search across all `*.md` files</span>
+<span class="code-line"></span>
+<span class="code-line">### terms-of-art-inconsistency: same concept, two terms</span>
+<span class="code-line"></span>
+<span class="code-line">The same domain concept named &quot;tenant&quot; in one place and &quot;customer&quot; in</span>
+<span class="code-line">another within one doc set. Drift manifests in cross-references and</span>
+<span class="code-line">breaks the reader's mental model when they switch sections.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `\b(tenant|customer|account|workspace)\b` with co-occurrence analysis</span></code></pre>
 <h3 id="example-c-ios-swiftui">Example C: iOS/SwiftUI</h3>
-<pre><code class="language-markdown">## Checklist: ios-swiftui v2026-05-12T14-00
-
-### fixture-factories: drifting defaults across previews and tests
-
-Preview-helper or test-helper factories for the same domain type that
-diverge on defaults (timezone, derived fields, optional-vs-required).
-Drift manifests when a derived field gets added to one factory and
-not the other, so a preview shows correct data while a unit test
-silently misses the derivation.
-
-Signatures to look for:
-- `static func fixture\(`
-- `static let preview = `
-- `extension .*: Equatable.*\nstatic let sample`
-
-### app-intents: parallel perform-body boilerplate
-
-AppIntent `perform()` bodies copy-pasted across intents with the same
-context-resolution, error-mapping, and result-shaping logic. Drift
-manifests when one intent learns a new context guard the others do
-not, and an OS-shortcut workflow chains them inconsistently.
-
-Signatures to look for:
-- `func perform\(\) async throws -&gt; some IntentResult`
-- repeated `IntentParameter` declarations across files
-
-### presentation-modifier-stacks: long chains across views
-
-Repeated `.sheet().alert().confirmationDialog()` chains across views
-with minor differences in title or destructive flag. Drift manifests
-when accessibility copy is updated on one stack and the others stay
-stale.
-
-Signatures to look for:
-- `\.sheet\(isPresented:.*\n.*\.alert\(`
-- `\.confirmationDialog\(`</code></pre>
+<pre><code class="language-markdown"><span class="code-line">## Checklist: ios-swiftui v2026-05-12T14-00</span>
+<span class="code-line"></span>
+<span class="code-line">### fixture-factories: drifting defaults across previews and tests</span>
+<span class="code-line"></span>
+<span class="code-line">Preview-helper or test-helper factories for the same domain type that</span>
+<span class="code-line">diverge on defaults (timezone, derived fields, optional-vs-required).</span>
+<span class="code-line">Drift manifests when a derived field gets added to one factory and</span>
+<span class="code-line">not the other, so a preview shows correct data while a unit test</span>
+<span class="code-line">silently misses the derivation.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `static func fixture\(`</span>
+<span class="code-line">- `static let preview = `</span>
+<span class="code-line">- `extension .*: Equatable.*\nstatic let sample`</span>
+<span class="code-line"></span>
+<span class="code-line">### app-intents: parallel perform-body boilerplate</span>
+<span class="code-line"></span>
+<span class="code-line">AppIntent `perform()` bodies copy-pasted across intents with the same</span>
+<span class="code-line">context-resolution, error-mapping, and result-shaping logic. Drift</span>
+<span class="code-line">manifests when one intent learns a new context guard the others do</span>
+<span class="code-line">not, and an OS-shortcut workflow chains them inconsistently.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `func perform\(\) async throws -&gt; some IntentResult`</span>
+<span class="code-line">- repeated `IntentParameter` declarations across files</span>
+<span class="code-line"></span>
+<span class="code-line">### presentation-modifier-stacks: long chains across views</span>
+<span class="code-line"></span>
+<span class="code-line">Repeated `.sheet().alert().confirmationDialog()` chains across views</span>
+<span class="code-line">with minor differences in title or destructive flag. Drift manifests</span>
+<span class="code-line">when accessibility copy is updated on one stack and the others stay</span>
+<span class="code-line">stale.</span>
+<span class="code-line"></span>
+<span class="code-line">Signatures to look for:</span>
+<span class="code-line">- `\.sheet\(isPresented:.*\n.*\.alert\(`</span>
+<span class="code-line">- `\.confirmationDialog\(`</span></code></pre>
 <p>The full set of seed templates (including the design-system and React/TypeScript domains) lives in <code>packages/drydry/skills/checklist/SKILL.md</code>. The three examples here are enough to show a new operator how to extend the plugin for a domain the seed templates do not yet cover: write a checklist with the same shape, hand it to <code>drydry:sweep</code> via the orchestrator's <code>audit</code> mode.</p>
 <h2 id="skills-in-this-plugin">Skills in this plugin</h2>
 <table>

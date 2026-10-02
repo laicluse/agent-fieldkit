@@ -3240,3 +3240,9 @@ pre code {
 .code-unit {
   white-space: nowrap;
 }
+
+.readme-content pre .code-line {
+  display: inline-block;
+  padding-left: 4ch;
+  text-indent: -4ch;
+}
