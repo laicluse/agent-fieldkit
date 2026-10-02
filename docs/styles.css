@@ -1734,10 +1734,10 @@ pre code {
 }
 
 .supermax-preview-note {
-  border: 1px solid rgba(49, 217, 148, 0.32);
+  border: 1px solid var(--machine-line);
   border-radius: 6px;
-  background: rgba(49, 217, 148, 0.08);
-  color: #dce5df;
+  background: var(--machine-raised);
+  color: var(--machine-ink);
   padding: 0.75rem;
   font-family: var(--mono);
   font-size: 0.8rem;
@@ -3038,7 +3038,8 @@ pre code {
 .hero,
 .home-hero,
 .detail-hero,
-.install-section {
+.install-section,
+.supermax-animation-section {
   --bg: var(--machine-bg);
   --bg-raised: var(--machine-raised);
   --bg-soft: var(--machine-raised);
@@ -3155,4 +3156,33 @@ pre code {
 .home-products-section,
 .vocalist-commands-section {
   background: var(--sunken);
+}
+
+.supermax-intro-section .split-heading {
+  grid-template-columns: minmax(0, 46rem);
+  gap: 1.5rem;
+}
+
+.supermax-animation-section .supermax-animation-frame {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.supermax-animation-section {
+  padding-top: clamp(3rem, 6vw, 5rem);
+}
+
+.install-section .install-block {
+  border-color: transparent;
+}
+
+.supermax-animation-section + .install-section {
+  border-top: 1px solid var(--machine-line);
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.supermax-animation-section {
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
 }
