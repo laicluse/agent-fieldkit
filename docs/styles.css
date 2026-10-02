@@ -2481,8 +2481,15 @@ pre code {
   width: min(1180px, calc(100vw - 2rem));
   margin: 0 auto;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
-  gap: clamp(2rem, 5vw, 4.5rem);
+  column-gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
   padding: clamp(3rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3rem);
+}
+
+.detail-hero-inner > .back-link,
+.detail-hero-inner > .eyebrow {
+  grid-column: 1 / -1;
+  justify-self: start;
 }
 
 .back-link {
@@ -2760,8 +2767,9 @@ pre code {
 }
 
 .detail-install {
-  align-self: end;
+  align-self: start;
   min-width: 0;
+  padding-top: 0.6rem;
 }
 
 .detail-install h2 {
@@ -2774,7 +2782,8 @@ pre code {
 }
 
 .detail-source {
-  align-self: center;
+  display: inline-block;
+  margin-top: 0.9rem;
   font-size: 0.9rem;
 }
 
@@ -2830,6 +2839,11 @@ pre code {
 
   .detail-hero-inner {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detail-install {
+    margin-top: 2rem;
+    padding-top: 0;
   }
 
   .detail-toc {
