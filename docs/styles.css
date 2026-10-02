@@ -2521,8 +2521,8 @@ pre code {
   display: grid;
   width: min(1180px, calc(100vw - 2rem));
   margin: 0 auto;
-  grid-template-columns: minmax(0, 46rem);
-  justify-content: start;
+  grid-template-columns: minmax(0, 46rem) minmax(12rem, 15rem);
+  justify-content: space-between;
   gap: clamp(2rem, 5vw, 4.5rem);
   padding: clamp(3rem, 6vw, 5rem) 0;
 }
@@ -2688,6 +2688,40 @@ pre code {
   overflow-wrap: anywhere;
 }
 
+.detail-toc {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+  border-left: 1px solid var(--line);
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.detail-toc p {
+  margin: 0 0 0.6rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.detail-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.detail-toc li + li {
+  margin-top: 0.45rem;
+}
+
+.detail-toc a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.detail-toc a:hover {
+  color: var(--action);
+}
+
 .detail-install {
   align-self: end;
   min-width: 0;
@@ -2759,6 +2793,10 @@ pre code {
 
   .detail-hero-inner {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detail-toc {
+    display: none;
   }
 }
 

@@ -237,6 +237,13 @@ function writeFileIfChanged(file, content) {
 	fs.writeFileSync(file, content);
 }
 
+function renderDetailToc(html) {
+	const headings = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)];
+	if (headings.length < 3) return "";
+	const items = headings.map(([, id, label]) => `<li><a href="#${id}">${label.replace(/<[^>]+>/g, "")}</a></li>`).join("");
+	return `<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol>${items}</ol></nav>`;
+}
+
 function readJson(file) {
 	return JSON.parse(fs.readFileSync(file, "utf8"));
 }
@@ -901,6 +908,7 @@ function sharedAssetVersions(repoRoot) {
 function buildPluginDetailPage(data, plugin, markdown, hash, assetVersions) {
 	const title = markdownTitle(markdown, plugin.name);
 	const readmeHtml = renderMarkdown(markdownWithoutInstallSections(markdownWithoutFirstTitle(markdown)));
+	const tocHtml = renderDetailToc(readmeHtml);
 	const pageUrl = `${PAGES_URL}/${plugin.detailPath}`;
 	const imageUrl = `${PAGES_URL}/assets/og-image.png?v=${hash}`;
 	const installCommands = {
@@ -984,6 +992,7 @@ function buildPluginDetailPage(data, plugin, markdown, hash, assetVersions) {
 				<article class="readme-content">
 ${readmeHtml}
 				</article>
+				${tocHtml}
 			</section>
 		</main>
 

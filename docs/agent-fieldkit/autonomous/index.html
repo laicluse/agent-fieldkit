@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Keeps long-running Claude Code missions alive with heartbeat, wake, and restore machinery.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=6dd8342595">
+		<link rel="stylesheet" href="../../styles.css?v=04423b17ce">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -92,6 +92,7 @@
 <h2 id="the-probe-and-its-one-assumption">The probe and its one assumption</h2>
 <p>The probe is correct only when need and availability coincide: a host that runs a mission as a persistent process must withhold <code>CronCreate</code> (for example by adding the cron tools to its disallowed-tools list), and a host whose sessions go idle must expose it. When a persistent host still exposes the cron tools the probe over-detects interactive and schedules a heartbeat. On the normal path that is dead weight: a process that runs to completion never goes idle, so the cron never fires and is torn down with the session. Only an abnormal exit can leave it as an orphan, which the <code>wake</code> restore path reaps on the next relight. See <code>skills/keepalive/SKILL.md</code> for the full contract.</p>
 				</article>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#agent-support">Agent support</a></li><li><a href="#why-this-is-its-own-plugin">Why this is its own plugin</a></li><li><a href="#skills">Skills</a></li><li><a href="#the-probe-and-its-one-assumption">The probe and its one assumption</a></li></ol></nav>
 			</section>
 		</main>
 

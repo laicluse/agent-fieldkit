@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=6dd8342595">
+		<link rel="stylesheet" href="../../styles.css?v=04423b17ce">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -145,6 +145,7 @@ const result = claim({ dir, pid: process.ppid, agent: 'my-tool' });
 if (!result.ok) console.warn(`held by ${result.holder.agent}`);</code></pre>
 <p>An embedder that hands out a directory on behalf of a long-lived caller (as <code>bonsai</code> does) records that caller's pid, not its own short-lived process. <code>bonsai</code> reads <code>DIBS_HOLDER_PID</code>, <code>DIBS_AGENT</code>, and <code>DIBS_SESSION</code> to label the holder, <code>DIBS_OWNER</code> to preserve identity across resumes, <code>DIBS_DESCRIPTION</code> as the fallback work description when the caller names none, and <code>DIBS_LIB</code> to point at an alternate lib path. The CLI honours <code>DIBS_BIN</code> for a fixed binary path.</p>
 				</article>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#cli">CLI</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#scope-and-non-goals">Scope and non-goals</a></li><li><a href="#enforcement-hooks">Enforcement hooks</a></li><li><a href="#excludes">Excludes</a></li><li><a href="#library">Library</a></li></ol></nav>
 			</section>
 		</main>
 

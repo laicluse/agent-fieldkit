@@ -281,3 +281,17 @@ NODE
   [ "$status" -eq 0 ]
   [ "$(ls -l -T "$page" 2>/dev/null || ls -l --time-style=full-iso "$page")" = "$before" ]
 }
+
+@test "detail page lists its README sections in an on-this-page nav" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const nav = html.match(/<nav class="detail-toc"[\s\S]*?<\/nav>/);
+if (!nav) throw new Error("on-this-page nav not found");
+for (const id of ["commands", "parser-cases", "code-spans"]) {
+	if (!nav[0].includes(`href="#${id}"`)) throw new Error(`nav misses #${id}`);
+}
+if (nav[0].includes('href="#installation"')) throw new Error("nav lists the suppressed install section");
+NODE
+  [ "$status" -eq 0 ]
+}

@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Runs opinionated review panels for software, decisions, and prose from multiple perspectives.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=6dd8342595">
+		<link rel="stylesheet" href="../../styles.css?v=04423b17ce">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -117,6 +117,7 @@
 <p>Claude receives <code>gurus:sonnet-max</code>, a generic plugin-shipped subagent pinned to Sonnet at maximum effort (<code>model: sonnet</code>, <code>effort: max</code> in frontmatter). Every guru and advisor dispatches through that subagent so every voice runs on the same engine ceiling. The definition lives in <code>agents/sonnet-max.md</code>.</p>
 <p>Codex receives Codex-specific skill bodies. They use native Codex subagents when the current session exposes them and prefer the least token-hungry reviewer model that can handle the scoped work; the current session model keeps routing and final synthesis. Otherwise they run the same panel protocol as a structured single-session review and mark that as a fallback rather than pretending independent agents were spawned. The generated Codex package intentionally omits <code>agents/sonnet-max.md</code>; that file is Claude runtime only.</p>
 				</article>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#sub-skills">Sub-skills</a></li><li><a href="#commands">Commands</a></li><li><a href="#when-to-use-which">When to use which</a></li><li><a href="#agent-model">Agent model</a></li></ol></nav>
 			</section>
 		</main>
 
