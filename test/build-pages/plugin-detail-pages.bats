@@ -260,3 +260,12 @@ NODE
 @test "stale plugin detail pages are removed on rebuild" {
   [ ! -e "$REPO/docs/agent-fieldkit/removed/index.html" ]
 }
+
+@test "rebuild leaves unchanged pages untouched" {
+  page="$REPO/docs/agent-fieldkit/dibs/index.html"
+  touch -t 202001010000 "$page"
+  before="$(ls -l -T "$page" 2>/dev/null || ls -l --time-style=full-iso "$page")"
+  run "$SCRIPT" "$REPO"
+  [ "$status" -eq 0 ]
+  [ "$(ls -l -T "$page" 2>/dev/null || ls -l --time-style=full-iso "$page")" = "$before" ]
+}

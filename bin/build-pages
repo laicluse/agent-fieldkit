@@ -232,6 +232,11 @@ const categories = [
 	},
 ];
 
+function writeFileIfChanged(file, content) {
+	if (fs.existsSync(file) && fs.readFileSync(file, "utf8") === content) return;
+	fs.writeFileSync(file, content);
+}
+
 function readJson(file) {
 	return JSON.parse(fs.readFileSync(file, "utf8"));
 }
@@ -996,7 +1001,7 @@ function renderPluginDetailPages(repoRoot, data, hash, assetVersions) {
 		const markdown = fs.readFileSync(readmePath, "utf8");
 		const pluginDir = path.join(detailRoot, plugin.name);
 		fs.mkdirSync(pluginDir, { recursive: true });
-		fs.writeFileSync(path.join(pluginDir, "index.html"), buildPluginDetailPage(data, plugin, markdown, hash, assetVersions));
+		writeFileIfChanged(path.join(pluginDir, "index.html"), buildPluginDetailPage(data, plugin, markdown, hash, assetVersions));
 	}
 }
 
@@ -1244,7 +1249,7 @@ function renderVocalistPage(repoRoot, data, hash, assetVersions) {
 	if (!app) return;
 	const outputPath = path.join(repoRoot, "docs", VOCALIST_PATH, "index.html");
 	fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-	fs.writeFileSync(outputPath, buildVocalistPage(app, hash, assetVersions));
+	writeFileIfChanged(outputPath, buildVocalistPage(app, hash, assetVersions));
 	process.stdout.write(`build-pages: wrote ${path.relative(repoRoot, outputPath)}\n`);
 }
 
@@ -1511,7 +1516,7 @@ function renderSupermaxPage(repoRoot, data, hash, assetVersions) {
 	if (!app) return;
 	const outputPath = path.join(repoRoot, "docs", SUPERMAX_PATH, "index.html");
 	fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-	fs.writeFileSync(outputPath, buildSupermaxPage(app, hash, assetVersions));
+	writeFileIfChanged(outputPath, buildSupermaxPage(app, hash, assetVersions));
 	process.stdout.write(`build-pages: wrote ${path.relative(repoRoot, outputPath)}\n`);
 }
 
@@ -1759,7 +1764,7 @@ function renderOgImage(repoRoot, svg, options = {}) {
 	const assetsDir = path.join(repoRoot, "docs", "assets");
 	fs.mkdirSync(assetsDir, { recursive: true });
 	const svgPath = path.join(assetsDir, svgFileName);
-	fs.writeFileSync(svgPath, svg);
+	writeFileIfChanged(svgPath, svg);
 
 	const pngPath = path.join(assetsDir, pngFileName);
 	const keepExisting = () =>
@@ -1959,7 +1964,7 @@ function buildRootPage(hash, assetVersions) {
 }
 
 function writeRootPage(repoRoot, hash, assetVersions) {
-	fs.writeFileSync(path.join(repoRoot, "docs", "index.html"), buildRootPage(hash, assetVersions));
+	writeFileIfChanged(path.join(repoRoot, "docs", "index.html"), buildRootPage(hash, assetVersions));
 }
 
 function main() {
@@ -1967,7 +1972,7 @@ function main() {
 	const data = build(repoRoot);
 	const outputPath = path.join(repoRoot, "docs", "site-data.json");
 	fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-	fs.writeFileSync(outputPath, `${JSON.stringify(data, null, "\t")}\n`);
+	writeFileIfChanged(outputPath, `${JSON.stringify(data, null, "\t")}\n`);
 	process.stdout.write(`build-pages: wrote ${path.relative(repoRoot, outputPath)}\n`);
 
 	const vocalistApp = data.apps.find((item) => item.name === "Vocalist");
