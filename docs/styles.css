@@ -55,6 +55,19 @@
   --cell-list: #5b5aa6;
   --cell-article: #2e5d9a;
   --cell-notes: #a3473a;
+  --sunken: #ebe7da;
+  --machine-well: #050605;
+  --on-light-ink: #171b18;
+  --on-light-soft: #3b423d;
+  --on-light-muted: #5f6861;
+  --on-light-line: #d9d5c9;
+  --on-light-hairline: rgba(23, 27, 24, 0.12);
+  --action-deep: #0f7a54;
+  --action-bright: #31d994;
+  --on-action-bright: #03100a;
+  --machine-soft: #d6ddd7;
+  --machine-header: rgba(13, 16, 14, 0.94);
+  --white: #ffffff;
   --paper: #f6f4ec;
   --paper-ink: #171b18;
   --paper-muted: #5f6861;
@@ -2980,4 +2993,128 @@ pre code {
     flex-direction: column;
   }
 
+}
+
+/* allow-comment: surface semantics. Dark = act (install, copy, run); paper = read; sunken = scan and compare. */
+.site-header,
+.hero,
+.home-hero,
+.detail-hero,
+.install-section {
+  --bg: var(--machine-bg);
+  --bg-raised: var(--machine-raised);
+  --bg-soft: var(--machine-raised);
+  --ink: var(--machine-ink);
+  --ink-soft: var(--machine-soft);
+  --ink-strong: var(--white);
+  --muted: var(--machine-muted);
+  --label: var(--machine-muted);
+  --label-on-paper: var(--machine-muted);
+  --line: var(--machine-line);
+  --line-strong: var(--machine-line-strong);
+  --action: var(--action-bright);
+  --action-on-paper: var(--machine-ink);
+  --paper-ink: var(--machine-ink);
+  --paper-muted: var(--machine-muted);
+  --paper-line: var(--machine-line);
+  background: var(--machine-bg);
+  color: var(--ink);
+}
+
+.hero .vocalist-bubble {
+  --ink: var(--on-light-ink);
+  --ink-soft: var(--on-light-soft);
+  --muted: var(--on-light-muted);
+  --label: var(--on-light-muted);
+  --paper-ink: var(--on-light-ink);
+  --paper-muted: var(--on-light-muted);
+  --paper-line: var(--on-light-line);
+  --line: var(--on-light-hairline);
+  --action: var(--action-deep);
+  --action-on-paper: var(--action-deep);
+}
+
+.site-header {
+  background: var(--machine-header);
+}
+
+.hero .agent-command-options,
+.detail-hero .agent-command-options,
+.install-section .agent-command-options {
+  border-color: var(--machine-line);
+  background: transparent;
+}
+
+.hero .agent-command-option,
+.detail-hero .agent-command-option,
+.install-section .agent-command-option {
+  color: var(--machine-muted);
+}
+
+.hero .agent-command-option.is-active,
+.hero .agent-command-option:hover,
+.detail-hero .agent-command-option.is-active,
+.detail-hero .agent-command-option:hover,
+.install-section .agent-command-option.is-active,
+.install-section .agent-command-option:hover,
+.hero .agent-command-copy:hover,
+.detail-hero .agent-command-copy:hover,
+.install-section .agent-command-copy:hover {
+  border-color: var(--machine-line-strong);
+  background: var(--machine-raised);
+  color: var(--white);
+}
+
+.hero .agent-command-copy,
+.detail-hero .agent-command-copy,
+.install-section .agent-command-copy {
+  border-color: var(--machine-line-strong);
+  background: transparent;
+  color: var(--machine-ink);
+}
+
+.hero pre,
+.detail-hero pre,
+.install-section pre {
+  border-color: var(--machine-line-strong);
+  background: var(--machine-well);
+  color: var(--white);
+}
+
+.install-section .install-block {
+  border-color: var(--machine-line);
+  background: var(--machine-raised);
+}
+
+.install-section .install-block .button.secondary {
+  border-color: var(--machine-line-strong);
+  background: transparent;
+  color: var(--machine-ink);
+}
+
+.install-section .install-command-list li {
+  border-color: var(--machine-line);
+  background: var(--machine-well);
+}
+
+.hero .button.primary,
+.detail-hero .button.primary,
+.install-section .button.primary {
+  background: var(--action-deep);
+  color: var(--white);
+}
+
+.hero .button.primary:hover,
+.detail-hero .button.primary:hover,
+.install-section .button.primary:hover {
+  background: var(--white);
+  color: var(--on-light-ink);
+}
+
+.catalog-section,
+.changelog-section,
+.apps-section,
+.home-products-section,
+.vocalist-commands-section {
+  background: var(--sunken);
 }
