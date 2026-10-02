@@ -479,6 +479,18 @@ function renderFencedCode(codeBlock) {
 	return `<pre${preAttrs}><code${className}>${lines.join("\n")}</code></pre>`;
 }
 
+function breakInstallCommandsBetweenWords(switchHtml) {
+	return switchHtml.replace(/(<code[^>]*>)([^<]*)(<\/code>)/g, (match, open, command, close) => {
+		const words = command.split(" ").map((word) =>
+			word
+				.split(/(?=@)/)
+				.map((part) => `<span class="code-unit">${part}</span>`)
+				.join("<wbr>"),
+		);
+		return `${open}${words.join(" ")}${close}`;
+	});
+}
+
 function keepOptionsWhole(escapedCode) {
 	return escapedCode.replace(/\[[^\[\]\n]*\]|(?<![\w-])--?[\w][\w-]*/g, (unit) => `<span class="code-unit">${unit}</span>`);
 }
@@ -934,11 +946,13 @@ function buildPluginDetailPage(data, plugin, markdown, hash, assetVersions) {
 		claude: [`claude plugins install ${plugin.name}@laicluse-agent-fieldkit`],
 		codex: plugin.codex ? [`codex plugin add ${plugin.name}@laicluse-agent-fieldkit`] : [],
 	};
-	const installSwitch = AgentCommandSwitch.render({
-		id: `install-${plugin.name}`,
-		label: `${plugin.name} install commands`,
-		commands: installCommands,
-	});
+	const installSwitch = breakInstallCommandsBetweenWords(
+		AgentCommandSwitch.render({
+			id: `install-${plugin.name}`,
+			label: `${plugin.name} install commands`,
+			commands: installCommands,
+		}),
+	);
 
 	return `<!doctype html>
 <html lang="en">

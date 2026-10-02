@@ -241,9 +241,10 @@ const installSwitches = (install[0].match(/class="agent-command-switch"/g) || []
 if (allSwitches !== 1) throw new Error(`expected one install command switch, got ${allSwitches}`);
 if (installSwitches !== 1) throw new Error("install panel does not own the install switch");
 if (html.includes('<h2 id="installation">Installation</h2>')) throw new Error("README installation section still renders in the body");
-if (!html.includes('claude plugins install dibs@laicluse-agent-fieldkit')) throw new Error("missing Claude command");
-if (!html.includes('codex plugin add dibs@laicluse-agent-fieldkit')) throw new Error("missing Codex command");
-if (html.includes('claude plugins install dibs@laicluse-agent-fieldkit\ncodex plugin add dibs@laicluse-agent-fieldkit')) {
+const codeTexts = [...install[0].matchAll(/<code[^>]*>([\s\S]*?)<\/code>/g)].map((match) => match[1].replace(/<[^>]+>/g, ""));
+if (!codeTexts.includes('claude plugins install dibs@laicluse-agent-fieldkit')) throw new Error("missing Claude command");
+if (!codeTexts.includes('codex plugin add dibs@laicluse-agent-fieldkit')) throw new Error("missing Codex command");
+if (codeTexts.some((text) => text.includes('claude plugins') && text.includes('codex plugin'))) {
 	throw new Error("commands still render as one combined code block");
 }
 NODE
@@ -335,6 +336,16 @@ const html = fs.readFileSync(process.argv[2], "utf8");
 if (!html.includes('<code class="language-bash"><span class="code-line">dibs claim &lt;dir&gt; ')) {
   throw new Error("code block line is not wrapped as one hanging line");
 }
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "install commands break between words or before the marketplace" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const expected = '<span class="code-unit">dibs</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span>';
+if (!html.includes(expected)) throw new Error("install command name can still break inside a hyphenated word");
 NODE
   [ "$status" -eq 0 ]
 }
