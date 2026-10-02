@@ -158,7 +158,7 @@ const table = html.match(/<h2 id="parser-cases">Parser cases<\/h2>\n(<table>[\s\
 if (!table) throw new Error("parser cases table not found");
 const rows = [...table[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map((match) => match[1]);
 const bodyRow = rows[rows.length - 1];
-const bodyCells = [...bodyRow.matchAll(/<td>/g)].length;
+const bodyCells = [...bodyRow.matchAll(/<td[ >]/g)].length;
 if (bodyCells !== 3) throw new Error(`expected 3 body cells, got ${bodyCells}`);
 if (!bodyRow.includes("\\\\|kenteken")) throw new Error("escaped pipe moved out of regex cell");
 NODE

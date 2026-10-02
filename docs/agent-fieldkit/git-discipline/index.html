@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=fd351f2ad0">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -84,19 +84,19 @@ git-discipline merge --local|--remote</code></pre>
 <tr><th>Skill</th><th>Command</th><th>Agents</th><th>Auto</th></tr>
 </thead>
 <tbody>
-<tr><td>commit-all-the-things</td><td><code>/git-discipline:commit-all-the-things</code></td><td>Claude, Codex</td><td>yes</td></tr>
-<tr><td>commit-snipe</td><td><code>/git-discipline:commit-snipe</code></td><td>Claude, Codex</td><td>yes (on the word &quot;snipe&quot;)</td></tr>
-<tr><td>rebase-latest-default</td><td><code>/git-discipline:rebase-latest-default</code></td><td>Claude, Codex</td><td>yes</td></tr>
-<tr><td>merge-to-default</td><td><code>/git-discipline:merge-to-default</code></td><td>Claude, Codex</td><td>yes</td></tr>
-<tr><td>push-policy</td><td><code>/git-discipline:push-policy</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>commit-discipline</td><td><code>/git-discipline:commit-discipline</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>install-hooks</td><td><code>/git-discipline:install-hooks</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>run-spec</td><td><code>/git-discipline:run-spec</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>disable-session</td><td><code>/git-discipline:disable-discipline</code></td><td>Claude</td><td></td></tr>
-<tr><td>enable-session</td><td><code>/git-discipline:enable-discipline</code></td><td>Claude</td><td></td></tr>
-<tr><td>session-status</td><td><code>/git-discipline:discipline-status</code></td><td>Claude</td><td></td></tr>
-<tr><td>disable-git</td><td><code>/git-discipline:disable-git [reason]</code></td><td>Claude</td><td></td></tr>
-<tr><td>enable-git</td><td><code>/git-discipline:enable-git</code></td><td>Claude</td><td></td></tr>
+<tr><td data-label="Skill">commit-all-the-things</td><td data-label="Command"><code>/git-discipline:commit-all-the-things</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
+<tr><td data-label="Skill">commit-snipe</td><td data-label="Command"><code>/git-discipline:commit-snipe</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes (on the word &quot;snipe&quot;)</td></tr>
+<tr><td data-label="Skill">rebase-latest-default</td><td data-label="Command"><code>/git-discipline:rebase-latest-default</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
+<tr><td data-label="Skill">merge-to-default</td><td data-label="Command"><code>/git-discipline:merge-to-default</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
+<tr><td data-label="Skill">push-policy</td><td data-label="Command"><code>/git-discipline:push-policy</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">commit-discipline</td><td data-label="Command"><code>/git-discipline:commit-discipline</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">install-hooks</td><td data-label="Command"><code>/git-discipline:install-hooks</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">run-spec</td><td data-label="Command"><code>/git-discipline:run-spec</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">disable-session</td><td data-label="Command"><code>/git-discipline:disable-discipline</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">enable-session</td><td data-label="Command"><code>/git-discipline:enable-discipline</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">session-status</td><td data-label="Command"><code>/git-discipline:discipline-status</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">disable-git</td><td data-label="Command"><code>/git-discipline:disable-git [reason]</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">enable-git</td><td data-label="Command"><code>/git-discipline:enable-git</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
 </tbody>
 </table>
 <ul>
@@ -121,16 +121,16 @@ git-discipline merge --local|--remote</code></pre>
 <tr><th>Guard</th><th>Triggers on</th><th>Blocks</th></tr>
 </thead>
 <tbody>
-<tr><td><code>git-dash-c.sh</code></td><td>any <code>git -C &lt;dir&gt;</code> command</td><td><code>git -C</code></td></tr>
-<tr><td><code>repo-deny.sh</code></td><td>any <code>git &lt;mutation&gt;</code> while <code>.git/git-discipline-deny</code> exists</td><td>every git command outside the read-only allow-list</td></tr>
-<tr><td><code>commit-format.sh</code></td><td><code>git commit</code></td><td>editor-mode commits without <code>-m</code></td></tr>
-<tr><td><code>commit-subject.sh</code></td><td><code>git commit -m</code></td><td>subjects past 50/72, lowercase first, trailing period</td></tr>
-<tr><td><code>commit-body.sh</code></td><td><code>git commit -m</code></td><td>bodies that fail <code>validate-body.sh</code></td></tr>
-<tr><td><code>commit-body-posttool.sh</code></td><td>PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am)</td><td>bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see)</td></tr>
-<tr><td><code>commit-trailers.sh</code></td><td><code>git commit -m</code></td><td><code>Co-Authored-By:</code> with <code>@anthropic.com</code> email</td></tr>
-<tr><td><code>push-destination.sh</code></td><td><code>git push</code></td><td>push whose destination releases, deploys, rewrites or cannot be classified (held until <code># push-agreed</code>), or that the repository's agreement rules out (refused)</td></tr>
-<tr><td><code>push-wip-gate.sh</code></td><td><code>git push</code></td><td>push range containing a <code>Slice: wip</code> commit</td></tr>
-<tr><td><code>push-body-gate.sh</code></td><td><code>git push</code></td><td>push range containing a body that fails <code>validate-body.sh</code></td></tr>
+<tr><td data-label="Guard"><code>git-dash-c.sh</code></td><td data-label="Triggers on">any <code>git -C &lt;dir&gt;</code> command</td><td data-label="Blocks"><code>git -C</code></td></tr>
+<tr><td data-label="Guard"><code>repo-deny.sh</code></td><td data-label="Triggers on">any <code>git &lt;mutation&gt;</code> while <code>.git/git-discipline-deny</code> exists</td><td data-label="Blocks">every git command outside the read-only allow-list</td></tr>
+<tr><td data-label="Guard"><code>commit-format.sh</code></td><td data-label="Triggers on"><code>git commit</code></td><td data-label="Blocks">editor-mode commits without <code>-m</code></td></tr>
+<tr><td data-label="Guard"><code>commit-subject.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks">subjects past 50/72, lowercase first, trailing period</td></tr>
+<tr><td data-label="Guard"><code>commit-body.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks">bodies that fail <code>validate-body.sh</code></td></tr>
+<tr><td data-label="Guard"><code>commit-body-posttool.sh</code></td><td data-label="Triggers on">PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am)</td><td data-label="Blocks">bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see)</td></tr>
+<tr><td data-label="Guard"><code>commit-trailers.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks"><code>Co-Authored-By:</code> with <code>@anthropic.com</code> email</td></tr>
+<tr><td data-label="Guard"><code>push-destination.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push whose destination releases, deploys, rewrites or cannot be classified (held until <code># push-agreed</code>), or that the repository's agreement rules out (refused)</td></tr>
+<tr><td data-label="Guard"><code>push-wip-gate.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push range containing a <code>Slice: wip</code> commit</td></tr>
+<tr><td data-label="Guard"><code>push-body-gate.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push range containing a body that fails <code>validate-body.sh</code></td></tr>
 </tbody>
 </table>
 <p>Git-native hooks (installed per-repo via <code>/git-discipline:install-hooks</code>, sourced from <code>skills/commit-discipline/git-hooks/</code>):</p>
@@ -139,12 +139,12 @@ git-discipline merge --local|--remote</code></pre>
 <tr><th>Hook</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code>pre-commit</code></td><td>when local <code>laicluse.requireWorktree=true</code>, blocks commits in the primary checkout and on the default branch; otherwise it does not constrain authoring location</td></tr>
-<tr><td><code>commit-msg</code></td><td>runs <code>validate-body.sh</code> on every non-Claude commit</td></tr>
-<tr><td><code>prepare-commit-msg</code></td><td>pre-fills the editor with a layer-classified template</td></tr>
-<tr><td><code>post-commit</code></td><td>logs <code>--no-verify</code> usage to <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log</code></td></tr>
-<tr><td><code>post-rewrite</code></td><td>validates rebase/amend-rewritten bodies; warns and logs (git ignores its exit status) since <code>commit-msg</code> does not fire on rebase-picked commits</td></tr>
-<tr><td><code>pre-push</code></td><td>validates candidate topology and proof, then re-runs the wip and body gates</td></tr>
+<tr><td data-label="Hook"><code>pre-commit</code></td><td data-label="Purpose">when local <code>laicluse.requireWorktree=true</code>, blocks commits in the primary checkout and on the default branch; otherwise it does not constrain authoring location</td></tr>
+<tr><td data-label="Hook"><code>commit-msg</code></td><td data-label="Purpose">runs <code>validate-body.sh</code> on every non-Claude commit</td></tr>
+<tr><td data-label="Hook"><code>prepare-commit-msg</code></td><td data-label="Purpose">pre-fills the editor with a layer-classified template</td></tr>
+<tr><td data-label="Hook"><code>post-commit</code></td><td data-label="Purpose">logs <code>--no-verify</code> usage to <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log</code></td></tr>
+<tr><td data-label="Hook"><code>post-rewrite</code></td><td data-label="Purpose">validates rebase/amend-rewritten bodies; warns and logs (git ignores its exit status) since <code>commit-msg</code> does not fire on rebase-picked commits</td></tr>
+<tr><td data-label="Hook"><code>pre-push</code></td><td data-label="Purpose">validates candidate topology and proof, then re-runs the wip and body gates</td></tr>
 </tbody>
 </table>
 <p>Both layers source the same <code>hooks/lib/validate-body.sh</code>, so behavior never diverges between Claude-driven and CLI-driven commits.</p>

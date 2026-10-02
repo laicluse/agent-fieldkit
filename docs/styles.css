@@ -1647,7 +1647,7 @@ pre code {
   flex-direction: column;
   justify-content: space-between;
   border-radius: 7px;
-  padding: 0.75rem;
+  padding: 0.6rem 0.45rem;
   color: #ffffff;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
@@ -1658,8 +1658,11 @@ pre code {
 }
 
 .supermax-preview-cell strong {
-  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  font-size: clamp(0.7rem, 1.1vw, 0.95rem);
   overflow-wrap: normal;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  align-self: flex-start;
 }
 
 .supermax-preview-cell span {
@@ -2559,6 +2562,48 @@ pre code {
 
 .readme-content th {
   background: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .readme-content table,
+  .readme-content tbody,
+  .readme-content tr,
+  .readme-content td {
+    display: block;
+    width: 100%;
+  }
+
+  .readme-content thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .readme-content tr {
+    border-top: 1px solid var(--paper-line);
+    padding: 0.75rem 0;
+  }
+
+  .readme-content tr:last-child {
+    border-bottom: 1px solid var(--paper-line);
+  }
+
+  .readme-content td {
+    border: 0;
+    padding: 0.2rem 0;
+  }
+
+  .readme-content td[data-label]:not([data-label=""])::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--paper-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
   color: var(--paper-ink);
 }
 

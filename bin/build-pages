@@ -419,7 +419,12 @@ function renderTable(rows) {
 		`<tr>${headings.map((cell) => `<th>${renderInlineMarkdown(cell)}</th>`).join("")}</tr>`,
 		"</thead>",
 		"<tbody>",
-		...bodyRows.map((row) => `<tr>${row.map((cell) => `<td>${renderInlineMarkdown(cell)}</td>`).join("")}</tr>`),
+		...bodyRows.map(
+			(row) =>
+				`<tr>${row
+					.map((cell, index) => `<td data-label="${attributeEscape(cleanInline(headings[index] || ""))}">${renderInlineMarkdown(cell)}</td>`)
+					.join("")}</tr>`,
+		),
 		"</tbody>",
 		"</table>",
 	].join("\n");
@@ -1327,19 +1332,19 @@ const layout = cells.distribute(24, "article");`;
 						<div class="supermax-preview-grid" aria-hidden="true">
 							<div class="supermax-preview-cell source">
 								<strong>Menu</strong>
-								<span>3 cols</span>
+								<span>3</span>
 							</div>
 							<div class="supermax-preview-cell context">
 								<strong>List</strong>
-								<span>5 cols</span>
+								<span>5</span>
 							</div>
 							<div class="supermax-preview-cell article">
 								<strong>Article</strong>
-								<span>10 cols</span>
+								<span>10</span>
 							</div>
 							<div class="supermax-preview-cell notes">
 								<strong>Notes</strong>
-								<span>6 cols</span>
+								<span>6</span>
 							</div>
 						</div>
 						<div class="supermax-preview-note">Zoom anchor: Article. Hidden cells are reported, not rendered.</div>

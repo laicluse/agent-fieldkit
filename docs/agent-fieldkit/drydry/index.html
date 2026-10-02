@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Finds parallel paths in code, prose, and process, then converges the duplication that actually drifts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=fd351f2ad0">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -139,7 +139,7 @@ extending the next sweep to `app/models/`.</code></pre>
 <tr><th>Prompt input</th><th>What the session writes</th><th>Expected hits when the signature runs against the described scope</th></tr>
 </thead>
 <tbody>
-<tr><td>Canonical-channel bypass: which domain values have a canonical formatter, and where are they rendered/spoken/logged/interpolated <em>outside</em> that formatter?</td><td>Pattern <code>plate-outside-formatter</code>: <code>LicensePlateFormatter</code> is the canonical channel for Dutch plate text. Audit every site where a <code>Plate</code> value is interpolated into a user-facing string without going through this formatter (Views, dialogs, accessibility labels, AppIntent display labels, push notification bodies, logs). Signatures: &lt;code&gt;rg -n '\\\\(plate\\|kenteken)\\b' Sources/&lt;/code&gt; for raw interpolation; &lt;code&gt;rg -nF 'LicensePlateFormatter' Sources/&lt;/code&gt; for canonical call-sites, take the complement.</td><td>The View case the original audit caught (<code>PlateBadgeView.swift</code>); the confirmationDialog message (&quot;XX99XXX aanmelden vandaag?&quot;); the two accessibility labels; the AppIntent display label. Each of the four missed sites interpolates the plate as a raw <code>String(describing:)</code> or <code>\\(plate.raw)</code> rather than calling <code>LicensePlateFormatter</code>, so each appears in the complement of the canonical-call-sites grep.</td></tr>
+<tr><td data-label="Prompt input">Canonical-channel bypass: which domain values have a canonical formatter, and where are they rendered/spoken/logged/interpolated <em>outside</em> that formatter?</td><td data-label="What the session writes">Pattern <code>plate-outside-formatter</code>: <code>LicensePlateFormatter</code> is the canonical channel for Dutch plate text. Audit every site where a <code>Plate</code> value is interpolated into a user-facing string without going through this formatter (Views, dialogs, accessibility labels, AppIntent display labels, push notification bodies, logs). Signatures: &lt;code&gt;rg -n '\\\\(plate\\|kenteken)\\b' Sources/&lt;/code&gt; for raw interpolation; &lt;code&gt;rg -nF 'LicensePlateFormatter' Sources/&lt;/code&gt; for canonical call-sites, take the complement.</td><td data-label="Expected hits when the signature runs against the described scope">The View case the original audit caught (<code>PlateBadgeView.swift</code>); the confirmationDialog message (&quot;XX99XXX aanmelden vandaag?&quot;); the two accessibility labels; the AppIntent display label. Each of the four missed sites interpolates the plate as a raw <code>String(describing:)</code> or <code>\\(plate.raw)</code> rather than calling <code>LicensePlateFormatter</code>, so each appears in the complement of the canonical-call-sites grep.</td></tr>
 </tbody>
 </table>
 <p>The new flow has a path to the four sites because the canonical-channel-bypass prompt names the failure shape explicitly (interpolation outside the canonical channel) instead of the original SwiftUI seed's narrower &quot;raw plate text in <code>Text</code> modifiers&quot;. Step 2.5 reduces the residual risk further: if the calling session writes a too-narrow pattern (for instance, only <code>Text(...)</code> modifiers, recreating the original miss), the contrarian reviewer reading the same scope flags &quot;the entry as written misses <code>.confirmationDialog</code>, <code>accessibilityLabel</code>, and AppIntent display labels carrying the same value; broaden the signature or split into a second entry.&quot;</p>
@@ -284,14 +284,14 @@ Signatures to look for:
 <tr><th>Skill</th><th>User-invocable</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code>drydry:drydry</code></td><td>yes</td><td><strong>Short invocation.</strong> &quot;Have I seen this before?&quot; about something in front of you. Orchestrator: routes to a sub-skill or runs the duplication audit pipeline. Quick and audit modes.</td></tr>
-<tr><td><code>drydry:parity-audit</code></td><td>yes</td><td><strong>Long invocation.</strong> &quot;Do all the ways to do this actually do the same thing?&quot; Named background sweep of every entry point, converges diverged consequences, then re-mines to prove it. Minutes, not seconds.</td></tr>
-<tr><td><code>drydry:sweep</code></td><td>no</td><td>Detection pass. Runs an independent reviewer with verifier-burden discipline.</td></tr>
-<tr><td><code>drydry:checklist</code></td><td>no</td><td>Opt-in seed source. Returns starting-point seed templates per domain when the operator passes <code>seed-from &lt;domain&gt;</code>. The default audit flow does not invoke this skill; the calling session formulates the checklist from the codebase itself.</td></tr>
-<tr><td><code>drydry:triage</code></td><td>no</td><td>Three-bucket triage (cheap-and-safe / partial / needs-design).</td></tr>
-<tr><td><code>drydry:learn</code></td><td>no</td><td>Online research on de-duplication state-of-the-art.</td></tr>
-<tr><td><code>drydry:upstream</code></td><td>no</td><td>Cross-toolbox audit against framework offerings.</td></tr>
-<tr><td><code>drydry:instructions</code></td><td>no</td><td>Agent instruction-file audit for instructions that cause DRY violations.</td></tr>
+<tr><td data-label="Skill"><code>drydry:drydry</code></td><td data-label="User-invocable">yes</td><td data-label="Purpose"><strong>Short invocation.</strong> &quot;Have I seen this before?&quot; about something in front of you. Orchestrator: routes to a sub-skill or runs the duplication audit pipeline. Quick and audit modes.</td></tr>
+<tr><td data-label="Skill"><code>drydry:parity-audit</code></td><td data-label="User-invocable">yes</td><td data-label="Purpose"><strong>Long invocation.</strong> &quot;Do all the ways to do this actually do the same thing?&quot; Named background sweep of every entry point, converges diverged consequences, then re-mines to prove it. Minutes, not seconds.</td></tr>
+<tr><td data-label="Skill"><code>drydry:sweep</code></td><td data-label="User-invocable">no</td><td data-label="Purpose">Detection pass. Runs an independent reviewer with verifier-burden discipline.</td></tr>
+<tr><td data-label="Skill"><code>drydry:checklist</code></td><td data-label="User-invocable">no</td><td data-label="Purpose">Opt-in seed source. Returns starting-point seed templates per domain when the operator passes <code>seed-from &lt;domain&gt;</code>. The default audit flow does not invoke this skill; the calling session formulates the checklist from the codebase itself.</td></tr>
+<tr><td data-label="Skill"><code>drydry:triage</code></td><td data-label="User-invocable">no</td><td data-label="Purpose">Three-bucket triage (cheap-and-safe / partial / needs-design).</td></tr>
+<tr><td data-label="Skill"><code>drydry:learn</code></td><td data-label="User-invocable">no</td><td data-label="Purpose">Online research on de-duplication state-of-the-art.</td></tr>
+<tr><td data-label="Skill"><code>drydry:upstream</code></td><td data-label="User-invocable">no</td><td data-label="Purpose">Cross-toolbox audit against framework offerings.</td></tr>
+<tr><td data-label="Skill"><code>drydry:instructions</code></td><td data-label="User-invocable">no</td><td data-label="Purpose">Agent instruction-file audit for instructions that cause DRY violations.</td></tr>
 </tbody>
 </table>
 				</article>
