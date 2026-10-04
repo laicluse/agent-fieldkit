@@ -590,7 +590,7 @@ h3 {
   align-items: baseline;
   border-bottom: 1px solid var(--line);
   padding: 1rem;
-  color: var(--green);
+  color: var(--machine-muted);
   font-family: var(--mono);
   font-size: 0.84rem;
 }
@@ -1676,7 +1676,7 @@ pre code {
 
 .supermax-toolbar strong {
   min-width: 0;
-  color: var(--green);
+  color: var(--machine-ink);
   overflow-wrap: anywhere;
 }
 
