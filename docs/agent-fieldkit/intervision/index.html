@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=554a549d92">
+		<link rel="stylesheet" href="../../styles.css?v=432fd0f46a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -84,11 +84,7 @@
 <h2 id="commands">Commands</h2>
 <h3 id="intervision-second-opinion"><code>/intervision:second-opinion</code></h3>
 <p>Hands the recent work to the other agent and talks it through. Claude uses <code>codex exec</code> on the Luna tier advertised by <code>codex debug models</code> first and escalates one tier at a time (Sol, then Astra) only when the cheaper pass is uncertain, misses a concrete concern, or the work is high-risk. The Claude ladder mirrors it as Sonnet, Opus, Fable. Codex uses <code>claude -p</code>. Three shapes, picked by what just happened:</p>
-<ul>
-<li><strong>Work just done (a diff):</strong> the peer reviews the actual change set.</li>
-<li><strong>A design just discussed (no code yet):</strong> the peer reflects on the plan without touching the tree.</li>
-<li><strong>Back and forth:</strong> continue the exchange to push a point, defend yours, or ask the peer to reconsider.</li>
-</ul>
+<ul class="term-list"><li><strong>Work just done (a diff):</strong> <span>the peer reviews the actual change set.</span></li><li><strong>A design just discussed (no code yet):</strong> <span>the peer reflects on the plan without touching the tree.</span></li><li><strong>Back and forth:</strong> <span>continue the exchange to push a point, defend yours, or ask the peer to reconsider.</span></li></ul>
 <p>The exact agent-specific invocations live in the suffixed skill sources.</p>
 <p>The peer's findings come home through three honest fates: fix, skip on cost versus value, or reject as hollow. The exchange and any remaining disagreement are surfaced to you.</p>
 <h2 id="requirements">Requirements</h2>

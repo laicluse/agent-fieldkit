@@ -52,6 +52,9 @@ A single-occupancy lock for a working directory with an [external reference](htt
 dibs claim <dir> [--description <text>] [--json]
 ```
 
+- **claim** takes the lock for a directory.
+- **release** frees a lock you hold.
+
 ## Runnable example
 
 ```bash copy
@@ -348,4 +351,9 @@ const expected = '<span class="code-unit">dibs</span><wbr><span class="code-unit
 if (!html.includes(expected)) throw new Error("install command name can still break inside a hyphenated word");
 NODE
   [ "$status" -eq 0 ]
+}
+
+@test "README lists that lead every item with a bold term render as a term list" {
+  grep -q '<ul class="term-list">' "$REPO/docs/agent-fieldkit/dibs/index.html"
+  grep -q '<li><strong>claim</strong> <span>takes the lock for a directory.</span></li>' "$REPO/docs/agent-fieldkit/dibs/index.html"
 }

@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=554a549d92">
+		<link rel="stylesheet" href="../../styles.css?v=432fd0f46a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -86,11 +86,7 @@
 <pre><code><span class="code-line">bonsai create &lt;branch&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--base &lt;ref&gt;]</span> <span class="code-unit">[--json]</span></span>
 <span class="code-line">bonsai setup  &lt;worktree&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--no-install]</span> <span class="code-unit">[--json]</span></span>
 <span class="code-line">bonsai teardown &lt;worktree|branch&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--force]</span> <span class="code-unit">[--dry-run]</span> <span class="code-unit">[--json]</span></span></code></pre>
-<ul>
-<li><strong>create</strong>: resolve the freshest Git default branch from <code>origin/HEAD</code> when available, refuse a vaultsync-managed checkout through the vaultsync CLI, make the worktree + branch (slashes in the branch flatten to dashes in the dir), refuse an existing branch, and print <code>{ worktree, branch, base, baseSha, port }</code>. The port is a deterministic dev-server hint in 3100-3999.</li>
-<li><strong>setup</strong>: copy the <code>.bonsai</code>-listed files from the canonical checkout (<code>--repo</code>) and install dependencies per directory by the manager each lockfile names. Install is best-effort; failures warn rather than block.</li>
-<li><strong>teardown</strong>: remove a worktree only when it is integrated into the Git default branch, or clean with nothing ahead of that default. Otherwise it is kept with a reason. Warns on orphaned unpushed commits and on a diverged default. <code>--dry-run</code> classifies without removing; <code>--force</code> overrides the gate.</li>
-</ul>
+<ul class="term-list"><li><strong>create</strong> <span>resolve the freshest Git default branch from <code>origin/HEAD</code> when available, refuse a vaultsync-managed checkout through the vaultsync CLI, make the worktree + branch (slashes in the branch flatten to dashes in the dir), refuse an existing branch, and print <code>{ worktree, branch, base, baseSha, port }</code>. The port is a deterministic dev-server hint in 3100-3999.</span></li><li><strong>setup</strong> <span>copy the <code>.bonsai</code>-listed files from the canonical checkout (<code>--repo</code>) and install dependencies per directory by the manager each lockfile names. Install is best-effort; failures warn rather than block.</span></li><li><strong>teardown</strong> <span>remove a worktree only when it is integrated into the Git default branch, or clean with nothing ahead of that default. Otherwise it is kept with a reason. Warns on orphaned unpushed commits and on a diverged default. <code>--dry-run</code> classifies without removing; <code>--force</code> overrides the gate.</span></li></ul>
 <h2 id="skills">Skills</h2>
 <ul>
 <li><code>bonsai</code>: make a ready worktree (create + setup).</li>

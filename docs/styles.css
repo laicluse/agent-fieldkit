@@ -3380,3 +3380,37 @@ pre .code-line {
   background: transparent;
   padding: 1.1rem 0 0;
 }
+
+.readme-content .term-list {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.readme-content .term-list li {
+  display: grid;
+  grid-template-columns: minmax(7rem, 9.5rem) minmax(0, 1fr);
+  column-gap: 1.25rem;
+  margin: 0;
+  border-top: 1px solid var(--paper-line);
+  padding: 0.8rem 0;
+}
+
+.readme-content .term-list li:last-child {
+  border-bottom: 1px solid var(--paper-line);
+}
+
+.readme-content .term-list li > strong:first-child {
+  color: var(--paper-ink);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .readme-content .term-list li {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.25rem;
+  }
+
+}

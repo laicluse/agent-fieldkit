@@ -237,6 +237,16 @@ function writeFileIfChanged(file, content) {
 	fs.writeFileSync(file, content);
 }
 
+function markTermLists(html) {
+	return html.replace(/<ul>([\s\S]*?)<\/ul>/g, (list, body) => {
+		const items = [...body.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((match) => match[1]);
+		const termLed = items.length >= 2 && items.every((item) => /^\s*<strong>[^<]{1,40}<\/strong>[:,]?\s/.test(item));
+		if (!termLed) return list;
+		const rows = items.map((item) => item.replace(/^\s*(<strong>[^<]{1,40}<\/strong>)[:,]?\s([\s\S]*)$/, "<li>$1 <span>$2</span></li>"));
+		return `<ul class="term-list">${rows.join("")}</ul>`;
+	});
+}
+
 function groupCommandDefinitions(html) {
 	const entry = String.raw`<h3 id="[^"]*"><code>[^<]*<\/code><\/h3>\n(?:<p>[\s\S]*?<\/p>\n?)?`;
 	const definitionLength = (part) => (part.match(/<p>[\s\S]*?<\/p>/g) || []).join("").replace(/<[^>]+>/g, "").length;
@@ -945,7 +955,7 @@ function buildPluginDetailPage(data, plugin, markdown, hash, assetVersions) {
 	const title = markdownTitle(markdown, plugin.name);
 	const readmeHtml = renderMarkdown(markdownWithoutInstallSections(markdownWithoutFirstTitle(markdown)));
 	const tocHtml = renderDetailToc(readmeHtml);
-	const scannableReadmeHtml = groupCommandDefinitions(readmeHtml);
+	const scannableReadmeHtml = markTermLists(groupCommandDefinitions(readmeHtml));
 	const pageUrl = `${PAGES_URL}/${plugin.detailPath}`;
 	const imageUrl = `${PAGES_URL}/assets/og-image.png?v=${hash}`;
 	const installCommands = {

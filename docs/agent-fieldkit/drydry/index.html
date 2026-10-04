@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Finds parallel paths in code, prose, and process, then converges the duplication that actually drifts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=554a549d92">
+		<link rel="stylesheet" href="../../styles.css?v=432fd0f46a">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -84,10 +84,7 @@
 <p>Use <code>drydry</code> when duplication is suspected but not obvious from identical text: parallel code paths, repeated prose claims, design-system drift, or two workflows that solve the same job through different routes.</p>
 <h2 id="how-to-invoke">How to invoke</h2>
 <p>One user-invocable surface: <code>/drydry:drydry</code>. The orchestrator routes between two modes:</p>
-<ul>
-<li><strong>Quick mode</strong>: ad-hoc &quot;is this duplicate?&quot; check mid-session. Inline answer with a runnable verifier-grep. No artefact. Trigger with <code>quick</code> in the prompt or by pasting two snippets, naming two files, or pointing at a recent transcript excerpt. Scope is whatever the operator explicitly hands over: pasted code, named files, or a one-line description of the suspected partner. The orchestrator does not search project history or memory; it inspects only what the prompt names.</li>
-<li><strong>Audit mode</strong> (default for non-trivial scope): full sweep producing a <code>&lt;scope&gt;-drydry-findings-&lt;timestamp&gt;.md</code> artefact. <code>&lt;scope&gt;</code> is a slug of the directory or package the audit covered (for example <code>app-models-drydry-findings-2026-05-12T14-23.md</code>); the timestamp is the checklist version so two same-session audits do not silently overwrite each other.</li>
-</ul>
+<ul class="term-list"><li><strong>Quick mode</strong> <span>ad-hoc &quot;is this duplicate?&quot; check mid-session. Inline answer with a runnable verifier-grep. No artefact. Trigger with <code>quick</code> in the prompt or by pasting two snippets, naming two files, or pointing at a recent transcript excerpt. Scope is whatever the operator explicitly hands over: pasted code, named files, or a one-line description of the suspected partner. The orchestrator does not search project history or memory; it inspects only what the prompt names.</span></li><li><strong>Audit mode</strong> <span>(default for non-trivial scope): full sweep producing a <code>&lt;scope&gt;-drydry-findings-&lt;timestamp&gt;.md</code> artefact. <code>&lt;scope&gt;</code> is a slug of the directory or package the audit covered (for example <code>app-models-drydry-findings-2026-05-12T14-23.md</code>); the timestamp is the checklist version so two same-session audits do not silently overwrite each other.</span></li></ul>
 <h3 id="worked-example-full-audit-invocation">Worked example: full audit invocation</h3>
 <p>Operator types:</p>
 <pre><code><span class="code-line">/drydry:drydry audit app/services/ for duplicated service-object responsibilities</span></code></pre>
@@ -129,12 +126,7 @@
 <p>The drydry framework rests on eight concepts. Three are established literature, two are local terminology (originating in the rover protocol), three are improvisation that holds under contrarian review. Each chapter applies across mediums (code, prose, design); the medium-translation paragraph after each chapter shows how.</p>
 <h3 id="chapter-1-type-4-clone-framing">Chapter 1: Type-4 clone framing</h3>
 <p><strong>Established.</strong> The standard taxonomy of code clones is four levels:</p>
-<ul>
-<li><strong>Type-1</strong>: identical copies (whitespace and comments aside).</li>
-<li><strong>Type-2</strong>: identical structure with renamed identifiers.</li>
-<li><strong>Type-3</strong>: structurally similar with added or removed or modified statements.</li>
-<li><strong>Type-4</strong>: same behaviour, different structure.</li>
-</ul>
+<ul class="term-list"><li><strong>Type-1</strong> <span>identical copies (whitespace and comments aside).</span></li><li><strong>Type-2</strong> <span>identical structure with renamed identifiers.</span></li><li><strong>Type-3</strong> <span>structurally similar with added or removed or modified statements.</span></li><li><strong>Type-4</strong> <span>same behaviour, different structure.</span></li></ul>
 <p>Token-based detectors (jscpd, PMD CPD, SwiftLint custom rules, Simian) are reliable for Type-1 through Type-3 because tokens carry the signal. They miss Type-4 by design, because semantic equivalence does not show up in the token stream. The Type-4 case is what hurts most over months in actively maintained codebases: token detectors miss it, so it accumulates invisibly, while Type-1 through Type-3 stay visible to existing tooling. Two stop-confirmation surfaces, two snapshot factories, two error-handling middlewares, two onboarding banners that drift apart copy-by-copy are typical shapes.</p>
 <p><strong>Medium translation.</strong> In prose: two paragraphs that say the same thing in different words across a chapter or a doc set. Token-detectors miss this because the wording is fresh; semantic-detectors find it. In design: two components that solve the same UX need (a confirm-action popover and a confirm-action sheet) with different visual languages. Visual diff tools see them as different; the user feels the inconsistency.</p>
 <p>Sources: Roy and Cordy 2007 (&quot;A Survey on Software Clone Detection Research&quot;, Queen's School of Computing TR 2007-541), plus a continuing line of embedding-based Type-4 detection work in the years since. See <code>drydry:learn</code> for a current literature sweep when a specific paper is needed.</p>
@@ -170,18 +162,11 @@
 <p><strong>Medium translation.</strong> In prose: &quot;the outdated retry-after value will be cited in a customer support ticket within the quarter&quot;. In design: &quot;a user encountering both the dialog and the sheet form learns two patterns for the same action, and the inconsistency erodes the trust the design system is supposed to build&quot;.</p>
 <h3 id="chapter-5-three-bucket-convergence-triage">Chapter 5: Three-bucket convergence triage</h3>
 <p><strong>Generic, not named externally.</strong> Findings without an action plan are decoration. Every finding is classified into exactly one of three buckets:</p>
-<ul>
-<li><strong>cheap-and-safe</strong>: there is an obvious convergence direction, the change is local, no public contract moves. Fix it in the same audit.</li>
-<li><strong>partial overlap</strong>: convergence requires design judgement (which side wins, what to name the unified abstraction, how callers migrate). Surface the design question in the artefact under <code>design_question:</code>; promote to cheap-and-safe when the operator answers.</li>
-<li><strong>needs-design / by-design</strong>: looks like drift but is actually constrained by a framework, an external API shape, or a genuine domain difference. Document why it is <em>not</em> drift so future audits do not re-flag it.</li>
-</ul>
+<ul class="term-list"><li><strong>cheap-and-safe</strong> <span>there is an obvious convergence direction, the change is local, no public contract moves. Fix it in the same audit.</span></li><li><strong>partial overlap</strong> <span>convergence requires design judgement (which side wins, what to name the unified abstraction, how callers migrate). Surface the design question in the artefact under <code>design_question:</code>; promote to cheap-and-safe when the operator answers.</span></li><li><strong>needs-design / by-design</strong> <span>looks like drift but is actually constrained by a framework, an external API shape, or a genuine domain difference. Document why it is <em>not</em> drift so future audits do not re-flag it.</span></li></ul>
 <p>The framing rhymes with ICE (Impact/Confidence/Ease), RICE, and defect-triage matrices from QA literature. Three buckets is the plugin's chosen minimum: fewer buckets lose the design-judgement case, more buckets dilute decisions. The bucket is the verdict; the cost is the evidence for the verdict.</p>
 <h3 id="chapter-6-two-fates-discipline-fix-or-reject-with-evidence">Chapter 6: Two-fates discipline (fix or reject-with-evidence)</h3>
 <p><strong>Local terminology</strong> (originating in the rover protocol). Every finding the audit raises leaves the audit in one of exactly two states:</p>
-<ul>
-<li><strong>Fixed</strong>, with the diff or edit in the audit's commit or edit trail.</li>
-<li><strong>Rejected</strong>, with concrete evidence that the finding was a non-issue.</li>
-</ul>
+<ul class="term-list"><li><strong>Fixed</strong> <span>with the diff or edit in the audit's commit or edit trail.</span></li><li><strong>Rejected</strong> <span>with concrete evidence that the finding was a non-issue.</span></li></ul>
 <p>There is no third state. &quot;Later&quot;, &quot;polish for the next sprint&quot;, &quot;the team can decide&quot;, &quot;backlog&quot;: all are deferrals dressed up. They are the failure mode the discipline exists to prevent. Closest external relatives: zero-bug policy in XP, &quot;stop-the-line&quot; in the Toyota Production System, &quot;ratchet&quot; in critical-systems engineering. The drydry framing is sharper than any of those because the rejection carries an evidence-burden, not just an opinion-burden.</p>
 <h3 id="chapter-7-contrarian-second-pass-on-rejects">Chapter 7: Contrarian second-pass on rejects</h3>
 <p><strong>Local terminology</strong> (originating in the rover protocol). The fix-or-reject rule has an obvious failure mode: the author is the one classifying. They built the work, so they have every incentive to wave a finding away. A threshold-based gate (&quot;run a second pass only if rejects exceed X%&quot;) admits an unsupervised band; any threshold above zero is defensible only by feel.</p>
