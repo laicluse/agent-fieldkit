@@ -3260,3 +3260,15 @@ pre .code-line {
   padding-left: 4ch;
   text-indent: -4ch;
 }
+
+.install-section:not(.install-scan) .install-grid-three {
+  column-gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.install-section:not(.install-scan) .install-grid-three .install-block {
+  border: 0;
+  border-top: 1px solid var(--machine-line-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 1.1rem 0 0;
+}
