@@ -417,3 +417,12 @@ NODE
 @test "the Supermax usage example renders hanging code lines" {
   grep -q '<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>' "$REPO/docs/supermax/index.html"
 }
+
+@test "the /supermax hero preview shows the library's real 24-column result" {
+  html="$REPO/docs/supermax/index.html"
+  grep -q '<strong>Article</strong>' "$html"
+  grep -q '<span>14.6 cols</span>' "$html"
+  grep -q '<span>9.4 cols</span>' "$html"
+  grep -q 'Menu and List are hidden' "$html"
+  ! grep -q '<div class="supermax-preview-cell source">' "$html"
+}

@@ -1394,24 +1394,16 @@ const layout = cells.distribute(24, "article");`;
 							<strong>@laicluse/supermax</strong>
 						</div>
 						<div class="supermax-preview-grid" aria-hidden="true">
-							<div class="supermax-preview-cell source">
-								<strong>Menu</strong>
-								<span>3</span>
-							</div>
-							<div class="supermax-preview-cell context">
-								<strong>List</strong>
-								<span>5</span>
-							</div>
 							<div class="supermax-preview-cell article">
 								<strong>Article</strong>
-								<span>10</span>
+								<span>14.6 cols</span>
 							</div>
 							<div class="supermax-preview-cell notes">
 								<strong>Notes</strong>
-								<span>6</span>
+								<span>9.4 cols</span>
 							</div>
 						</div>
-						<div class="supermax-preview-note">Zoom anchor: Article. Hidden cells are reported, not rendered.</div>
+						<div class="supermax-preview-note">Zoom anchor: Article. Menu and List are hidden: reported, not rendered.</div>
 					</aside>
 				</div>
 			</section>
