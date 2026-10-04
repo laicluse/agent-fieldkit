@@ -439,3 +439,11 @@ if (!/container-type:\s*inline-size/.test(cell[1])) throw new Error("demo cell i
 NODE
   [ "$status" -eq 0 ]
 }
+
+@test "the /vocalist hero shows the bubble over an agent terminal" {
+  html="$REPO/docs/vocalist/index.html"
+  grep -q 'class="vocalist-scene"' "$html"
+  grep -q 'class="vocalist-terminal"' "$html"
+  grep -Fq '<span class="vocalist-target">Codex · vocalist</span>' "$html"
+  ! grep -q 'Prompt preview' "$html"
+}
