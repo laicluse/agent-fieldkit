@@ -1145,7 +1145,7 @@ function buildVocalistPage(app, hash, assetVersions) {
 				</div>
 			</section>
 
-			<section id="install" class="section install-section" aria-labelledby="install-title">
+			<section id="install" class="section install-section install-scan" aria-labelledby="install-title">
 				<div class="section-heading split-heading">
 					<div>
 						<p class="eyebrow">Get Vocalist</p>

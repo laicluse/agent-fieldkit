@@ -3039,7 +3039,7 @@ pre code {
 .hero,
 .home-hero,
 .detail-hero,
-.install-section {
+.install-section:not(.install-scan) {
   --bg: var(--machine-bg);
   --bg-raised: var(--machine-raised);
   --bg-soft: var(--machine-raised);
@@ -3120,18 +3120,18 @@ pre code {
   color: var(--white);
 }
 
-.install-section .install-block {
+.install-section:not(.install-scan) .install-block {
   border-color: var(--machine-line);
   background: var(--machine-raised);
 }
 
-.install-section .install-block .button.secondary {
+.install-section:not(.install-scan) .install-block .button.secondary {
   border-color: var(--machine-line-strong);
   background: transparent;
   color: var(--machine-ink);
 }
 
-.install-section .install-command-list li {
+.install-section:not(.install-scan) .install-command-list li {
   border-color: var(--machine-line);
   background: var(--machine-well);
 }
@@ -3154,7 +3154,8 @@ pre code {
 .changelog-section,
 .apps-section,
 .home-products-section,
-.vocalist-commands-section {
+.vocalist-commands-section,
+.install-scan {
   background: var(--sunken);
 }
 
@@ -3196,7 +3197,7 @@ pre code {
   padding-top: clamp(3rem, 6vw, 5rem);
 }
 
-.install-section .install-block {
+.install-section:not(.install-scan) .install-block {
   border-color: transparent;
 }
 
