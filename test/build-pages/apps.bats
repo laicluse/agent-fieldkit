@@ -426,3 +426,16 @@ NODE
   grep -q 'Menu and List are hidden' "$html"
   ! grep -q '<div class="supermax-preview-cell source">' "$html"
 }
+
+@test "the /supermax comparison cells label horizontally and shorten instead of rotating" {
+  grep -q '<span class="supermax-demo-cell menu"><span class="cell-name">Menu</span><span class="cell-initial" aria-hidden="true">M</span></span>' "$REPO/docs/supermax/index.html"
+  run node - <<'NODE' "$REPO/docs/styles.css"
+const fs = require("fs");
+const css = fs.readFileSync(process.argv[2], "utf8");
+const cell = css.match(/^\.supermax-demo-cell\s*\{([^}]*)\}/m);
+if (!cell) throw new Error("demo cell rule missing");
+if (/writing-mode/.test(cell[1])) throw new Error("demo cell labels still rotate");
+if (!/container-type:\s*inline-size/.test(cell[1])) throw new Error("demo cell is not a size container");
+NODE
+  [ "$status" -eq 0 ]
+}

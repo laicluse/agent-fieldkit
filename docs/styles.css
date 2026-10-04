@@ -2025,9 +2025,21 @@ pre code {
   font-weight: 780;
   overflow: hidden;
   white-space: nowrap;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  justify-content: flex-end;
+  container-type: inline-size;
+}
+
+.supermax-demo-cell .cell-initial {
+  display: none;
+}
+
+@container (max-width: 3.2rem) {
+  .supermax-demo-cell .cell-name {
+    display: none;
+  }
+
+  .supermax-demo-cell .cell-initial {
+    display: inline;
+  }
 }
 
 .supermax-demo-cell.menu {
