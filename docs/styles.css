@@ -56,6 +56,7 @@
   --cell-article: #2e5d9a;
   --cell-notes: #a3473a;
   --sunken: #ebe7da;
+  --card-shadow: 0 1px 2px rgba(23, 27, 24, 0.06), 0 6px 18px rgba(23, 27, 24, 0.05);
   --machine-well: #050605;
   --on-light-ink: #171b18;
   --on-light-soft: #3b423d;
@@ -736,9 +737,9 @@ h3 {
   min-height: 3rem;
   align-items: center;
   gap: 0.75rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--paper-line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--white);
   padding: 0 0.8rem;
 }
 
@@ -804,17 +805,17 @@ h3 {
   display: flex;
   min-height: 23rem;
   flex-direction: column;
-  border: 1px solid var(--line);
+  border: 1px solid var(--paper-line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--white);
   padding: 1rem;
-  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  box-shadow: var(--card-shadow);
+  transition: border-color 160ms ease, transform 160ms ease;
 }
 
 .plugin-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(49, 217, 148, 0.42);
-  background: rgba(255, 255, 255, 0.065);
+  border-color: var(--paper-muted);
 }
 
 .plugin-card h3 a {
@@ -923,9 +924,9 @@ h3 {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
   gap: 1.6rem;
-  border: 1px solid rgba(49, 217, 148, 0.38);
+  border: 1px solid var(--paper-line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--white);
   padding: 1.7rem;
   box-shadow: var(--shadow);
 }
