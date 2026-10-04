@@ -25,11 +25,12 @@ guard_premature() {
   fi
 
   dd_is_wip "$text" && return 0
+  dd_host_will_resume_session "$input" && return 0
 
   local has_flag=0 has_gate=0 has_question=0
   grep -q '🏁' <<< "$text" && has_flag=1
   grep -q '🚦' <<< "$text" && has_gate=1
-  tail -c 500 <<< "$text" | grep -q '?' && has_question=1
+  dd_without_quoted_spans "$text" | tail -c 500 | grep -q '?' && has_question=1
 
   if [ "$has_flag" -eq 1 ] && [ "$has_question" -eq 1 ]; then
     dd_emit_block premature "🏁 + ? contradictory. Done = no question. Choose."
