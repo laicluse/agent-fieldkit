@@ -455,3 +455,11 @@ NODE
   grep -q 'class="home-glimpse home-glimpse-supermax"' "$html"
   ! grep -q 'home-command-mark' "$html"
 }
+
+@test "the /supermax comparison stacks the same four cells on the standard side" {
+  html="$REPO/docs/supermax/index.html"
+  for cell in menu list article notes; do
+    grep -q "<span class=\"standard-demo-tile $cell\">" "$html"
+  done
+  ! grep -q 'standard-demo-tile hero' "$html"
+}

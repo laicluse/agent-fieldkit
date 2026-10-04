@@ -1457,16 +1457,10 @@ const layout = cells.distribute(24, "article");`;
 								<div class="responsive-demo-canvas">
 									<div class="responsive-demo-viewport standard-demo-viewport">
 										<div class="standard-demo-content">
-											<span class="standard-demo-tile hero"></span>
-											<span class="standard-demo-tile"></span>
-											<span class="standard-demo-tile"></span>
-											<span class="standard-demo-tile"></span>
-											<span class="standard-demo-tile wide"></span>
-											<span class="standard-demo-tile"></span>
-											<span class="standard-demo-tile tall"></span>
-											<span class="standard-demo-tile"></span>
-											<span class="standard-demo-tile wide"></span>
-											<span class="standard-demo-tile"></span>
+											<span class="standard-demo-tile menu"><span class="cell-name">Menu</span><span class="cell-initial" aria-hidden="true">M</span></span>
+											<span class="standard-demo-tile list"><span class="cell-name">List</span><span class="cell-initial" aria-hidden="true">L</span></span>
+											<span class="standard-demo-tile article"><span class="cell-name">Article</span><span class="cell-initial" aria-hidden="true">A</span></span>
+											<span class="standard-demo-tile notes"><span class="cell-name">Notes</span><span class="cell-initial" aria-hidden="true">N</span></span>
 										</div>
 									</div>
 								</div>

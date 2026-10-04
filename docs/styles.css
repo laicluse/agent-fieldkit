@@ -2020,7 +2020,7 @@ pre code {
 .standard-demo-content {
   display: grid;
   min-height: 100%;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 10fr) minmax(0, 6fr);
   gap: 0.45rem;
   padding: 0.55rem;
   animation:
@@ -2029,28 +2029,46 @@ pre code {
 }
 
 .standard-demo-tile {
-  min-height: 3.35rem;
+  min-width: 0;
+  min-height: 5.6rem;
+  overflow: hidden;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  padding: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 780;
+  white-space: nowrap;
+  container-type: inline-size;
 }
 
-.standard-demo-tile.hero {
-  grid-column: 1 / -1;
-  min-height: 4.1rem;
-  background: rgba(255, 255, 255, 0.34);
-  animation: demoStandardHero 11s linear infinite;
+.standard-demo-tile .cell-initial {
+  display: none;
 }
 
-.standard-demo-tile.wide {
-  grid-column: span 2;
-  background: rgba(255, 255, 255, 0.28);
-  animation: demoStandardWide 11s linear infinite;
+@container (max-width: 3.2rem) {
+  .standard-demo-tile .cell-name {
+    display: none;
+  }
+
+  .standard-demo-tile .cell-initial {
+    display: inline;
+  }
 }
 
-.standard-demo-tile.tall {
-  min-height: 6.5rem;
-  background: rgba(255, 255, 255, 0.22);
-  animation: demoStandardTall 11s linear infinite;
+.standard-demo-tile.menu {
+  background: var(--cell-menu);
+}
+
+.standard-demo-tile.list {
+  background: var(--cell-list);
+}
+
+.standard-demo-tile.article {
+  background: var(--cell-article);
+}
+
+.standard-demo-tile.notes {
+  background: var(--cell-notes);
 }
 
 .supermax-demo-viewport {
@@ -2237,7 +2255,7 @@ pre code {
   34%,
   100% {
     min-height: 100%;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 10fr) minmax(0, 6fr);
   }
 
   48%,
@@ -2250,45 +2268,6 @@ pre code {
   92% {
     min-height: 28rem;
     grid-template-columns: 1fr;
-  }
-}
-
-@keyframes demoStandardHero {
-  0%,
-  58%,
-  100% {
-    grid-column: 1 / -1;
-  }
-
-  72%,
-  92% {
-    grid-column: auto;
-  }
-}
-
-@keyframes demoStandardWide {
-  0%,
-  58%,
-  100% {
-    grid-column: span 2;
-  }
-
-  72%,
-  92% {
-    grid-column: auto;
-  }
-}
-
-@keyframes demoStandardTall {
-  0%,
-  58%,
-  100% {
-    min-height: 6.5rem;
-  }
-
-  72%,
-  92% {
-    min-height: 4.8rem;
   }
 }
 
@@ -2472,9 +2451,6 @@ pre code {
 @media (prefers-reduced-motion: reduce) {
   .responsive-demo-viewport,
   .standard-demo-content,
-  .standard-demo-tile.hero,
-  .standard-demo-tile.wide,
-  .standard-demo-tile.tall,
   .supermax-demo-brand,
   .supermax-demo-previous,
   .supermax-demo-previous span,
