@@ -158,6 +158,29 @@ dd_is_wip() {
   grep -q '🚧' <<< "$1"
 }
 
+dd_host_will_resume_session() {
+  jq -e '
+    ([.background_tasks[]? | select((.status // "running") | test("^(running|pending)$"))] | length > 0)
+    or ([.session_crons[]? | select(.recurring == false)] | length > 0)
+  ' <<< "$1" >/dev/null 2>&1
+}
+
+dd_without_quoted_spans() {
+  python3 -c '
+import re, sys
+text = sys.stdin.read()
+fenced_code = r"```.*?```"
+inline_code = r"`[^`\n]*`"
+url = r"https?://\S+"
+straight_quote = r"\"[^\"\n]*\""
+curly_quote = "[“„][^“”„\n]*”"
+text = re.sub(fenced_code, " ", text, flags=re.S)
+for span in (inline_code, url, straight_quote, curly_quote):
+    text = re.sub(span, " ", text)
+sys.stdout.write(text)
+' <<< "$1" 2>/dev/null || printf '%s' "$1"
+}
+
 dd_external_irreversible_gate() {
   local text="$1"
   grep -qiE '(gh[[:space:]]+repo[[:space:]]+(create|fork)|git[[:space:]]+remote[[:space:]]+(add|set-url)|git[[:space:]]+push|npm[[:space:]]+publish)' <<< "$text" && return 0
