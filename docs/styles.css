@@ -2883,7 +2883,6 @@ pre code {
   }
 
   .hero-grid {
-    width: min(1180px, calc(100% - 1rem));
     padding-top: 3rem;
   }
 
