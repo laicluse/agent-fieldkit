@@ -447,3 +447,11 @@ NODE
   grep -Fq '<span class="vocalist-target">Codex · vocalist</span>' "$html"
   ! grep -q 'Prompt preview' "$html"
 }
+
+@test "the home product cards show a glimpse of each product" {
+  html="$REPO/docs/index.html"
+  grep -q 'class="home-glimpse home-glimpse-fieldkit"' "$html"
+  grep -q 'class="home-glimpse home-glimpse-vocalist"' "$html"
+  grep -q 'class="home-glimpse home-glimpse-supermax"' "$html"
+  ! grep -q 'home-command-mark' "$html"
+}

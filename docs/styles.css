@@ -408,79 +408,123 @@ h3 {
   font-size: 1.04rem;
 }
 
-.home-card-top {
+.home-product-card h2 {
+  margin-bottom: 0.6rem;
+  font-size: clamp(2.2rem, 3vw, 2.9rem);
+}
+
+.home-glimpse {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
-.home-card-top > :first-child {
-  min-width: 0;
-}
-
-.home-card-top h2 {
-  max-width: 11ch;
-  margin-bottom: 0;
-  font-size: clamp(2.4rem, 4.4vw, 4.6rem);
-}
-
-#supermax .home-card-top h2 {
-  font-size: clamp(2.35rem, 3.4vw, 4rem);
-}
-
-.home-product-icon {
-  width: clamp(3.8rem, 8vw, 5.3rem);
-  height: auto;
-  flex: 0 0 auto;
-}
-
-.home-command-mark {
-  display: grid;
-  width: clamp(3.8rem, 8vw, 5.3rem);
-  aspect-ratio: 1;
-  place-items: center;
-  border: 1px solid rgba(15, 128, 88, 0.36);
+  min-height: 8.5rem;
+  margin-bottom: 1.3rem;
+  overflow: hidden;
   border-radius: 8px;
-  background: rgba(15, 128, 88, 0.08);
-  color: var(--action-on-paper);
+  background: var(--machine-well);
+  padding: 1rem;
+}
+
+.home-glimpse-fieldkit {
+  align-content: center;
+  gap: 0.45rem;
+}
+
+.home-glimpse-fieldkit code {
+  padding-left: 1.4ch;
+  color: var(--machine-ink);
+  font-size: 0.74rem;
+  text-indent: -1.4ch;
+}
+
+.home-glimpse-fieldkit code > span:first-child,
+.home-glimpse-fieldkit .is-dim {
+  color: var(--machine-muted);
+}
+
+.home-glimpse-vocalist {
+  align-content: start;
+  gap: 0.9rem;
+  padding-top: 0;
+}
+
+.home-glimpse-menubar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 -1rem;
+  border-bottom: 1px solid var(--machine-line);
+  padding: 0.3rem 0.8rem;
+}
+
+.home-glimpse-menubar img {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.home-glimpse-bubble {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 0.7rem;
+  row-gap: 0.2rem;
+  border-radius: 12px;
+  background: var(--white);
+  padding: 0.75rem 0.9rem;
+  box-shadow: var(--bubble-shadow);
+}
+
+.home-glimpse-bubble .vocalist-level {
+  padding-top: 0.15rem;
+}
+
+.home-glimpse-bubble .vocalist-level i {
+  height: 0.95rem;
+}
+
+.home-product-card .home-glimpse-bubble p {
+  margin: 0;
+  color: var(--on-light-ink);
+  font-size: 1rem;
+}
+
+.home-glimpse-bubble > span:last-child {
+  color: var(--on-light-muted);
+  font-size: 0.78rem;
+  font-weight: 560;
+}
+
+.home-glimpse-supermax {
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.55rem;
+}
+
+.home-glimpse-back {
+  justify-self: start;
+  border: 1px solid var(--machine-line-strong);
+  border-radius: 999px;
+  color: var(--machine-ink);
+  padding: 0.1rem 0.6rem;
   font-family: var(--mono);
-  font-size: clamp(2rem, 5vw, 3.3rem);
-  font-weight: 800;
+  font-size: 0.72rem;
 }
 
-.home-supermax-mark {
+.home-glimpse-cells {
   display: grid;
-  width: clamp(3.6rem, 5vw, 4.7rem);
-  aspect-ratio: 1;
-  grid-template-columns: 0.8fr 1fr 1.3fr;
-  gap: 0.22rem;
-  align-items: end;
-  flex: 0 0 auto;
-  border: 1px solid rgba(112, 167, 255, 0.38);
-  border-radius: 8px;
-  background: rgba(112, 167, 255, 0.08);
-  padding: 0.46rem;
+  grid-template-columns: minmax(0, 14.6fr) minmax(0, 9.4fr);
+  gap: 0.4rem;
 }
 
-.home-supermax-mark span {
-  min-width: 0;
-  border-radius: 4px;
+.home-glimpse-cells span {
+  border-radius: 6px;
+  color: var(--white);
+  padding: 0.45rem 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
-.home-supermax-mark span:nth-child(1) {
-  height: 42%;
-  background: var(--cell-menu);
-}
-
-.home-supermax-mark span:nth-child(2) {
-  height: 66%;
-  background: var(--cell-list);
-}
-
-.home-supermax-mark span:nth-child(3) {
-  height: 88%;
+.home-glimpse-cells .article {
   background: var(--cell-article);
+}
+
+.home-glimpse-cells .notes {
+  background: var(--cell-notes);
 }
 
 .home-card-link {
@@ -2980,8 +3024,6 @@ pre code {
 
   .hero-console,
   .home-product-card,
-  .home-command-mark,
-  .home-supermax-mark,
   .vocalist-terminal,
   .supermax-panel,
   .install-block,
