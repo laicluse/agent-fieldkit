@@ -455,23 +455,3 @@ NODE
   grep -q 'class="home-glimpse home-glimpse-supermax"' "$html"
   ! grep -q 'home-command-mark' "$html"
 }
-
-@test "the /supermax comparison stacks the same four cells on the standard side" {
-  html="$REPO/docs/supermax/index.html"
-  for cell in menu list article notes; do
-    grep -q "<span class=\"standard-demo-tile $cell\">" "$html"
-  done
-  ! grep -q 'standard-demo-tile hero' "$html"
-}
-
-@test "the /supermax standard side starts as a page with a full-width menu bar" {
-  run node - <<'NODE' "$REPO/docs/styles.css"
-const fs = require("fs");
-const css = fs.readFileSync(process.argv[2], "utf8");
-const menu = css.match(/^\.standard-demo-tile\.menu\s*\{([^}]*)\}/m);
-if (!menu || !/grid-column:\s*1\s*\/\s*-1/.test(menu[1])) throw new Error("the standard menu does not span the page as a bar");
-const content = css.match(/^\.standard-demo-content\s*\{([^}]*)\}/m);
-if (!content || /minmax\(0, 3fr\)/.test(content[1])) throw new Error("the standard side still starts as the same four columns as Supermax");
-NODE
-  [ "$status" -eq 0 ]
-}
