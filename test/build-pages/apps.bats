@@ -455,3 +455,19 @@ NODE
   grep -q 'class="home-glimpse home-glimpse-supermax"' "$html"
   ! grep -q 'home-command-mark' "$html"
 }
+
+@test "the /supermax demo hides a cell at its first shrink step" {
+  run node - <<'NODE' "$REPO/docs/styles.css"
+const fs = require("fs");
+const css = fs.readFileSync(process.argv[2], "utf8");
+const block = (name) => {
+	const match = css.match(new RegExp(`@keyframes ${name} \\{([\\s\\S]*?)\\n\\}`));
+	if (!match) throw new Error(`${name} missing`);
+	return match[1];
+};
+const shrink = block("demoViewportShrink");
+if (!/22%,\s*30% \{\s*width: min\(100%, max\(9\.5rem, 78%\)\);/.test(shrink)) throw new Error("first shrink step moved");
+if (!/22%,\s*92% \{[^}]*visibility: hidden;/.test(block("demoSupermaxMenuCell"))) throw new Error("Menu is still visible after the first shrink step");
+NODE
+  [ "$status" -eq 0 ]
+}

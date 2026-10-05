@@ -2294,13 +2294,13 @@ pre code {
 
 @keyframes demoSupermaxPrevious {
   0%,
-  34%,
+  10%,
   100% {
     opacity: 0;
     visibility: hidden;
   }
 
-  42%,
+  22%,
   92% {
     opacity: 1;
     visibility: visible;
@@ -2309,13 +2309,13 @@ pre code {
 
 @keyframes demoSupermaxBrand {
   0%,
-  34%,
+  10%,
   100% {
     opacity: 1;
     visibility: visible;
   }
 
-  42%,
+  22%,
   92% {
     opacity: 0;
     visibility: hidden;
@@ -2324,15 +2324,15 @@ pre code {
 
 @keyframes demoSupermaxPreviousMenu {
   0%,
+  10%,
   34%,
-  58%,
   100% {
     opacity: 0;
     visibility: hidden;
   }
 
-  42%,
-  50% {
+  22%,
+  30% {
     opacity: 1;
     visibility: visible;
   }
@@ -2340,13 +2340,13 @@ pre code {
 
 @keyframes demoSupermaxPreviousList {
   0%,
-  58%,
+  34%,
   100% {
     opacity: 0;
     visibility: hidden;
   }
 
-  62%,
+  42%,
   92% {
     opacity: 1;
     visibility: visible;
@@ -2363,7 +2363,7 @@ pre code {
 
 @keyframes demoSupermaxMenuCell {
   0%,
-  30%,
+  10%,
   100% {
     left: 0;
     width: 12%;
@@ -2371,7 +2371,7 @@ pre code {
     visibility: visible;
   }
 
-  42%,
+  22%,
   92% {
     left: -14%;
     width: 12%;
@@ -2382,7 +2382,7 @@ pre code {
 
 @keyframes demoSupermaxListCell {
   0%,
-  30%,
+  10%,
   100% {
     left: 14%;
     width: 20%;
@@ -2390,15 +2390,15 @@ pre code {
     visibility: visible;
   }
 
-  42%,
-  50% {
+  22%,
+  30% {
     left: 0;
     width: 22%;
     opacity: 1;
     visibility: visible;
   }
 
-  62%,
+  42%,
   92% {
     left: -24%;
     width: 22%;
@@ -2409,25 +2409,25 @@ pre code {
 
 @keyframes demoSupermaxArticleCell {
   0%,
-  30%,
+  10%,
   100% {
     left: 36%;
     width: 40%;
   }
 
-  42%,
-  50% {
+  22%,
+  30% {
     left: 24%;
     width: 45%;
   }
 
-  62%,
-  70% {
+  42%,
+  50% {
     left: 0;
     width: 62%;
   }
 
-  82%,
+  62%,
   92% {
     left: 0;
     width: 100%;
@@ -2436,7 +2436,7 @@ pre code {
 
 @keyframes demoSupermaxNotesCell {
   0%,
-  30%,
+  10%,
   100% {
     left: 78%;
     width: 22%;
@@ -2444,23 +2444,23 @@ pre code {
     visibility: visible;
   }
 
-  42%,
-  50% {
+  22%,
+  30% {
     left: 71%;
     width: 29%;
     opacity: 1;
     visibility: visible;
   }
 
-  62%,
-  70% {
+  42%,
+  50% {
     left: 66%;
     width: 34%;
     opacity: 1;
     visibility: visible;
   }
 
-  82%,
+  62%,
   92% {
     left: 102%;
     width: 0;
