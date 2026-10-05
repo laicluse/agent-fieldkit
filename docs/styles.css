@@ -2020,7 +2020,9 @@ pre code {
 .standard-demo-content {
   display: grid;
   min-height: 100%;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 10fr) minmax(0, 6fr);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 10fr) minmax(0, 6fr);
+  grid-template-rows: min-content;
+  grid-auto-rows: minmax(6.6rem, 1fr);
   gap: 0.45rem;
   padding: 0.55rem;
   animation:
@@ -2030,7 +2032,6 @@ pre code {
 
 .standard-demo-tile {
   min-width: 0;
-  min-height: 5.6rem;
   overflow: hidden;
   border-radius: 5px;
   color: #ffffff;
@@ -2056,6 +2057,8 @@ pre code {
 }
 
 .standard-demo-tile.menu {
+  grid-column: 1 / -1;
+  min-height: 1.9rem;
   background: var(--cell-menu);
 }
 
@@ -2255,7 +2258,7 @@ pre code {
   34%,
   100% {
     min-height: 100%;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 10fr) minmax(0, 6fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 10fr) minmax(0, 6fr);
   }
 
   48%,
