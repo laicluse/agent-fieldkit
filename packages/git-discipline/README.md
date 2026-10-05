@@ -7,10 +7,6 @@ they come from Claude Code, Codex, or a direct terminal. The plugin gives the
 agent workflow skills for common git moves and installs hook backstops so
 message schema, wip commits, and push policy do not depend on memory.
 
-## Checkout safety
-
-The checkout-policy hook blocks commands that detach the primary checkout. Use a named preview branch at the desired revision instead. Linked worktrees may still detach for isolated inspection. Repositories that must stay in their canonical checkout can set `git config laicluse.canonicalOnly true`; the hook then rejects `git worktree add`. An occupied canonical checkout must become available before authoring resumes.
-
 ## Installation
 
 ```bash

@@ -18,8 +18,6 @@ case "$EVENT" in
     dd_cd_to_bash_target "$INPUT"
 
     source "$DIR/lib/lock-info.sh"
-    source "$DIR/guards/checkout-policy.sh"
-    guard_checkout_policy "$INPUT"
     source "$DIR/guards/git-dash-c.sh"
     source "$DIR/guards/git-config-override.sh"
     source "$DIR/guards/repo-deny.sh"

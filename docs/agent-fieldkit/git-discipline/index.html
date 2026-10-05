@@ -53,7 +53,7 @@
 						<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.87</span>
+							<span class="meta-fact">2.0.88</span>
 							<span class="meta-fact">13 skills</span>
 						</div>
 					</div>
@@ -81,8 +81,6 @@
 				<article class="readme-content">
 <p>Git guardrails and an optional parallel-worktree flow for agent sessions and direct CLI use. Canonical-checkout authoring remains the default. Use a linked worktree when concurrency, a live checkout, change risk, or another concrete constraint makes isolation safer; repositories that always need that flow can opt in with local <code>laicluse.requireWorktree=true</code>. Verified candidates become real two-parent default-branch merge commits through an atomic ref update, without a canonical checkout bottleneck or a long-lived merge lock.</p>
 <p>Use it when commits and pushes need the same discipline regardless of whether they come from Claude Code, Codex, or a direct terminal. The plugin gives the agent workflow skills for common git moves and installs hook backstops so message schema, wip commits, and push policy do not depend on memory.</p>
-<h2 id="checkout-safety">Checkout safety</h2>
-<p>The checkout-policy hook blocks commands that detach the primary checkout. Use a named preview branch at the desired revision instead. Linked worktrees may still detach for isolated inspection. Repositories that must stay in their canonical checkout can set <code>git config laicluse.canonicalOnly true</code>; the hook then rejects <code>git worktree add</code>. An occupied canonical checkout must become available before authoring resumes.</p>
 <h2 id="what-it-does">What it does</h2>
 <p><code>git-discipline</code> has three parts:</p>
 <ol>
@@ -203,7 +201,7 @@
 <span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--exclude-trivial</span></span></code></pre>
 <p>Lists every commit on the branch with a single-line message (or below the trivial threshold), useful for checking that the push gate held.</p>
 				</article>
-				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#checkout-safety">Checkout safety</a></li><li><a href="#what-it-does">What it does</a></li><li><a href="#parallel-candidate-command">Parallel candidate command</a></li><li><a href="#skills">Skills</a></li><li><a href="#hooks">Hooks</a></li><li><a href="#example-commit-message">Example commit message</a></li><li><a href="#bypass">Bypass</a></li><li><a href="#test-suite">Test suite</a></li><li><a href="#audit">Audit</a></li></ol></nav>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-it-does">What it does</a></li><li><a href="#parallel-candidate-command">Parallel candidate command</a></li><li><a href="#skills">Skills</a></li><li><a href="#hooks">Hooks</a></li><li><a href="#example-commit-message">Example commit message</a></li><li><a href="#bypass">Bypass</a></li><li><a href="#test-suite">Test suite</a></li><li><a href="#audit">Audit</a></li></ol></nav>
 			</section>
 		</main>
 
