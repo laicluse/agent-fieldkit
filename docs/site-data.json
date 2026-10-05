@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 84,
-		"hookFiles": 70
+		"hookFiles": 72
 	},
 	"install": {
 		"claude": [
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.86",
+			"version": "2.0.87",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -251,7 +251,7 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline",
 			"skillCount": 13,
 			"commandCount": 5,
-			"hookFileCount": 32,
+			"hookFileCount": 34,
 			"latestChange": {
 				"version": "v2.0.85",
 				"type": "Changed",
@@ -635,7 +635,7 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.86",
+			"packageVersion": "2.0.87",
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"version": "v2.0.85",
 			"type": "Changed",
