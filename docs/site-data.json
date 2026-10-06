@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.29",
+			"version": "2.0.30",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.29",
-				"type": "Added",
-				"summary": "vaultsync uninstall [path] stops managing a checkout, also when the checkout is already gone from disk."
+				"version": "v2.0.30",
+				"type": "Fixed",
+				"summary": "Generated HTML updates no longer receive a fabricated Visual: trailer that the current commit hook rejects."
 			}
 		},
 		{
@@ -679,6 +679,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/bonsai/CHANGELOG.md"
 		},
 		{
+			"plugin": "vaultsync",
+			"packageVersion": "2.0.30",
+			"detailPath": "agent-fieldkit/vaultsync/",
+			"version": "v2.0.30",
+			"type": "Fixed",
+			"summary": "Generated HTML updates no longer receive a fabricated Visual: trailer that the current commit hook rejects.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
+		},
+		{
 			"plugin": "rover",
 			"packageVersion": "2.0.29",
 			"detailPath": "agent-fieldkit/rover/",
@@ -686,15 +695,6 @@
 			"type": "Fixed",
 			"summary": "Pride review works without a remote.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
-		},
-		{
-			"plugin": "vaultsync",
-			"packageVersion": "2.0.29",
-			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.29",
-			"type": "Added",
-			"summary": "vaultsync uninstall [path] stops managing a checkout, also when the checkout is already gone from disk.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
 			"plugin": "house-rules",

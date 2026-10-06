@@ -53,7 +53,7 @@
 						<p class="lede">Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.29</span>
+							<span class="meta-fact">2.0.30</span>
 							<span class="meta-fact">1 skill</span>
 						</div>
 					</div>
@@ -137,11 +137,11 @@
 <p>When the provider command exits non-zero, vaultsync preserves its safely redacted stderr. A wrapper may supply a provider-specific message and recovery action as one stderr line without coupling vaultsync to that provider:</p>
 <pre><code class="language-json"><span class="code-line">{ &quot;protocol&quot;: &quot;vaultsync.llm.error.v1&quot;, &quot;message&quot;: &quot;OAuth session expired.&quot;, &quot;recovery&quot;: &quot;Re-authenticate the configured provider and retry sync.&quot; }</span></code></pre>
 <p>Plain stderr remains supported. Vaultsync recognizes a generic expired OAuth session and recommends re-authenticating the configured provider; it does not name or hard-code a provider.</p>
-<p>vaultsync keeps the LLM-generated subject and body but canonicalizes the required trailers:</p>
+<p>vaultsync keeps the LLM-generated subject and body but canonicalizes the required trailers. It preserves supplied <code>Visual:</code> evidence and never infers a render inspection from an HTML path. Reproducible viewers can use <code>git-discipline-generated=true</code> in <code>.gitattributes</code>; hand-authored UI still requires genuine visual evidence when the repository enforces it.</p>
+<p>vaultsync adds:</p>
 <pre><code class="language-text"><span class="code-line">Tests: n/a (docs-only)</span>
 <span class="code-line">Slice: docs-only</span>
 <span class="code-line">Red-then-green: n/a (no executable behaviour changed)</span>
-<span class="code-line">Visual: &lt;changed HTML viewer, when present&gt;</span>
 <span class="code-line">Vaultsync-Reason: &lt;cycle reason&gt;</span></code></pre>
 <p>For conflicts:</p>
 <pre><code class="language-json"><span class="code-line">{ &quot;resolved&quot;: &quot;full file content without conflict markers&quot; }</span></code></pre>
