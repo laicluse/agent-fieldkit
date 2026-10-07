@@ -150,3 +150,15 @@ load helpers
   [[ "$output" == *"Duplicate Rails migration version"* ]]
   [ "$(git -C "$TEST_REPO" branch --show-current)" = feature ]
 }
+
+@test "guard-commit compares Rails migration versions numerically" {
+  mkdir -p "$TEST_REPO/db/migrate"
+  touch "$TEST_REPO/db/migrate/001_add_identity.rb"
+  touch "$TEST_REPO/db/migrate/1_add_technique.rb"
+  git -C "$TEST_REPO" add .
+
+  run bash -c "cd '$TEST_REPO' && '$GIT_DISCIPLINE' guard-commit"
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Duplicate Rails migration version"* ]]
+}
