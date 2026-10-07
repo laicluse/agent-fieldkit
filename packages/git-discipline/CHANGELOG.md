@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.89]
+
+### Added
+
+- **Rails migration version collisions stop commits and rebases.** The native guard checks the Git index per application, allowing equal versions in different apps. New migrations use the Rails generator; deployed versions require verified deployment-history repair before renumbering.
+
 ## [v2.0.85]
 
 ### Changed

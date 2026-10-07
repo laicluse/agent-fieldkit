@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.88",
+			"version": "2.0.89",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.85",
-				"type": "Changed",
-				"summary": "A merge to the default ends with the merged SHA running."
+				"version": "v2.0.89",
+				"type": "Added",
+				"summary": "Rails migration version collisions stop commits and rebases."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.88",
+			"packageVersion": "2.0.89",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.85",
-			"type": "Changed",
-			"summary": "A merge to the default ends with the merged SHA running.",
+			"version": "v2.0.89",
+			"type": "Added",
+			"summary": "Rails migration version collisions stop commits and rebases.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{

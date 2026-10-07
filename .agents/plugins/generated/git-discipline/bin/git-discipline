@@ -234,11 +234,13 @@ function rebaseCommand(argumentsList) {
 
   const candidate = gitOutput(['rev-parse', 'HEAD']);
   if (isAncestor(base, candidate)) {
+    requireUniqueMigrationVersions();
     process.stdout.write(`Candidate is already based on ${base.slice(0, 12)}.\n`);
     return;
   }
 
   runGit(['rebase', base], { stdio: 'inherit' });
+  requireUniqueMigrationVersions();
   process.stdout.write(`Rebased ${currentBranch()} onto ${base.slice(0, 12)}.\n`);
 }
 
@@ -405,7 +407,24 @@ function linkedWorktreeRoot() {
   return root.status === 0 ? root.stdout : null;
 }
 
+function requireUniqueMigrationVersions() {
+  const migrations = new Map();
+  for (const path of new Set(gitOutput(['ls-files', '--cached', '-z']).split('\0'))) {
+    const match = path.match(/^((?:.*\/)?db\/migrate)\/(\d+)_[^/]+\.rb$/);
+    if (!match) continue;
+    const key = `${match[1]}/${BigInt(match[2])}`;
+    const previous = migrations.get(key);
+    if (previous) {
+      throw new GitDisciplineError(
+        `Duplicate Rails migration version: ${previous} and ${path}. Use rails generate migration for new migrations and check versions after stacking or rebasing. Do not renumber a deployed migration without a verified deployment-history repair.`,
+      );
+    }
+    migrations.set(key, path);
+  }
+}
+
 function guardCommitCommand() {
+  requireUniqueMigrationVersions();
   if (!repositoryRequiresWorktree()) return;
 
   const defaultName = defaultBranch();
