@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.27",
+			"version": "2.0.28",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -538,9 +538,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.26",
+				"version": "v2.0.28",
 				"type": "Changed",
-				"summary": "Living documents do not report state they do not own."
+				"summary": "Cleanup removes the empty container."
 			}
 		},
 		{
@@ -698,11 +698,11 @@
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.27",
+			"packageVersion": "2.0.28",
 			"detailPath": "agent-fieldkit/house-rules/",
-			"version": "v2.0.26",
+			"version": "v2.0.28",
 			"type": "Changed",
-			"summary": "Living documents do not report state they do not own.",
+			"summary": "Cleanup removes the empty container.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
