@@ -72,7 +72,7 @@ on the cheapest adequate reviewer model. Do not use the current session model
 for every reviewer by default; that recreates Claude's expensive max-effort
 shape without adding signal. When subagents are unavailable, run six separate
 reviewer passes in the main session and keep the outputs isolated until Step 3.
-The reviewers review only; they change NOTHING.
+The reviewers review only; they change NOTHING. Put this sentence in every agent prompt, verbatim: "Read with the file tools and read-only git commands only. Do not run rm, mkdir, cp, mv, tee or any other command that writes, not even into a scratch directory: such a command raises a permission prompt that blocks the operator's session."
 
 **Prompt template per agent** (fill in per writer):
 
