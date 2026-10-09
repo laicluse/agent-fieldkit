@@ -5,6 +5,12 @@ once per machine whenever the installed `version` in
 `.claude-plugin/plugin.json` changes. Header version numbers are informational;
 the broadcast is positional.
 
+## [v2.0.30]
+
+### Fixed
+
+- Repair reviews retain the original scope and findings while reviewing the actual delta against a frozen revision. Repeated defects at one behavior boundary require a complete preservation comparison before another review, instead of restarting discovery with another full packet.
+
 ## [v2.0.24]
 
 ### Fixed
