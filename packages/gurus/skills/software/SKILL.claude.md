@@ -54,7 +54,7 @@ as scope unless the user explicitly asks for a diff review.
 
 ### Step 2: Dispatch eight agents in parallel
 
-One message with 8 parallel `Agent` calls (`subagent_type: "gurus:sonnet-max"`). The agents review only, they change NOTHING.
+One message with 8 parallel `Agent` calls (`subagent_type: "gurus:sonnet-max"`). The agents review only, they change NOTHING. Put this sentence in every agent prompt, verbatim: "Read with the file tools and read-only git commands only. Do not run rm, mkdir, cp, mv, tee or any other command that writes, not even into a scratch directory: such a command raises a permission prompt that blocks the operator's session."
 
 **Prompt template per agent** (fill in per guru):
 
