@@ -93,7 +93,7 @@
 		"codexPackages": 21,
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
-		"skillEntries": 84,
+		"skillEntries": 85,
 		"hookFiles": 70
 	},
 	"install": {
@@ -172,7 +172,7 @@
 		},
 		{
 			"name": "bonsai",
-			"version": "2.0.39",
+			"version": "2.0.40",
 			"category": "workflow",
 			"summary": "Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.",
 			"support": [
@@ -187,14 +187,14 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.39",
-				"type": "Fixed",
-				"summary": "A new worktree is immediately writable by the agent that created it."
+				"version": "v2.0.40",
+				"type": "Changed",
+				"summary": "Worktree creation remains an explicit lifecycle operation, independent of branch selection and publication policy; optional coordination plugins are not required."
 			}
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.75",
+			"version": "2.0.76",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -209,9 +209,9 @@
 			"commandCount": 5,
 			"hookFileCount": 4,
 			"latestChange": {
-				"version": "v2.0.75",
-				"type": "Fixed",
-				"summary": "dibs claim without --pid binds to the agent, not the shell."
+				"version": "v2.0.76",
+				"type": "Changed",
+				"summary": "Mandatory worktrees recognize repository-local codingAgent.git.branchPolicy=worktree, independently of the legacy flag."
 			}
 		},
 		{
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.92",
+			"version": "2.0.93",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -249,13 +249,13 @@
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"sourcePath": "packages/git-discipline",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline",
-			"skillCount": 13,
+			"skillCount": 14,
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.91",
-				"type": "Added",
-				"summary": "Repository-local branch policy."
+				"version": "v2.0.93",
+				"type": "Breaking",
+				"summary": "Repositories without origin/HEAD must record their existing default as repository-local init.defaultBranch; a global branch-creation preference no longer establishes repository identity."
 			}
 		},
 		{
@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.30",
+			"version": "2.0.31",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.30",
+				"version": "v2.0.31",
 				"type": "Fixed",
-				"summary": "Generated HTML updates no longer receive a fabricated Visual: trailer that the current commit hook rejects."
+				"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards."
 			}
 		},
 		{
@@ -635,12 +635,21 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.92",
+			"packageVersion": "2.0.93",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.91",
-			"type": "Added",
-			"summary": "Repository-local branch policy.",
+			"version": "v2.0.93",
+			"type": "Breaking",
+			"summary": "Repositories without origin/HEAD must record their existing default as repository-local init.defaultBranch; a global branch-creation preference no longer establishes repository identity.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
+		},
+		{
+			"plugin": "dibs",
+			"packageVersion": "2.0.76",
+			"detailPath": "agent-fieldkit/dibs/",
+			"version": "v2.0.76",
+			"type": "Changed",
+			"summary": "Mandatory worktrees recognize repository-local codingAgent.git.branchPolicy=worktree, independently of the legacy flag.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
 			"plugin": "dont-do-that",
@@ -650,15 +659,6 @@
 			"type": "Fixed",
 			"summary": "pr-discipline also checks a body passed with --body-file or -F.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
-		},
-		{
-			"plugin": "dibs",
-			"packageVersion": "2.0.75",
-			"detailPath": "agent-fieldkit/dibs/",
-			"version": "v2.0.75",
-			"type": "Fixed",
-			"summary": "dibs claim without --pid binds to the agent, not the shell.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",
@@ -671,11 +671,11 @@
 		},
 		{
 			"plugin": "bonsai",
-			"packageVersion": "2.0.39",
+			"packageVersion": "2.0.40",
 			"detailPath": "agent-fieldkit/bonsai/",
-			"version": "v2.0.39",
-			"type": "Fixed",
-			"summary": "A new worktree is immediately writable by the agent that created it.",
+			"version": "v2.0.40",
+			"type": "Changed",
+			"summary": "Worktree creation remains an explicit lifecycle operation, independent of branch selection and publication policy; optional coordination plugins are not required.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/bonsai/CHANGELOG.md"
 		},
 		{
@@ -689,11 +689,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.30",
+			"packageVersion": "2.0.31",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.30",
+			"version": "v2.0.31",
 			"type": "Fixed",
-			"summary": "Generated HTML updates no longer receive a fabricated Visual: trailer that the current commit hook rejects.",
+			"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{

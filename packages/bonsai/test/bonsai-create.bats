@@ -161,3 +161,11 @@ SH
   [ "$status" -ne 0 ]
   echo "$output" | grep -q '"error"'
 }
+
+@test "create requires repository-local default metadata instead of a global preference" {
+  git -C "$FIX" config --local --unset init.defaultBranch
+  git config --file "$BATS_TEST_TMPDIR/global-policy" init.defaultBranch main
+  GIT_CONFIG_GLOBAL="$BATS_TEST_TMPDIR/global-policy" run run_bonsai create uncertain-base --repo "$FIX" --json
+  [ "$status" -ne 0 ]
+  [ ! -d "$FIX/worktrees/uncertain-base" ]
+}

@@ -3,10 +3,13 @@
 
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const command = fs.readFileSync(0, "utf8");
 const cwd = path.resolve(process.argv[2] || process.cwd());
 const requireExplicit = process.argv.includes("--require-explicit");
+const excludeGitCommits = process.argv.includes("--exclude-git-commits");
+const excludeAborts = process.argv.includes("--exclude-aborts");
 let implicitTargetSeen = false;
 const environment = { ...process.env, PWD: cwd };
 
@@ -318,6 +321,40 @@ function parseOperands(argumentsList, valueOptions = new Set(), attachedValueOpt
 	return operands;
 }
 
+function primaryWorktree(directory) {
+	try {
+		return execFileSync('git', ['worktree', 'list', '--porcelain', '-z'], { cwd: directory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).split('\0')[0].replace(/^worktree /, '');
+	} catch { return null; }
+}
+
+function checkoutsOfBranch(directory, branch) {
+	if (!branch) return [];
+	try {
+		const listing = execFileSync('git', ['worktree', 'list', '--porcelain', '-z'], { cwd: directory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+		return listing.split('\0\0').flatMap((record) => {
+			const fields = record.split('\0');
+			return fields.includes(`branch refs/heads/${branch.replace(/^refs\/heads\//, '')}`)
+				? fields.filter((field) => field.startsWith('worktree ')).map((field) => field.slice(9)) : [];
+		});
+	} catch { return [directory]; }
+}
+
+function newIgnoredWorktree(target, sourcePrimary) {
+	if (!target || !sourcePrimary || fs.existsSync(target)) return false;
+	try {
+		let parent = path.dirname(target);
+		while (!fs.existsSync(parent)) parent = path.dirname(parent);
+		const primary = fs.realpathSync(sourcePrimary);
+		const canonicalTarget = path.join(fs.realpathSync(parent), path.relative(parent, target));
+		const relative = path.relative(path.join(primary, 'worktrees'), canonicalTarget);
+		if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) return false;
+		const enclosingRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: parent, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+		if (fs.realpathSync(enclosingRoot) !== primary) return false;
+		execFileSync('git', ['check-ignore', '--quiet', '--', canonicalTarget], { cwd: primary, stdio: 'ignore' });
+		return true;
+	} catch { return false; }
+}
+
 function gitTargets(words, base, hasExplicitDirectoryContext) {
 	let gitCwd = base;
 	let gitDir = null;
@@ -370,6 +407,8 @@ function gitTargets(words, base, hasExplicitDirectoryContext) {
 
 	const subcommand = words[index]?.text || "";
 	const subcommandArguments = words.slice(index + 1);
+	if (excludeGitCommits && subcommand === "commit" && !gitDir && !workTree) return [];
+	if (excludeAborts && ["merge", "rebase"].includes(subcommand) && subcommandArguments.some((argument) => argument.text === "--abort") && !gitDir && !workTree) return [];
 	const directMutators = new Set(["add", "stage", "commit", "checkout", "switch", "merge", "rebase", "reset", "restore", "clean", "mv", "rm", "am", "cherry-pick", "revert"]);
 	const stashMutators = new Set(["push", "pop", "apply", "drop", "clear", "save"]);
 	const worktreeMutators = new Set(["add", "remove", "move", "prune", "repair"]);
@@ -413,7 +452,17 @@ function gitTargets(words, base, hasExplicitDirectoryContext) {
 	const operands = parseOperands(subcommandArguments.slice(1), new Set(["-b", "-B", "--detach", "--checkout", "--lock", "--reason"]));
 	// A named worktree operand is the checkout this command writes; the checkout it runs from only gains shared administration.
 	let worktreeTargets = [];
-	if (action === "add" && operands[0]) worktreeTargets = [targetPath(operands[0], gitCwd)];
+	if (action === "add" && operands[0]) {
+		const target = targetPath(operands[0], gitCwd);
+		const sourcePrimary = primaryWorktree(gitCwd);
+		if (subcommandArguments.some((argument) => ["-f", "--force", "-B"].includes(argument.text))) {
+			const branchOption = subcommandArguments.findIndex((argument) => ["-b", "-B"].includes(argument.text));
+			const branch = branchOption >= 0 ? subcommandArguments[branchOption + 1]?.text : operands[1]?.text || (target && path.basename(target));
+			return [sourcePrimary || gitCwd, target, ...checkoutsOfBranch(gitCwd, branch)].filter(Boolean);
+		}
+		if (newIgnoredWorktree(target, sourcePrimary)) return [];
+		worktreeTargets = [target];
+	}
 	if (["remove", "repair"].includes(action)) worktreeTargets = operands.map((operand) => targetPath(operand, gitCwd));
 	if (action === "move") worktreeTargets = operands.slice(0, 2).map((operand) => targetPath(operand, gitCwd));
 	worktreeTargets = worktreeTargets.filter(Boolean);

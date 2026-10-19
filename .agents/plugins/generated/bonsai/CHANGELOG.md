@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.40]
+
+### Changed
+
+- Worktree creation remains an explicit lifecycle operation, independent of branch selection and publication policy; optional coordination plugins are not required.
+
 ## [v2.0.39]
 
 ### Fixed

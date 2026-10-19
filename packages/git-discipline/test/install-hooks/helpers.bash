@@ -21,6 +21,7 @@ setup() {
   git config user.email "test@example.com"
   git config user.name "Test"
   git config init.defaultBranch main
+  git config codingAgent.git.branchPolicy trunk
   popd >/dev/null
 
   # Each test runs as a clean shell; export only what install.sh consults.

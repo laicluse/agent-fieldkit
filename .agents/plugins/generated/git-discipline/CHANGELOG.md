@@ -19,6 +19,14 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.93]
+
+### Breaking
+
+- Repositories without `origin/HEAD` must record their existing default as repository-local `init.defaultBranch`; a global branch-creation preference no longer establishes repository identity. This also applies to Bonsai worktree creation.
+
+- Feature branches are now the authoring default. Repository-local `codingAgent.git.branchPolicy` selects `feature`, `trunk` or `worktree`; authoring and publication policies remain independent. The old `default` value remains an alias for `trunk`; the old `current` value now means `feature`, so direct default-branch authoring requires explicitly selecting `trunk`.
+
 ## [v2.0.91]
 
 ### Added

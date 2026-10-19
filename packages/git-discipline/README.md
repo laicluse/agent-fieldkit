@@ -1,6 +1,6 @@
 # git-discipline
 
-Git guardrails and an optional parallel-worktree flow for agent sessions and direct CLI use. Canonical-checkout authoring remains the default. Use a linked worktree when concurrency, a live checkout, change risk, or another concrete constraint makes isolation safer; repositories that always need that flow can opt in with local `laicluse.requireWorktree=true`. Verified candidates become real two-parent default-branch merge commits through an atomic ref update, without a canonical checkout bottleneck or a long-lived merge lock.
+Git guardrails and an optional parallel-worktree flow for agent sessions and direct CLI use. Feature branches in the canonical checkout are the default. Use a linked worktree when concurrency, a live checkout, change risk, or another concrete constraint makes isolation safer; repositories that always need that flow can select local `codingAgent.git.branchPolicy=worktree`. Verified candidates become real two-parent default-branch merge commits through an atomic ref update, without a canonical checkout bottleneck or a long-lived merge lock.
 
 Use it when commits and pushes need the same discipline regardless of whether
 they come from Claude Code, Codex, or a direct terminal. The plugin gives the
@@ -49,16 +49,25 @@ Reference for the schema, examples, escape-hatches, and troubleshooting:
 
 ## Repository branch policy
 
-Choose the authoring line independently of push permission. For sequential work in the primary checkout, configure this repository only:
+Branch policy chooses where to author, independently of push permission. Run `git-discipline branch-policy` to inspect the plan without changing Git state.
+
+| Local `codingAgent.git.branchPolicy` | Primary checkout | Linked worktree |
+|---|---|---|
+| Unset or `feature` | Feature branch | Feature branch |
+| `trunk` | Default branch | Feature branch |
+| `worktree` | Integration target only | Feature branch |
+
+For direct default-branch authoring in one repository:
 
 ```bash
-git config --local codingAgent.git.branchPolicy default
-git-discipline branch-policy
+git config --local codingAgent.git.branchPolicy trunk
 ```
 
-The resolver prints the configured policy, checkout type, current branch, intended authoring branch and worktree requirement. With `default`, ordinary work stays on the resolved default branch in the primary checkout. The native pre-commit guard rejects ordinary commits left on another primary-checkout branch. Linked feature worktrees and completing an actual merge remain available. A repository's explicit `laicluse.requireWorktree=true` requirement still takes priority.
+The resolver prints `policy`, `checkout`, `current_branch`, `authoring_branch`, `worktree_required` and `action`. An empty authoring branch requires choosing a feature branch or linked worktree. Native pre-commit hooks reject ordinary commits outside the chosen authoring line; the first repository commit, completing an actual merge and committing at a paused rebase remain possible. Missing default-branch metadata fails with an explicit repair instruction. The resolver never switches branches, moves changes, checks occupancy or creates worktrees.
 
-Unset the key, or set it to `current`, to keep the existing current-branch workflow. Global values of `codingAgent.git.branchPolicy` are deliberately ignored: this choice belongs to each repository. The setting chooses where to author; push policy still decides whether publishing is allowed. The resolver never switches branches or moves unfinished changes.
+Dibs, when installed, owns checkout occupancy and recognizes mandatory worktrees. If the canonical checkout is occupied, use a feature worktree; canonical-only projects wait instead. Bonsai is an optional worktree lifecycle helper; Git's worktree commands remain available without it. The branch resolver and native guards require neither Dibs nor Bonsai.
+
+Only repository-local configuration counts. Default resolution uses `origin/HEAD` or local `init.defaultBranch`, not a global initial-branch preference. Existing `current` normalizes to `feature`, `default` to `trunk`; legacy local `laicluse.requireWorktree=true` takes priority and selects `worktree`. Remove the local branch-policy key to restore the feature default. See `/git-discipline:branch-policy` for the authoring workflow and `/git-discipline:push-policy` for publication permission.
 
 ## Parallel candidate command
 
@@ -80,6 +89,7 @@ The merge commit always has the verified default tip as first parent, the candid
 
 | Skill | Command | Agents | Auto |
 |-------|---------|--------|:----:|
+| branch-policy | `/git-discipline:branch-policy` | Claude, Codex | yes |
 | commit-all-the-things | `/git-discipline:commit-all-the-things` | Claude, Codex | yes |
 | commit-snipe | `/git-discipline:commit-snipe` | Claude, Codex | yes (on the word "snipe") |
 | rebase-latest-default | `/git-discipline:rebase-latest-default` | Claude, Codex | yes |
@@ -159,7 +169,7 @@ sourced from `skills/commit-discipline/git-hooks/`):
 
 | Hook | Purpose |
 |------|---------|
-| `pre-commit` | when local `laicluse.requireWorktree=true`, blocks commits in the primary checkout and on the default branch; otherwise it does not constrain authoring location |
+| `pre-commit` | Enforces repository-local feature, trunk or worktree authoring; permits repository initialization and actual merge completion. |
 | `commit-msg` | runs `validate-body.sh` on every non-Claude commit |
 | `prepare-commit-msg` | pre-fills the editor with a layer-classified template |
 | `post-commit` | logs `--no-verify` usage to `${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log` |

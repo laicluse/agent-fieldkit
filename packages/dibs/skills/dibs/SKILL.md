@@ -106,7 +106,7 @@ acquisition points are:
   not as advice: use `bonsai:bonsai` or `git worktree`, never a loose filesystem
   copy, before editing.
   Claude and Codex call the same CLI; the on-disk lock is the shared artifact.
-  Repos that should only be mutated through linked worktrees can set local git config `laicluse.requireWorktree=true`; the hook then denies mutating the primary checkout while allowing linked worktrees. When the operator explicitly asks to work without a worktree, or a linked worktree would break path-dependent behavior such as a content vault or locally referenced symlinks, disable only that requirement with `git -C "<repo>" config laicluse.requireWorktree false`, claim the checkout, and continue there. Dibs occupancy remains active. Opt occupancy off for a whole session with `DIBS_OCCUPANCY=off`.
+  Repos that require linked worktrees can set local `codingAgent.git.branchPolicy=worktree` (legacy `laicluse.requireWorktree=true` is also recognized); the hook then denies mutating the primary checkout while allowing linked worktrees. When the operator explicitly asks to work without a worktree, or a linked worktree would break path-dependent behavior such as a content vault or locally referenced symlinks, change only the requirement that conflicts with that authorized workflow, record its prior value and restore temporary overrides afterwards. For a legacy-only requirement, `git -C "<repo>" config laicluse.requireWorktree false` is sufficient; do not also change branch policy. Claim the checkout, and continue there. Dibs occupancy remains active. Opt occupancy off for a whole session with `DIBS_OCCUPANCY=off`.
 - **Directory handout.** `bonsai` claims the lock for a worktree it hands out
   (it consumes this one implementation; there is no second lock anywhere). The
   git-native commit hook in the branch-worktree-discipline order remains the
@@ -127,3 +127,9 @@ acquisition points are:
 - **Occupancy, not git.** This prevents two agents occupying a worktree or
   standalone directory; it uses git boundaries only to choose the default scope
   and does not replace git's own `index.lock`.
+
+Branch policy owns the authoring line; Dibs only enforces occupancy and the worktree location requirement. Feature-versus-trunk commits need git-discipline or the repository's own Git hooks. Dibs does not require git-discipline or Bonsai to be installed.
+
+Bootstrap a worktree-only repository with `git commit --allow-empty`, record its initial branch with repository-local `init.defaultBranch`, then create its feature worktree outside the primary checkout (or use Bonsai). A plain-Git destination inside `worktrees/` requires an existing ignore rule. Completing an existing merge or aborting a conflicted merge/rebase may claim the primary checkout even in worktree mode. These exceptions cover only commit and merge/rebase-abort commands without other parsed writes; occupancy still blocks a different live holder. Resolve ordinary file changes in the authoring worktree.
+
+A non-forced Git worktree-add targeting a nonexistent checkout in the primary repository's own ignored `worktrees/` area changes shared Git administration rather than authoring in its source checkout. It may run while the source is occupied; claim the new checkout before authoring there. An existing destination and other file writes in the command still follow normal occupancy checks.

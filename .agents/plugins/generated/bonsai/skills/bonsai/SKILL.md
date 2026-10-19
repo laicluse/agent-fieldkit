@@ -42,7 +42,7 @@ node "$BONSAI" setup  "<worktree path from create>" --repo "<canonical checkout 
 ```
 
 `create` resolves the freshest Git default branch from `origin/HEAD`, or from
-`init.defaultBranch` when the configured branch exists only locally. It asks the vaultsync CLI whether the source checkout is managed, makes
+repository-local `init.defaultBranch` when the configured branch exists only locally. Global initial-branch preferences do not identify an existing repository's default. It asks the vaultsync CLI whether the source checkout is managed, makes
 `<root>/worktrees/<dir>` (slashes in the branch flatten to dashes in the dir),
 refuses a branch that already exists, and prints `{ worktree, branch, base,
 baseSha, port }`. `setup` copies the `.bonsai`-listed files from the canonical
@@ -53,3 +53,5 @@ Relay the worktree path and the dev-server port to the operator. The port is a
 deterministic hint in 3100-3999; use it for a dev server in the worktree so it
 does not collide with the main checkout. Tearing the worktree down later is
 `/prune` (the teardown subcommand).
+
+Branch policy and project constraints choose whether a worktree is appropriate; Bonsai executes an explicit lifecycle request and does not choose feature-versus-trunk authoring or publication permission. Use the project's occupancy mechanism when present. Without Dibs or git-discipline, Bonsai remains usable; it does not invent replacement locks or authoring rules.

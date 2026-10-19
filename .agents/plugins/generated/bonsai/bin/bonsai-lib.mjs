@@ -196,7 +196,7 @@ function remoteDefaultBranch(repo, remote = 'origin') {
 function configuredDefaultBranch(repo) {
   let configured;
   try {
-    configured = git(repo, ['config', '--get', 'init.defaultBranch']).trim();
+    configured = git(repo, ['config', '--local', '--get', 'init.defaultBranch']).trim();
   } catch {
     return null;
   }

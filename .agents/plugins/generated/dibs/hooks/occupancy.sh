@@ -256,17 +256,44 @@ occ_is_linked_worktree_root() {
 }
 
 occ_requires_linked_worktree() {
-	local dir="$1" required
-	required="$(git -C "$dir" config --bool --get laicluse.requireWorktree 2>/dev/null || true)"
-	[ "$required" = "true" ] || return 1
+	local dir="$1" required policy config_status
+	git -C "$dir" rev-parse --git-dir >/dev/null 2>&1 || return 1
+	required="$(git -C "$dir" config --local --bool --get laicluse.requireWorktree 2>/dev/null)"
+	config_status=$?
+	if [ "$config_status" -gt 1 ]; then
+		printf '[dibs/branch-policy] Invalid local laicluse.requireWorktree boolean.\n' >&2
+		exit 2
+	fi
+	policy="$(git -C "$dir" config --local --get codingAgent.git.branchPolicy 2>/dev/null || true)"
+	case "$policy" in
+		""|feature|trunk|worktree|current|default) ;;
+		*) printf '[dibs/branch-policy] Invalid local codingAgent.git.branchPolicy; use feature, trunk or worktree.\n' >&2; exit 2 ;;
+	esac
+	[ "$required" = "true" ] || [ "$policy" = "worktree" ] || return 1
 	occ_is_linked_worktree_root "$dir" && return 1
 	return 0
 }
 
 occ_enforce_worktree_requirement() {
-	local dir="$1"
+	local dir="$1" input="${2:-}" remaining integration_state=false allow_commit=false
 	occ_requires_linked_worktree "$dir" || return 0
-	printf '[dibs/worktree-required] %s has laicluse.requireWorktree=true; mutating this checkout is blocked. Create or use a linked git worktree, for example with bonsai:bonsai, and retry there. If the operator explicitly asked you to work without a worktree, or a linked worktree would break path-dependent behavior, run '\''git config laicluse.requireWorktree false'\'' from this checkout and retry; Dibs occupancy remains active.\n' "$dir" >&2
+	if git -C "$dir" rev-parse --verify --quiet MERGE_HEAD >/dev/null 2>&1; then
+		integration_state=true
+		allow_commit=true
+	elif ! git -C "$dir" rev-parse --verify --quiet HEAD >/dev/null 2>&1 && [ -z "$(git -C "$dir" for-each-ref --format='%(refname)' refs/heads/ 2>/dev/null)" ]; then
+		integration_state=true
+		allow_commit=true
+	elif [ -d "$(git -C "$dir" rev-parse --path-format=absolute --git-path rebase-merge 2>/dev/null)" ] || [ -d "$(git -C "$dir" rev-parse --path-format=absolute --git-path rebase-apply 2>/dev/null)" ]; then
+		integration_state=true
+	fi
+	if [ "$integration_state" = true ] && [ "$(occ_tool "$input")" = "Bash" ]; then
+		set -- --exclude-aborts
+		[ "$allow_commit" = true ] && set -- "$@" --exclude-git-commits
+		if remaining="$(occ_bash_write_targets "$(occ_bash_command "$input")" "$(occ_tool_workdir "$input")" "$@")" && [ -z "$remaining" ]; then
+			return 0
+		fi
+	fi
+	printf '[dibs/worktree-required] %s requires linked worktrees through codingAgent.git.branchPolicy=worktree or laicluse.requireWorktree=true; mutating this checkout is blocked. Create or use a linked git worktree, for example with bonsai:bonsai, and retry there. When the operator explicitly asked you to work without a worktree, follow that repository workflow. Only change the configured requirement for an explicitly authorized repository workflow; preserve prior values and restore temporary overrides. For a legacy-only requirement, '\''git config laicluse.requireWorktree false'\'' is sufficient. Dibs occupancy remains active.\n' "$dir" >&2
 	exit 2
 }
 
@@ -390,7 +417,7 @@ occ_gate() {
   [ -n "$dirs" ] || return 0
   while IFS= read -r dir; do
     [ -n "$dir" ] || continue
-    occ_enforce_worktree_requirement "$dir"
+    occ_enforce_worktree_requirement "$dir" "$input"
     out="$(occ_claim_output "$input" "$dir")"
     rc=$?
     # allow-comment: load-bearing. A cross-session refusal and a missing-description error both exit non-zero, so branch on the payload not rc: a refusal carries state:refused, the description error an error naming "work description".
