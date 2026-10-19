@@ -16,7 +16,7 @@ The hooks:
 
 | Hook | Purpose |
 |------|---------|
-| `pre-commit` | When local `laicluse.requireWorktree=true`, blocks ordinary commits in the primary checkout and on the dynamically resolved default branch. Without that opt-in, canonical-checkout authoring remains available. |
+| `pre-commit` | Enforces repository-local `codingAgent.git.branchPolicy=default` for ordinary primary-checkout commits, while allowing linked worktrees and actual merges. When local `laicluse.requireWorktree=true`, blocks ordinary commits in the primary checkout and on the dynamically resolved default branch. Without that opt-in, canonical-checkout authoring remains available. |
 | `commit-msg` | Validates the commit message against `validate-body.sh` (the same lib as the PreToolUse guard). |
 | `prepare-commit-msg` | Pre-fills the editor window with a structured body template based on the staged diff. |
 | `post-commit` | Detects `--no-verify` usage and logs it to `${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log`. |

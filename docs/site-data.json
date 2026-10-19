@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.90",
+			"version": "2.0.92",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.89",
+				"version": "v2.0.91",
 				"type": "Added",
-				"summary": "Rails migration version collisions stop commits and rebases."
+				"summary": "Repository-local branch policy."
 			}
 		},
 		{
@@ -479,7 +479,7 @@
 		},
 		{
 			"name": "gurus",
-			"version": "2.0.8",
+			"version": "2.0.11",
 			"category": "review",
 			"summary": "Runs opinionated review panels for software, decisions, and prose from multiple perspectives.",
 			"support": [
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.90",
+			"packageVersion": "2.0.92",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.89",
+			"version": "v2.0.91",
 			"type": "Added",
-			"summary": "Rails migration version collisions stop commits and rebases.",
+			"summary": "Repository-local branch policy.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
@@ -751,6 +751,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/clipboard/CHANGELOG.md"
 		},
 		{
+			"plugin": "gurus",
+			"packageVersion": "2.0.11",
+			"detailPath": "agent-fieldkit/gurus/",
+			"version": "v2.0.1",
+			"type": "Fixed",
+			"summary": "Codex guru panels no longer suggest /rover:rover as their default autonomous handoff.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/gurus/CHANGELOG.md"
+		},
+		{
 			"plugin": "self-improvement",
 			"packageVersion": "2.0.10",
 			"detailPath": "agent-fieldkit/self-improvement/",
@@ -767,15 +776,6 @@
 			"type": "Fixed",
 			"summary": "Codex speech now survives the tool call.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/saysay/CHANGELOG.md"
-		},
-		{
-			"plugin": "gurus",
-			"packageVersion": "2.0.8",
-			"detailPath": "agent-fieldkit/gurus/",
-			"version": "v2.0.1",
-			"type": "Fixed",
-			"summary": "Codex guru panels no longer suggest /rover:rover as their default autonomous handoff.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/gurus/CHANGELOG.md"
 		},
 		{
 			"plugin": "circus",
