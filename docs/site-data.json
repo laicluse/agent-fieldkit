@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.31",
+			"version": "2.0.32",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,7 +407,7 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.31",
+				"version": "v2.0.32",
 				"type": "Fixed",
 				"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards."
 			}
@@ -679,6 +679,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/bonsai/CHANGELOG.md"
 		},
 		{
+			"plugin": "vaultsync",
+			"packageVersion": "2.0.32",
+			"detailPath": "agent-fieldkit/vaultsync/",
+			"version": "v2.0.32",
+			"type": "Fixed",
+			"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
+		},
+		{
 			"plugin": "rover",
 			"packageVersion": "2.0.31",
 			"detailPath": "agent-fieldkit/rover/",
@@ -686,15 +695,6 @@
 			"type": "Fixed",
 			"summary": "Repair reviews retain the original scope and findings while reviewing the actual delta against a frozen revision.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
-		},
-		{
-			"plugin": "vaultsync",
-			"packageVersion": "2.0.31",
-			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.31",
-			"type": "Fixed",
-			"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
 			"plugin": "house-rules",
