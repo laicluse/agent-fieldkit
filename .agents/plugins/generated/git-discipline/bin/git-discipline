@@ -55,13 +55,13 @@ function defaultBranch() {
     return originHead.stdout.slice('origin/'.length);
   }
 
-  const configured = runGit(['config', '--get', 'init.defaultBranch'], { allowFailure: true });
+  const configured = runGit(['config', '--local', '--get', 'init.defaultBranch'], { allowFailure: true });
   if (configured.status === 0 && refExists(`refs/heads/${configured.stdout}`)) {
     return configured.stdout;
   }
 
   throw new GitDisciplineError(
-    "Cannot determine the default branch from origin/HEAD or init.defaultBranch.",
+    "Cannot determine the default branch. Run git remote set-head origin -a, or set local init.defaultBranch to the existing default branch.",
   );
 }
 
@@ -73,7 +73,7 @@ function currentBranch() {
   return result.stdout;
 }
 
-function repositoryRequiresWorktree() {
+function legacyWorktreeRequirement() {
   const configured = runGit(
     ['config', '--local', '--bool', '--get', 'laicluse.requireWorktree'],
     { allowFailure: true },
@@ -89,24 +89,56 @@ function repositoryRequiresWorktree() {
 
 function repositoryBranchPolicy() {
   const configured = runGit(['config', '--local', '--get', 'codingAgent.git.branchPolicy'], { allowFailure: true });
-  if (configured.status === 1) return 'current';
-  if (configured.status !== 0 || !['current', 'default'].includes(configured.stdout)) {
-    throw new GitDisciplineError('Local codingAgent.git.branchPolicy must be current or default.');
+  const aliases = { current: 'feature', default: 'trunk' };
+  const policy = configured.status === 1 ? 'feature' : aliases[configured.stdout] ?? configured.stdout;
+  if (![0, 1].includes(configured.status) || !['feature', 'trunk', 'worktree'].includes(policy)) {
+    throw new GitDisciplineError('Local codingAgent.git.branchPolicy must be feature, trunk or worktree.');
   }
-  return configured.stdout;
+  return legacyWorktreeRequirement() ? 'worktree' : policy;
 }
 
 function isPrimaryCheckout() {
   return realpathSync(gitOutput(['rev-parse', '--absolute-git-dir'])) === gitCommonDirectory();
 }
 
-function branchPolicyCommand() {
+function authoringPlan() {
   const policy = repositoryBranchPolicy();
   const primary = isPrimaryCheckout();
-  const worktreeRequired = repositoryRequiresWorktree();
-  const branchName = currentBranch();
-  const authoringBranch = worktreeRequired && primary ? '' : policy === 'default' && primary ? defaultBranch() : branchName;
-  process.stdout.write(`policy=${policy}\ncheckout=${primary ? 'primary' : 'linked'}\ncurrent_branch=${branchName}\nauthoring_branch=${authoringBranch}\nworktree_required=${worktreeRequired}\n`);
+  const branchName = runGit(['symbolic-ref', '--quiet', '--short', 'HEAD'], { allowFailure: true }).stdout;
+  const rebaseDirectory = ['rebase-merge', 'rebase-apply'].map((name) => gitOutput(['rev-parse', '--git-path', name]))
+    .find((directory) => existsSync(join(directory, 'head-name')) && !existsSync(join(directory, 'applying')));
+  const rebaseHead = rebaseDirectory ? readFileSync(join(rebaseDirectory, 'head-name'), 'utf8').trim() : '';
+  const rebaseBranch = rebaseHead.startsWith('refs/heads/') ? rebaseHead.slice('refs/heads/'.length) : '';
+  const writingBranch = branchName || rebaseBranch;
+  const initializing = !refExists('HEAD') && !gitOutput(['for-each-ref', '--format=%(refname)', 'refs/heads/']);
+  const worktreeRequired = policy === 'worktree';
+  let authoringBranch = writingBranch;
+  let action = branchName ? 'author' : 'complete-rebase';
+  if (refExists('MERGE_HEAD')) {
+    action = 'complete-merge';
+  } else if (!writingBranch) {
+    action = 'attach-branch';
+  } else if (initializing) {
+    action = 'initialize-repository';
+  } else if (worktreeRequired && primary) {
+    authoringBranch = '';
+    action = 'create-worktree';
+  } else {
+    const defaultName = defaultBranch();
+    if (policy === 'trunk' && primary) {
+      authoringBranch = defaultName;
+      if (writingBranch !== defaultName) action = 'return-to-default';
+    } else if (writingBranch === defaultName) {
+      authoringBranch = '';
+      action = 'create-feature-branch';
+    }
+  }
+  return { policy, primary, branchName, authoringBranch, action, worktreeRequired };
+}
+
+function branchPolicyCommand() {
+  const plan = authoringPlan();
+  process.stdout.write(`policy=${plan.policy}\ncheckout=${plan.primary ? 'primary' : 'linked'}\ncurrent_branch=${plan.branchName}\nauthoring_branch=${plan.authoringBranch}\nworktree_required=${plan.worktreeRequired}\naction=${plan.action}\n`);
 }
 
 function requireCleanWorktree() {
@@ -321,6 +353,24 @@ function createMergeCommit(branchName, base, candidate, proof) {
   return runGit(['commit-tree', tree, '-p', base, '-p', candidate], { input: message }).stdout;
 }
 
+function claimDefaultCheckout(checkout) {
+  const candidates = [process.env.DIBS_BIN, join(process.env.LAICLUSE_HOME || join(homedir(), '.laicluse'), 'dibs', 'runtime', 'dibs')].filter(Boolean);
+  const dibs = candidates.find((candidate) => existsSync(candidate));
+  if (!dibs) return;
+  const resolved = spawnSync(dibs, ['resolve'], { input: JSON.stringify({ cwd: checkout, tool_input: { workdir: checkout } }), encoding: 'utf8' });
+  if (resolved.status !== 0) throw new GitDisciplineError('Cannot resolve available Dibs coordination before updating the default checkout.');
+  let context;
+  try { context = JSON.parse(resolved.stdout); } catch { throw new GitDisciplineError('Cannot parse Dibs coordination context before updating the default checkout.'); }
+  const args = ['claim', checkout, '--description', 'integrate verified candidate', '--json'];
+  for (const field of ['agent', 'session', 'owner']) if (context[field]) args.push(`--${field}`, context[field]);
+  const claimed = spawnSync(dibs, args, { encoding: 'utf8' });
+  if (claimed.status !== 0) {
+    let holder;
+    try { holder = JSON.parse(claimed.stdout).holder; } catch {}
+    throw new GitDisciplineError(`The checked-out default is occupied or unavailable through Dibs${holder ? `: ${holder.agent} (pid ${holder.pid}), ${holder.description || 'purpose unknown'}` : ''}.`);
+  }
+}
+
 function updateLocalDefault(branchName, mergeCommit, base) {
   const defaultWorktrees = worktreesCheckingOut(branchName);
   if (defaultWorktrees.length > 1) {
@@ -341,6 +391,7 @@ function updateLocalDefault(branchName, mergeCommit, base) {
   }
 
   const defaultWorktree = defaultWorktrees[0];
+  claimDefaultCheckout(defaultWorktree);
   const trackedStatus = ['status', '--porcelain', '--untracked-files=no'];
   if (gitOutput(trackedStatus, { cwd: defaultWorktree })) {
     throw new GitDisciplineError(
@@ -447,27 +498,22 @@ function requireUniqueMigrationVersions() {
 
 function guardCommitCommand() {
   requireUniqueMigrationVersions();
-  const policy = repositoryBranchPolicy();
-  if (repositoryRequiresWorktree()) {
-    const defaultName = defaultBranch();
-    if (currentBranch() === defaultName) {
-      throw new GitDisciplineError(`Direct commits on the default branch ${defaultName} are blocked; commit in a linked feature worktree.`);
-    }
-    if (isPrimaryCheckout()) {
-      throw new GitDisciplineError('Authoring in the primary checkout is blocked; use a linked feature worktree.');
-    }
-    return;
+  const plan = authoringPlan();
+  if (['author', 'complete-merge', 'complete-rebase', 'initialize-repository'].includes(plan.action)) return;
+  if (plan.action === 'attach-branch') {
+    throw new GitDisciplineError('Attach this checkout to a feature branch before ordinary commits; a paused rebase may still complete.');
   }
-  if (policy === 'default' && isPrimaryCheckout() && !refExists('MERGE_HEAD')) {
-    const defaultName = defaultBranch();
-    if (currentBranch() !== defaultName) {
-      throw new GitDisciplineError(`This repository requires sequential authoring on ${defaultName} in the primary checkout. Finish the current branch through the merge workflow or use a linked worktree for isolated work.`);
-    }
+  if (plan.action === 'create-worktree') {
+    throw new GitDisciplineError('Authoring in the primary checkout is blocked; use a linked feature worktree.');
   }
+  if (plan.action === 'create-feature-branch') {
+    throw new GitDisciplineError('Ordinary commits on the default branch are blocked; use a feature branch.');
+  }
+  throw new GitDisciplineError(`This repository requires sequential authoring on ${plan.authoringBranch} in the primary checkout. Finish the current branch through the merge workflow or use a linked worktree for isolated work.`);
 }
 
 function guardPushCommand() {
-  if (!repositoryRequiresWorktree()) return;
+  if (!legacyWorktreeRequirement()) return;
 
   const defaultName = defaultBranch();
   const updates = readFileSync(0, 'utf8').split('\n').filter(Boolean);

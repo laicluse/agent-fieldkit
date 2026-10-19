@@ -1215,3 +1215,40 @@ MSG"
 	run bash -c 'source "$1"; OCC_DIR="$2"; occ_codex_bash_target_is_ambiguous "$(cat "$3")"' _ "$HOOK" "$stale" "$BATS_TEST_TMPDIR/in.json"
 	[ "$status" -eq 1 ]
 }
+
+@test "worktree branch policy blocks primary mutations and ignores global settings" {
+  local primary="$BATS_TEST_TMPDIR/policy-repo"
+  init_test_repo "$primary" main
+  DIR="$primary"
+  git -C "$primary" config --local codingAgent.git.branchPolicy worktree
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"worktree-required"* ]]
+  git -C "$primary" config --local --unset codingAgent.git.branchPolicy
+  git config --file "$BATS_TEST_TMPDIR/global-policy" codingAgent.git.branchPolicy worktree
+  run env GIT_CONFIG_GLOBAL="$BATS_TEST_TMPDIR/global-policy" bash -c "source '$HOOK'; occ_requires_linked_worktree '$primary'"
+  [ "$status" -eq 1 ]
+}
+
+@test "global legacy worktree settings do not configure Dibs" {
+  local primary="$BATS_TEST_TMPDIR/local-scope"
+  init_test_repo "$primary" main
+  git config --file "$BATS_TEST_TMPDIR/global-policy" laicluse.requireWorktree true
+  run env GIT_CONFIG_GLOBAL="$BATS_TEST_TMPDIR/global-policy" bash -c "source '$HOOK'; occ_requires_linked_worktree '$primary'"
+  [ "$status" -eq 1 ]
+}
+
+@test "invalid repository branch policy and legacy booleans reject mutations" {
+  local primary="$BATS_TEST_TMPDIR/invalid-policy"
+  init_test_repo "$primary" main
+  DIR="$primary"
+  git -C "$primary" config codingAgent.git.branchPolicy Worktree
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"Invalid local codingAgent.git.branchPolicy"* ]]
+  git -C "$primary" config --unset codingAgent.git.branchPolicy
+  git -C "$primary" config laicluse.requireWorktree maybe
+  run_hook PreToolUse Write
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"Invalid local laicluse.requireWorktree"* ]]
+}

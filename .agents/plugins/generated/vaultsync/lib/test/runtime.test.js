@@ -28,6 +28,7 @@ let tmp;
 
 before(() => {
   tmp = mkdtempSync(join(tmpdir(), 'vaultsync-test-'));
+  writeFileSync(join(tmp, 'gitconfig'), '[init]\n  defaultBranch = main\n');
 });
 
 after(() => {
@@ -40,6 +41,7 @@ function git(cwd, args) {
     encoding: 'utf8',
     env: {
       ...process.env,
+      GIT_CONFIG_GLOBAL: join(tmp, 'gitconfig'),
       GIT_AUTHOR_NAME: 'Vaultsync Test',
       GIT_AUTHOR_EMAIL: 'vaultsync@example.invalid',
       GIT_COMMITTER_NAME: 'Vaultsync Test',
@@ -55,6 +57,7 @@ function createRepo(name) {
   writeFileSync(join(dir, 'README.md'), '# Test\n');
   git(dir, ['add', 'README.md']);
   git(dir, ['commit', '-q', '-m', 'Initial commit']);
+  git(dir, ['config', 'init.defaultBranch', git(dir, ['branch', '--show-current'])]);
   return dir;
 }
 
@@ -79,6 +82,7 @@ function syncFixture(name) {
   git(local, ['add', 'note.md']);
   git(local, ['commit', '-q', '-m', 'Initial commit']);
   git(local, ['push', '-q', '-u', 'origin', 'HEAD']);
+  git(local, ['config', 'init.defaultBranch', git(local, ['branch', '--show-current'])]);
 
   const fakeDibs = join(tmp, `${name}-dibs.mjs`);
   writeFileSync(fakeDibs, [
@@ -1633,4 +1637,50 @@ it('keeps the daemon running when a failing cycle finds its registration removed
   assert.equal(existsSync(registrationPath), false);
   assert.equal(tick.find((entry) => entry.root === realpathSync(fixture.local)).state, 'removed');
   assert.ok(tick.some((entry) => (entry.root || entry.registration?.rootRealpath) === realpathSync(other.local)), JSON.stringify(tick));
+});
+
+it('registers direct default-branch sync explicitly and coexists with the authoring guard', () => {
+  const fixture = syncFixture('authoring-policy');
+  const hooks = join(fixture.local, '.git', 'hooks');
+  const guard = fileURLToPath(new URL('../../../git-discipline/bin/git-discipline', import.meta.url));
+  assert.match(execFileSync(process.execPath, [guard, 'branch-policy'], { cwd: fixture.local, env: { ...process.env, ...fixture.env }, encoding: 'utf8' }), /policy=trunk/);
+  writeFileSync(join(hooks, 'pre-commit'), `#!/bin/sh\nexec "${process.execPath}" "${guard}" guard-commit\n`, { mode: 0o755 });
+  git(fixture.local, ['config', 'core.hooksPath', hooks]);
+  writeFileSync(join(fixture.local, 'note.md'), '# Updated note\n');
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+  assert.equal(git(fixture.local, ['status', '--porcelain']), '');
+});
+
+it('does not replace an explicit authoring policy when default-branch sync is reinstalled', () => {
+  const fixture = syncFixture('explicit-authoring-policy');
+  git(fixture.local, ['config', 'codingAgent.git.branchPolicy', 'feature']);
+  const registration = JSON.parse(readFileSync(registrationPathForRoot(realpathSync(fixture.local), fixture.env), 'utf8'));
+  const result = spawnSync(process.execPath, [fixture.cli, 'install', fixture.local, '--llm-command', registration.llmCommand, '--no-launchd'], { env: { ...process.env, ...fixture.env }, encoding: 'utf8' });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /existing authoring settings were not changed/);
+  assert.equal(git(fixture.local, ['config', '--local', '--get', 'codingAgent.git.branchPolicy']), 'feature');
+});
+
+it('warns when default metadata cannot establish the sync authoring profile', () => {
+  const fixture = syncFixture('unverified-default');
+  git(fixture.local, ['config', '--unset', 'codingAgent.git.branchPolicy']);
+  git(fixture.local, ['config', '--unset', 'init.defaultBranch']);
+  spawnSync('git', ['symbolic-ref', '--delete', 'refs/remotes/origin/HEAD'], { cwd: fixture.local });
+  const registration = JSON.parse(readFileSync(registrationPathForRoot(realpathSync(fixture.local), fixture.env), 'utf8'));
+  const result = runNode([fixture.cli, 'install', fixture.local, '--llm-command', registration.llmCommand, '--no-launchd', '--json'], { env: fixture.env });
+  assert.equal(result.status, 0);
+  assert.match(result.stderr, /default-branch metadata.*git remote set-head origin -a/);
+  assert.equal(spawnSync('git', ['config', '--local', '--get', 'codingAgent.git.branchPolicy'], { cwd: fixture.local }).status, 1);
+});
+
+it('warns when configured default metadata names a nonexistent branch', () => {
+  const fixture = syncFixture('dangling-default');
+  git(fixture.local, ['config', '--unset', 'codingAgent.git.branchPolicy']);
+  git(fixture.local, ['config', 'init.defaultBranch', 'absent']);
+  spawnSync('git', ['symbolic-ref', '--delete', 'refs/remotes/origin/HEAD'], { cwd: fixture.local });
+  const registration = JSON.parse(readFileSync(registrationPathForRoot(realpathSync(fixture.local), fixture.env), 'utf8'));
+  const result = runNode([fixture.cli, 'install', fixture.local, '--llm-command', registration.llmCommand, '--no-launchd', '--json'], { env: fixture.env });
+  assert.equal(result.status, 0);
+  assert.match(result.stderr, /default-branch metadata/);
+  assert.equal(spawnSync('git', ['config', '--local', '--get', 'codingAgent.git.branchPolicy'], { cwd: fixture.local }).status, 1);
 });

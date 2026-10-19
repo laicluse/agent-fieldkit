@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.31]
+
+### Fixed
+
+- Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards. Explicit conflicting policies remain unchanged and receive a configuration error.
+
 ## [v2.0.30]
 
 ### Fixed

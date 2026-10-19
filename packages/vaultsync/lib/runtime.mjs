@@ -393,6 +393,21 @@ export function preflightRepository(dir, env = process.env) {
   };
 }
 
+function configureSyncAuthoring(preflight) {
+  const root = preflight.rootRealpath;
+  const originHead = git(root, ['symbolic-ref', '--quiet', '--short', 'refs/remotes/origin/HEAD'], { allowFailure: true });
+  const initialBranch = git(root, ['config', '--local', '--get', 'init.defaultBranch'], { allowFailure: true });
+  const defaultBranch = originHead.status === 0 ? originHead.stdout.trim().replace(/^origin\//, '') : initialBranch.stdout.trim();
+  if (!defaultBranch || (originHead.status !== 0 && git(root, ['show-ref', '--verify', '--quiet', `refs/heads/${defaultBranch}`], { allowFailure: true }).status !== 0)) return 'Unverified default-branch metadata: run git remote set-head origin -a, or set local init.defaultBranch to the verified default before using authoring guards.';
+  if (preflight.branch !== defaultBranch) return;
+  const policy = git(root, ['config', '--local', '--get', 'codingAgent.git.branchPolicy'], { allowFailure: true });
+  const worktree = git(root, ['config', '--local', '--bool', '--get', 'laicluse.requireWorktree'], { allowFailure: true });
+  if (worktree.stdout.trim() === 'true' || (policy.status === 0 && !['trunk', 'default'].includes(policy.stdout.trim()))) {
+    throw new Error('Default-branch sync requires repository-local codingAgent.git.branchPolicy=trunk and no worktree-only requirement; existing authoring settings were not changed.');
+  }
+  if (policy.status === 1) git(root, ['config', '--local', 'codingAgent.git.branchPolicy', 'default']);
+}
+
 function isExecutable(path) {
   try {
     accessSync(path, constants.X_OK);
@@ -1547,6 +1562,8 @@ async function commandInstall(args, env = process.env) {
   const llmCommand = parsed.values['llm-command'] || env.VAULTSYNC_LLM_COMMAND;
   if (!llmCommand) throw new Error('--llm-command is required; vaultsync must have a conflict resolver');
   probeLlmCommand(llmCommand, preflight.rootRealpath);
+  const authoringWarning = configureSyncAuthoring(preflight);
+  if (authoringWarning) console.error(`vaultsync: ${authoringWarning}`);
   ensureRuntimeDirs(env);
   const existingPath = registrationPathForKey(preflight.key, env);
   const existing = existsSync(existingPath) ? readJsonFile(existingPath) : null;

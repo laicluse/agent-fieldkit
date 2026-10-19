@@ -51,6 +51,10 @@ bonsai teardown <worktree|branch> --repo <root> [--force] [--dry-run] [--json]
 - `setup`: prime an existing worktree.
 - `prune`: tear down behind the safety gate.
 
+## Coordination and authoring
+
+Branch policy and project constraints decide whether to use a worktree. Bonsai carries out the explicit lifecycle request; it does not select feature-versus-trunk authoring or authorize publication. When Dibs is available, creation claims the resulting worktree through that plugin. Without Dibs, creation succeeds with an explicit warning that no occupancy lock was acquired. Git-discipline is not a runtime dependency. Without Bonsai, Git's worktree commands remain usable with the project's setup and coordination procedure.
+
 ## Files
 
 - `bin/bonsai`: CLI dispatcher.

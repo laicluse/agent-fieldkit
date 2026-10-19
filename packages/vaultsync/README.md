@@ -17,6 +17,8 @@ Starting or resuming a coding-agent session publishes the newest installed plugi
 
 Runtime releases are immutable and the active pointer only moves forward by version. An older parallel coding-agent session therefore cannot downgrade a newer machine runtime. Vaultsync never removes old runtime releases or coding-agent plugin caches; cache lifecycle remains the plugin host's responsibility.
 
+When registration targets the verified default branch, Vaultsync records local trunk authoring when unset, using the `default` alias supported by older and newer git-discipline versions. Explicit conflicting authoring policies are preserved and reported as configuration errors. Git-discipline is not required for registration.
+
 ## Capabilities
 
 - Registers a Git checkout as a vaultsync target.

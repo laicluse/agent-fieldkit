@@ -9,13 +9,9 @@ description: >-
 git-discipline's push hooks gate push CONTENT: no wip commits, a schema-valid body.
 This skill governs push CONTEXT: whether a push belongs to the work at all. The two are orthogonal. A push can be content-valid and still be the operator's call; a freely-pushable repo still owes a valid body.
 
-## Resolve the authoring branch before Git writes
+## Independent authoring policy
 
-Run `bin/git-discipline branch-policy` from this plugin before choosing an authoring branch. It reads repository-local `codingAgent.git.branchPolicy`: unset or `current` preserves the current-branch workflow; `default` keeps sequential primary-checkout work on the resolved default branch. Global values are ignored. Linked worktrees retain their feature branches, and an explicit worktree requirement takes priority.
-
-Honor `authoring_branch` before creating a branch or continuing a previous task's branch. With `policy=default` in the primary checkout, do not create an ordinary feature branch. If the checkout is already on another branch, finish its merge workflow or integrate its completed work before switching; never move dirty work aside to satisfy the setting. A branch needed for an actual merge or isolated worktree is still valid. The native commit guard catches ordinary commits on the wrong primary-checkout branch; completing an in-progress merge remains allowed. This policy grants no push or merge permission.
-
-Configure one repository with `git config --local codingAgent.git.branchPolicy default`; use `current` or remove the local key to restore its previous workflow.
+Use this plugin's `branch-policy` skill to choose where to work. This policy governs publication, never whether to author on a feature branch, trunk or a linked worktree. Its mode names do not select a branch strategy.
 
 ## Done is not published
 
@@ -25,7 +21,7 @@ Committed but unpushed work is a finished, safe state, on a feature branch and o
 
 ## A commit is not a push, and never a gate
 
-A local commit captures your own finished work; it is expected, not asked for. Leaving that work uncommitted while calling it "operator territory" is the error, not the caution: it is dirty state handed off as a to-do. "Never commit to main" is a team-repo rule about a shared or protected branch, not a universal one; on a solo or personal repo, committing to main is the normal flow.
+A local commit captures your own finished work; it is expected, not asked for. Leaving that work uncommitted while calling it "operator territory" is the error, not the caution: it is dirty state handed off as a to-do. Branch policy and repository rules decide which branch may receive that commit, independently of publication permission.
 
 ## What a push does depends on where it goes
 
@@ -36,10 +32,10 @@ A local commit captures your own finished work; it is expected, not asked for. L
 | Your own branch, private repository | A copy. Nobody notices. | Yes, without mention. |
 | Your own branch, public repository, first push | Its content becomes public. | When the ordered work includes a pull request or a publication. |
 | A branch with a pull request, `--force-with-lease` after a rebase included | CI runs and reviewers are notified, which is what the pull request is for. | Yes. It is part of the work. |
-| Default branch, solo private repository (`auto-trunk`) | A copy. Pushing is part of working there. | Yes, without mention. |
+| Default branch, solo private repository (`auto-trunk`) | A copy after authorized integration. | Yes, without mention. |
 | Default branch, public or shared repository (`gated-trunk`) | A release: other people and their installs receive it. | No. Agree with the operator first. |
 | Default branch, pull request repository (`pr-flow`, or undetermined) | The agreement is that the default branch changes only through a pull request merge. | Never. Push a branch and use the pull request. |
-| Default branch of a checkout a sync daemon manages | The daemon publishes it. | Never. Commit and leave it to the daemon. |
+| Default branch of a checkout a sync daemon manages | The daemon publishes it. | Never. Follow the registered sync workflow. |
 | A tag | A version, often the trigger for a release, a deploy or a package update. | No. Agree first. |
 | A remote other than the repository's own | A deploy target, or somebody else's repository. | No. Agree first. |
 | Plain `--force`, a rewrite of a default branch, a ref deletion, `--all`, `--mirror`, `--tags` | Overwrites or reaches more than one change. | No. Agree first. |
@@ -99,14 +95,14 @@ The mode says which pushes are possible; the landing ref says where the change t
 
 Often that ref is local. A marketplace or tool installed from the primary checkout takes effect from the local default branch, so merging there finishes the work and the remote stays untouched. When the landing ref is remote, the push that reaches it is a release, and the operator's order decides when it happens.
 
-The landing ref decides the branch, not habit. In a trunk repo (`auto-trunk`, `gated-trunk`) the default branch is the working line; create a feature branch only when something concrete needs the isolation. If work already sits on a branch and the landing ref is the default, finishing it means merging it there with `/git-discipline:merge-to-default`. Pushing the branch and stopping leaves the change where nothing reads it, while the report says the work is done.
+The landing ref decides where completed work must arrive. If work sits on a feature branch and its consumers read default, integrate it through the repository's merge workflow. The authoring branch remains the independent branch-policy decision; a push regime never makes direct default-branch authoring permissible.
 
 ## Five modes
 
 The mode is the repository's regime. It decides the default-branch rows of the table above.
 
 - **local-only**: no remote. Pushing never comes up; do not mention it.
-- **auto-trunk**: a private, individual repo with a pushable default. Carte blanche: the default branch is the working line, and pushing it is part of working there. Do not ask, do not report it, and do not route the work through a feature branch it does not need.
+- **auto-trunk**: a private, individual repo with a pushable default. Publishing the default is a backup and follows authorized integration without a separate release decision. Branch policy still chooses the authoring line.
 - **gated-trunk**: a public or shared repo you can write to with a pushable default. Work is committed locally, often for weeks; a push of the default branch is a release that the operator and you agree on first. Branches for a pull request push as part of that work.
 - **pr-flow**: the default branch changes only through a pull request merge, whether the forge enforces that or the operator declared it. Never push the default. Pushing a branch and creating or updating its pull request are part of the work; the merge is the operator's.
 - **external**: no write access. A fork and a pull request, agreed with the operator first.

@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.76]
+
+### Changed
+
+- Mandatory worktrees recognize repository-local `codingAgent.git.branchPolicy=worktree`, independently of the legacy flag. Global legacy values are now ignored, matching repository-local scope. Actual merge completion and repository initialization retain occupancy protection; invalid local configuration fails explicitly. Branch selection and publication remain separate from occupancy.
+
 ## [v2.0.75]
 
 ### Fixed

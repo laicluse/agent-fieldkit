@@ -141,21 +141,20 @@ plugin's own CLI, so there is no second lock path.
 
 Dibs deliberately registers no `Stop` hook. An earlier version released on every completed turn, deciding "completed" by reading the assistant's closing message for a trailing `?`, `？` or `🚧`. Sessions that open a closing line with a marker rather than ending on one never matched, so each turn swept every lock the session held and the directory read as free to the next agent. Turn boundaries are not work boundaries, and closing prose is not a protocol. A lock now lasts until the agent releases it, the session ends, or the holding process is gone.
 
-Repos that should only be mutated through linked worktrees can opt in locally:
+Repositories that require feature work in linked worktrees can opt in locally:
 
 ```bash
-git config laicluse.requireWorktree true
+git config --local codingAgent.git.branchPolicy worktree
 ```
 
-When that config is true, the occupancy hook denies mutating the primary
-checkout and still allows linked worktrees for the same repository. This is
-local git config by design: dibs stays a general lock by default, and only repos
-that explicitly ask for worktree-only mutation get the extra guard.
+Dibs enforces the primary-checkout location restriction, independently of git-discipline. Bootstrap an empty worktree-only repository with `git commit --allow-empty`, record its initial branch with repository-local `init.defaultBranch`, then create its feature worktree outside the primary checkout (or use Bonsai). A plain-Git destination inside `worktrees/` requires an existing ignore rule. Initializing a repository with no branch refs completing an existing merge, or aborting a merge/rebase may claim the primary checkout, but other parsed writes in that command remain blocked and a different live holder still prevents access. Legacy local `laicluse.requireWorktree=true` is also recognized. Global settings do not configure a repository.
 
-If the operator explicitly asks an agent to work without a worktree, or a linked worktree would break path-dependent behavior such as a content vault or locally referenced symlinks, disable only the worktree requirement and keep the occupancy lock:
+Branch policy chooses feature-versus-trunk authoring; git-discipline or repository-native hooks enforce that commit rule. Dibs owns occupancy and does not require git-discipline or Bonsai. Bonsai can claim a worktree at handout when Dibs is available; without Bonsai, use Git's worktree commands and claim the resulting checkout normally.
+
+Only an explicitly authorized repository workflow may change the worktree requirement. Record its prior values and restore temporary overrides afterwards. For a legacy-only constraint, clearing that flag is sufficient; do not also change branch policy. Keep occupancy enforcement active:
 
 ```bash
-git -C "<repo>" config laicluse.requireWorktree false
+git config --local laicluse.requireWorktree false
 dibs claim "<repo>" --description "<the change you are making here>"
 ```
 

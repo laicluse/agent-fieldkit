@@ -12,6 +12,7 @@ load helpers
 
 @test "guard-commit ignores a global worktree requirement" {
   git config --global laicluse.requireWorktree true
+  git -C "$TEST_REPO" switch -q -c feature
 
   run bash -c "cd '$TEST_REPO' && '$GIT_DISCIPLINE' guard-commit"
 
@@ -50,7 +51,8 @@ load helpers
   [[ "$output" == *"default branch"* ]]
 }
 
-@test "installed pre-commit allows canonical authoring by default" {
+@test "installed pre-commit allows canonical feature authoring by default" {
+  git -C "$TEST_REPO" switch -q -c feature
   run bash -c "cd '$TEST_REPO' && bash '$INSTALL_HOOKS'"
   [ "$status" -eq 0 ]
   [ -x "$TEST_REPO/.git/hooks/pre-commit" ]
@@ -98,6 +100,7 @@ load helpers
 }
 
 @test "guard-commit rejects duplicate Rails migration versions in the index" {
+  git -C "$TEST_REPO" config codingAgent.git.branchPolicy trunk
   mkdir -p "$TEST_REPO/projects/office/db/migrate"
   touch "$TEST_REPO/projects/office/db/migrate/20261006140000_add_identity.rb"
   touch "$TEST_REPO/projects/office/db/migrate/20261006140000_add_technique.rb"
@@ -112,6 +115,7 @@ load helpers
 }
 
 @test "guard-commit permits the same migration version in different applications" {
+  git -C "$TEST_REPO" config codingAgent.git.branchPolicy trunk
   mkdir -p "$TEST_REPO/projects/office/db/migrate" "$TEST_REPO/projects/app/db/migrate"
   touch "$TEST_REPO/projects/office/db/migrate/20261006140000_add_identity.rb"
   touch "$TEST_REPO/projects/app/db/migrate/20261006140000_add_identity.rb"
@@ -123,6 +127,7 @@ load helpers
 }
 
 @test "guard-commit checks staged state rather than unstaged migration files" {
+  git -C "$TEST_REPO" config codingAgent.git.branchPolicy trunk
   mkdir -p "$TEST_REPO/db/migrate"
   touch "$TEST_REPO/db/migrate/20261006140000_add_identity.rb"
   git -C "$TEST_REPO" add .

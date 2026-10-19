@@ -13,8 +13,8 @@
 		<meta property="og:url" content="https://laicluse.com/agent-fieldkit/git-discipline/">
 		<meta property="og:title" content="git-discipline · l'Aicluse Agent Fieldkit">
 		<meta property="og:description" content="Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.">
-		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
-		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
+		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=0bf6a47df6">
+		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=0bf6a47df6">
 		<meta property="og:image:type" content="image/png">
 		<meta property="og:image:width" content="1200">
 		<meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="git-discipline · l'Aicluse Agent Fieldkit">
 		<meta name="twitter:description" content="Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.">
-		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
+		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=0bf6a47df6">
 
 		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
@@ -53,8 +53,8 @@
 						<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.92</span>
-							<span class="meta-fact">13 skills</span>
+							<span class="meta-fact">2.0.93</span>
+							<span class="meta-fact">14 skills</span>
 						</div>
 					</div>
 					<aside class="detail-install" aria-label="Install">
@@ -79,7 +79,7 @@
 
 			<section class="detail-content-section">
 				<article class="readme-content">
-<p>Git guardrails and an optional parallel-worktree flow for agent sessions and direct CLI use. Canonical-checkout authoring remains the default. Use a linked worktree when concurrency, a live checkout, change risk, or another concrete constraint makes isolation safer; repositories that always need that flow can opt in with local <code>laicluse.requireWorktree=true</code>. Verified candidates become real two-parent default-branch merge commits through an atomic ref update, without a canonical checkout bottleneck or a long-lived merge lock.</p>
+<p>Git guardrails and an optional parallel-worktree flow for agent sessions and direct CLI use. Feature branches in the canonical checkout are the default. Use a linked worktree when concurrency, a live checkout, change risk, or another concrete constraint makes isolation safer; repositories that always need that flow can select local <code>codingAgent.git.branchPolicy=worktree</code>. Verified candidates become real two-parent default-branch merge commits through an atomic ref update, without a canonical checkout bottleneck or a long-lived merge lock.</p>
 <p>Use it when commits and pushes need the same discipline regardless of whether they come from Claude Code, Codex, or a direct terminal. The plugin gives the agent workflow skills for common git moves and installs hook backstops so message schema, wip commits, and push policy do not depend on memory.</p>
 <h2 id="what-it-does">What it does</h2>
 <p><code>git-discipline</code> has three parts:</p>
@@ -90,11 +90,22 @@
 </ol>
 <p>Reference for the schema, examples, escape-hatches, and troubleshooting: <code>/git-discipline:commit-discipline</code>.</p>
 <h2 id="repository-branch-policy">Repository branch policy</h2>
-<p>Choose the authoring line independently of push permission. For sequential work in the primary checkout, configure this repository only:</p>
-<pre><code class="language-bash"><span class="code-line">git config <span class="code-unit">--local</span> codingAgent.git.branchPolicy default</span>
-<span class="code-line">git-discipline branch-policy</span></code></pre>
-<p>The resolver prints the configured policy, checkout type, current branch, intended authoring branch and worktree requirement. With <code>default</code>, ordinary work stays on the resolved default branch in the primary checkout. The native pre-commit guard rejects ordinary commits left on another primary-checkout branch. Linked feature worktrees and completing an actual merge remain available. A repository's explicit <code>laicluse.requireWorktree=true</code> requirement still takes priority.</p>
-<p>Unset the key, or set it to <code>current</code>, to keep the existing current-branch workflow. Global values of <code>codingAgent.git.branchPolicy</code> are deliberately ignored: this choice belongs to each repository. The setting chooses where to author; push policy still decides whether publishing is allowed. The resolver never switches branches or moves unfinished changes.</p>
+<p>Branch policy chooses where to author, independently of push permission. Run <code>git-discipline branch-policy</code> to inspect the plan without changing Git state.</p>
+<table>
+<thead>
+<tr><th>Local <code>codingAgent.git.branchPolicy</code></th><th>Primary checkout</th><th>Linked worktree</th></tr>
+</thead>
+<tbody>
+<tr><td data-label="Local codingAgent.git.branchPolicy">Unset or <code>feature</code></td><td data-label="Primary checkout">Feature branch</td><td data-label="Linked worktree">Feature branch</td></tr>
+<tr><td data-label="Local codingAgent.git.branchPolicy"><code>trunk</code></td><td data-label="Primary checkout">Default branch</td><td data-label="Linked worktree">Feature branch</td></tr>
+<tr><td data-label="Local codingAgent.git.branchPolicy"><code>worktree</code></td><td data-label="Primary checkout">Integration target only</td><td data-label="Linked worktree">Feature branch</td></tr>
+</tbody>
+</table>
+<p>For direct default-branch authoring in one repository:</p>
+<pre><code class="language-bash"><span class="code-line">git config <span class="code-unit">--local</span> codingAgent.git.branchPolicy trunk</span></code></pre>
+<p>The resolver prints <code>policy</code>, <code>checkout</code>, <code>current_branch</code>, <code>authoring_branch</code>, <code>worktree_required</code> and <code>action</code>. An empty authoring branch requires choosing a feature branch or linked worktree. Native pre-commit hooks reject ordinary commits outside the chosen authoring line; the first repository commit, completing an actual merge and committing at a paused rebase remain possible. Missing default-branch metadata fails with an explicit repair instruction. The resolver never switches branches, moves changes, checks occupancy or creates worktrees.</p>
+<p>Dibs, when installed, owns checkout occupancy and recognizes mandatory worktrees. If the canonical checkout is occupied, use a feature worktree; canonical-only projects wait instead. Bonsai is an optional worktree lifecycle helper; Git's worktree commands remain available without it. The branch resolver and native guards require neither Dibs nor Bonsai.</p>
+<p>Only repository-local configuration counts. Default resolution uses <code>origin/HEAD</code> or local <code>init.defaultBranch</code>, not a global initial-branch preference. Existing <code>current</code> normalizes to <code>feature</code>, <code>default</code> to <code>trunk</code>; legacy local <code>laicluse.requireWorktree=true</code> takes priority and selects <code>worktree</code>. Remove the local branch-policy key to restore the feature default. See <code>/git-discipline:branch-policy</code> for the authoring workflow and <code>/git-discipline:push-policy</code> for publication permission.</p>
 <h2 id="parallel-candidate-command">Parallel candidate command</h2>
 <p>The executable is the single implementation used by skills and native hooks:</p>
 <pre><code class="language-bash"><span class="code-line">git-discipline default</span>
@@ -110,6 +121,7 @@
 <tr><th>Skill</th><th>Command</th><th>Agents</th><th>Auto</th></tr>
 </thead>
 <tbody>
+<tr><td data-label="Skill">branch-policy</td><td data-label="Command"><code>/git-discipline:branch-policy</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
 <tr><td data-label="Skill">commit-all-the-things</td><td data-label="Command"><code>/git-discipline:commit-all-the-things</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
 <tr><td data-label="Skill">commit-snipe</td><td data-label="Command"><code>/git-discipline:commit-snipe</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes (on the word &quot;snipe&quot;)</td></tr>
 <tr><td data-label="Skill">rebase-latest-default</td><td data-label="Command"><code>/git-discipline:rebase-latest-default</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
@@ -151,7 +163,7 @@
 <tr><th>Hook</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td data-label="Hook"><code>pre-commit</code></td><td data-label="Purpose">when local <code>laicluse.requireWorktree=true</code>, blocks commits in the primary checkout and on the default branch; otherwise it does not constrain authoring location</td></tr>
+<tr><td data-label="Hook"><code>pre-commit</code></td><td data-label="Purpose">Enforces repository-local feature, trunk or worktree authoring; permits repository initialization and actual merge completion.</td></tr>
 <tr><td data-label="Hook"><code>commit-msg</code></td><td data-label="Purpose">runs <code>validate-body.sh</code> on every non-Claude commit</td></tr>
 <tr><td data-label="Hook"><code>prepare-commit-msg</code></td><td data-label="Purpose">pre-fills the editor with a layer-classified template</td></tr>
 <tr><td data-label="Hook"><code>post-commit</code></td><td data-label="Purpose">logs <code>--no-verify</code> usage to <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log</code></td></tr>

@@ -68,6 +68,8 @@ The verification command must cover the relevant behavior at the exact candidate
 
 ## Atomic two-parent merge
 
+Before a merge that updates a checked-out default, check that checkout's existing occupancy mechanism when present. The shared command also claims that checkout through Dibs when `DIBS_BIN` or its published machine runtime is available; Dibs owns identity, refusal and lifecycle semantics. The session retains acquired occupancy until its normal release. Wait if another live session owns it; a clean tree does not imply availability. Resolve conflicts in the authoring checkout before the atomic merge, not by editing the canonical integration target. This requires neither Dibs nor Bonsai when the repository uses another coordination mechanism.
+
 ```bash
 "$GD_ROOT/bin/git-discipline" merge "$TARGET"
 ```
