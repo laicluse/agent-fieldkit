@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.87]
+
+### Added
+
+- **Repository-local branch policy.** Set `codingAgent.git.branchPolicy=default` to keep sequential primary-checkout work on the default branch. `git-discipline branch-policy` reports the intended authoring line; the native commit guard rejects ordinary commits left on another branch. Linked worktrees and actual merge completion remain available. Unconfigured repositories keep their current behavior, and global preferences do not spill into other repositories.
+
 ## [v2.0.85]
 
 ### Changed

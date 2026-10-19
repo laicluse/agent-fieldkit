@@ -47,12 +47,26 @@ the current plugin version.
 Reference for the schema, examples, escape-hatches, and troubleshooting:
 `/git-discipline:commit-discipline`.
 
+## Repository branch policy
+
+Choose the authoring line independently of push permission. For sequential work in the primary checkout, configure this repository only:
+
+```bash
+git config --local codingAgent.git.branchPolicy default
+git-discipline branch-policy
+```
+
+The resolver prints the configured policy, checkout type, current branch, intended authoring branch and worktree requirement. With `default`, ordinary work stays on the resolved default branch in the primary checkout. The native pre-commit guard rejects ordinary commits left on another primary-checkout branch. Linked feature worktrees and completing an actual merge remain available. A repository's explicit `laicluse.requireWorktree=true` requirement still takes priority.
+
+Unset the key, or set it to `current`, to keep the existing current-branch workflow. Global values of `codingAgent.git.branchPolicy` are deliberately ignored: this choice belongs to each repository. The setting chooses where to author; push policy still decides whether publishing is allowed. The resolver never switches branches or moves unfinished changes.
+
 ## Parallel candidate command
 
 The executable is the single implementation used by skills and native hooks:
 
 ```bash
 git-discipline default
+git-discipline branch-policy
 git-discipline rebase --local|--remote
 git-discipline verify --local|--remote -- <test-command> [args...]
 git-discipline merge --local|--remote

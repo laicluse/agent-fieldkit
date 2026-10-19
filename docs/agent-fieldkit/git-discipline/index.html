@@ -52,7 +52,7 @@
 					<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
 					<div class="plugin-meta detail-meta" aria-label="Package metadata">
 						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.86</span>
+						<span>2.0.87</span>
 						<span>13 skills</span>
 					</div>
 				</div>
@@ -70,9 +70,16 @@
 <li><strong>Commit-discipline enforcement.</strong> Two-layer hook architecture (PreToolUse guards plus git-native hooks) that validates a structured body schema: subject + WHY paragraph + Slice / Tests / Red-then-green trailers parsed via <code>git interpret-trailers</code>, with eight opt-out enum tokens. <code>Red-then-green</code> accepts three forms: <code>n/a (reason &gt;= 10 chars)</code>, <code>&lt;path&gt;</code> (a spec file in the staged diff), or <code>&lt;path&gt;:&lt;line&gt; # &lt;test-name&gt;</code> (line is 1-based, name must match a test declaration in the staged blob; the <code># </code> separator follows the RSpec / Cucumber convention and keeps <code>path:line</code> clickable in iTerm2 / VSCode / Ghostty). Bare <code>yes</code> is no longer accepted.</li>
 </ol>
 <p>Reference for the schema, examples, escape-hatches, and troubleshooting: <code>/git-discipline:commit-discipline</code>.</p>
+<h2 id="repository-branch-policy">Repository branch policy</h2>
+<p>Choose the authoring line independently of push permission. For sequential work in the primary checkout, configure this repository only:</p>
+<pre><code class="language-bash">git config --local codingAgent.git.branchPolicy default
+git-discipline branch-policy</code></pre>
+<p>The resolver prints the configured policy, checkout type, current branch, intended authoring branch and worktree requirement. With <code>default</code>, ordinary work stays on the resolved default branch in the primary checkout. The native pre-commit guard rejects ordinary commits left on another primary-checkout branch. Linked feature worktrees and completing an actual merge remain available. A repository's explicit <code>laicluse.requireWorktree=true</code> requirement still takes priority.</p>
+<p>Unset the key, or set it to <code>current</code>, to keep the existing current-branch workflow. Global values of <code>codingAgent.git.branchPolicy</code> are deliberately ignored: this choice belongs to each repository. The setting chooses where to author; push policy still decides whether publishing is allowed. The resolver never switches branches or moves unfinished changes.</p>
 <h2 id="parallel-candidate-command">Parallel candidate command</h2>
 <p>The executable is the single implementation used by skills and native hooks:</p>
 <pre><code class="language-bash">git-discipline default
+git-discipline branch-policy
 git-discipline rebase --local|--remote
 git-discipline verify --local|--remote -- &lt;test-command&gt; [args...]
 git-discipline merge --local|--remote</code></pre>

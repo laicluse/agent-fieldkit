@@ -13,6 +13,14 @@ scope: global
 git-discipline's push hooks gate push CONTENT: no wip commits, a schema-valid body.
 This skill governs push CONTEXT: whether a push belongs to the work at all. The two are orthogonal. A push can be content-valid and still be the operator's call; a freely-pushable repo still owes a valid body.
 
+## Resolve the authoring branch before Git writes
+
+Run `bin/git-discipline branch-policy` from this plugin before choosing an authoring branch. It reads repository-local `codingAgent.git.branchPolicy`: unset or `current` preserves the current-branch workflow; `default` keeps sequential primary-checkout work on the resolved default branch. Global values are ignored. Linked worktrees retain their feature branches, and an explicit worktree requirement takes priority.
+
+Honor `authoring_branch` before creating a branch or continuing a previous task's branch. With `policy=default` in the primary checkout, do not create an ordinary feature branch. If the checkout is already on another branch, finish its merge workflow or integrate its completed work before switching; never move dirty work aside to satisfy the setting. A branch needed for an actual merge or isolated worktree is still valid. The native commit guard catches ordinary commits on the wrong primary-checkout branch; completing an in-progress merge remains allowed. This policy grants no push or merge permission.
+
+Configure one repository with `git config --local codingAgent.git.branchPolicy default`; use `current` or remove the local key to restore its previous workflow.
+
 ## Done is not published
 
 Finishing work and publishing work are two separate decisions. Work is done when it is committed and verified. Whether a push follows depends on what that push does in this repository, never on the fact that the work is finished.
