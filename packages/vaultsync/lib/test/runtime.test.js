@@ -1663,6 +1663,7 @@ it('does not replace an explicit authoring policy when default-branch sync is re
 
 it('warns when default metadata cannot establish the sync authoring profile', () => {
   const fixture = syncFixture('unverified-default');
+  assert.equal(git(fixture.local, ['config', '--global', '--get', 'init.defaultBranch']), 'main');
   git(fixture.local, ['config', '--unset', 'codingAgent.git.branchPolicy']);
   git(fixture.local, ['config', '--unset', 'init.defaultBranch']);
   spawnSync('git', ['symbolic-ref', '--delete', 'refs/remotes/origin/HEAD'], { cwd: fixture.local });
