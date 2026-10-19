@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Repository discipline</p>
-					<h1>git-discipline</h1>
-					<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.86</span>
-						<span>13 skills</span>
+					<div class="detail-hero-copy">
+						<h1>git-discipline</h1>
+						<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.92</span>
+							<span class="meta-fact">13 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="git-discipline install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-git-discipline-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">git-discipline</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-git-discipline-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">git-discipline</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -70,13 +89,20 @@
 <li><strong>Commit-discipline enforcement.</strong> Two-layer hook architecture (PreToolUse guards plus git-native hooks) that validates a structured body schema: subject + WHY paragraph + Slice / Tests / Red-then-green trailers parsed via <code>git interpret-trailers</code>, with eight opt-out enum tokens. <code>Red-then-green</code> accepts three forms: <code>n/a (reason &gt;= 10 chars)</code>, <code>&lt;path&gt;</code> (a spec file in the staged diff), or <code>&lt;path&gt;:&lt;line&gt; # &lt;test-name&gt;</code> (line is 1-based, name must match a test declaration in the staged blob; the <code># </code> separator follows the RSpec / Cucumber convention and keeps <code>path:line</code> clickable in iTerm2 / VSCode / Ghostty). Bare <code>yes</code> is no longer accepted.</li>
 </ol>
 <p>Reference for the schema, examples, escape-hatches, and troubleshooting: <code>/git-discipline:commit-discipline</code>.</p>
+<h2 id="repository-branch-policy">Repository branch policy</h2>
+<p>Choose the authoring line independently of push permission. For sequential work in the primary checkout, configure this repository only:</p>
+<pre><code class="language-bash"><span class="code-line">git config <span class="code-unit">--local</span> codingAgent.git.branchPolicy default</span>
+<span class="code-line">git-discipline branch-policy</span></code></pre>
+<p>The resolver prints the configured policy, checkout type, current branch, intended authoring branch and worktree requirement. With <code>default</code>, ordinary work stays on the resolved default branch in the primary checkout. The native pre-commit guard rejects ordinary commits left on another primary-checkout branch. Linked feature worktrees and completing an actual merge remain available. A repository's explicit <code>laicluse.requireWorktree=true</code> requirement still takes priority.</p>
+<p>Unset the key, or set it to <code>current</code>, to keep the existing current-branch workflow. Global values of <code>codingAgent.git.branchPolicy</code> are deliberately ignored: this choice belongs to each repository. The setting chooses where to author; push policy still decides whether publishing is allowed. The resolver never switches branches or moves unfinished changes.</p>
 <h2 id="parallel-candidate-command">Parallel candidate command</h2>
 <p>The executable is the single implementation used by skills and native hooks:</p>
-<pre><code class="language-bash">git-discipline default
-git-discipline rebase --local|--remote
-git-discipline verify --local|--remote -- &lt;test-command&gt; [args...]
-git-discipline merge --local|--remote</code></pre>
-<p><code>--local</code> uses the configured local default ref and is intended for <code>local-only</code> repositories. <code>--remote</code> reads the actual <code>origin</code> default tip, fetches only that tip into <code>FETCH_HEAD</code> for rebases, and merges through a normal non-force push. Passing verification evidence lives under <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/candidates/</code> as recovery and visibility state. Git commits and refs remain the source of truth: evidence is rejected as soon as the candidate or default SHA changes.</p>
+<pre><code class="language-bash"><span class="code-line">git-discipline default</span>
+<span class="code-line">git-discipline branch-policy</span>
+<span class="code-line">git-discipline rebase <span class="code-unit">--local</span>|<span class="code-unit">--remote</span></span>
+<span class="code-line">git-discipline verify <span class="code-unit">--local</span>|<span class="code-unit">--remote</span> -- &lt;test-command&gt; <span class="code-unit">[args...]</span></span>
+<span class="code-line">git-discipline merge <span class="code-unit">--local</span>|<span class="code-unit">--remote</span></span></code></pre>
+<p><code>--local</code> updates the configured local default ref without publishing, including in repositories with remotes. <code>--remote</code> reads the actual <code>origin</code> default tip, fetches only that tip into <code>FETCH_HEAD</code> for rebases, and merges through a normal non-force push. Passing verification evidence lives under <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/candidates/</code> as recovery and visibility state. Git commits and refs remain the source of truth: evidence is rejected as soon as the candidate or default SHA changes.</p>
 <p>The merge commit always has the verified default tip as first parent, the candidate as second parent, and the candidate tree. A local merge uses <code>git update-ref</code> with an expected old SHA; a remote merge relies on the same topology plus a non-force push. If another candidate updates default first, the loser rebases and verifies again.</p>
 <h2 id="skills">Skills</h2>
 <table>
@@ -84,36 +110,22 @@ git-discipline merge --local|--remote</code></pre>
 <tr><th>Skill</th><th>Command</th><th>Agents</th><th>Auto</th></tr>
 </thead>
 <tbody>
-<tr><td>commit-all-the-things</td><td><code>/git-discipline:commit-all-the-things</code></td><td>Claude, Codex</td><td>yes</td></tr>
-<tr><td>commit-snipe</td><td><code>/git-discipline:commit-snipe</code></td><td>Claude, Codex</td><td>yes (on the word &quot;snipe&quot;)</td></tr>
-<tr><td>rebase-latest-default</td><td><code>/git-discipline:rebase-latest-default</code></td><td>Claude, Codex</td><td>yes</td></tr>
-<tr><td>merge-to-default</td><td><code>/git-discipline:merge-to-default</code></td><td>Claude, Codex</td><td>yes</td></tr>
-<tr><td>push-policy</td><td><code>/git-discipline:push-policy</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>commit-discipline</td><td><code>/git-discipline:commit-discipline</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>install-hooks</td><td><code>/git-discipline:install-hooks</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>run-spec</td><td><code>/git-discipline:run-spec</code></td><td>Claude, Codex</td><td></td></tr>
-<tr><td>disable-session</td><td><code>/git-discipline:disable-discipline</code></td><td>Claude</td><td></td></tr>
-<tr><td>enable-session</td><td><code>/git-discipline:enable-discipline</code></td><td>Claude</td><td></td></tr>
-<tr><td>session-status</td><td><code>/git-discipline:discipline-status</code></td><td>Claude</td><td></td></tr>
-<tr><td>disable-git</td><td><code>/git-discipline:disable-git [reason]</code></td><td>Claude</td><td></td></tr>
-<tr><td>enable-git</td><td><code>/git-discipline:enable-git</code></td><td>Claude</td><td></td></tr>
+<tr><td data-label="Skill">commit-all-the-things</td><td data-label="Command"><code>/git-discipline:commit-all-the-things</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
+<tr><td data-label="Skill">commit-snipe</td><td data-label="Command"><code>/git-discipline:commit-snipe</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes (on the word &quot;snipe&quot;)</td></tr>
+<tr><td data-label="Skill">rebase-latest-default</td><td data-label="Command"><code>/git-discipline:rebase-latest-default</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
+<tr><td data-label="Skill">merge-to-default</td><td data-label="Command"><code>/git-discipline:merge-to-default</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto">yes</td></tr>
+<tr><td data-label="Skill">push-policy</td><td data-label="Command"><code>/git-discipline:push-policy</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">commit-discipline</td><td data-label="Command"><code>/git-discipline:commit-discipline</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">install-hooks</td><td data-label="Command"><code>/git-discipline:install-hooks</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">run-spec</td><td data-label="Command"><code>/git-discipline:run-spec</code></td><td data-label="Agents">Claude, Codex</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">disable-session</td><td data-label="Command"><code>/git-discipline:disable-discipline</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">enable-session</td><td data-label="Command"><code>/git-discipline:enable-discipline</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">session-status</td><td data-label="Command"><code>/git-discipline:discipline-status</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">disable-git</td><td data-label="Command"><code>/git-discipline:disable-git [reason]</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
+<tr><td data-label="Skill">enable-git</td><td data-label="Command"><code>/git-discipline:enable-git</code></td><td data-label="Agents">Claude</td><td data-label="Auto"></td></tr>
 </tbody>
 </table>
-<ul>
-<li><strong>commit-all-the-things</strong> inspects <code>git status</code> plus <code>git diff</code>, groups changes by intent (feature, fix, refactor, docs, config), and creates one commit per group. Trigger phrases include &quot;commit everything&quot;, &quot;clean up the working tree&quot;, and &quot;commit what's left&quot;.</li>
-<li><strong>commit-snipe</strong> stages only the files (or hunks) that belong to the current conversation's work and leaves the rest untouched. Auto-fires on the word &quot;snipe&quot;.</li>
-<li><strong>rebase-latest-default</strong> delegates default resolution, rebase, and SHA-bound verification to <code>bin/git-discipline</code>. Conflicts stay with the feature-worktree owner; no default checkout or central integrator resolves them.</li>
-<li><strong>merge-to-default</strong> resolves repository policy, reruns relevant verification at the candidate SHA, and invokes the atomic two-parent merge. <code>local-only</code> updates the local ref; <code>auto-trunk</code> and explicitly ordered <code>gated-trunk</code> merges use a normal remote push; <code>pr-flow</code> and <code>external</code> retain their repository gates. Source cleanup remains with <code>bonsai:prune</code> after merge and any required deployment are proven complete.</li>
-<li><strong>push-policy</strong> decides whether and when a push fits the current repo. It ships a resolver (<code>skills/push-policy/git-repo-policy</code>) that reads independent per-repo facts (collaboration, visibility, default-branch protection, push access) and derives one of five modes (<code>local-only</code>, <code>auto-trunk</code>, <code>gated-trunk</code>, <code>pr-flow</code>, <code>external</code>), each with its own push behavior. Per-repo overrides live under git-local <code>codingAgent.git.*</code>. <code>rebase-latest-default</code> and <code>merge-to-default</code> consult it; the push hooks gate content and are orthogonal to this context decision.</li>
-<li><strong>commit-discipline</strong> is the canonical reference for the body schema, error-codes, opt-out enum, and escape-hatches.</li>
-<li><strong>install-hooks</strong> copies the git-native <code>pre-commit</code>, <code>commit-msg</code>, <code>prepare-commit-msg</code>, <code>post-commit</code>, <code>post-rewrite</code>, and <code>pre-push</code> hooks into the current repo so commits made outside Claude Code still get validated. <code>--force</code> overwrites existing hooks (a backup is taken automatically); <code>--dry-run</code> previews.</li>
-<li><strong>run-spec</strong> runs a single test/spec file through the project's auto-detected runner (RSpec, Jest, Vitest, Go test, pytest) and prints a PASS/FAIL summary. No cache side-effects.</li>
-<li><strong>disable-session</strong> writes a sentinel file at <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-disabled-&lt;session_id&gt;</code> that tells the dispatcher to skip all guards for the current session. Other sessions are not affected. Only fire on explicit user invocation.</li>
-<li><strong>enable-session</strong> removes the session sentinel (and the global fallback sentinel if present), restoring guards for the current session.</li>
-<li><strong>session-status</strong> reports the current session_id, which sentinels exist, whether guards are active or disabled, the active plugin version, and the list of guard scripts in the install.</li>
-<li><strong>disable-git</strong> writes <code>.git/git-discipline-deny</code> (per-repo, never committed) and locks git for Claude. While the sentinel exists, only read-only inspection is allowed (status, log, diff, show, blame, rev-parse, branch / tag in list form, remote -v, config --get, <code>bisect view</code>, <code>worktree list</code>, <code>submodule status</code>, <code>stash list/show</code>, <code>notes list/show</code>); every mutation (commit, checkout, switch, restore, reset, merge, rebase, cherry-pick, revert, push, pull, fetch, add, rm, mv, stash, clean, branch -d, tag v0.1, ...) is denied. Optional argument becomes the reason printed in the deny message. With <code>/git-discipline:install-hooks</code> active, the <code>commit-msg</code> and <code>pre-push</code> git-native hooks honour the same sentinel, so direct shell <code>git commit</code> and <code>git push</code> are also blocked. Other shell mutations (<code>git reset</code>, <code>git checkout</code>, ...) are not covered CLI-time because git-discipline installs no hooks for them; Claude is fully locked at PreToolUse time regardless.</li>
-<li><strong>enable-git</strong> removes <code>.git/git-discipline-deny</code>, lifting the lock.</li>
-</ul>
+<ul class="term-list"><li><strong>commit-all-the-things</strong> <span>inspects <code>git status</code> plus <code>git diff</code>, groups changes by intent (feature, fix, refactor, docs, config), and creates one commit per group. Trigger phrases include &quot;commit everything&quot;, &quot;clean up the working tree&quot;, and &quot;commit what's left&quot;.</span></li><li><strong>commit-snipe</strong> <span>stages only the files (or hunks) that belong to the current conversation's work and leaves the rest untouched. Auto-fires on the word &quot;snipe&quot;.</span></li><li><strong>rebase-latest-default</strong> <span>delegates default resolution, rebase, and SHA-bound verification to <code>bin/git-discipline</code>. Conflicts stay with the feature-worktree owner; no default checkout or central integrator resolves them.</span></li><li><strong>merge-to-default</strong> <span>resolves repository policy, reruns relevant verification at the candidate SHA, and invokes the atomic two-parent merge. <code>local-only</code> and <code>gated-trunk</code> update the local ref; <code>auto-trunk</code> and explicitly ordered publications use a normal remote push; <code>pr-flow</code> and <code>external</code> retain their repository gates. Source cleanup remains with <code>bonsai:prune</code> after merge and any required deployment are proven complete.</span></li><li><strong>push-policy</strong> <span>decides whether and when a push fits the current repo. It ships a resolver (<code>skills/push-policy/git-repo-policy</code>) that reads independent per-repo facts (collaboration, visibility, default-branch protection, push access) and derives one of five modes (<code>local-only</code>, <code>auto-trunk</code>, <code>gated-trunk</code>, <code>pr-flow</code>, <code>external</code>), each with its own push behavior. Per-repo overrides live under git-local <code>codingAgent.git.*</code>. <code>rebase-latest-default</code> and <code>merge-to-default</code> consult it; the push hooks gate content and are orthogonal to this context decision.</span></li><li><strong>commit-discipline</strong> <span>is the canonical reference for the body schema, error-codes, opt-out enum, and escape-hatches.</span></li><li><strong>install-hooks</strong> <span>copies the git-native <code>pre-commit</code>, <code>commit-msg</code>, <code>prepare-commit-msg</code>, <code>post-commit</code>, <code>post-rewrite</code>, and <code>pre-push</code> hooks into the current repo so commits made outside Claude Code still get validated. <code>--force</code> overwrites existing hooks (a backup is taken automatically); <code>--dry-run</code> previews.</span></li><li><strong>run-spec</strong> <span>runs a single test/spec file through the project's auto-detected runner (RSpec, Jest, Vitest, Go test, pytest) and prints a PASS/FAIL summary. No cache side-effects.</span></li><li><strong>disable-session</strong> <span>writes a sentinel file at <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-disabled-&lt;session_id&gt;</code> that tells the dispatcher to skip all guards for the current session. Other sessions are not affected. Only fire on explicit user invocation.</span></li><li><strong>enable-session</strong> <span>removes the session sentinel (and the global fallback sentinel if present), restoring guards for the current session.</span></li><li><strong>session-status</strong> <span>reports the current session_id, which sentinels exist, whether guards are active or disabled, the active plugin version, and the list of guard scripts in the install.</span></li><li><strong>disable-git</strong> <span>writes <code>.git/git-discipline-deny</code> (per-repo, never committed) and locks git for Claude. While the sentinel exists, only read-only inspection is allowed (status, log, diff, show, blame, rev-parse, branch / tag in list form, remote -v, config --get, <code>bisect view</code>, <code>worktree list</code>, <code>submodule status</code>, <code>stash list/show</code>, <code>notes list/show</code>); every mutation (commit, checkout, switch, restore, reset, merge, rebase, cherry-pick, revert, push, pull, fetch, add, rm, mv, stash, clean, branch -d, tag v0.1, ...) is denied. Optional argument becomes the reason printed in the deny message. With <code>/git-discipline:install-hooks</code> active, the <code>commit-msg</code> and <code>pre-push</code> git-native hooks honour the same sentinel, so direct shell <code>git commit</code> and <code>git push</code> are also blocked. Other shell mutations (<code>git reset</code>, <code>git checkout</code>, ...) are not covered CLI-time because git-discipline installs no hooks for them; Claude is fully locked at PreToolUse time regardless.</span></li><li><strong>enable-git</strong> <span>removes <code>.git/git-discipline-deny</code>, lifting the lock.</span></li></ul>
 <h2 id="hooks">Hooks</h2>
 <p>PreToolUse:Bash dispatcher chain (<code>hooks/dispatch.sh</code>):</p>
 <table>
@@ -121,16 +133,16 @@ git-discipline merge --local|--remote</code></pre>
 <tr><th>Guard</th><th>Triggers on</th><th>Blocks</th></tr>
 </thead>
 <tbody>
-<tr><td><code>git-dash-c.sh</code></td><td>any <code>git -C &lt;dir&gt;</code> command</td><td><code>git -C</code></td></tr>
-<tr><td><code>repo-deny.sh</code></td><td>any <code>git &lt;mutation&gt;</code> while <code>.git/git-discipline-deny</code> exists</td><td>every git command outside the read-only allow-list</td></tr>
-<tr><td><code>commit-format.sh</code></td><td><code>git commit</code></td><td>editor-mode commits without <code>-m</code></td></tr>
-<tr><td><code>commit-subject.sh</code></td><td><code>git commit -m</code></td><td>subjects past 50/72, lowercase first, trailing period</td></tr>
-<tr><td><code>commit-body.sh</code></td><td><code>git commit -m</code></td><td>bodies that fail <code>validate-body.sh</code></td></tr>
-<tr><td><code>commit-body-posttool.sh</code></td><td>PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am)</td><td>bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see)</td></tr>
-<tr><td><code>commit-trailers.sh</code></td><td><code>git commit -m</code></td><td><code>Co-Authored-By:</code> with <code>@anthropic.com</code> email</td></tr>
-<tr><td><code>push-destination.sh</code></td><td><code>git push</code></td><td>push whose destination releases, deploys, rewrites or cannot be classified (held until <code># push-agreed</code>), or that the repository's agreement rules out (refused)</td></tr>
-<tr><td><code>push-wip-gate.sh</code></td><td><code>git push</code></td><td>push range containing a <code>Slice: wip</code> commit</td></tr>
-<tr><td><code>push-body-gate.sh</code></td><td><code>git push</code></td><td>push range containing a body that fails <code>validate-body.sh</code></td></tr>
+<tr><td data-label="Guard"><code>git-dash-c.sh</code></td><td data-label="Triggers on">any <code>git -C &lt;dir&gt;</code> command</td><td data-label="Blocks"><code>git -C</code></td></tr>
+<tr><td data-label="Guard"><code>repo-deny.sh</code></td><td data-label="Triggers on">any <code>git &lt;mutation&gt;</code> while <code>.git/git-discipline-deny</code> exists</td><td data-label="Blocks">every git command outside the read-only allow-list</td></tr>
+<tr><td data-label="Guard"><code>commit-format.sh</code></td><td data-label="Triggers on"><code>git commit</code></td><td data-label="Blocks">editor-mode commits without <code>-m</code></td></tr>
+<tr><td data-label="Guard"><code>commit-subject.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks">subjects past 50/72, lowercase first, trailing period</td></tr>
+<tr><td data-label="Guard"><code>commit-body.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks">bodies that fail <code>validate-body.sh</code></td></tr>
+<tr><td data-label="Guard"><code>commit-body-posttool.sh</code></td><td data-label="Triggers on">PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am)</td><td data-label="Blocks">bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see)</td></tr>
+<tr><td data-label="Guard"><code>commit-trailers.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks"><code>Co-Authored-By:</code> with <code>@anthropic.com</code> email</td></tr>
+<tr><td data-label="Guard"><code>push-destination.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push whose destination releases, deploys, rewrites or cannot be classified (held until <code># push-agreed</code>), or that the repository's agreement rules out (refused)</td></tr>
+<tr><td data-label="Guard"><code>push-wip-gate.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push range containing a <code>Slice: wip</code> commit</td></tr>
+<tr><td data-label="Guard"><code>push-body-gate.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push range containing a body that fails <code>validate-body.sh</code></td></tr>
 </tbody>
 </table>
 <p>Git-native hooks (installed per-repo via <code>/git-discipline:install-hooks</code>, sourced from <code>skills/commit-discipline/git-hooks/</code>):</p>
@@ -139,30 +151,30 @@ git-discipline merge --local|--remote</code></pre>
 <tr><th>Hook</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code>pre-commit</code></td><td>when local <code>laicluse.requireWorktree=true</code>, blocks commits in the primary checkout and on the default branch; otherwise it does not constrain authoring location</td></tr>
-<tr><td><code>commit-msg</code></td><td>runs <code>validate-body.sh</code> on every non-Claude commit</td></tr>
-<tr><td><code>prepare-commit-msg</code></td><td>pre-fills the editor with a layer-classified template</td></tr>
-<tr><td><code>post-commit</code></td><td>logs <code>--no-verify</code> usage to <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log</code></td></tr>
-<tr><td><code>post-rewrite</code></td><td>validates rebase/amend-rewritten bodies; warns and logs (git ignores its exit status) since <code>commit-msg</code> does not fire on rebase-picked commits</td></tr>
-<tr><td><code>pre-push</code></td><td>validates candidate topology and proof, then re-runs the wip and body gates</td></tr>
+<tr><td data-label="Hook"><code>pre-commit</code></td><td data-label="Purpose">when local <code>laicluse.requireWorktree=true</code>, blocks commits in the primary checkout and on the default branch; otherwise it does not constrain authoring location</td></tr>
+<tr><td data-label="Hook"><code>commit-msg</code></td><td data-label="Purpose">runs <code>validate-body.sh</code> on every non-Claude commit</td></tr>
+<tr><td data-label="Hook"><code>prepare-commit-msg</code></td><td data-label="Purpose">pre-fills the editor with a layer-classified template</td></tr>
+<tr><td data-label="Hook"><code>post-commit</code></td><td data-label="Purpose">logs <code>--no-verify</code> usage to <code>${LAICLUSE_HOME:-~/.laicluse}/git-discipline/git-discipline-no-verify.log</code></td></tr>
+<tr><td data-label="Hook"><code>post-rewrite</code></td><td data-label="Purpose">validates rebase/amend-rewritten bodies; warns and logs (git ignores its exit status) since <code>commit-msg</code> does not fire on rebase-picked commits</td></tr>
+<tr><td data-label="Hook"><code>pre-push</code></td><td data-label="Purpose">validates candidate topology and proof, then re-runs the wip and body gates</td></tr>
 </tbody>
 </table>
 <p>Both layers source the same <code>hooks/lib/validate-body.sh</code>, so behavior never diverges between Claude-driven and CLI-driven commits.</p>
 <h2 id="example-commit-message">Example commit message</h2>
-<pre><code>Drop invalid meter reading on transaction events
-
-When StartTransaction or StopTransaction messages arrive with a
-meter reading that fails domain validation, we previously rejected
-the entire event, which masked session starts and stops in analytics.
-This change keeps the transaction event but discards just the bad
-reading, restoring the visibility we lost.
-
-Tests: spec/services/session_spec.rb#start_event_with_bad_reading,
-       spec/services/session_spec.rb#stop_event_with_bad_reading
-Slice: handler + service + spec
-Red-then-green: spec/services/session_spec.rb:42 # start_event drops invalid meter reading
-Verified: red-then-green
-Resolves: https://example.org/backlog/issues/1234</code></pre>
+<pre><code><span class="code-line">Drop invalid meter reading on transaction events</span>
+<span class="code-line"></span>
+<span class="code-line">When StartTransaction or StopTransaction messages arrive with a</span>
+<span class="code-line">meter reading that fails domain validation, we previously rejected</span>
+<span class="code-line">the entire event, which masked session starts and stops in analytics.</span>
+<span class="code-line">This change keeps the transaction event but discards just the bad</span>
+<span class="code-line">reading, restoring the visibility we lost.</span>
+<span class="code-line"></span>
+<span class="code-line">Tests: spec/services/session_spec.rb#start_event_with_bad_reading,</span>
+<span class="code-line">       spec/services/session_spec.rb#stop_event_with_bad_reading</span>
+<span class="code-line">Slice: handler + service + spec</span>
+<span class="code-line">Red-then-green: spec/services/session_spec.rb:42 # start_event drops invalid meter reading</span>
+<span class="code-line">Verified: red-then-green</span>
+<span class="code-line">Resolves: https://example.org/backlog/issues/1234</span></code></pre>
 <p>The <code>Slice</code> value can also be one of eight opt-out tokens: <code>docs-only</code>, <code>config-only</code>, <code>migration-only</code>, <code>spec-only</code>, <code>chore-deps</code>, <code>revert</code>, <code>merge</code>, <code>wip</code>. Opt-out commits drop the <code>Tests:</code> requirement; the documentation / config / chore-deps tokens additionally drop the <code>Red-then-green:</code> requirement.</p>
 <h2 id="bypass">Bypass</h2>
 <p>Escape-hatches, each logged for later auditing:</p>
@@ -176,8 +188,8 @@ Resolves: https://example.org/backlog/issues/1234</code></pre>
 <p>See <code>/git-discipline:commit-discipline</code> for the full schema, opt-out matrix, and troubleshooting guide.</p>
 <h2 id="test-suite">Test suite</h2>
 <p>The git-native hooks installed by <code>git-discipline:install-hooks</code> dispatch through <code>${LAICLUSE_HOME:-$HOME/.laicluse}/git-discipline/runtime</code>. A SessionStart hook publishes the complete hook and validator set as an immutable release and atomically advances its pointer. Existing repositories keep their installed hook entrypoints while older plugin sessions use the newest published release. <code>git-discipline runtime install</code> publishes the calling plugin version.</p>
-<pre><code class="language-bash">bash packages/git-discipline/test/run-bats              # 500+ BATS cases
-bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smoke</code></pre>
+<pre><code class="language-bash"><span class="code-line">bash packages/git-discipline/test/run-bats              # 500+ BATS cases</span>
+<span class="code-line">bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smoke</span></code></pre>
 <p>The BATS suite is split per concern:</p>
 <ul>
 <li><code>validate-body/</code> covers the body schema rules.</li>
@@ -189,35 +201,14 @@ bash packages/git-discipline/test/smoke/smoke-test.sh   # 22-case end-to-end smo
 <p>The smoke suite spins up disposable git repos and exercises the full hook chain end-to-end.</p>
 <h2 id="audit">Audit</h2>
 <p>Verify that no body-less commits slipped through. The script ships inside the plugin at <code>bin/audit-no-body-commits</code>; resolve its path from the active install so it survives plugin updates:</p>
-<pre><code class="language-bash">GIT_DISCIPLINE=$(jq -r '.plugins[&quot;git-discipline@laicluse-agent-fieldkit&quot;][0].installPath' \
-  ~/.claude/plugins/installed_plugins.json)
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot;
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; --branch main --since 2026-04-01
-python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; --exclude-trivial</code></pre>
+<pre><code class="language-bash"><span class="code-line">GIT_DISCIPLINE=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;git-discipline@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath' \</span>
+<span class="code-line">  ~/.claude/plugins/installed_plugins.json)</span>
+<span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot;</span>
+<span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--branch</span> main <span class="code-unit">--since</span> 2026-04-01</span>
+<span class="code-line">python3 &quot;$GIT_DISCIPLINE/bin/audit-no-body-commits&quot; <span class="code-unit">--exclude-trivial</span></span></code></pre>
 <p>Lists every commit on the branch with a single-line message (or below the trivial threshold), useful for checking that the push gate held.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="git-discipline install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-git-discipline-claude">claude plugins install git-discipline@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-git-discipline-codex">codex plugin add git-discipline@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-it-does">What it does</a></li><li><a href="#repository-branch-policy">Repository branch policy</a></li><li><a href="#parallel-candidate-command">Parallel candidate command</a></li><li><a href="#skills">Skills</a></li><li><a href="#hooks">Hooks</a></li><li><a href="#example-commit-message">Example commit message</a></li><li><a href="#bypass">Bypass</a></li><li><a href="#test-suite">Test suite</a></li><li><a href="#audit">Audit</a></li></ol></nav>
 			</section>
 		</main>
 

@@ -9,6 +9,8 @@ user-invocable: true
 
 Keep the result, not the log of every failed attempt to build it.
 
+An empty jam jar does not belong back in the fridge labelled "jam used to be here." When a finding or structure is gone, remove its container too; do not replace it with a cleanup announcement. Keep evidence needed to assess a retained claim, not a memorial to completed work.
+
 Scar tissue is residue from the fixing rather than structure the current system needs: a correction layered over superseded content, a temporary test whose subject is gone, a migration wrapper without a current consumer, or prose and commit history that narrate the struggle instead of the result.
 
 ## Catch it without creating ceremony

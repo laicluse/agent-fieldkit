@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Feedback and utilities</p>
-					<h1>pattern-memory</h1>
-					<p class="lede">Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.2</span>
-						<span>1 skill</span>
+					<div class="detail-hero-copy">
+						<h1>pattern-memory</h1>
+						<p class="lede">Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.2</span>
+							<span class="meta-fact">1 skill</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="pattern-memory install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-pattern-memory-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">pattern-memory</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-pattern-memory-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">pattern-memory</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/pattern-memory">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -64,16 +83,17 @@
 <p>The plugin ships the mechanism, not your private content. Real pattern files live in personal local state under <code>${LAICLUSE_HOME:-$HOME/.laicluse}/patterns</code> by default. Public docs and generated examples describe only sanitized mechanics; concrete app names, private repository paths, local paths, and origin stories stay in private <code>precedents</code> fields and must never be surfaced in public artifacts.</p>
 <h2 id="local-store">Local Store</h2>
 <p>The default store is:</p>
-<pre><code class="language-bash">${LAICLUSE_HOME:-$HOME/.laicluse}/patterns</code></pre>
+<pre><code class="language-bash"><span class="code-line">${LAICLUSE_HOME:-$HOME/.laicluse}/patterns</span></code></pre>
 <p>The store is a standalone git repository. It must sit outside project working trees so pattern files cannot be accidentally staged into a product repository.</p>
 <p>Initialize it from an installed plugin:</p>
-<pre><code class="language-bash">node &quot;$PLUGIN_ROOT/bin/pattern-memory&quot; init</code></pre>
+<pre><code class="language-bash"><span class="code-line">node &quot;$PLUGIN_ROOT/bin/pattern-memory&quot; init</span></code></pre>
 <p>The helper creates:</p>
-<pre><code class="language-text">README.md
-SCHEMA.md
-INDEX.md
-patterns/example-map-like-canvas-interaction.md</code></pre>
+<pre><code class="language-text"><span class="code-line">README.md</span>
+<span class="code-line">SCHEMA.md</span>
+<span class="code-line">INDEX.md</span>
+<span class="code-line">patterns/example-map-like-canvas-interaction.md</span></code></pre>
 <h2 id="commands">Commands</h2>
+<div class="readme-scan">
 <h3 id="pattern-memory-init"><code>pattern-memory init</code></h3>
 <p>Creates the local Pattern Memory root, writes starter docs when missing, runs <code>git init</code> when needed, and generates <code>INDEX.md</code>.</p>
 <h3 id="pattern-memory-index"><code>pattern-memory index</code></h3>
@@ -82,27 +102,28 @@ patterns/example-map-like-canvas-interaction.md</code></pre>
 <p>Searches pattern titles, slugs, tags, triggers, exemplars, applicability fields, and body text. Output includes the matching file path and sanitized metadata, never private <code>precedents</code>.</p>
 <h3 id="pattern-memory-validate"><code>pattern-memory validate</code></h3>
 <p>Checks schema fields, allowed lifecycle values, the local root boundary, and index freshness.</p>
+</div>
 <h2 id="pattern-schema">Pattern Schema</h2>
 <p>Each pattern is a Markdown file with YAML-style frontmatter:</p>
-<pre><code class="language-yaml">---
-slug: map-like-canvas-interaction
-type: pattern
-status: draft
-visibility: public-example
-triggers:
-  - canvas pan zoom
-  - wheel event
-  - trackpad pinch
-exemplars:
-  - map-like canvas
-precedents: []
-applies_to:
-  - browser canvas
-tags:
-  - ui
-  - interaction
-last_verified: 2026-07-04
----</code></pre>
+<pre><code class="language-yaml"><span class="code-line">---</span>
+<span class="code-line">slug: map-like-canvas-interaction</span>
+<span class="code-line">type: pattern</span>
+<span class="code-line">status: draft</span>
+<span class="code-line">visibility: public-example</span>
+<span class="code-line">triggers:</span>
+<span class="code-line">  - canvas pan zoom</span>
+<span class="code-line">  - wheel event</span>
+<span class="code-line">  - trackpad pinch</span>
+<span class="code-line">exemplars:</span>
+<span class="code-line">  - map-like canvas</span>
+<span class="code-line">precedents: <span class="code-unit">[]</span></span>
+<span class="code-line">applies_to:</span>
+<span class="code-line">  - browser canvas</span>
+<span class="code-line">tags:</span>
+<span class="code-line">  - ui</span>
+<span class="code-line">  - interaction</span>
+<span class="code-line">last_verified: 2026-07-04</span>
+<span class="code-line">---</span></code></pre>
 <p>Use these body sections:</p>
 <ul>
 <li><code>Use when</code></li>
@@ -126,28 +147,7 @@ last_verified: 2026-07-04
 <h2 id="requirements">Requirements</h2>
 <p>Node.js and git on <code>$PATH</code>. No database, private knowledge-base plugin, remote service, or agent-specific storage backend is required.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="pattern-memory install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-pattern-memory-claude">claude plugins install pattern-memory@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-pattern-memory-codex">codex plugin add pattern-memory@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/pattern-memory">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#local-store">Local Store</a></li><li><a href="#commands">Commands</a></li><li><a href="#pattern-schema">Pattern Schema</a></li><li><a href="#privacy-contract">Privacy Contract</a></li><li><a href="#agent-workflow">Agent Workflow</a></li><li><a href="#requirements">Requirements</a></li></ol></nav>
 			</section>
 		</main>
 

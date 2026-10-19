@@ -542,12 +542,6 @@ function releaseDibs(registration, claimResult, env = process.env) {
   return runDibs(registration, 'release', args, env);
 }
 
-function visualEvidenceTrailer(paths, message = '') {
-  if (/^Visual:\s*\S/im.test(message)) return [];
-  const viewer = paths.find((path) => path.toLowerCase().endsWith('.html'));
-  return viewer ? [`Visual: ${viewer}`] : [];
-}
-
 export const COMMIT_MESSAGE_DIFF_FILE_LIMIT = 64 * 1024;
 export const COMMIT_MESSAGE_DIFF_TOTAL_LIMIT = 256 * 1024;
 
@@ -612,7 +606,6 @@ export function fallbackCommitMessage(reason = 'debounce', paths = [], diff = ''
     'Tests: n/a (docs-only)',
     'Slice: docs-only',
     'Red-then-green: n/a (no executable behaviour changed)',
-    ...visualEvidenceTrailer(paths),
     `Vaultsync-Reason: ${reason}`,
   ].join('\n');
 }
@@ -663,7 +656,7 @@ function normalizeCommitMessage(message, reason, paths = [], diff = '') {
     'Tests: n/a (docs-only)',
     'Slice: docs-only',
     'Red-then-green: n/a (no executable behaviour changed)',
-    ...visualEvidenceTrailer(paths, cleaned),
+    ...cleaned.split('\n').filter((line) => /^Visual:\s*\S/i.test(line)),
     `Vaultsync-Reason: ${reason}`,
   ].join('\n');
 }

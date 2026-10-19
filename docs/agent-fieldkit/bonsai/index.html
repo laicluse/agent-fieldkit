@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Repository discipline</p>
-					<h1>bonsai</h1>
-					<p class="lede">Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.39</span>
-						<span>3 skills</span>
+					<div class="detail-hero-copy">
+						<h1>bonsai</h1>
+						<p class="lede">Creates, sets up, and tears down git worktrees with explicit safety checks around unmerged work.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.39</span>
+							<span class="meta-fact">3 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="bonsai install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-bonsai-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">bonsai</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-bonsai-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">bonsai</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/bonsai">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -64,14 +83,10 @@
 <p>It is deliberately distinct from raw <code>git worktree</code>: bonsai resolves the freshest Git default branch, refuses to use a vaultsync-managed checkout as a worktree factory, follows the <code>&lt;root&gt;/worktrees/&lt;dir&gt;</code> convention with a self-ignoring <code>.gitignore</code>, primes a tree from a <code>.bonsai</code> file list, and guards teardown. It emits facts (<code>--json</code>), never a start command or clipboard payload; whatever launches an agent in the worktree composes its own briefing.</p>
 <p>Use <code>bonsai</code> when an agent needs isolated workspace state without inventing a repo-specific worktree ritual. It is especially useful before starting parallel agent work, handing a mission to another runtime, or cleaning up old worktrees without losing unmerged commits.</p>
 <h2 id="cli">CLI</h2>
-<pre><code>bonsai create &lt;branch&gt; --repo &lt;root&gt; [--base &lt;ref&gt;] [--json]
-bonsai setup  &lt;worktree&gt; --repo &lt;root&gt; [--no-install] [--json]
-bonsai teardown &lt;worktree|branch&gt; --repo &lt;root&gt; [--force] [--dry-run] [--json]</code></pre>
-<ul>
-<li><strong>create</strong>: resolve the freshest Git default branch from <code>origin/HEAD</code> when available, refuse a vaultsync-managed checkout through the vaultsync CLI, make the worktree + branch (slashes in the branch flatten to dashes in the dir), refuse an existing branch, and print <code>{ worktree, branch, base, baseSha, port }</code>. The port is a deterministic dev-server hint in 3100-3999.</li>
-<li><strong>setup</strong>: copy the <code>.bonsai</code>-listed files from the canonical checkout (<code>--repo</code>) and install dependencies per directory by the manager each lockfile names. Install is best-effort; failures warn rather than block.</li>
-<li><strong>teardown</strong>: remove a worktree only when it is integrated into the Git default branch, or clean with nothing ahead of that default. Otherwise it is kept with a reason. Warns on orphaned unpushed commits and on a diverged default. <code>--dry-run</code> classifies without removing; <code>--force</code> overrides the gate.</li>
-</ul>
+<pre><code><span class="code-line">bonsai create &lt;branch&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--base &lt;ref&gt;]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">bonsai setup  &lt;worktree&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--no-install]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">bonsai teardown &lt;worktree|branch&gt; <span class="code-unit">--repo</span> &lt;root&gt; <span class="code-unit">[--force]</span> <span class="code-unit">[--dry-run]</span> <span class="code-unit">[--json]</span></span></code></pre>
+<ul class="term-list"><li><strong>create</strong> <span>resolve the freshest Git default branch from <code>origin/HEAD</code> when available, refuse a vaultsync-managed checkout through the vaultsync CLI, make the worktree + branch (slashes in the branch flatten to dashes in the dir), refuse an existing branch, and print <code>{ worktree, branch, base, baseSha, port }</code>. The port is a deterministic dev-server hint in 3100-3999.</span></li><li><strong>setup</strong> <span>copy the <code>.bonsai</code>-listed files from the canonical checkout (<code>--repo</code>) and install dependencies per directory by the manager each lockfile names. Install is best-effort; failures warn rather than block.</span></li><li><strong>teardown</strong> <span>remove a worktree only when it is integrated into the Git default branch, or clean with nothing ahead of that default. Otherwise it is kept with a reason. Warns on orphaned unpushed commits and on a diverged default. <code>--dry-run</code> classifies without removing; <code>--force</code> overrides the gate.</span></li></ul>
 <h2 id="skills">Skills</h2>
 <ul>
 <li><code>bonsai</code>: make a ready worktree (create + setup).</li>
@@ -85,28 +100,7 @@ bonsai teardown &lt;worktree|branch&gt; --repo &lt;root&gt; [--force] [--dry-run
 <li><code>test/*.bats</code>: CLI contract tests.</li>
 </ul>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="bonsai install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-bonsai-claude">claude plugins install bonsai@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-bonsai-codex">codex plugin add bonsai@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/bonsai">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#cli">CLI</a></li><li><a href="#skills">Skills</a></li><li><a href="#files">Files</a></li></ol></nav>
 			</section>
 		</main>
 

@@ -49,8 +49,11 @@ A single-occupancy lock for a working directory with an [external reference](htt
 ## CLI
 
 ```bash
-dibs claim <dir>
+dibs claim <dir> [--description <text>] [--json]
 ```
+
+- **claim** takes the lock for a directory.
+- **release** frees a lock you hold.
 
 ## Runnable example
 
@@ -80,6 +83,18 @@ codex plugin add dibs@laicluse-agent-fieldkit
 ## Code spans
 
 Nested JS template literals (`` `${`inner //`}` ``) may close the outer template state early.
+
+Inline HTML code keeps pipes literal: <code>rg -n 'a\\|b' src/</code> for raw matches.
+
+## Skills
+
+### `/dibs:claim`
+
+Claims a directory.
+
+### `/dibs:release`
+
+Releases it again.
 
 - Claims a directory.
 - Reports the current holder.
@@ -135,8 +150,8 @@ HTML
   grep -q '<h1>dibs</h1>' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q 'A single-occupancy lock for a working directory' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q '<h2 id="cli">CLI</h2>' "$REPO/docs/agent-fieldkit/dibs/index.html"
-  grep -q '<pre><code class="language-bash">dibs claim &lt;dir&gt;' "$REPO/docs/agent-fieldkit/dibs/index.html"
-  grep -q '<pre data-copyable><code class="language-bash">dibs check .' "$REPO/docs/agent-fieldkit/dibs/index.html"
+  grep -q '<pre><code class="language-bash"><span class="code-line">dibs claim &lt;dir&gt;' "$REPO/docs/agent-fieldkit/dibs/index.html"
+  grep -q '<pre data-copyable><code class="language-bash"><span class="code-line">dibs check .' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -Eq '<script src="../../code-panel-copy\.js\?v=[0-9a-f]{10}"></script>' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q '<a href="https://example.test/dibs">external reference</a>' "$REPO/docs/agent-fieldkit/dibs/index.html"
   grep -q '<table>' "$REPO/docs/agent-fieldkit/dibs/index.html"
@@ -158,9 +173,19 @@ const table = html.match(/<h2 id="parser-cases">Parser cases<\/h2>\n(<table>[\s\
 if (!table) throw new Error("parser cases table not found");
 const rows = [...table[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map((match) => match[1]);
 const bodyRow = rows[rows.length - 1];
-const bodyCells = [...bodyRow.matchAll(/<td>/g)].length;
+const bodyCells = [...bodyRow.matchAll(/<td[ >]/g)].length;
 if (bodyCells !== 3) throw new Error(`expected 3 body cells, got ${bodyCells}`);
 if (!bodyRow.includes("\\\\|kenteken")) throw new Error("escaped pipe moved out of regex cell");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README inline HTML code elements render as code" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+if (html.includes("&lt;code&gt;")) throw new Error("inline <code> was escaped into visible text");
+if (!html.includes("<code>rg -n 'a" + "\\".repeat(2) + "|b' src/</code>")) throw new Error("inline <code> content missing or unescaped");
 NODE
   [ "$status" -eq 0 ]
 }
@@ -208,20 +233,21 @@ NODE
   grep -q '<a class="back-link" href="../#catalog">Catalog</a>' "$REPO/docs/agent-fieldkit/dibs/index.html"
 }
 
-@test "detail page renders one sidebar install command switch" {
+@test "detail page renders one hero install command switch" {
   run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
 const fs = require("fs");
 const html = fs.readFileSync(process.argv[2], "utf8");
 const allSwitches = (html.match(/class="agent-command-switch"/g) || []).length;
-const sidebar = html.match(/<aside class="detail-sidebar"[\s\S]*?<\/aside>/);
-if (!sidebar) throw new Error("detail sidebar not found");
-const sidebarSwitches = (sidebar[0].match(/class="agent-command-switch"/g) || []).length;
+const install = html.match(/<aside class="detail-install"[\s\S]*?<\/aside>/);
+if (!install) throw new Error("detail install panel not found");
+const installSwitches = (install[0].match(/class="agent-command-switch"/g) || []).length;
 if (allSwitches !== 1) throw new Error(`expected one install command switch, got ${allSwitches}`);
-if (sidebarSwitches !== 1) throw new Error("sidebar does not own the install switch");
+if (installSwitches !== 1) throw new Error("install panel does not own the install switch");
 if (html.includes('<h2 id="installation">Installation</h2>')) throw new Error("README installation section still renders in the body");
-if (!html.includes('claude plugins install dibs@laicluse-agent-fieldkit')) throw new Error("missing Claude command");
-if (!html.includes('codex plugin add dibs@laicluse-agent-fieldkit')) throw new Error("missing Codex command");
-if (html.includes('claude plugins install dibs@laicluse-agent-fieldkit\ncodex plugin add dibs@laicluse-agent-fieldkit')) {
+const codeTexts = [...install[0].matchAll(/<code[^>]*>([\s\S]*?)<\/code>/g)].map((match) => match[1].replace(/<[^>]+>/g, ""));
+if (!codeTexts.includes('claude plugins install dibs@laicluse-agent-fieldkit')) throw new Error("missing Claude command");
+if (!codeTexts.includes('codex plugin add dibs@laicluse-agent-fieldkit')) throw new Error("missing Codex command");
+if (codeTexts.some((text) => text.includes('claude plugins') && text.includes('codex plugin'))) {
 	throw new Error("commands still render as one combined code block");
 }
 NODE
@@ -232,9 +258,9 @@ NODE
   run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
 const fs = require("fs");
 const html = fs.readFileSync(process.argv[2], "utf8");
-const sidebar = html.match(/<aside class="detail-sidebar"[\s\S]*?<\/aside>/);
-if (!sidebar) throw new Error("detail sidebar not found");
-if (!sidebar[0].includes('class="agent-command-switch"')) throw new Error("sidebar install did not render as command switch");
+const install = html.match(/<aside class="detail-install"[\s\S]*?<\/aside>/);
+if (!install) throw new Error("detail install panel not found");
+if (!install[0].includes('class="agent-command-switch"')) throw new Error("install panel did not render as command switch");
 if (html.includes('<h2 id="installation">Installation</h2>')) throw new Error("README install section should be suppressed on detail pages");
 NODE
   [ "$status" -eq 0 ]
@@ -259,4 +285,75 @@ NODE
 
 @test "stale plugin detail pages are removed on rebuild" {
   [ ! -e "$REPO/docs/agent-fieldkit/removed/index.html" ]
+}
+
+@test "rebuild leaves unchanged pages untouched" {
+  page="$REPO/docs/agent-fieldkit/dibs/index.html"
+  touch -t 202001010000 "$page"
+  before="$(ls -l -T "$page" 2>/dev/null || ls -l --time-style=full-iso "$page")"
+  run "$SCRIPT" "$REPO"
+  [ "$status" -eq 0 ]
+  [ "$(ls -l -T "$page" 2>/dev/null || ls -l --time-style=full-iso "$page")" = "$before" ]
+}
+
+@test "detail page lists its README sections in an on-this-page nav" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const nav = html.match(/<nav class="detail-toc"[\s\S]*?<\/nav>/);
+if (!nav) throw new Error("on-this-page nav not found");
+for (const id of ["commands", "parser-cases", "code-spans"]) {
+	if (!nav[0].includes(`href="#${id}"`)) throw new Error(`nav misses #${id}`);
+}
+if (nav[0].includes('href="#installation"')) throw new Error("nav lists the suppressed install section");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "short command definitions render as one scannable group" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const group = html.match(/<div class="readme-scan">[\s\S]*?<\/div>/);
+if (!group) throw new Error("short command definitions are not grouped");
+if (!group[0].includes("/dibs:claim") || !group[0].includes("/dibs:release")) throw new Error("group misses a command");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README code blocks keep each command option on one line" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+if (!html.includes('<span class="code-unit">[--description &lt;text&gt;]</span>')) {
+  throw new Error("bracketed option is not kept together");
+}
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README code block lines render as hanging lines" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+if (!html.includes('<code class="language-bash"><span class="code-line">dibs claim &lt;dir&gt; ')) {
+  throw new Error("code block line is not wrapped as one hanging line");
+}
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "install commands break between words or before the marketplace" {
+  run node - <<'NODE' "$REPO/docs/agent-fieldkit/dibs/index.html"
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const expected = '<span class="code-unit">dibs</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span>';
+if (!html.includes(expected)) throw new Error("install command name can still break inside a hyphenated word");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "README lists that lead every item with a bold term render as a term list" {
+  grep -q '<ul class="term-list">' "$REPO/docs/agent-fieldkit/dibs/index.html"
+  grep -q '<li><strong>claim</strong> <span>takes the lock for a directory.</span></li>' "$REPO/docs/agent-fieldkit/dibs/index.html"
 }

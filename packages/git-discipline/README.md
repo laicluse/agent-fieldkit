@@ -47,18 +47,32 @@ the current plugin version.
 Reference for the schema, examples, escape-hatches, and troubleshooting:
 `/git-discipline:commit-discipline`.
 
+## Repository branch policy
+
+Choose the authoring line independently of push permission. For sequential work in the primary checkout, configure this repository only:
+
+```bash
+git config --local codingAgent.git.branchPolicy default
+git-discipline branch-policy
+```
+
+The resolver prints the configured policy, checkout type, current branch, intended authoring branch and worktree requirement. With `default`, ordinary work stays on the resolved default branch in the primary checkout. The native pre-commit guard rejects ordinary commits left on another primary-checkout branch. Linked feature worktrees and completing an actual merge remain available. A repository's explicit `laicluse.requireWorktree=true` requirement still takes priority.
+
+Unset the key, or set it to `current`, to keep the existing current-branch workflow. Global values of `codingAgent.git.branchPolicy` are deliberately ignored: this choice belongs to each repository. The setting chooses where to author; push policy still decides whether publishing is allowed. The resolver never switches branches or moves unfinished changes.
+
 ## Parallel candidate command
 
 The executable is the single implementation used by skills and native hooks:
 
 ```bash
 git-discipline default
+git-discipline branch-policy
 git-discipline rebase --local|--remote
 git-discipline verify --local|--remote -- <test-command> [args...]
 git-discipline merge --local|--remote
 ```
 
-`--local` uses the configured local default ref and is intended for `local-only` repositories. `--remote` reads the actual `origin` default tip, fetches only that tip into `FETCH_HEAD` for rebases, and merges through a normal non-force push. Passing verification evidence lives under `${LAICLUSE_HOME:-~/.laicluse}/git-discipline/candidates/` as recovery and visibility state. Git commits and refs remain the source of truth: evidence is rejected as soon as the candidate or default SHA changes.
+`--local` updates the configured local default ref without publishing, including in repositories with remotes. `--remote` reads the actual `origin` default tip, fetches only that tip into `FETCH_HEAD` for rebases, and merges through a normal non-force push. Passing verification evidence lives under `${LAICLUSE_HOME:-~/.laicluse}/git-discipline/candidates/` as recovery and visibility state. Git commits and refs remain the source of truth: evidence is rejected as soon as the candidate or default SHA changes.
 
 The merge commit always has the verified default tip as first parent, the candidate as second parent, and the candidate tree. A local merge uses `git update-ref` with an expected old SHA; a remote merge relies on the same topology plus a non-force push. If another candidate updates default first, the loser rebases and verifies again.
 
@@ -88,7 +102,7 @@ The merge commit always has the verified default tip as first parent, the candid
   current conversation's work and leaves the rest untouched. Auto-fires
   on the word "snipe".
 - **rebase-latest-default** delegates default resolution, rebase, and SHA-bound verification to `bin/git-discipline`. Conflicts stay with the feature-worktree owner; no default checkout or central integrator resolves them.
-- **merge-to-default** resolves repository policy, reruns relevant verification at the candidate SHA, and invokes the atomic two-parent merge. `local-only` updates the local ref; `auto-trunk` and explicitly ordered `gated-trunk` merges use a normal remote push; `pr-flow` and `external` retain their repository gates. Source cleanup remains with `bonsai:prune` after merge and any required deployment are proven complete.
+- **merge-to-default** resolves repository policy, reruns relevant verification at the candidate SHA, and invokes the atomic two-parent merge. `local-only` and `gated-trunk` update the local ref; `auto-trunk` and explicitly ordered publications use a normal remote push; `pr-flow` and `external` retain their repository gates. Source cleanup remains with `bonsai:prune` after merge and any required deployment are proven complete.
 - **push-policy** decides whether and when a push fits the current repo. It ships a resolver (`skills/push-policy/git-repo-policy`) that reads independent per-repo facts (collaboration, visibility, default-branch protection, push access) and derives one of five modes (`local-only`, `auto-trunk`, `gated-trunk`, `pr-flow`, `external`), each with its own push behavior. Per-repo overrides live under git-local `codingAgent.git.*`. `rebase-latest-default` and `merge-to-default` consult it; the push hooks gate content and are orthogonal to this context decision.
 - **commit-discipline** is the canonical reference for the body schema,
   error-codes, opt-out enum, and escape-hatches.

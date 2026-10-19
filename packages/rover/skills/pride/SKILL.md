@@ -39,6 +39,12 @@ The pride check injects an independent skeptic before the loop transitions to it
 - `/rover:pride <ref>` reviews a specific commit range, for example `<default>..HEAD` or `HEAD~3..HEAD`
 - `/rover:pride uncommitted` reviews only the uncommitted diff
 
+## Close findings without restarting discovery
+
+After a completed full review, a repair review carries the original scope, the actual previous findings, their dispositions, the complete diff since the reviewed commit, affected source context and current verification. Do not resend an unchanged repository-sized packet or present the repair review as a fresh full review. Freeze the source revision before dispatch; changes made while it runs are unreviewed and require an explicit delta handoff. Reopen the whole review only when a concrete change or new evidence invalidates the earlier assessment of the whole artefact, and state which part of that assessment no longer holds.
+
+A second round finding another regression at the same behavior boundary is evidence that the preservation comparison was incomplete. Stop the patch-and-review cycle and compare the original and replacement state transitions, including reversals, failure recovery and dependent side effects. For example, preserving a native cancellation in a day view also requires checking its correction back to a normal appointment, check-ins and reminders. Repair the missing behavior contract and the related cases together before another review. More review tokens are not evidence that this understanding has improved. Keep genuine defects open; this checkpoint does not excuse incomplete work or authorize a scope change.
+
 ## How
 
 Use the host's delegated-agent mechanism when available, preferably a fresh reviewer with no prior context. Claude can use its Agent tool; other hosts may expose a different delegated-agent or work-loop mechanism. If the host exposes no delegated agent, run the same review as a separate no-prior-context pass in the active session and log that fallback. Give the reviewer the artefact, the loop's Context section if one exists, and the matching brief below.

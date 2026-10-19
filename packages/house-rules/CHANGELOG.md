@@ -18,6 +18,16 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.29]
+
+- **Measure rollout impact before blocking delivery.** Concurrency concerns require current usage, affected operations, and deployment evidence before adding maintenance windows or compatibility machinery.
+
+## [v2.0.28]
+
+### Changed
+
+- **Cleanup removes the empty container.** `scar-tissue` uses the empty jam jar to distinguish necessary evidence from announcements that something was removed.
+
 ## [v2.0.26]
 
 ### Changed

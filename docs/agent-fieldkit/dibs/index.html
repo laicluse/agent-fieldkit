@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Repository discipline</p>
-					<h1>dibs</h1>
-					<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.75</span>
-						<span>2 skills</span>
+					<div class="detail-hero-copy">
+						<h1>dibs</h1>
+						<p class="lede">Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.75</span>
+							<span class="meta-fact">2 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="dibs install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-dibs-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">dibs</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-dibs-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">dibs</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/dibs">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -63,21 +82,15 @@
 <p>A single-occupancy lock for a git worktree or standalone working directory. Two coding agents, often cross-vendor (a Claude and a Codex), can start working in the same repository at the same time and overwrite each other. dibs lets one agent take exclusive occupancy before mutation and makes the next mutating agent step aside. Any tool or agent can take the lock and any other can observe it, regardless of vendor or platform.</p>
 <p>It is deliberately not a git lock: it does not touch the index and still locks standalone non-git directories. When a requested path lives inside a git worktree, dibs locks that worktree root so two subdirectories in the same checkout cannot be occupied independently. <code>bonsai</code> creates worktrees and consumes dibs to claim the directory it hands out; the lock logic lives in exactly one place.</p>
 <h2 id="cli">CLI</h2>
-<pre><code>dibs claim       &lt;dir&gt; [--pid &lt;n&gt;] [--agent &lt;name&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt;] [--description &lt;text&gt;] [--max-age-hours &lt;n&gt;] [--json]
-dibs release     &lt;dir&gt; [--pid &lt;n&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt; --agent &lt;name&gt;] [--nonce &lt;hex&gt;] [--json]
-dibs release-all [--pid &lt;n&gt;] [--session &lt;id&gt;] [--owner &lt;id&gt; --agent &lt;name&gt;] [--json]
-dibs check       &lt;dir&gt; [--max-age-hours &lt;n&gt;] [--json]
-dibs exclude     &lt;dir&gt; [--json]
-dibs include     &lt;dir&gt; [--json]
-dibs excludes    [--json]</code></pre>
+<pre><code><span class="code-line">dibs claim       &lt;dir&gt; <span class="code-unit">[--pid &lt;n&gt;]</span> <span class="code-unit">[--agent &lt;name&gt;]</span> <span class="code-unit">[--session &lt;id&gt;]</span> <span class="code-unit">[--owner &lt;id&gt;]</span> <span class="code-unit">[--description &lt;text&gt;]</span> <span class="code-unit">[--max-age-hours &lt;n&gt;]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">dibs release     &lt;dir&gt; <span class="code-unit">[--pid &lt;n&gt;]</span> <span class="code-unit">[--session &lt;id&gt;]</span> <span class="code-unit">[--owner &lt;id&gt; --agent &lt;name&gt;]</span> <span class="code-unit">[--nonce &lt;hex&gt;]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">dibs release-all <span class="code-unit">[--pid &lt;n&gt;]</span> <span class="code-unit">[--session &lt;id&gt;]</span> <span class="code-unit">[--owner &lt;id&gt; --agent &lt;name&gt;]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">dibs check       &lt;dir&gt; <span class="code-unit">[--max-age-hours &lt;n&gt;]</span> <span class="code-unit">[--json]</span></span>
+<span class="code-line">dibs exclude     &lt;dir&gt; <span class="code-unit">[--json]</span></span>
+<span class="code-line">dibs include     &lt;dir&gt; <span class="code-unit">[--json]</span></span>
+<span class="code-line">dibs excludes    <span class="code-unit">[--json]</span></span></code></pre>
 <p>The directory-keyed verbs (<code>claim</code>, <code>release</code>, <code>check</code>) require the directory to exist. If the path is inside a git worktree, dibs walks upward to the nearest <code>.git</code> marker and keys the lock by that worktree root's realpath. Outside git, the requested directory's realpath remains the key. A missing path is therefore a clear error rather than a silently divergent key. <code>release-all</code> is the exception: it operates on the lock store directly, reading each lock's recorded realpath, so it still frees a worktree that has since been pruned.</p>
-<ul>
-<li><strong>claim</strong> takes exclusive occupancy of the resolved lock target: the nearest git worktree root when one exists, otherwise the requested directory realpath. Exits 0 on a fresh claim, on an idempotent re-claim by the same holder (<code>held-by-self</code>), or on taking over a stale lock whose holder pid is dead (<code>took-over-stale</code>). Exits non-zero and reports the holder when a live holder exists. For a Git worktree, refused claims and <code>check</code> distinguish the lock's acquisition time from the latest observable mtime among dirty files and show the latter as a relative age. A refused claim also suggests creating a separate git worktree on a new branch (for example with <code>bonsai:bonsai</code>, or plain <code>git worktree</code> if you do not have it) and claiming that worktree path.</li>
-<li><strong>release</strong> deletes the lock only if you are the holder. On the same host, the holder is recognized by its PID, exact session, or stable owner plus agent; a retained Codex shell also reads its session from <code>CODEX_THREAD_ID</code>. A supplied nonce must still match. Releasing a lock held by another is refused; releasing an unheld directory is a no-op.</li>
-<li><strong>release-all</strong> releases every lock whose holder identifies as the caller's session in one sweep, across all directories. Every supplied selector narrows the match: <code>--pid</code>, <code>--session</code>, and <code>--owner</code> with <code>--agent</code> must all match the same holder when combined. It takes no <code>&lt;dir&gt;</code> and requires at least one selector so it can never blindly clear the whole store. A session that edits files in several git roots holds several locks; this is how SessionEnd and the <code>undibs</code> skill free all of them at once. Locks belonging to a different live agent are never touched.</li>
-<li><strong>check</strong> reports <code>free</code>, or the holder with its liveness, staleness, and Git worktree activity, or <code>excluded</code> when the directory is on the exclude list.</li>
-<li><strong>exclude</strong> never locks <code>&lt;dir&gt;</code> again; <strong>include</strong> is its inverse and starts locking it again; <strong>excludes</strong> lists the built-in defaults plus the configured entries. See <em>Excludes</em> below.</li>
-</ul>
+<ul class="term-list"><li><strong>claim</strong> <span>takes exclusive occupancy of the resolved lock target: the nearest git worktree root when one exists, otherwise the requested directory realpath. Exits 0 on a fresh claim, on an idempotent re-claim by the same holder (<code>held-by-self</code>), or on taking over a stale lock whose holder pid is dead (<code>took-over-stale</code>). Exits non-zero and reports the holder when a live holder exists. For a Git worktree, refused claims and <code>check</code> distinguish the lock's acquisition time from the latest observable mtime among dirty files and show the latter as a relative age. A refused claim also suggests creating a separate git worktree on a new branch (for example with <code>bonsai:bonsai</code>, or plain <code>git worktree</code> if you do not have it) and claiming that worktree path.</span></li><li><strong>release</strong> <span>deletes the lock only if you are the holder. On the same host, the holder is recognized by its PID, exact session, or stable owner plus agent; a retained Codex shell also reads its session from <code>CODEX_THREAD_ID</code>. A supplied nonce must still match. Releasing a lock held by another is refused; releasing an unheld directory is a no-op.</span></li><li><strong>release-all</strong> <span>releases every lock whose holder identifies as the caller's session in one sweep, across all directories. Every supplied selector narrows the match: <code>--pid</code>, <code>--session</code>, and <code>--owner</code> with <code>--agent</code> must all match the same holder when combined. It takes no <code>&lt;dir&gt;</code> and requires at least one selector so it can never blindly clear the whole store. A session that edits files in several git roots holds several locks; this is how SessionEnd and the <code>undibs</code> skill free all of them at once. Locks belonging to a different live agent are never touched.</span></li><li><strong>check</strong> <span>reports <code>free</code>, or the holder with its liveness, staleness, and Git worktree activity, or <code>excluded</code> when the directory is on the exclude list.</span></li><li><strong>exclude</strong> <span>never locks <code>&lt;dir&gt;</code> again; <strong>include</strong> is its inverse and starts locking it again; <strong>excludes</strong> lists the built-in defaults plus the configured entries. See <em>Excludes</em> below.</span></li></ul>
 <p><code>release</code> is also the final cleanup step when a coding agent has completed its work and hands control back for genuinely new instructions. A green test suite, clean worktree, or commit alone is not a release condition: the current task may still continue. Nothing releases on the agent's behalf between claim and session end, so the agent decides when it is done with a directory and says so; <code>SessionEnd</code> and pid-liveness remain the fallbacks.</p>
 <p><code>--pid</code> is the holder pid whose liveness defines the lock; default is the calling process's parent pid. Record the long-lived agent or session process, not the ephemeral <code>dibs</code> invocation.</p>
 <p><code>--owner</code> is a stable owner key for the human/tool surface that survives a process or thread resume. A later claim by the same <code>agent</code> and <code>owner</code> rewrites the lock to the new pid/host instead of self-locking. The occupancy hook sets it from <code>DIBS_OWNER</code>, then for Codex from <code>CMUX_TAB_ID</code>, <code>CMUX_WORKSPACE_ID</code>, <code>CODEX_THREAD_ID</code>, or finally the hook session id.</p>
@@ -89,65 +102,35 @@ dibs excludes    [--json]</code></pre>
 <p>To acquire, dibs tries the atomic create. On collision it reads the record and checks liveness with <code>process.kill(pid, 0)</code> on the same host. A dead holder (or a foreign-host lock past the optional age cap) is broken and taken over; a live holder is respected and reported. Release deletes the file only for the holder.</p>
 <p>This is the portable, dependency-free primitive. <code>flock(1)</code> is not shipped on macOS, the <code>flock(2)</code> syscall needs a native binding and a session-lived holder process, and both are host-only. Atomic exclusive create is present everywhere node runs (macOS, Linux, Windows), gives the same mutual exclusion with zero dependencies, and self-heals through pid-liveness.</p>
 <h2 id="scope-and-non-goals">Scope and non-goals</h2>
-<ul>
-<li><strong>Single machine.</strong> Atomic-create semantics and pid-liveness are host-local. Directories shared over NFS or another network filesystem are out of scope for v1; cross-machine arbitration is a lease-broker problem, not this lock's.</li>
-<li><strong>pid recycling.</strong> A recycled pid can read as a live holder. The acquired-at timestamp and <code>--max-age-hours</code> cap bound the residual risk; v1 accepts it rather than probing process start-time natively. When set, <code>--max-age-hours</code> deliberately overrides liveness: a lock older than the cap is broken even if its pid still reads alive, which is the recycling mitigation. Left unset (the default), pid-liveness is authoritative and a live holder is never broken. The recorded <code>nonce</code> identifies a specific claim for logs and observability and is not consulted for liveness; <code>release --nonce &lt;hex&gt;</code> optionally binds a release to one specific claim so a recycled pid cannot release a lock it did not take.</li>
-<li><strong>Same-user liveness.</strong> <code>process.kill(pid, 0)</code> reports a process owned by another user or living in another namespace as alive (<code>EPERM</code>), so dibs never breaks a lock it cannot positively prove dead; such a lock clears only through the <code>--max-age-hours</code> cap. Within one user on one machine, the agent case, liveness is exact.</li>
-<li><strong>Occupancy, not git.</strong> dibs prevents concurrent occupancy. It uses git worktree boundaries only to pick a sane default scope; it is not a git lock and does not replace git's own <code>index.lock</code>.</li>
-</ul>
+<ul class="term-list"><li><strong>Single machine.</strong> <span>Atomic-create semantics and pid-liveness are host-local. Directories shared over NFS or another network filesystem are out of scope for v1; cross-machine arbitration is a lease-broker problem, not this lock's.</span></li><li><strong>pid recycling.</strong> <span>A recycled pid can read as a live holder. The acquired-at timestamp and <code>--max-age-hours</code> cap bound the residual risk; v1 accepts it rather than probing process start-time natively. When set, <code>--max-age-hours</code> deliberately overrides liveness: a lock older than the cap is broken even if its pid still reads alive, which is the recycling mitigation. Left unset (the default), pid-liveness is authoritative and a live holder is never broken. The recorded <code>nonce</code> identifies a specific claim for logs and observability and is not consulted for liveness; <code>release --nonce &lt;hex&gt;</code> optionally binds a release to one specific claim so a recycled pid cannot release a lock it did not take.</span></li><li><strong>Same-user liveness.</strong> <span><code>process.kill(pid, 0)</code> reports a process owned by another user or living in another namespace as alive (<code>EPERM</code>), so dibs never breaks a lock it cannot positively prove dead; such a lock clears only through the <code>--max-age-hours</code> cap. Within one user on one machine, the agent case, liveness is exact.</span></li><li><strong>Occupancy, not git.</strong> <span>dibs prevents concurrent occupancy. It uses git worktree boundaries only to pick a sane default scope; it is not a git lock and does not replace git's own <code>index.lock</code>.</span></li></ul>
 <h2 id="enforcement-hooks">Enforcement hooks</h2>
 <p>The lock only helps if it is acquired before mutation. dibs ships <code>hooks/occupancy.sh</code>, a vendor-neutral hook that enforces single occupancy for mutating file edits, not only the worktrees <code>bonsai</code> hands out. It is registered for both agents (<code>hooks/hooks.json</code> for Claude, <code>hooks/hooks.codex.json</code> for Codex, materialized into the generated Codex adapter) and shells out to this plugin's own CLI, so there is no second lock path.</p>
-<ul>
-<li><strong>SessionStart</strong> does not claim the working directory. A read-only question in a directory another live agent holds stays quiet and does not occupy the directory.</li>
-<li><strong>PreToolUse</strong> claims the directory before mutating file edits (<code>Edit</code> / <code>Write</code> / <code>MultiEdit</code> / <code>apply_patch</code>) and conservative shell mutations (<code>Bash</code>) such as <code>cp</code>, <code>mv</code>, <code>rm</code>, <code>touch</code>, mutating <code>git</code> subcommands, package installs, and shell redirection. Read-only shell commands stay quiet. Bash targets are resolved from shell structure and command semantics: heredoc and message bodies are ignored, redirects gate their output, Git mutations gate their <code>-C</code> / <code>--git-dir</code> context, copy-like commands distinguish sources from destinations, and <code>~</code> / environment-backed paths are expanded without evaluating the command. Relative targets use the tool call's own workdir. When Codex omits that workdir, an existing claim lets normal target analysis use the conversation directory as its fallback basis. Without that claim, Dibs refuses ambiguous relative or implicit mutations and never claims the conversation directory silently; explicit absolute targets remain available. Codex shows only <code>Dibs lock required for changes.</code> because hook context is operator-visible; the Dibs skill supplies the agent recovery procedure. It hard-denies (exit 2) when a <em>different</em> live session holds the target, reporting the holder and how to recover. The recovery text points the blocked agent at a separate git worktree on a new branch, so the safe next move is visible at the denial point. The agent's own session is recognised by the lock's stable owner id first and the hook session id second, so a drifted worker pid or resumed Codex thread never self-locks the agent out. A legacy ownerless Codex resume is reclaimed at the first write. A free directory, a self-healed dead holder, and any non-refusal dibs result all pass (fail-open).</li>
-<li><strong>SessionEnd</strong> (Claude only) sweeps every directory the session locked, with <code>release-all</code> keyed by the session's holder pid plus the available session or owner identity. Codex also retains pid-liveness self-heal and owner-based reclaim for interrupted sessions that never emitted a SessionEnd.</li>
-</ul>
+<ul class="term-list"><li><strong>SessionStart</strong> <span>does not claim the working directory. A read-only question in a directory another live agent holds stays quiet and does not occupy the directory.</span></li><li><strong>PreToolUse</strong> <span>claims the directory before mutating file edits (<code>Edit</code> / <code>Write</code> / <code>MultiEdit</code> / <code>apply_patch</code>) and conservative shell mutations (<code>Bash</code>) such as <code>cp</code>, <code>mv</code>, <code>rm</code>, <code>touch</code>, mutating <code>git</code> subcommands, package installs, and shell redirection. Read-only shell commands stay quiet. Bash targets are resolved from shell structure and command semantics: heredoc and message bodies are ignored, redirects gate their output, Git mutations gate their <code>-C</code> / <code>--git-dir</code> context, copy-like commands distinguish sources from destinations, and <code>~</code> / environment-backed paths are expanded without evaluating the command. Relative targets use the tool call's own workdir. When Codex omits that workdir, an existing claim lets normal target analysis use the conversation directory as its fallback basis. Without that claim, Dibs refuses ambiguous relative or implicit mutations and never claims the conversation directory silently; explicit absolute targets remain available. Codex shows only <code>Dibs lock required for changes.</code> because hook context is operator-visible; the Dibs skill supplies the agent recovery procedure. It hard-denies (exit 2) when a <em>different</em> live session holds the target, reporting the holder and how to recover. The recovery text points the blocked agent at a separate git worktree on a new branch, so the safe next move is visible at the denial point. The agent's own session is recognised by the lock's stable owner id first and the hook session id second, so a drifted worker pid or resumed Codex thread never self-locks the agent out. A legacy ownerless Codex resume is reclaimed at the first write. A free directory, a self-healed dead holder, and any non-refusal dibs result all pass (fail-open).</span></li><li><strong>SessionEnd</strong> <span>(Claude only) sweeps every directory the session locked, with <code>release-all</code> keyed by the session's holder pid plus the available session or owner identity. Codex also retains pid-liveness self-heal and owner-based reclaim for interrupted sessions that never emitted a SessionEnd.</span></li></ul>
 <p>Dibs deliberately registers no <code>Stop</code> hook. An earlier version released on every completed turn, deciding &quot;completed&quot; by reading the assistant's closing message for a trailing <code>?</code>, <code>？</code> or <code>🚧</code>. Sessions that open a closing line with a marker rather than ending on one never matched, so each turn swept every lock the session held and the directory read as free to the next agent. Turn boundaries are not work boundaries, and closing prose is not a protocol. A lock now lasts until the agent releases it, the session ends, or the holding process is gone.</p>
 <p>Repos that should only be mutated through linked worktrees can opt in locally:</p>
-<pre><code class="language-bash">git config laicluse.requireWorktree true</code></pre>
+<pre><code class="language-bash"><span class="code-line">git config laicluse.requireWorktree true</span></code></pre>
 <p>When that config is true, the occupancy hook denies mutating the primary checkout and still allows linked worktrees for the same repository. This is local git config by design: dibs stays a general lock by default, and only repos that explicitly ask for worktree-only mutation get the extra guard.</p>
 <p>If the operator explicitly asks an agent to work without a worktree, or a linked worktree would break path-dependent behavior such as a content vault or locally referenced symlinks, disable only the worktree requirement and keep the occupancy lock:</p>
-<pre><code class="language-bash">git -C &quot;&lt;repo&gt;&quot; config laicluse.requireWorktree false
-dibs claim &quot;&lt;repo&gt;&quot; --description &quot;&lt;the change you are making here&gt;&quot;</code></pre>
+<pre><code class="language-bash"><span class="code-line">git <span class="code-unit">-C</span> &quot;&lt;repo&gt;&quot; config laicluse.requireWorktree false</span>
+<span class="code-line">dibs claim &quot;&lt;repo&gt;&quot; <span class="code-unit">--description</span> &quot;&lt;the change you are making here&gt;&quot;</span></code></pre>
 <p>Opt out of enforcement for a session with <code>DIBS_OCCUPANCY=off</code>. <code>bonsai</code>'s claim-at-handout is unaffected and complementary.</p>
 <h2 id="excludes">Excludes</h2>
 <p>Some directories should never take an occupancy lock, including agent-config homes where independent sessions edit their own runtime config and Markdown vaults that permit concurrent authoring. Dibs keeps a per-machine exclude list. <code>claim</code> and <code>check</code> on an excluded directory or any path inside it return state <code>excluded</code> and write no lock. This is a successful concurrency policy result, not a failed claim; workflows must not re-enable locking or invent another lock to continue. The occupancy hook uses that policy for normal target analysis even when Codex omits <code>workdir</code>, while checking other write targets independently. Exclusion lives in the CLI, not the hook, so there is a single decision point.</p>
 <p>The list is the union of built-in defaults and a plain-text config file at <code>${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/excludes</code> (one path per line, <code>#</code> comments and blank lines ignored, a leading <code>~</code> expands to <code>$HOME</code>). Every install ships with <code>/tmp</code> (transient scratch) and the agent-config homes (<code>~/.claude</code>, <code>~/.codex</code>, <code>~/.config/opencode</code>) excluded by default; those cannot be included back. Manage the rest with the imperative pair <code>exclude</code>/<code>include</code>:</p>
-<pre><code class="language-bash">dibs excludes            # list built-in defaults and configured entries
-dibs exclude ~/project   # never lock this directory again
-dibs include ~/project   # lock it again (the inverse of exclude)</code></pre>
+<pre><code class="language-bash"><span class="code-line">dibs excludes            # list built-in defaults and configured entries</span>
+<span class="code-line">dibs exclude ~/project   # never lock this directory again</span>
+<span class="code-line">dibs include ~/project   # lock it again (the inverse of exclude)</span></code></pre>
 <p>Matching is by resolved realpath: an excluded git worktree root also excludes every file inside it, the same scope <code>claim</code> would otherwise lock.</p>
 <h2 id="library">Library</h2>
 <p>The SessionStart hook publishes the plugin's CLI and <code>bash-write-targets</code> parser to <code>${LAICLUSE_HOME:-$HOME/.laicluse}/dibs/runtime</code>. A stable launcher routes older plugin sessions to the newest published release. Releases are immutable, and an older install cannot replace a newer runtime. Set <code>DIBS_BIN</code> to keep an explicit CLI override.</p>
 <p><code>bin/dibs-lib.mjs</code> exports <code>claim</code>, <code>release</code>, <code>releaseAll</code>, <code>check</code>, and <code>formatHolder</code> as pure node ES modules with no third-party imports. Consumers in the same marketplace import it directly so there is a single lock implementation and no parallel path:</p>
-<pre><code class="language-js">import { claim } from '../../dibs/bin/dibs-lib.mjs';
-
-const result = claim({ dir, pid: process.ppid, agent: 'my-tool' });
-if (!result.ok) console.warn(`held by ${result.holder.agent}`);</code></pre>
+<pre><code class="language-js"><span class="code-line">import { claim } from '../../dibs/bin/dibs-lib.mjs';</span>
+<span class="code-line"></span>
+<span class="code-line">const result = claim({ dir, pid: process.ppid, agent: 'my-tool' });</span>
+<span class="code-line">if (!result.ok) console.warn(`held by ${result.holder.agent}`);</span></code></pre>
 <p>An embedder that hands out a directory on behalf of a long-lived caller (as <code>bonsai</code> does) records that caller's pid, not its own short-lived process. <code>bonsai</code> reads <code>DIBS_HOLDER_PID</code>, <code>DIBS_AGENT</code>, and <code>DIBS_SESSION</code> to label the holder, <code>DIBS_OWNER</code> to preserve identity across resumes, <code>DIBS_DESCRIPTION</code> as the fallback work description when the caller names none, and <code>DIBS_LIB</code> to point at an alternate lib path. The CLI honours <code>DIBS_BIN</code> for a fixed binary path.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="dibs install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-dibs-claude">claude plugins install dibs@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-dibs-codex">codex plugin add dibs@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/dibs">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#cli">CLI</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#scope-and-non-goals">Scope and non-goals</a></li><li><a href="#enforcement-hooks">Enforcement hooks</a></li><li><a href="#excludes">Excludes</a></li><li><a href="#library">Library</a></li></ol></nav>
 			</section>
 		</main>
 

@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Speaks every response aloud on macOS, summarizing screen content into spoken language with a per-user phonetic dictionary and serialized, ducked playback across sessions.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,36 +48,16 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Feedback and utilities</p>
-					<h1>saysay</h1>
-					<p class="lede">Speaks every response aloud on macOS, summarizing screen content into spoken language with a per-user phonetic dictionary and serialized, ducked playback across sessions.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.9</span>
-						<span>1 skill</span>
+					<div class="detail-hero-copy">
+						<h1>saysay</h1>
+						<p class="lede">Speaks every response aloud on macOS, summarizing screen content into spoken language with a per-user phonetic dictionary and serialized, ducked playback across sessions.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.9</span>
+							<span class="meta-fact">1 skill</span>
+						</div>
 					</div>
-				</div>
-			</section>
-
-			<section class="detail-content-section">
-				<article class="readme-content">
-<p>Speech mode via the macOS <code>say</code> command. Once enabled, the agent speaks every response aloud, translating screen content into spoken language instead of reading it out verbatim.</p>
-<p>Use it for hands-busy or eyes-away sessions where the agent should keep the operator informed audibly while still writing the normal text answer. It is a local macOS feature; no speech output leaves the machine.</p>
-<h2 id="commands">Commands</h2>
-<h3 id="saysay"><code>/saysay</code></h3>
-<p>Enter speech mode. Subsequent responses are spoken aloud after rendering.</p>
-<h3 id="saysay-off"><code>/saysay off</code></h3>
-<p>Exit speech mode.</p>
-<h2 id="requirements">Requirements</h2>
-<p>macOS, for the <code>say</code> binary. Node.js on <code>$PATH</code> for the post-update broadcast check (<code>bin/check-broadcast</code>). The <code>saysay</code> and <code>say-phonetic</code> commands ship in the plugin's <code>bin/</code> directory, which Claude Code and Codex add to <code>$PATH</code> automatically, so there is no manual install step.</p>
-<p>Optional: a &quot;Saysay Duck&quot; / &quot;Saysay Unduck&quot; pair of macOS Shortcuts lets saysay lower other audio while it speaks. When the shortcuts are absent, saysay simply skips ducking.</p>
-<h2 id="phonetic-mappings">Phonetic mappings</h2>
-<p><code>say-phonetic</code> keeps a per-user pronunciation dictionary so that names, acronyms, and code identifiers come out the way you want. Mappings live in <code>${LAICLUSE_HOME:-$HOME/.laicluse}/saysay/phonetics.json</code>. A dictionary left over from an earlier <code>~/.local/share/saysay/phonetics.json</code> install is migrated into the new root automatically on first use.</p>
-<pre><code class="language-bash">say-phonetic add &quot;laicluse&quot; &quot;lay-clue-zee&quot;
-say-phonetic remove &quot;laicluse&quot;
-say-phonetic list</code></pre>
-				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
+					<aside class="detail-install" aria-label="Install">
 						<h2>Install</h2>
 						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
 	<div class="agent-command-switch-head">
@@ -88,16 +68,36 @@ say-phonetic list</code></pre>
 		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
 	</div>
 	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-saysay-claude">claude plugins install saysay@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-saysay-codex">codex plugin add saysay@laicluse-agent-fieldkit</code></pre>
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-saysay-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">saysay</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-saysay-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">saysay</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
 	</div>
 </div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/saysay">Package source</a>
-					</div>
-				</aside>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/saysay">Package source</a>
+					</aside>
+				</div>
+			</section>
+
+			<section class="detail-content-section">
+				<article class="readme-content">
+<p>Speech mode via the macOS <code>say</code> command. Once enabled, the agent speaks every response aloud, translating screen content into spoken language instead of reading it out verbatim.</p>
+<p>Use it for hands-busy or eyes-away sessions where the agent should keep the operator informed audibly while still writing the normal text answer. It is a local macOS feature; no speech output leaves the machine.</p>
+<h2 id="commands">Commands</h2>
+<div class="readme-scan">
+<h3 id="saysay"><code>/saysay</code></h3>
+<p>Enter speech mode. Subsequent responses are spoken aloud after rendering.</p>
+<h3 id="saysay-off"><code>/saysay off</code></h3>
+<p>Exit speech mode.</p>
+</div>
+<h2 id="requirements">Requirements</h2>
+<p>macOS, for the <code>say</code> binary. Node.js on <code>$PATH</code> for the post-update broadcast check (<code>bin/check-broadcast</code>). The <code>saysay</code> and <code>say-phonetic</code> commands ship in the plugin's <code>bin/</code> directory, which Claude Code and Codex add to <code>$PATH</code> automatically, so there is no manual install step.</p>
+<p>Optional: a &quot;Saysay Duck&quot; / &quot;Saysay Unduck&quot; pair of macOS Shortcuts lets saysay lower other audio while it speaks. When the shortcuts are absent, saysay simply skips ducking.</p>
+<h2 id="phonetic-mappings">Phonetic mappings</h2>
+<p><code>say-phonetic</code> keeps a per-user pronunciation dictionary so that names, acronyms, and code identifiers come out the way you want. Mappings live in <code>${LAICLUSE_HOME:-$HOME/.laicluse}/saysay/phonetics.json</code>. A dictionary left over from an earlier <code>~/.local/share/saysay/phonetics.json</code> install is migrated into the new root automatically on first use.</p>
+<pre><code class="language-bash"><span class="code-line">say-phonetic add &quot;laicluse&quot; &quot;lay-clue-zee&quot;</span>
+<span class="code-line">say-phonetic remove &quot;laicluse&quot;</span>
+<span class="code-line">say-phonetic list</span></code></pre>
+				</article>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#commands">Commands</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#phonetic-mappings">Phonetic mappings</a></li></ol></nav>
 			</section>
 		</main>
 

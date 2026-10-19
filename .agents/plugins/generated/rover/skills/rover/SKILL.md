@@ -132,7 +132,7 @@ You type `/rover:rover "build the settings page"`. In response:
 3. The active agent immediately runs the first SURVEY iteration in the same
    turn, so you see work happening right away. Reading files, searching the
    codebase, forming a plan.
-4. After that, whichever continuation mechanism the host owns re-enters the
+4. If the active session is interrupted, the host continuation re-enters the
    loop file and asks the active agent to continue the current phase.
 
 The loop file is your window. `.autonomous/BUILD-SETTINGS-PAGE.md` gets a timestamped log line on every action. Tail it to watch progress.
@@ -671,7 +671,7 @@ Host continuations usually run after the active turn yields. You are not idle, y
 3. Log each meaningful action with a timestamp from `date +%H:%M`
 4. When SURVEY completes, transition to DRIVE and start
 
-The host continuation is the safety net for everything after you stop driving, not the starter.
+The host continuation is a safety net for interruptions, not a dispatch-only handoff. Keep driving in the invoking session until the verified, reviewable deliverable is ready; moving the whole mission to a separate task requires an explicit background-task request. Delegation keeps integration and final verification with the invoking agent. “The mission is running” is a progress update, not completion.
 
 ## Branch strategy
 

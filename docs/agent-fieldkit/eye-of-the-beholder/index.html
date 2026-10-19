@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Review and language</p>
-					<h1>eye-of-the-beholder</h1>
-					<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.14</span>
-						<span>4 skills</span>
+					<div class="detail-hero-copy">
+						<h1>eye-of-the-beholder</h1>
+						<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.14</span>
+							<span class="meta-fact">4 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="eye-of-the-beholder install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-eye-of-the-beholder-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">eye-of-the-beholder</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-eye-of-the-beholder-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">eye-of-the-beholder</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/eye-of-the-beholder">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -67,10 +86,10 @@
 <tr><th>Skill</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code>eye-of-the-beholder</code></td><td>The single entry point: inspect context, route the request and carry accepted decisions through to the real render.</td></tr>
-<tr><td><code>eye-of-the-beholder:explore</code></td><td>Generate visual proposals from actual references, interpret reactions and establish an accepted target.</td></tr>
-<tr><td><code>eye-of-the-beholder:define</code></td><td>Establish identity and design-system foundations when the product needs them.</td></tr>
-<tr><td><code>eye-of-the-beholder:review</code></td><td>Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately.</td></tr>
+<tr><td data-label="Skill"><code>eye-of-the-beholder</code></td><td data-label="Purpose">The single entry point: inspect context, route the request and carry accepted decisions through to the real render.</td></tr>
+<tr><td data-label="Skill"><code>eye-of-the-beholder:explore</code></td><td data-label="Purpose">Generate visual proposals from actual references, interpret reactions and establish an accepted target.</td></tr>
+<tr><td data-label="Skill"><code>eye-of-the-beholder:define</code></td><td data-label="Purpose">Establish identity and design-system foundations when the product needs them.</td></tr>
+<tr><td data-label="Skill"><code>eye-of-the-beholder:review</code></td><td data-label="Purpose">Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately.</td></tr>
 </tbody>
 </table>
 <h2 id="workflow">Workflow</h2>
@@ -97,32 +116,11 @@
 <p>The old public skills <code>taste-test</code>, <code>art-director</code>, <code>fat-marker-sketch</code> and <code>visual-inspection</code> are retired. Use <code>eye-of-the-beholder</code> as the entry point, or <code>explore</code>, <code>define</code> and <code>review</code> when deliberately selecting a stage. Update saved instructions that invoke the old names. Image classification and reference matching remain internal protocols under <code>skills/review</code>; their useful measurement tools and fixtures are retained.</p>
 <h2 id="verification">Verification</h2>
 <p>Run the image classification regression and reference comparison corpus from the repository root:</p>
-<pre><code class="language-bash">bats packages/eye-of-the-beholder/test/*.bats
-node packages/eye-of-the-beholder/skills/review/reference-match/scripts/run-corpus.mjs</code></pre>
+<pre><code class="language-bash"><span class="code-line">bats packages/eye-of-the-beholder/test/*.bats</span>
+<span class="code-line">node packages/eye-of-the-beholder/skills/review/reference-match/scripts/run-corpus.mjs</span></code></pre>
 <p>The manual workflow scenarios in <code>test/workflow-scenarios.md</code> exercise routing and approval boundaries. They are behavior probes, not proof of aesthetic quality. Test the installed workflow with an actual visual request before judging the design outcomes.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="eye-of-the-beholder install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-eye-of-the-beholder-claude">claude plugins install eye-of-the-beholder@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-eye-of-the-beholder-codex">codex plugin add eye-of-the-beholder@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/eye-of-the-beholder">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#skills">Skills</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
 			</section>
 		</main>
 

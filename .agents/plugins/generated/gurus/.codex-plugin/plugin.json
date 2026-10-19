@@ -1,6 +1,6 @@
 {
   "name": "gurus",
-  "version": "2.0.9",
+  "version": "2.0.11",
   "description": "Opinionated review panels that challenge code, decisions, and prose from multiple perspectives. Ships gurus:software, gurus:council, gurus:writers, and the gurus:gurus orchestrator; Claude also receives the gurus:sonnet-max panel subagent.",
   "author": {
     "name": "local"

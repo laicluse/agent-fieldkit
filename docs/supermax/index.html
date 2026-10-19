@@ -29,7 +29,7 @@
 		<meta name="twitter:image" content="https://laicluse.com/assets/supermax-og-image.png?v=45a1f25293">
 		<meta name="twitter:image:alt" content="Supermax package share card">
 
-		<link rel="stylesheet" href="../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../styles.css?v=a0b40a4110">
 		<script src="../code-panel-copy.js?v=3ee1e4c503"></script>
 	</head>
 	<body>
@@ -66,24 +66,16 @@
 							<strong>@laicluse/supermax</strong>
 						</div>
 						<div class="supermax-preview-grid" aria-hidden="true">
-							<div class="supermax-preview-cell source">
-								<strong>Menu</strong>
-								<span>3 cols</span>
-							</div>
-							<div class="supermax-preview-cell context">
-								<strong>List</strong>
-								<span>5 cols</span>
-							</div>
 							<div class="supermax-preview-cell article">
 								<strong>Article</strong>
-								<span>10 cols</span>
+								<span>14.6 cols</span>
 							</div>
 							<div class="supermax-preview-cell notes">
 								<strong>Notes</strong>
-								<span>6 cols</span>
+								<span>9.4 cols</span>
 							</div>
 						</div>
-						<div class="supermax-preview-note">Zoom anchor: Article. Hidden cells are reported, not rendered.</div>
+						<div class="supermax-preview-note">Zoom anchor: Article. Menu and List are hidden: reported, not rendered.</div>
 					</aside>
 				</div>
 			</section>
@@ -153,10 +145,10 @@
 											<div class="supermax-demo-brand">supermax</div>
 										</div>
 										<div class="supermax-demo-content">
-											<span class="supermax-demo-cell menu">Menu</span>
-											<span class="supermax-demo-cell list">List</span>
-											<span class="supermax-demo-cell article">Article</span>
-											<span class="supermax-demo-cell notes">Notes</span>
+											<span class="supermax-demo-cell menu"><span class="cell-name">Menu</span><span class="cell-initial" aria-hidden="true">M</span></span>
+											<span class="supermax-demo-cell list"><span class="cell-name">List</span><span class="cell-initial" aria-hidden="true">L</span></span>
+											<span class="supermax-demo-cell article"><span class="cell-name">Article</span><span class="cell-initial" aria-hidden="true">A</span></span>
+											<span class="supermax-demo-cell notes"><span class="cell-name">Notes</span><span class="cell-initial" aria-hidden="true">N</span></span>
 										</div>
 									</div>
 								</div>
@@ -187,22 +179,25 @@
 							<h3>2. Describe cells</h3>
 						</div>
 						<p>Each cell declares a minimum, maximum, title, and optional zoomable anchor behavior.</p>
-						<pre data-copyable><code>import { CellCollection } from &quot;@laicluse/supermax&quot;;
-
-const cells = new CellCollection([
-  { id: &quot;menu&quot;, title: &quot;Menu&quot;, min: 3, max: 4 },
-  { id: &quot;list&quot;, title: &quot;List&quot;, min: 5, max: 10 },
-  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },
-  { id: &quot;notes&quot;, title: &quot;Notes&quot;, min: 6, max: 18 },
-]);
-
-const layout = cells.distribute(24, &quot;article&quot;);</code></pre>
+						<pre data-copyable><code><span class="code-line">import { CellCollection } from &quot;@laicluse/supermax&quot;;</span>
+<span class="code-line"></span>
+<span class="code-line">const cells = new CellCollection([</span>
+<span class="code-line">  { id: &quot;menu&quot;, title: &quot;Menu&quot;, min: 3, max: 4 },</span>
+<span class="code-line">  { id: &quot;list&quot;, title: &quot;List&quot;, min: 5, max: 10 },</span>
+<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>
+<span class="code-line">  { id: &quot;notes&quot;, title: &quot;Notes&quot;, min: 6, max: 18 },</span>
+<span class="code-line">]);</span>
+<span class="code-line"></span>
+<span class="code-line">const layout = cells.distribute(24, &quot;article&quot;);</span></code></pre>
 					</article>
 					<article class="install-block">
 						<div class="block-heading">
 							<h3>3. Render anywhere</h3>
 						</div>
 						<p>The result is plain data: actual width, visibility, hidden count, rightmost hidden title, and spare columns.</p>
+						<pre><code>layout.hiddenCount;          // 2
+layout.rightmostHiddenTitle; // "List"
+layout.spareColumns;         // 0</code></pre>
 					</article>
 				</div>
 			</section>

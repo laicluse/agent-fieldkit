@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Autonomous work</p>
-					<h1>rover</h1>
-					<p class="lede">Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.29</span>
-						<span>8 skills</span>
+					<div class="detail-hero-copy">
+						<h1>rover</h1>
+						<p class="lede">Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.31</span>
+							<span class="meta-fact">8 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="rover install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-rover-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">rover</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-rover-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">rover</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/rover">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -72,6 +91,7 @@
 </ul>
 <p>No other hard dependencies. Optional integrations (notifier, reviewbot, commit-splitter) are user-named at invocation and only used when installed.</p>
 <h2 id="user-invocable-skills">User-invocable skills</h2>
+<div class="readme-scan">
 <h3 id="rover-rover-loop-file-path-free-form-text"><code>/rover:rover [loop-file-path | free-form text]</code></h3>
 <p>Entry point. Accepts a loop file path to resume or free-form mission text (a description, a pasted issue body, a GitHub URL). Writes <code>.autonomous/&lt;NAME&gt;.md</code> (the loop file), records the host continuation mechanism if one is available, and runs the first SURVEY iteration. A host continuation may be a cron, goal loop, scheduler, or self-check wake-up; rover only records the opaque handle. The rover does not fetch remote content on its own; paste an issue body or PR diff into the invocation if it is part of the mission.</p>
 <h3 id="rover-stop-loop-file-path"><code>/rover:stop [loop-file-path]</code></h3>
@@ -88,34 +108,14 @@
 <p>Lay a rover loop file in another repo's <code>.autonomous/</code> now, so the operator can pick it up later from inside that repo.</p>
 <h3 id="rover-rover-help"><code>/rover:rover-help</code></h3>
 <p>The rover briefing.</p>
+</div>
 <h2 id="phase-machine">Phase machine</h2>
-<pre><code>SURVEY -&gt; DRIVE -&gt; INSPECT -&gt; STOW -&gt; STANDBY</code></pre>
+<pre><code><span class="code-line">SURVEY -&gt; DRIVE -&gt; INSPECT -&gt; STOW -&gt; STANDBY</span></code></pre>
 <p>The loop is autonomous. It does not ask questions mid-phase. When it hits a choice it invokes <code>decide</code>. Before any artefact leaves the rover (push, PR, handoff communiqué, research brief, generated doc, media, or any other deliverable) it invokes <code>pride</code>. Pushes themselves are never autonomous: the user must say &quot;push&quot; or equivalent.</p>
 <h2 id="loop-file">Loop file</h2>
 <p>Lives in <code>.autonomous/&lt;NAME&gt;.md</code> at the git root. Holds context, plan, Done criteria, decision audit trail, and a timestamped log. Tail it to watch progress. The format is unchanged from the old <code>autonomous</code> plugin, so existing loop files still wake.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="rover install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-rover-claude">claude plugins install rover@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-rover-codex">codex plugin add rover@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/rover">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#dependencies">Dependencies</a></li><li><a href="#user-invocable-skills">User-invocable skills</a></li><li><a href="#phase-machine">Phase machine</a></li><li><a href="#loop-file">Loop file</a></li></ol></nav>
 			</section>
 		</main>
 

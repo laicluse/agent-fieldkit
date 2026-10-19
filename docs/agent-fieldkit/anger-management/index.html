@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Captures friction cheaply in the moment, then routes recurring problems to a cooled-down repair pass.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Feedback and utilities</p>
-					<h1>anger-management</h1>
-					<p class="lede">Captures friction cheaply in the moment, then routes recurring problems to a cooled-down repair pass.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.16</span>
-						<span>15 skills</span>
+					<div class="detail-hero-copy">
+						<h1>anger-management</h1>
+						<p class="lede">Captures friction cheaply in the moment, then routes recurring problems to a cooled-down repair pass.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.16</span>
+							<span class="meta-fact">15 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="anger-management install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-anger-management-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">anger-management</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-anger-management-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">anger-management</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/anger-management">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -79,10 +98,10 @@
 <tr><th>Command</th><th>What it does</th></tr>
 </thead>
 <tbody>
-<tr><td><code>/fuck</code> <code>/fucking</code> <code>/fucked</code> <code>/shit</code> <code>/crap</code> <code>/wtf</code> <code>/bullshit</code></td><td>Capture one cheap friction line and move on. No apology, no fix, no scope change.</td></tr>
-<tr><td><code>/safeword</code> <code>/pineapple</code> <code>/pineapplejuice</code> <code>/pinapplejuice</code> <code>/flugelhorn</code> <code>/banana</code></td><td>Interrupt the current work and fix one visible friction point now. No delayed capture.</td></tr>
-<tr><td><code>/anger-management</code></td><td>Quick read-back of the pile and its recurring clusters.</td></tr>
-<tr><td><code>/anger-management:repair</code></td><td>The cooled-down fix pass: judge go/no-go, then apply or route a real recurring problem at its owner source.</td></tr>
+<tr><td data-label="Command"><code>/fuck</code> <code>/fucking</code> <code>/fucked</code> <code>/shit</code> <code>/crap</code> <code>/wtf</code> <code>/bullshit</code></td><td data-label="What it does">Capture one cheap friction line and move on. No apology, no fix, no scope change.</td></tr>
+<tr><td data-label="Command"><code>/safeword</code> <code>/pineapple</code> <code>/pineapplejuice</code> <code>/pinapplejuice</code> <code>/flugelhorn</code> <code>/banana</code></td><td data-label="What it does">Interrupt the current work and fix one visible friction point now. No delayed capture.</td></tr>
+<tr><td data-label="Command"><code>/anger-management</code></td><td data-label="What it does">Quick read-back of the pile and its recurring clusters.</td></tr>
+<tr><td data-label="Command"><code>/anger-management:repair</code></td><td data-label="What it does">The cooled-down fix pass: judge go/no-go, then apply or route a real recurring problem at its owner source.</td></tr>
 </tbody>
 </table>
 <p>The vocabulary avoids slurs and identity-targeted abuse.</p>
@@ -111,28 +130,7 @@
 <li>The safeword skills are generated from <code>safeword-skill.template.md</code> by <code>bin/sync-safeword-skills</code> (repo root); they intentionally do not call <code>anger-log</code>.</li>
 </ul>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="anger-management install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-anger-management-claude">claude plugins install anger-management@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-anger-management-codex">codex plugin add anger-management@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/anger-management">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#when-to-use-which-lane">When to use which lane</a></li><li><a href="#the-idea-in-one-breath">The idea, in one breath</a></li><li><a href="#commands">Commands</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#why-repair-never-just-edits-claude-md-on-a-hunch">Why &quot;repair&quot; never just edits CLAUDE.md on a hunch</a></li><li><a href="#the-thinking-behind-it-research-spine">The thinking behind it (research spine)</a></li><li><a href="#files">Files</a></li></ol></nav>
 			</section>
 		</main>
 

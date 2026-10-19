@@ -335,9 +335,27 @@ it('formats a git-discipline-friendly fallback commit message', () => {
   assert.match(message, /Vaultsync-Reason: debounce/);
 });
 
-it('records a changed HTML viewer as visual commit evidence', () => {
+it('does not invent visual inspection evidence for changed HTML', () => {
   const message = fallbackCommitMessage('manual', ['0 System/viewer.html']);
-  assert.match(message, /^Visual: 0 System\/viewer\.html$/m);
+  assert.doesNotMatch(message, /^Visual:/m);
+});
+
+it('syncs generated HTML through the git-discipline commit hook', () => {
+  const fixture = syncFixture('generated-html-commit-hook');
+  const llm = join(tmp, 'generated-html-commit-hook-llm.mjs');
+  writeFileSync(llm, readFileSync(llm, 'utf8').replace('Record the portable vault content.', 'Keep the authored note and its generated index together so readers receive a consistent record.'));
+  const plugin = fileURLToPath(new URL('../../../git-discipline/', import.meta.url));
+  const hook = join(fixture.local, '.git', 'hooks', 'commit-msg');
+  writeFileSync(hook, `#!/bin/sh\nGIT_DISCIPLINE_RUNTIME_ROOT='${plugin}' exec bash '${plugin}skills/commit-discipline/git-hooks/commit-msg' "$@"\n`, { mode: 0o755 });
+  writeFileSync(join(fixture.local, '.gitattributes'), 'viewer.html linguist-generated git-discipline-generated=true\n');
+  writeFileSync(join(fixture.local, 'viewer.html'), '<html><body>Generated note index</body></html>\n');
+  writeFileSync(join(fixture.local, 'note.md'), '# Note\n\nUpdated intent with a regenerated index.\n');
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.doesNotMatch(git(fixture.local, ['log', '-1', '--format=%B']), /^Visual:/m);
+  assert.equal(git(fixture.local, ['rev-parse', 'HEAD']), git(fixture.local, ['rev-parse', '@{upstream}']));
+  assert.equal(git(fixture.local, ['status', '--porcelain']), '');
 });
 
 it('makes fallback commit reasoning specific to the staged content', () => {

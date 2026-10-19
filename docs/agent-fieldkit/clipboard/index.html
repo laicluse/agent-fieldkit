@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,43 +48,16 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Feedback and utilities</p>
-					<h1>clipboard</h1>
-					<p class="lede">Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.11</span>
-						<span>1 skill</span>
+					<div class="detail-hero-copy">
+						<h1>clipboard</h1>
+						<p class="lede">Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.11</span>
+							<span class="meta-fact">1 skill</span>
+						</div>
 					</div>
-				</div>
-			</section>
-
-			<section class="detail-content-section">
-				<article class="readme-content">
-<p>Copy the core content of the last assistant answer to the macOS clipboard. Plain text is the default; Slack-flavored rich text is available on request.</p>
-<p>Use it when the answer itself is the artefact you need to paste elsewhere: a summary, command block, code snippet, Slack update, or short handoff. The skill tries to copy the useful body, not the chat wrapper around it.</p>
-<h2 id="commands">Commands</h2>
-<h3 id="clipboard"><code>/clipboard</code></h3>
-<p>Copies the relevant content of the last answer to the clipboard as plain text via the <code>clipboard-copy</code> helper (which wraps <code>pbcopy</code>). The skill picks the core content (code block, summary, answer body) rather than the full response wrapper.</p>
-<h3 id="clipboard-slack"><code>/clipboard slack</code></h3>
-<p>Copies as Slack rich text via <code>clipboard-copy --html</code> (which wraps <code>pbcopy-html</code>), preserving bold, italic, code spans, and code blocks when pasted into Slack.</p>
-<h2 id="requirements">Requirements</h2>
-<p>macOS, with Node.js on <code>$PATH</code> (the <code>clipboard-copy</code> helper and the update-broadcast check are Node scripts). Plain text mode uses the built-in <code>pbcopy</code> and works out of the box; the skill calls the <code>clipboard-copy</code> helper that ships inside <code>bin/</code> of the active plugin install, so no PATH-level install step is needed. Claude resolves that root through <code>${CLAUDE_PLUGIN_ROOT}</code>; Codex resolves it through <code>codex plugin list --json</code>.</p>
-<p>Rich text mode (<code>/clipboard slack</code>) drives <code>pbcopy-html</code>, a Swift script shipped with the plugin. Copy it onto your <code>$PATH</code> if you want to invoke <code>pbcopy-html</code> directly from a shell; <code>clipboard-copy --html</code> already resolves it relative to its own location. The <code>jq</code> lookup below is a shell convenience for finding the active install from your terminal (where <code>${CLAUDE_PLUGIN_ROOT}</code> is not set); the skill itself never uses it, and the copy is repeated after each plugin update per the note below. The marketplace is symlink-free to keep Windows consumers working, so install with <code>cp -f</code>:</p>
-<pre><code class="language-bash">SRC=$(jq -r '.plugins[&quot;clipboard@laicluse-agent-fieldkit&quot;][0].installPath // empty' ~/.claude/plugins/installed_plugins.json)
-[ -n &quot;$SRC&quot; ] || { echo &quot;clipboard@laicluse-agent-fieldkit is not installed&quot;; exit 1; }
-cp -f &quot;$SRC/skills/clipboard/pbcopy-html.swift&quot; /usr/local/bin/pbcopy-html</code></pre>
-<p>The script runs via its <code>#!/usr/bin/env swift</code> shebang; no compile step is needed.</p>
-<p>Re-run after each <code>claude plugins update clipboard@laicluse-agent-fieldkit</code> so the installed copy matches the updated plugin.</p>
-<h2 id="consuming-from-another-plugin">Consuming from another plugin</h2>
-<p>A skill in a different plugin cannot use <code>${CLAUDE_PLUGIN_ROOT}</code> to find this plugin's helper (that variable points at its own root). The canonical resolution idiom for cross-plugin consumers is one lookup against the harness's install index, with a graceful skip when clipboard is absent:</p>
-<pre><code class="language-bash">IP=$(jq -r '.plugins[&quot;clipboard@laicluse-agent-fieldkit&quot;][0].installPath // empty' ~/.claude/plugins/installed_plugins.json 2&gt;/dev/null)
-if [ -n &quot;$IP&quot; ] &amp;&amp; [ -x &quot;$IP/bin/clipboard-copy&quot; ]; then
-  printf 'content' | &quot;$IP/bin/clipboard-copy&quot;
-fi</code></pre>
-<p>Copy this idiom rather than inventing a variant; it is the one place the install key lives outside this plugin.</p>
-				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
+					<aside class="detail-install" aria-label="Install">
 						<h2>Install</h2>
 						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
 	<div class="agent-command-switch-head">
@@ -95,16 +68,43 @@ fi</code></pre>
 		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
 	</div>
 	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-clipboard-claude">claude plugins install clipboard@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-clipboard-codex">codex plugin add clipboard@laicluse-agent-fieldkit</code></pre>
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-clipboard-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">clipboard</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-clipboard-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">clipboard</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
 	</div>
 </div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/clipboard">Package source</a>
-					</div>
-				</aside>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/clipboard">Package source</a>
+					</aside>
+				</div>
+			</section>
+
+			<section class="detail-content-section">
+				<article class="readme-content">
+<p>Copy the core content of the last assistant answer to the macOS clipboard. Plain text is the default; Slack-flavored rich text is available on request.</p>
+<p>Use it when the answer itself is the artefact you need to paste elsewhere: a summary, command block, code snippet, Slack update, or short handoff. The skill tries to copy the useful body, not the chat wrapper around it.</p>
+<h2 id="commands">Commands</h2>
+<div class="readme-scan">
+<h3 id="clipboard"><code>/clipboard</code></h3>
+<p>Copies the relevant content of the last answer to the clipboard as plain text via the <code>clipboard-copy</code> helper (which wraps <code>pbcopy</code>). The skill picks the core content (code block, summary, answer body) rather than the full response wrapper.</p>
+<h3 id="clipboard-slack"><code>/clipboard slack</code></h3>
+<p>Copies as Slack rich text via <code>clipboard-copy --html</code> (which wraps <code>pbcopy-html</code>), preserving bold, italic, code spans, and code blocks when pasted into Slack.</p>
+</div>
+<h2 id="requirements">Requirements</h2>
+<p>macOS, with Node.js on <code>$PATH</code> (the <code>clipboard-copy</code> helper and the update-broadcast check are Node scripts). Plain text mode uses the built-in <code>pbcopy</code> and works out of the box; the skill calls the <code>clipboard-copy</code> helper that ships inside <code>bin/</code> of the active plugin install, so no PATH-level install step is needed. Claude resolves that root through <code>${CLAUDE_PLUGIN_ROOT}</code>; Codex resolves it through <code>codex plugin list --json</code>.</p>
+<p>Rich text mode (<code>/clipboard slack</code>) drives <code>pbcopy-html</code>, a Swift script shipped with the plugin. Copy it onto your <code>$PATH</code> if you want to invoke <code>pbcopy-html</code> directly from a shell; <code>clipboard-copy --html</code> already resolves it relative to its own location. The <code>jq</code> lookup below is a shell convenience for finding the active install from your terminal (where <code>${CLAUDE_PLUGIN_ROOT}</code> is not set); the skill itself never uses it, and the copy is repeated after each plugin update per the note below. The marketplace is symlink-free to keep Windows consumers working, so install with <code>cp -f</code>:</p>
+<pre><code class="language-bash"><span class="code-line">SRC=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;clipboard@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath // empty' ~/.claude/plugins/installed_plugins.json)</span>
+<span class="code-line"><span class="code-unit">[ -n &quot;$SRC&quot; ]</span> || { echo &quot;clipboard@laicluse-agent-fieldkit is not installed&quot;; exit 1; }</span>
+<span class="code-line">cp <span class="code-unit">-f</span> &quot;$SRC/skills/clipboard/pbcopy-html.swift&quot; /usr/local/bin/pbcopy-html</span></code></pre>
+<p>The script runs via its <code>#!/usr/bin/env swift</code> shebang; no compile step is needed.</p>
+<p>Re-run after each <code>claude plugins update clipboard@laicluse-agent-fieldkit</code> so the installed copy matches the updated plugin.</p>
+<h2 id="consuming-from-another-plugin">Consuming from another plugin</h2>
+<p>A skill in a different plugin cannot use <code>${CLAUDE_PLUGIN_ROOT}</code> to find this plugin's helper (that variable points at its own root). The canonical resolution idiom for cross-plugin consumers is one lookup against the harness's install index, with a graceful skip when clipboard is absent:</p>
+<pre><code class="language-bash"><span class="code-line">IP=$(jq <span class="code-unit">-r</span> '.plugins<span class="code-unit">[&quot;clipboard@laicluse-agent-fieldkit&quot;]</span><span class="code-unit">[0]</span>.installPath // empty' ~/.claude/plugins/installed_plugins.json 2&gt;/dev/null)</span>
+<span class="code-line">if <span class="code-unit">[ -n &quot;$IP&quot; ]</span> &amp;&amp; <span class="code-unit">[ -x &quot;$IP/bin/clipboard-copy&quot; ]</span>; then</span>
+<span class="code-line">  printf 'content' | &quot;$IP/bin/clipboard-copy&quot;</span>
+<span class="code-line">fi</span></code></pre>
+<p>Copy this idiom rather than inventing a variant; it is the one place the install key lives outside this plugin.</p>
+				</article>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#commands">Commands</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#consuming-from-another-plugin">Consuming from another plugin</a></li></ol></nav>
 			</section>
 		</main>
 

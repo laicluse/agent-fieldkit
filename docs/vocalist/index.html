@@ -29,7 +29,7 @@
 		<meta name="twitter:image" content="https://laicluse.com/assets/vocalist-og-image.png?v=8543f74354">
 		<meta name="twitter:image:alt" content="Vocalist app share card">
 
-		<link rel="stylesheet" href="../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../styles.css?v=a0b40a4110">
 		<script src="../code-panel-copy.js?v=3ee1e4c503"></script>
 	</head>
 	<body>
@@ -61,21 +61,27 @@
 						</div>
 					</div>
 
-					<aside class="vocalist-panel" aria-label="Vocalist preview">
-						<img class="vocalist-icon" src="../assets/vocalist-icon.svg" width="128" height="128" alt="">
-						<div class="vocalist-bubble">
-							<span>Prompt preview</span>
-							<p>🎙️ Refactor the release checklist and summarize what changed <span class="vocalist-command-token">[over]</span></p>
+					<aside class="vocalist-scene" aria-label="Vocalist bubble over an agent terminal">
+						<div class="vocalist-terminal" aria-hidden="true">
+							<div class="vocalist-terminal-bar"><span></span><span></span><span></span><strong>codex · release-notes</strong></div>
+							<div class="vocalist-terminal-body">
+								<p>› Draft the 2.4 release notes from the merged pull requests</p>
+								<p class="is-dim">• Ran bin/test</p>
+								<p class="is-dim">&nbsp;&nbsp;└ 128 examples, 0 failures</p>
+								<p class="is-dim">• Updated CHANGELOG.md</p>
+								<p>› <span class="vocalist-caret"></span></p>
+							</div>
 						</div>
-						<div class="terminal-command">
-							<span>to</span>
-							<code>CMUX or vocalist claude/codex</code>
+						<div class="vocalist-bubble">
+							<span class="vocalist-level" aria-hidden="true"><i></i><i></i></span>
+							<p>🎙️ Refactor the release checklist and summarize what changed <span class="vocalist-command-token">[over]</span></p>
+							<span class="vocalist-target">Codex · vocalist</span>
 						</div>
 					</aside>
 				</div>
 			</section>
 
-			<section id="install" class="section install-section" aria-labelledby="install-title">
+			<section id="install" class="section install-section install-scan" aria-labelledby="install-title">
 				<div class="section-heading split-heading">
 					<div>
 						<p class="eyebrow">Get Vocalist</p>

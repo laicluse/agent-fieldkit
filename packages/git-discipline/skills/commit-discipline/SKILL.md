@@ -52,6 +52,10 @@ command that survives both the PreToolUse extractor and `git interpret-trailers`
 The schema below is the one that does. Use it verbatim; deviations from this
 shape almost always lose attempts.
 
+### Rails migration identity
+
+Create new Rails migrations with the application's `bin/rails generate migration` (or its existing Rails generator wrapper), then edit the generated file. Do not invent timestamp filenames with an editor or patch. After stacking branches or rebasing, check all migration versions per application before running migrations; a clean Git merge does not prove that versions are unique. The native `guard-commit` and shared rebase command reject duplicate versions in the resulting Git index. Before repairing a collision, verify which versions have already been deployed: do not simply renumber a deployed migration, because its version is stored in `schema_migrations`.
+
 ### Canonical commit form
 
 ```bash

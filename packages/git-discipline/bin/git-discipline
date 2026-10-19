@@ -87,6 +87,28 @@ function repositoryRequiresWorktree() {
   return configured.stdout === 'true';
 }
 
+function repositoryBranchPolicy() {
+  const configured = runGit(['config', '--local', '--get', 'codingAgent.git.branchPolicy'], { allowFailure: true });
+  if (configured.status === 1) return 'current';
+  if (configured.status !== 0 || !['current', 'default'].includes(configured.stdout)) {
+    throw new GitDisciplineError('Local codingAgent.git.branchPolicy must be current or default.');
+  }
+  return configured.stdout;
+}
+
+function isPrimaryCheckout() {
+  return realpathSync(gitOutput(['rev-parse', '--absolute-git-dir'])) === gitCommonDirectory();
+}
+
+function branchPolicyCommand() {
+  const policy = repositoryBranchPolicy();
+  const primary = isPrimaryCheckout();
+  const worktreeRequired = repositoryRequiresWorktree();
+  const branchName = currentBranch();
+  const authoringBranch = worktreeRequired && primary ? '' : policy === 'default' && primary ? defaultBranch() : branchName;
+  process.stdout.write(`policy=${policy}\ncheckout=${primary ? 'primary' : 'linked'}\ncurrent_branch=${branchName}\nauthoring_branch=${authoringBranch}\nworktree_required=${worktreeRequired}\n`);
+}
+
 function requireCleanWorktree() {
   if (gitOutput(['status', '--porcelain'])) {
     throw new GitDisciplineError('Working tree is dirty; commit the candidate before continuing.');
@@ -234,11 +256,13 @@ function rebaseCommand(argumentsList) {
 
   const candidate = gitOutput(['rev-parse', 'HEAD']);
   if (isAncestor(base, candidate)) {
+    requireUniqueMigrationVersions();
     process.stdout.write(`Candidate is already based on ${base.slice(0, 12)}.\n`);
     return;
   }
 
   runGit(['rebase', base], { stdio: 'inherit' });
+  requireUniqueMigrationVersions();
   process.stdout.write(`Rebased ${currentBranch()} onto ${base.slice(0, 12)}.\n`);
 }
 
@@ -405,18 +429,40 @@ function linkedWorktreeRoot() {
   return root.status === 0 ? root.stdout : null;
 }
 
-function guardCommitCommand() {
-  if (!repositoryRequiresWorktree()) return;
-
-  const defaultName = defaultBranch();
-  const branchName = currentBranch();
-  if (branchName === defaultName) {
-    throw new GitDisciplineError(`Direct commits on the default branch ${defaultName} are blocked; commit in a linked feature worktree.`);
+function requireUniqueMigrationVersions() {
+  const migrations = new Map();
+  for (const path of new Set(gitOutput(['ls-files', '--cached', '-z']).split('\0'))) {
+    const match = path.match(/^((?:.*\/)?db\/migrate)\/(\d+)_[^/]+\.rb$/);
+    if (!match) continue;
+    const key = `${match[1]}/${BigInt(match[2])}`;
+    const previous = migrations.get(key);
+    if (previous) {
+      throw new GitDisciplineError(
+        `Duplicate Rails migration version: ${previous} and ${path}. Use rails generate migration for new migrations and check versions after stacking or rebasing. Do not renumber a deployed migration without a verified deployment-history repair.`,
+      );
+    }
+    migrations.set(key, path);
   }
+}
 
-  const gitDirectory = realpathSync(gitOutput(['rev-parse', '--absolute-git-dir']));
-  if (gitDirectory === gitCommonDirectory()) {
-    throw new GitDisciplineError('Authoring in the primary checkout is blocked; use a linked feature worktree.');
+function guardCommitCommand() {
+  requireUniqueMigrationVersions();
+  const policy = repositoryBranchPolicy();
+  if (repositoryRequiresWorktree()) {
+    const defaultName = defaultBranch();
+    if (currentBranch() === defaultName) {
+      throw new GitDisciplineError(`Direct commits on the default branch ${defaultName} are blocked; commit in a linked feature worktree.`);
+    }
+    if (isPrimaryCheckout()) {
+      throw new GitDisciplineError('Authoring in the primary checkout is blocked; use a linked feature worktree.');
+    }
+    return;
+  }
+  if (policy === 'default' && isPrimaryCheckout() && !refExists('MERGE_HEAD')) {
+    const defaultName = defaultBranch();
+    if (currentBranch() !== defaultName) {
+      throw new GitDisciplineError(`This repository requires sequential authoring on ${defaultName} in the primary checkout. Finish the current branch through the merge workflow or use a linked worktree for isolated work.`);
+    }
   }
 }
 
@@ -450,6 +496,7 @@ function guardPushCommand() {
 function printHelp() {
   process.stdout.write(`Usage:
   git-discipline default
+  git-discipline branch-policy
   git-discipline rebase (--local|--remote)
   git-discipline verify (--local|--remote) -- <command> [args...]
   git-discipline merge (--local|--remote)
@@ -470,6 +517,9 @@ function main() {
   switch (command) {
     case 'default':
       process.stdout.write(`${defaultBranch()}\n`);
+      break;
+    case 'branch-policy':
+      branchPolicyCommand();
       break;
     case 'rebase':
       rebaseCommand(argumentsList);

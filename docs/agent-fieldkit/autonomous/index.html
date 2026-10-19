@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Keeps long-running Claude Code missions alive with heartbeat, wake, and restore machinery.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,28 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Autonomous work</p>
-					<h1>autonomous</h1>
-					<p class="lede">Keeps long-running Claude Code missions alive with heartbeat, wake, and restore machinery.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill claude">Claude only</span>
-						<span>2.0.11</span>
-						<span>3 skills</span>
+					<div class="detail-hero-copy">
+						<h1>autonomous</h1>
+						<p class="lede">Keeps long-running Claude Code missions alive with heartbeat, wake, and restore machinery.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill claude">Claude only</span>
+							<span class="meta-fact">2.0.11</span>
+							<span class="meta-fact">3 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-single" aria-label="autonomous install commands"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-autonomous-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">autonomous</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/autonomous">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -77,24 +92,7 @@
 <h2 id="the-probe-and-its-one-assumption">The probe and its one assumption</h2>
 <p>The probe is correct only when need and availability coincide: a host that runs a mission as a persistent process must withhold <code>CronCreate</code> (for example by adding the cron tools to its disallowed-tools list), and a host whose sessions go idle must expose it. When a persistent host still exposes the cron tools the probe over-detects interactive and schedules a heartbeat. On the normal path that is dead weight: a process that runs to completion never goes idle, so the cron never fires and is torn down with the session. Only an abnormal exit can leave it as an orphan, which the <code>wake</code> restore path reaps on the next relight. See <code>skills/keepalive/SKILL.md</code> for the full contract.</p>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-single" aria-label="autonomous install commands"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-autonomous-claude">claude plugins install autonomous@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/autonomous">Package source</a>
-					</div>
-				</aside>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#agent-support">Agent support</a></li><li><a href="#why-this-is-its-own-plugin">Why this is its own plugin</a></li><li><a href="#skills">Skills</a></li><li><a href="#the-probe-and-its-one-assumption">The probe and its one assumption</a></li></ol></nav>
 			</section>
 		</main>
 

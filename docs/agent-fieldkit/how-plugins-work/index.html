@@ -24,7 +24,7 @@
 		<meta name="twitter:description" content="Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=24569fdac1">
 
-		<link rel="stylesheet" href="../../styles.css?v=084dd45493">
+		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
 		<script src="../../agent-command-switch.js?v=a82a9a6e56"></script>
 	</head>
@@ -48,13 +48,32 @@
 				<div class="detail-hero-inner">
 					<a class="back-link" href="../#catalog">Catalog</a>
 					<p class="eyebrow">Feedback and utilities</p>
-					<h1>how-plugins-work</h1>
-					<p class="lede">Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.</p>
-					<div class="plugin-meta detail-meta" aria-label="Package metadata">
-						<span class="support-pill both">Claude + Codex</span>
-						<span>2.0.45</span>
-						<span>3 skills</span>
+					<div class="detail-hero-copy">
+						<h1>how-plugins-work</h1>
+						<p class="lede">Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.</p>
+						<div class="plugin-meta detail-meta" aria-label="Package metadata">
+							<span class="support-pill both">Claude + Codex</span>
+							<span class="meta-fact">2.0.45</span>
+							<span class="meta-fact">3 skills</span>
+						</div>
 					</div>
+					<aside class="detail-install" aria-label="Install">
+						<h2>Install</h2>
+						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
+	<div class="agent-command-switch-head">
+		<div class="agent-command-options" role="group" aria-label="how-plugins-work install commands">
+<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
+<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
+</div>
+		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
+	</div>
+	<div class="agent-command-panels">
+<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-how-plugins-work-claude"><span class="code-unit">claude</span> <span class="code-unit">plugins</span> <span class="code-unit">install</span> <span class="code-unit">how-plugins-work</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-how-plugins-work-codex"><span class="code-unit">codex</span> <span class="code-unit">plugin</span> <span class="code-unit">add</span> <span class="code-unit">how-plugins-work</span><wbr><span class="code-unit">@laicluse-agent-fieldkit</span></code></pre>
+	</div>
+</div>
+						<a class="detail-source" href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/how-plugins-work">Package source</a>
+					</aside>
 				</div>
 			</section>
 
@@ -63,10 +82,12 @@
 <p>Reference for Claude Code and Codex plugin naming, skill resolution, cross-agent skill sync, and the <code>plugin:skill</code> invocation pattern.</p>
 <p>Use it when plugin behavior is confusing: a slash command is missing, a skill resolves in one agent but not another, generated adapters drift, or a marketplace change needs to be tested in both runtimes before publication.</p>
 <h2 id="commands">Commands</h2>
+<div class="readme-scan">
 <h3 id="how-plugins-work"><code>/how-plugins-work</code></h3>
 <p>Loads the reference: how slash-command names map to plugins, how sub-skills resolve, when the <code>plugin:skill</code> form is required, how shared skills can be packaged for multiple agents, and where plugin caches fit.</p>
 <h3 id="test-before-push"><code>/test-before-push</code></h3>
 <p>Canonical procedure for rolling multi-agent marketplace changes out to Claude Code and Codex locally before declaring the work complete, whether or not a push follows.</p>
+</div>
 <h3 id="restart-claude-agents-claude-code"><code>/restart-claude-agents</code> (Claude Code)</h3>
 <p>Restarts running Claude Code background agents so a fresh process loads updated plugins, preserving each agent's conversation, permissions, and goal. The companion to <code>/test-before-push</code>: where that tests plugin changes before pushing, this rolls them into agents already running the old version. Lists the running background agents first, restarts the idle ones by default, takes agent ids to target specific ones, and never touches interactive sessions.</p>
 <h2 id="auto-trigger">Auto-trigger</h2>
@@ -80,28 +101,7 @@
 <li>Accidental exposure of agent-specific skills to a client that cannot run them</li>
 </ul>
 				</article>
-				<aside class="detail-sidebar" aria-label="Plugin links">
-					<div class="sidebar-block">
-						<h2>Install</h2>
-						<div class="agent-command-switch" data-agent-command-switch data-default-agent="claude">
-	<div class="agent-command-switch-head">
-		<div class="agent-command-options" role="group" aria-label="how-plugins-work install commands">
-<button class="agent-command-option is-active" type="button" data-agent-option="claude" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.86L3.75 20.25l3.89-.95A8.5 8.5 0 1 0 12 3.5Zm-3.2 7.1h6.4M8.8 13.4h3.8" /></svg><span>Claude</span></button>
-<button class="agent-command-option" type="button" data-agent-option="codex" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.75 6.75h14.5v10.5H4.75zM8 10l2 2-2 2m4.5 0h3.5" /></svg><span>Codex</span></button>
-</div>
-		<button class="agent-command-copy" type="button" data-agent-copy>Copy</button>
-	</div>
-	<div class="agent-command-panels">
-<pre class="agent-command-panel is-active" data-agent-panel="claude"><code id="install-how-plugins-work-claude">claude plugins install how-plugins-work@laicluse-agent-fieldkit</code></pre>
-<pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="install-how-plugins-work-codex">codex plugin add how-plugins-work@laicluse-agent-fieldkit</code></pre>
-	</div>
-</div>
-					</div>
-					<div class="sidebar-block">
-						<h2>Source</h2>
-						<a href="https://github.com/laicluse/agent-fieldkit/tree/main/packages/how-plugins-work">Package source</a>
-					</div>
-				</aside>
+				
 			</section>
 		</main>
 

@@ -104,13 +104,14 @@ When the provider command exits non-zero, vaultsync preserves its safely redacte
 
 Plain stderr remains supported. Vaultsync recognizes a generic expired OAuth session and recommends re-authenticating the configured provider; it does not name or hard-code a provider.
 
-vaultsync keeps the LLM-generated subject and body but canonicalizes the required trailers:
+vaultsync keeps the LLM-generated subject and body but canonicalizes the required trailers. It preserves supplied `Visual:` evidence and never infers a render inspection from an HTML path. Reproducible viewers can use `git-discipline-generated=true` in `.gitattributes`; hand-authored UI still requires genuine visual evidence when the repository enforces it.
+
+vaultsync adds:
 
 ```text
 Tests: n/a (docs-only)
 Slice: docs-only
 Red-then-green: n/a (no executable behaviour changed)
-Visual: <changed HTML viewer, when present>
 Vaultsync-Reason: <cycle reason>
 ```
 

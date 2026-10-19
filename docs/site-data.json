@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.86",
+			"version": "2.0.92",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,14 +253,14 @@
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.85",
-				"type": "Changed",
-				"summary": "A merge to the default ends with the merged SHA running."
+				"version": "v2.0.91",
+				"type": "Added",
+				"summary": "Repository-local branch policy."
 			}
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.75",
+			"version": "2.0.76",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.29",
+			"version": "2.0.30",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.29",
-				"type": "Added",
-				"summary": "vaultsync uninstall [path] stops managing a checkout, also when the checkout is already gone from disk."
+				"version": "v2.0.30",
+				"type": "Fixed",
+				"summary": "Generated HTML updates no longer receive a fabricated Visual: trailer that the current commit hook rejects."
 			}
 		},
 		{
@@ -479,7 +479,7 @@
 		},
 		{
 			"name": "gurus",
-			"version": "2.0.9",
+			"version": "2.0.11",
 			"category": "review",
 			"summary": "Runs opinionated review panels for software, decisions, and prose from multiple perspectives.",
 			"support": [
@@ -501,7 +501,7 @@
 		},
 		{
 			"name": "rover",
-			"version": "2.0.29",
+			"version": "2.0.31",
 			"category": "autonomy",
 			"summary": "Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.",
 			"support": [
@@ -516,14 +516,14 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.24",
+				"version": "v2.0.30",
 				"type": "Fixed",
-				"summary": "Pride review works without a remote."
+				"summary": "Repair reviews retain the original scope and findings while reviewing the actual delta against a frozen revision."
 			}
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.27",
+			"version": "2.0.29",
 			"category": "feedback",
 			"summary": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler.",
 			"support": [
@@ -538,9 +538,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.26",
+				"version": "v2.0.29",
 				"type": "Changed",
-				"summary": "Living documents do not report state they do not own."
+				"summary": "Measure rollout impact before blocking delivery."
 			}
 		},
 		{
@@ -635,12 +635,21 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.86",
+			"packageVersion": "2.0.92",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.85",
-			"type": "Changed",
-			"summary": "A merge to the default ends with the merged SHA running.",
+			"version": "v2.0.91",
+			"type": "Added",
+			"summary": "Repository-local branch policy.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
+		},
+		{
+			"plugin": "dont-do-that",
+			"packageVersion": "2.0.76",
+			"detailPath": "agent-fieldkit/dont-do-that/",
+			"version": "v2.0.73",
+			"type": "Fixed",
+			"summary": "pr-discipline also checks a body passed with --body-file or -F.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{
 			"plugin": "dibs",
@@ -650,15 +659,6 @@
 			"type": "Fixed",
 			"summary": "dibs claim without --pid binds to the agent, not the shell.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dibs/CHANGELOG.md"
-		},
-		{
-			"plugin": "dont-do-that",
-			"packageVersion": "2.0.75",
-			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.73",
-			"type": "Fixed",
-			"summary": "pr-discipline also checks a body passed with --body-file or -F.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{
 			"plugin": "how-plugins-work",
@@ -680,29 +680,29 @@
 		},
 		{
 			"plugin": "rover",
-			"packageVersion": "2.0.29",
+			"packageVersion": "2.0.31",
 			"detailPath": "agent-fieldkit/rover/",
-			"version": "v2.0.24",
+			"version": "v2.0.30",
 			"type": "Fixed",
-			"summary": "Pride review works without a remote.",
+			"summary": "Repair reviews retain the original scope and findings while reviewing the actual delta against a frozen revision.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/rover/CHANGELOG.md"
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.29",
+			"packageVersion": "2.0.30",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.29",
-			"type": "Added",
-			"summary": "vaultsync uninstall [path] stops managing a checkout, also when the checkout is already gone from disk.",
+			"version": "v2.0.30",
+			"type": "Fixed",
+			"summary": "Generated HTML updates no longer receive a fabricated Visual: trailer that the current commit hook rejects.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.27",
+			"packageVersion": "2.0.29",
 			"detailPath": "agent-fieldkit/house-rules/",
-			"version": "v2.0.26",
+			"version": "v2.0.29",
 			"type": "Changed",
-			"summary": "Living documents do not report state they do not own.",
+			"summary": "Measure rollout impact before blocking delivery.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
@@ -751,6 +751,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/clipboard/CHANGELOG.md"
 		},
 		{
+			"plugin": "gurus",
+			"packageVersion": "2.0.11",
+			"detailPath": "agent-fieldkit/gurus/",
+			"version": "v2.0.1",
+			"type": "Fixed",
+			"summary": "Codex guru panels no longer suggest /rover:rover as their default autonomous handoff.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/gurus/CHANGELOG.md"
+		},
+		{
 			"plugin": "self-improvement",
 			"packageVersion": "2.0.10",
 			"detailPath": "agent-fieldkit/self-improvement/",
@@ -758,15 +767,6 @@
 			"type": "Changed",
 			"summary": "Corrections stay concise.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/self-improvement/CHANGELOG.md"
-		},
-		{
-			"plugin": "gurus",
-			"packageVersion": "2.0.9",
-			"detailPath": "agent-fieldkit/gurus/",
-			"version": "v2.0.1",
-			"type": "Fixed",
-			"summary": "Codex guru panels no longer suggest /rover:rover as their default autonomous handoff.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/gurus/CHANGELOG.md"
 		},
 		{
 			"plugin": "saysay",

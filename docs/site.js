@@ -81,7 +81,7 @@
 		const latest = data.changelog[0];
 		$("#hero-change").innerHTML = latest
 			? `
-				<span class="mini-label">latest package note</span>
+				<span class="mini-label">Latest package note</span>
 				<strong>${escapeHtml(latest.plugin)} ${escapeHtml(latest.packageVersion)}</strong>
 				<p>${escapeHtml(latest.summary)}</p>
 			`
@@ -263,7 +263,7 @@
 						<div class="app-card-actions">
 							<div class="app-install">
 								<div class="block-heading">
-									<span class="mini-label">install</span>
+									<span class="mini-label">Install</span>
 								</div>
 								<pre data-copyable><code>${escapeHtml(app.brew)}</code></pre>
 							</div>

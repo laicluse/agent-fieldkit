@@ -413,3 +413,61 @@ NODE
   run grep -E 'focused cmux|coding-agent surface|\\$ focused' "$REPO/docs/vocalist/index.html"
   [ "$status" -ne 0 ]
 }
+
+@test "the Supermax usage example renders hanging code lines" {
+  grep -q '<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>' "$REPO/docs/supermax/index.html"
+}
+
+@test "the /supermax hero preview shows the library's real 24-column result" {
+  html="$REPO/docs/supermax/index.html"
+  grep -q '<strong>Article</strong>' "$html"
+  grep -q '<span>14.6 cols</span>' "$html"
+  grep -q '<span>9.4 cols</span>' "$html"
+  grep -q 'Menu and List are hidden' "$html"
+  ! grep -q '<div class="supermax-preview-cell source">' "$html"
+}
+
+@test "the /supermax comparison cells label horizontally and shorten instead of rotating" {
+  grep -q '<span class="supermax-demo-cell menu"><span class="cell-name">Menu</span><span class="cell-initial" aria-hidden="true">M</span></span>' "$REPO/docs/supermax/index.html"
+  run node - <<'NODE' "$REPO/docs/styles.css"
+const fs = require("fs");
+const css = fs.readFileSync(process.argv[2], "utf8");
+const cell = css.match(/^\.supermax-demo-cell\s*\{([^}]*)\}/m);
+if (!cell) throw new Error("demo cell rule missing");
+if (/writing-mode/.test(cell[1])) throw new Error("demo cell labels still rotate");
+if (!/container-type:\s*inline-size/.test(cell[1])) throw new Error("demo cell is not a size container");
+NODE
+  [ "$status" -eq 0 ]
+}
+
+@test "the /vocalist hero shows the bubble over an agent terminal" {
+  html="$REPO/docs/vocalist/index.html"
+  grep -q 'class="vocalist-scene"' "$html"
+  grep -q 'class="vocalist-terminal"' "$html"
+  grep -Fq '<span class="vocalist-target">Codex · vocalist</span>' "$html"
+  ! grep -q 'Prompt preview' "$html"
+}
+
+@test "the home product cards show a glimpse of each product" {
+  html="$REPO/docs/index.html"
+  grep -q 'class="home-glimpse home-glimpse-fieldkit"' "$html"
+  grep -q 'class="home-glimpse home-glimpse-vocalist"' "$html"
+  grep -q 'class="home-glimpse home-glimpse-supermax"' "$html"
+  ! grep -q 'home-command-mark' "$html"
+}
+
+@test "the /supermax demo hides a cell at its first shrink step" {
+  run node - <<'NODE' "$REPO/docs/styles.css"
+const fs = require("fs");
+const css = fs.readFileSync(process.argv[2], "utf8");
+const block = (name) => {
+	const match = css.match(new RegExp(`@keyframes ${name} \\{([\\s\\S]*?)\\n\\}`));
+	if (!match) throw new Error(`${name} missing`);
+	return match[1];
+};
+const shrink = block("demoViewportShrink");
+if (!/22%,\s*30% \{\s*width: min\(100%, max\(9\.5rem, 78%\)\);/.test(shrink)) throw new Error("first shrink step moved");
+if (!/22%,\s*92% \{[^}]*visibility: hidden;/.test(block("demoSupermaxMenuCell"))) throw new Error("Menu is still visible after the first shrink step");
+NODE
+  [ "$status" -eq 0 ]
+}
