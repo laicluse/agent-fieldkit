@@ -2,6 +2,12 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.33]
+
+### Fixed
+
+- Background Claude requests skip local settings, MCP configuration, and nonessential network traffic so commit-message generation does not refresh plugin marketplaces or trigger SSH unlock prompts.
+
 ## [v2.0.32]
 
 ### Fixed

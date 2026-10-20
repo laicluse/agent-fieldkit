@@ -31,6 +31,8 @@ export function answerWithClaude(payload, env = process.env) {
   try {
     result = spawnSync(env.CLAUDE_BIN || 'claude', [
       '--safe-mode',
+      '--setting-sources', '',
+      '--strict-mcp-config',
       '--model', env.VAULTSYNC_CLAUDE_MODEL || 'sonnet',
       '--print',
       '--output-format', 'json',
@@ -42,7 +44,7 @@ export function answerWithClaude(payload, env = process.env) {
     ], {
       cwd: env.HOME || homedir(),
       encoding: 'utf8',
-      env: { ...env, DD_HEADLESS: '1' },
+      env: { ...env, DD_HEADLESS: '1', CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1' },
       maxBuffer: 20 * 1024 * 1024,
       timeout: Number(env.VAULTSYNC_CLAUDE_TIMEOUT_MS || DEFAULT_CLAUDE_TIMEOUT_MS),
     });

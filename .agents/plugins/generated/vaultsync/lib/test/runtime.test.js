@@ -1593,6 +1593,7 @@ it('answers the resolver contract through the bundled claude provider', () => {
     '#!/usr/bin/env node',
     'const args = process.argv.slice(2);',
     'if (!args.includes("--json-schema") || args[args.indexOf("--output-format") + 1] !== "json") process.exit(3);',
+    'if (!args.includes("--setting-sources") || args[args.indexOf("--setting-sources") + 1] !== "" || !args.includes("--strict-mcp-config") || process.env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC !== "1") process.exit(4);',
     'process.stdout.write(JSON.stringify({ type: "result", result: "ignored prose", structured_output: { resolved: "Remote truth line.\\n" } }));',
     '',
   ].join('\n'), { mode: 0o755 });

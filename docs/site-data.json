@@ -392,7 +392,7 @@
 		},
 		{
 			"name": "vaultsync",
-			"version": "2.0.32",
+			"version": "2.0.33",
 			"category": "feedback",
 			"summary": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict ha",
 			"support": [
@@ -407,9 +407,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.32",
+				"version": "v2.0.33",
 				"type": "Fixed",
-				"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards."
+				"summary": "Background Claude requests skip local settings, MCP configuration, and nonessential network traffic so commit-message generation does not refresh plugin marketplaces or trigger SSH unlock prompts."
 			}
 		},
 		{
@@ -680,11 +680,11 @@
 		},
 		{
 			"plugin": "vaultsync",
-			"packageVersion": "2.0.32",
+			"packageVersion": "2.0.33",
 			"detailPath": "agent-fieldkit/vaultsync/",
-			"version": "v2.0.32",
+			"version": "v2.0.33",
 			"type": "Fixed",
-			"summary": "Default-branch registration declares local trunk authoring when unset, so automatic sync commits coexist with feature-by-default authoring guards.",
+			"summary": "Background Claude requests skip local settings, MCP configuration, and nonessential network traffic so commit-message generation does not refresh plugin marketplaces or trigger SSH unlock prompts.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
