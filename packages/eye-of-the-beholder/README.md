@@ -1,19 +1,24 @@
 # eye-of-the-beholder
 
-Collaborative visual design anchored in images. Start with `eye-of-the-beholder` for a new visual element, an unpleasing result or a redesign. It selects the workflow, develops proposals with image generation and resolves one consequential design decision at a time before implementation.
+Visual and interaction design for interfaces that communicate through their controls, layout and feedback. Start with `eye-of-the-beholder` for a new treatment, an unpleasing result, confusing controls or a redesign. It routes usability repair, image-based visual exploration and inspection of the real implementation.
 
 ## Skills
 
 | Skill | Purpose |
 | --- | --- |
 | `eye-of-the-beholder` | The single entry point: inspect context, route the request and carry accepted decisions through to the real render. |
+| `eye-of-the-beholder:obvious` | Resolve the current confusing interaction from context and reduce avoidable cognitive load through clearer controls, state and feedback. |
 | `eye-of-the-beholder:explore` | Generate visual proposals from actual references, interpret reactions and establish an accepted target. |
 | `eye-of-the-beholder:define` | Establish identity and design-system foundations when the product needs them. |
 | `eye-of-the-beholder:review` | Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately. |
 
+## Obvious
+
+Invoke `eye-of-the-beholder:obvious` against a screen, capture or recent result when the interface asks the user to decipher controls or read too much explanation. An invocation without a pointer uses the current conversation's relevant surface. The same skill can be selected when a UI addition introduces avoidable choices or hidden state. It investigates the task before changing copy, preserves meaningful information and accessibility, and verifies the resulting interaction. Necessary instructions and informed choices stay visible.
+
 ## Workflow
 
-Image generation is the default for genuinely new visual form. Exact fixes and reuse of accepted components skip concept exploration. Each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. Combinations and rejection of every option are valid. If image generation is unavailable, agree a fallback instead of silently replacing it with CSS sketches.
+Image generation is the default for genuinely new visual form. Exact fixes and reuse of accepted components skip concept exploration. During unresolved visual exploration, each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. An understood, authorized usability correction can proceed directly through implementation and verification. Combinations and rejection of every option are valid. If image generation is unavailable, agree a fallback instead of silently replacing it with CSS sketches.
 
 The canonical visual-language document records accepted image anchors and scoped accepted, rejected and unresolved decisions. Concept approval, mechanism approval and implementation approval are distinct. A generated image is a concept, not proof that the interaction works: the actual implementation must be reviewed at relevant scales, densities and combined states, including motion where it matters.
 
