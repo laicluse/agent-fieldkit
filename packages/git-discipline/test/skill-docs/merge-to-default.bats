@@ -33,11 +33,17 @@ setup() {
   grep -q 'external' "$SKILL"
 }
 
-@test "a merge order is not by itself a publication order" {
+@test "a gated-trunk merge order is not by itself a publication order" {
   grep -q 'gated-trunk) TARGET=--local' "$SKILL"
   ! grep -q 'auto-trunk|gated-trunk) TARGET=--remote' "$SKILL"
   grep -q 'Invoking this skill orders the merge, not the publication' "$SKILL"
   grep -q "operator's order names publishing this default" "$SKILL"
+}
+
+@test "auto-trunk keeps the remote target when an existing deploy reads it" {
+  local row
+  row="$(grep '^| `auto-trunk` |' "$SKILL")"
+  [[ "$row" == *'--remote'* && "$row" != *'--local'* && "$row" != *'unless'* ]]
 }
 
 @test "a refused step ends the operation instead of being hand-finished" {

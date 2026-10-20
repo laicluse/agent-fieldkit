@@ -37,7 +37,7 @@ Repository policy determines the only valid merge target:
 | Mode | Action |
 |------|--------|
 | `local-only` | Use `--local`; atomically update the local default ref. |
-| `auto-trunk` | Use `--remote`; the non-force push is a backup of a private default and needs no report. When something reads the remote default, such as a deploy on push, the push is a release: use `--local` unless the operator's order names publishing. |
+| `auto-trunk` | Use `--remote` after authorized integration. The push and any existing auto-deploy need no separate go; a remote consumer does not change the repository's mode. Honor an explicit local-only instruction. |
 | `gated-trunk` | Use `--local`: the merge commit updates the local default ref and publication stays a separate decision. Use `--remote` only when the operator's order names publishing this default, in their own words (push, publish, origin, live). Invoking this skill orders the merge, not the publication; a merge order is never by itself the go for a shared ref update. |
 | `pr-flow` | Do not update the default ref directly. Follow the repository's PR flow; the remote merge remains an explicit operator gate. |
 | `external` | Do not update the default ref; there is no write access. |

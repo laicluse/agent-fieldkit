@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.94]
+
+### Fixed
+
+- An existing auto-deploy no longer adds a second publication approval to `auto-trunk`. Authorized integration includes the push and verification of the deployed version; `gated-trunk` and manual production deployments retain their approval gates.
+
 ## [v2.0.93]
 
 ### Breaking

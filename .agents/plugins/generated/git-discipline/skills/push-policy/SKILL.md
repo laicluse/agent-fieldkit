@@ -32,7 +32,7 @@ A local commit captures your own finished work; it is expected, not asked for. L
 | Your own branch, private repository | A copy. Nobody notices. | Yes, without mention. |
 | Your own branch, public repository, first push | Its content becomes public. | When the ordered work includes a pull request or a publication. |
 | A branch with a pull request, `--force-with-lease` after a rebase included | CI runs and reviewers are notified, which is what the pull request is for. | Yes. It is part of the work. |
-| Default branch, solo private repository (`auto-trunk`) | A copy after authorized integration. | Yes, without mention. |
+| Default branch, solo private repository (`auto-trunk`) | Publication after authorized integration, including its existing auto-deploy. | Yes, without a separate go. Honor an explicit local-only instruction. |
 | Default branch, public or shared repository (`gated-trunk`) | A release: other people and their installs receive it. | No. Agree with the operator first. |
 | Default branch, pull request repository (`pr-flow`, or undetermined) | The agreement is that the default branch changes only through a pull request merge. | Never. Push a branch and use the pull request. |
 | Default branch of a checkout a sync daemon manages | The daemon publishes it. | Never. Follow the registered sync workflow. |
@@ -89,20 +89,20 @@ are covered by `test/push-policy/derive-mode.bats`.
 - **push_access**: `write` or `external` (via `gh` viewer permission, with an
   owner-heuristic fallback against the `codingAgent.git.owners` global).
 
-## Where the work has to land
+## Where the change takes effect
 
 The mode says which pushes are possible; the landing ref says where the change takes effect. Ask which ref the change is read from: a plugin installed from the local checkout, a dev server running from it, a deploy watching the remote default branch, a package consumer pulling a tag.
 
-Often that ref is local. A marketplace or tool installed from the primary checkout takes effect from the local default branch, so merging there finishes the work and the remote stays untouched. When the landing ref is remote, the push that reaches it is a release, and the operator's order decides when it happens.
+For explicitly local delivery, a marketplace or tool installed from the primary checkout takes effect from the local default branch, so merging there finishes the work and the remote stays untouched. When the required ref is remote, follow the resolved mode: `auto-trunk` publishes after authorized integration, including an existing auto-deploy; `gated-trunk` needs publication agreement. A remote consumer does not promote `auto-trunk` to `gated-trunk`. Manual production or shared deployments retain their own gates.
 
-The landing ref decides where completed work must arrive. If work sits on a feature branch and its consumers read default, integrate it through the repository's merge workflow. The authoring branch remains the independent branch-policy decision; a push regime never makes direct default-branch authoring permissible.
+The required ref decides where completed work must arrive. If work sits on a feature branch and its consumers read default, integrate it through the repository's merge workflow. The authoring branch remains the independent branch-policy decision; a push regime never makes direct default-branch authoring permissible.
 
 ## Five modes
 
 The mode is the repository's regime. It decides the default-branch rows of the table above.
 
 - **local-only**: no remote. Pushing never comes up; do not mention it.
-- **auto-trunk**: a private, individual repo with a pushable default. Publishing the default is a backup and follows authorized integration without a separate release decision. Branch policy still chooses the authoring line.
+- **auto-trunk**: a private, individual repo with a pushable default. Publishing the default and its existing auto-deploy follow authorized integration without a separate release decision. Do not ask for a second go because a deploy-poller reads the remote; finish through the running deployed SHA. Honor an explicit local-only instruction. Branch policy still chooses the authoring line.
 - **gated-trunk**: a public or shared repo you can write to with a pushable default. Work is committed locally, often for weeks; a push of the default branch is a release that the operator and you agree on first. Branches for a pull request push as part of that work.
 - **pr-flow**: the default branch changes only through a pull request merge, whether the forge enforces that or the operator declared it. Never push the default. Pushing a branch and creating or updating its pull request are part of the work; the merge is the operator's.
 - **external**: no write access. A fork and a pull request, agreed with the operator first.

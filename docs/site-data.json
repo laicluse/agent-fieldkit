@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.93",
+			"version": "2.0.94",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.93",
-				"type": "Breaking",
-				"summary": "Repositories without origin/HEAD must record their existing default as repository-local init.defaultBranch; a global branch-creation preference no longer establishes repository identity."
+				"version": "v2.0.94",
+				"type": "Fixed",
+				"summary": "An existing auto-deploy no longer adds a second publication approval to auto-trunk."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.93",
+			"packageVersion": "2.0.94",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.93",
-			"type": "Breaking",
-			"summary": "Repositories without origin/HEAD must record their existing default as repository-local init.defaultBranch; a global branch-creation preference no longer establishes repository identity.",
+			"version": "v2.0.94",
+			"type": "Fixed",
+			"summary": "An existing auto-deploy no longer adds a second publication approval to auto-trunk.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
