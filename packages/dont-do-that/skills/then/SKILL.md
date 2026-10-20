@@ -1,5 +1,6 @@
 ---
-name: next
+name: then
+user-invocable: true
 description: Run the following prompt after the current turn finishes.
 ---
 

@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.77] - 2026-10-20
+
+### Breaking
+
+- Rename the `next` skill to `then` to avoid autocomplete collisions. Use `/dont-do-that:then` in Claude Code or `$then` in Codex. The old name is removed; prompt handling is unchanged.
+
 ## [v2.0.73]
 
 ### Fixed

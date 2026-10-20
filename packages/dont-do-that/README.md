@@ -1,6 +1,6 @@
 # dont-do-that
 
-`dont-do-that` is a Claude Code and Codex guardrail plugin for stopping common agent reflexes before they become repository damage. It runs hook-time guards on shell commands, file edits, persisted prose, and final answers, then adds `/duh`, `/just-a-question`, `/not-your-monkey`, and `/next`.
+`dont-do-that` is a Claude Code and Codex guardrail plugin for stopping common agent reflexes before they become repository damage. It runs hook-time guards on shell commands, file edits, persisted prose, and final answers, then adds `/duh`, `/just-a-question`, `/not-your-monkey`, and `/then`.
 
 Use it when you want an agent session to keep moving while still blocking the
 habits that repeatedly cause harm: unapproved remote setup, deploys from
@@ -27,7 +27,7 @@ codex plugin add dont-do-that@laicluse-agent-fieldkit
 - `/just-a-question`, a read-only lock for turns that should answer without
   changing files, git state, processes, or external systems.
 - `/not-your-monkey` / `$not-your-monkey`, a visual self-inspection correction skill for turns where the agent must stop making the operator reload and judge UI changes.
-- `/next` / `$next`, a prefix that queues the following prompt until the current turn finishes.
+- `/then` / `$then`, a prefix that queues the following prompt until the current turn finishes.
 
 ## Agent support
 
