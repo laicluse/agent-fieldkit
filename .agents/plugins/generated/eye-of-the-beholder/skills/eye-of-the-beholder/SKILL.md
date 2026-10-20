@@ -1,12 +1,12 @@
 ---
 name: eye-of-the-beholder
 description: >-
-  The entry point for visual design: new visual elements, redesigns, or feedback such as ugly, unpleasing, feels off, lelijk, or past niet. Leads image-based exploration and one-decision-at-a-time collaboration, then verifies the real implementation.
+  The entry point for visual and interaction design: new treatments, redesigns, unclear controls, excessive explanation, or feedback such as ugly, feels off, lelijk, or past niet. Routes usability repair, visual exploration and rendering review.
 ---
 
 # Eye of the Beholder
 
-Own the path from a visual request to a convincing result. The user brings purpose and taste; you bring proposals, evidence and technical execution. They should not need to pick a subskill or supply design vocabulary. Correct implementation does not establish aesthetic quality.
+Own the path from a visual or interaction request to a convincing result. The user brings purpose and taste; you bring proposals, evidence and technical execution. They should not need to pick a subskill or supply design vocabulary. Correct implementation does not establish aesthetic quality.
 
 If a retired invocation appears as text, explain the migration and route it: taste-test to explore, art-director to define, fat-marker-sketch to review/image-input, visual-inspection to review/reference-match. These are internal routes, not promises that the host still recognizes retired commands.
 
@@ -18,6 +18,7 @@ Read the project's visual-language document and inspect the actual current rende
 
 | Situation | Route |
 | --- | --- |
+| Confusing controls, over-explaining UI, cognitive load or a task that requires avoidable interpretation | [obvious](../obvious/SKILL.md) |
 | New visual treatment, explicitly unresolved appearance, or a direction that remains rejected after diagnosis | [explore](../explore/SKILL.md) |
 | Explicit identity work or missing foundations necessary for the current product decision | [define](../define/SKILL.md), which uses explore as needed |
 | A first complaint about an existing render, exact correction, component reuse, rendering defect, or target verification | [review](../review/SKILL.md) |
@@ -30,7 +31,7 @@ Discussion about this workflow stays discussion: mentioning image generation is 
 
 ## Keep the collaboration continuous
 
-Resolve one consequential design decision per round. Show the relevant visual evidence, state a defensible recommendation and wait for the user's response before dependent work. Adapt the next round to that response. A rejection of every candidate is useful evidence, not a mandate to choose the least bad one.
+For unresolved visual or consequential interaction choices, resolve one decision per round. Show the relevant evidence, state a defensible recommendation and wait for the user's response before dependent work. An understood, already-authorized usability correction through obvious or review does not require a new concept-approval round. Adapt the next round to that response. A rejection of every candidate is useful evidence, not a mandate to choose the least bad one.
 
 Track accepted, rejected, provisional and unresolved decisions with scoped image references. Distinguish concept approval, mechanism approval and implementation approval. Your own recommendation is not the user's acceptance. A general implementation go does not make an unseen concept accepted. Conversely, when implementation was already requested, accepting the relevant concept lets that authorized implementation continue without asking for another go. Ask only about an unresolved decision or changed scope.
 

@@ -17,7 +17,7 @@ function files(dir, base = dir) {
 const names = files(source);
 assert.deepEqual(files(generated), names, 'generated tree lost or retained a stale skill asset');
 assert.deepEqual(names.filter(name => path.basename(name) === 'SKILL.md'), [
-  'define/SKILL.md', 'explore/SKILL.md', 'eye-of-the-beholder/SKILL.md', 'review/SKILL.md'
+  'define/SKILL.md', 'explore/SKILL.md', 'eye-of-the-beholder/SKILL.md', 'obvious/SKILL.md', 'review/SKILL.md'
 ], 'public skill inventory changed');
 for (const name of names) {
   let a = fs.readFileSync(path.join(source, name));

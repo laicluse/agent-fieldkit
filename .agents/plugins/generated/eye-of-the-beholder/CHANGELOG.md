@@ -1,24 +1,12 @@
 # eye-of-the-beholder changelog
 
-The post-update broadcast (see `bin/check-broadcast`) shows the topmost
-section once per machine whenever the installed `version` in
-`.claude-plugin/plugin.json` changes. Entry headers record the version at
-which the entry was written; a pre-commit hook auto-bumps `plugin.json` on
-every commit, so the header may lag the shipped version. Header numbers are
-informational, the broadcast is positional. Use the `--force` flag on the
-helper to re-read at any time.
+## [v2.0.15]
 
-Categories:
+### Added
 
-- **Breaking**: user must adapt
-- **Added**: new commands, new optional behavior
-- **Changed**: non-breaking adjustments worth knowing about
-- **Fixed**: silent unless the bug was user-visible
+- `obvious` diagnoses confusing controls, over-explaining UI and avoidable cognitive load from the current task, then improves the interaction while preserving necessary guidance and accessibility. The main entry point and rendering review route relevant usability problems to it.
 
-Patch-level fixes that change nothing the user can observe are intentionally
-omitted; the broadcast budget is for things the user benefits from knowing.
-The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
-without a `## [v2.0.10]
+## [v2.0.10]
 
 ### Breaking
 
@@ -30,8 +18,6 @@ without a `## [v2.0.10]
 - Review evaluates the real implementation's aesthetics, meaning, fidelity and interaction separately. Image classification and reference comparison tools remain available internally.
 - Motion evidence defaults to broadly playable H.264 MP4 and is verified as a delivered file before it is linked for review. WebM remains available only when the recipient or target surface is known to support it.
 - Motion review now rejects captures whose recorder materially depresses the product frame rate, and requires the observed runtime frame-rate range to accompany timing judgments.
-
-## [vX.Y.Z]` section stays silent on every update.
 
 ## [v2.1.1]
 

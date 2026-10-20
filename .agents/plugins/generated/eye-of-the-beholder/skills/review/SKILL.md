@@ -18,6 +18,8 @@ Motion evidence must also be playable by its recipient outside the capture brows
 
 The capture path must preserve the timing being judged. Measure the product's displayed or instrumented frame rate during the recorded interaction and report the observed range; a recorder that materially lowers it makes the evidence invalid even when the resulting file itself is encoded at a higher nominal frame rate. Switch to hardware-accelerated rendering and native screen capture, or another path whose measured runtime remains representative, before drawing conclusions about motion quality.
 
+When explanations compensate for unclear controls, hidden state or avoidable choices, use [obvious](../obvious/SKILL.md) to reconsider the interaction before polishing its copy. Do not turn an exact visual correction into an unrelated usability redesign.
+
 Assess separately:
 
 - Meaning and behavior: each visual channel has a clear role; dependencies and combined states remain correct.
