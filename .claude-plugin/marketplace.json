@@ -34,7 +34,7 @@
     },
     {
       "name": "dont-do-that",
-      "description": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /next skills for Claude Code and Codex.",
+      "description": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /then skills for Claude Code and Codex.",
       "source": "./packages/dont-do-that"
     },
     {

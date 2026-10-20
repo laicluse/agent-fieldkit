@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.76</span>
+							<span class="meta-fact">2.0.77</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -79,7 +79,7 @@
 
 			<section class="detail-content-section">
 				<article class="readme-content">
-<p><code>dont-do-that</code> is a Claude Code and Codex guardrail plugin for stopping common agent reflexes before they become repository damage. It runs hook-time guards on shell commands, file edits, persisted prose, and final answers, then adds <code>/duh</code>, <code>/just-a-question</code>, <code>/not-your-monkey</code>, and <code>/next</code>.</p>
+<p><code>dont-do-that</code> is a Claude Code and Codex guardrail plugin for stopping common agent reflexes before they become repository damage. It runs hook-time guards on shell commands, file edits, persisted prose, and final answers, then adds <code>/duh</code>, <code>/just-a-question</code>, <code>/not-your-monkey</code>, and <code>/then</code>.</p>
 <p>Use it when you want an agent session to keep moving while still blocking the habits that repeatedly cause harm: unapproved remote setup, deploys from worktrees, unexplained code comments, stale verification handoffs, option menus that dodge a decision, PR template filler, and other patterns listed below.</p>
 <h2 id="what-it-installs">What it installs</h2>
 <ul>
@@ -89,7 +89,7 @@
 <li><code>/duh</code>, a read-time correction skill that executes the assistant's previous proposal instead of explaining it again.</li>
 <li><code>/just-a-question</code>, a read-only lock for turns that should answer without changing files, git state, processes, or external systems.</li>
 <li><code>/not-your-monkey</code> / <code>$not-your-monkey</code>, a visual self-inspection correction skill for turns where the agent must stop making the operator reload and judge UI changes.</li>
-<li><code>/next</code> / <code>$next</code>, a prefix that queues the following prompt until the current turn finishes.</li>
+<li><code>/then</code> / <code>$then</code>, a prefix that queues the following prompt until the current turn finishes.</li>
 </ul>
 <h2 id="agent-support">Agent support</h2>
 <p>Claude Code receives the full hook stack. Codex receives the same event layers through <code>hooks/hooks.codex.json</code>, materialized by <code>circus plugins build</code> as <code>hooks/hooks.json</code> in the generated Codex adapter package.</p>
