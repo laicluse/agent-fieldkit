@@ -159,3 +159,5 @@ The peer's output is a pile of findings, not a to-do list. Each finding gets one
 - **Reject it** when it is hollow, with the evidence that makes it hollow.
 
 Then surface the exchange to the operator: what the peer raised, what you did with each point, and where the two of you still disagree. Do not smooth the disagreements away. They are the most useful thing intervision produces, because they mark the spots neither agent can settle alone.
+
+P.S. Checked 2026-10-20 via `codex debug models`. Versions auto-resolve; new names require a plugin update. Redate only after verification.
