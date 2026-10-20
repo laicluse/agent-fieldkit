@@ -1,10 +1,13 @@
 ---
 name: second-opinion
 description: >-
-  Get a Claude second opinion on recent work or a design from Codex.
+  Ask Claude (Sonnet, Opus, or Fable) for a second opinion on recent work or a design.
+  Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work.
 ---
 
 # Second opinion
+
+When the user names a peer model, use that model directly (`--model opus` or `--model fable`, for example); otherwise use the default below. Treat model names case-insensitively.
 
 Intervision is peer consultation: equals looking at each other's work, not a
 supervisor looking down. Etymology says it plainly, `inter-` (between, among,
@@ -31,6 +34,8 @@ for Fable only when Opus still leaves a disagreement standing and the
 decision is hard to reverse. Two frontier models agreeing on a routine diff
 is not worth the spend.
 
+Before the handoff, briefly state the selected model and why. Claude aliases (`sonnet`, `opus`, `fable`) select the latest version according to `claude --help`; if the local CLI exposes multiple versions, name the alternatives and prefer the newest available version. An explicitly requested full model ID takes precedence; never silently substitute another version. If only an alias is exposed, say that the exact version is not yet known instead of inventing a version or claiming no alternatives exist. Use `--output-format json` for the handoff and report the actual model ID from response metadata when present, alongside the findings.
+
 ## The peer has to be there
 
 Before asking, confirm the peer exists:
@@ -42,6 +47,8 @@ command -v claude >/dev/null 2>&1 || { echo "claude CLI not found; intervision n
 If `claude` is missing, say so plainly and stop. There is no peer to ask, and
 pretending otherwise wastes the operator's time. This is the one hard
 precondition.
+
+Set `CLAUDE_PEER_MODEL` to the requested alias or full model ID, or `sonnet` when none was requested; use it for every handoff below.
 
 ## Give Claude time to think
 
@@ -77,7 +84,7 @@ Do not summarize the work first:
   git diff --no-ext-diff
   printf '\n## untracked files\n'
   git ls-files --others --exclude-standard
-} | DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools ""
 ```
 
 For a branch or single commit, replace the diff block with the concrete range:
@@ -94,12 +101,12 @@ fi
 {
   printf 'Peer review this branch diff. Report findings first and do not edit files.\n\n'
   git diff --no-ext-diff "$DEFAULT"...HEAD
-} | DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools ""
 
 {
   printf 'Peer review this commit. Report findings first and do not edit files.\n\n'
   git show --stat --patch <sha>
-} | DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools ""
 ```
 
 **2. Weigh a design just discussed, when there is no code yet.** Give Claude
@@ -107,7 +114,7 @@ the actual design context on stdin. Keep the shaky parts in; a flattering
 summary buys a flattering review.
 
 ```bash
-DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools "" <<'PROMPT'
+DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" <<'PROMPT'
 Peer review this plan before we build it. Do not edit files.
 <paste the design, the trade-off, the open question, including the parts we are unsure about>
 PROMPT
@@ -120,7 +127,7 @@ at a time. To escalate, keep the same prompt with the Sonnet answer quoted
 underneath and move `--model` one tier up.
 
 ```bash
-DD_HEADLESS=1 claude -p --model sonnet --input-format text --setting-sources "" --tools "" <<'PROMPT'
+DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" <<'PROMPT'
 You flagged X as a race. The lock at <file:line> already serialises that path.
 Does that change your read? Do not edit files.
 PROMPT

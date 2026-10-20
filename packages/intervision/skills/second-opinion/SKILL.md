@@ -2,7 +2,8 @@
 name: second-opinion
 user-invocable: true
 description: >-
-  Get a Codex second opinion on recent work or a design from Claude Code.
+  Ask Codex (Luna, Sol, or Astra) for a second opinion on recent work or a design.
+  Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work.
 ---
 
 <post-update-broadcast>
@@ -29,6 +30,8 @@ post-update broadcast path in this plugin; skip this block silently there.
 </post-update-broadcast>
 
 # Second opinion
+
+When the user names a peer model, resolve that tier directly with `--tier luna`, `--tier sol`, or `--tier astra` and use the result as `CODEX_PEER_MODEL` throughout; otherwise use the default below. Treat model names case-insensitively.
 
 Intervision is peer consultation: equals looking at each other's work, not a supervisor looking down. Etymology says it plainly, `inter-` (between, among, together) against `super-` (from above). This skill brings a second coding agent in as that peer for an independent read. You hand it the work just done or just discussed, it looks with fresh eyes and a different training, and the two of you talk it through.
 
@@ -60,6 +63,8 @@ only when Sol still leaves a disagreement standing and the decision is hard
 to reverse (a data contract, a public interface, a deploy shape). Two
 frontier models agreeing on a routine diff is not worth the spend.
 
+Before the handoff, briefly state the resolved model ID and why it was chosen. If multiple versions of the requested tier are visible in `codex debug models`, name those alternatives and explain that the newest visible generation wins by default. An explicitly requested version takes precedence: verify that exact ID in the catalog and pass it directly; never silently substitute another version. Keep catalog checks to model IDs and visibility, not the full model instructions.
+
 ## The peer has to be there
 
 Before asking, confirm the peer exists:
@@ -70,7 +75,7 @@ command -v codex >/dev/null 2>&1 || { echo "codex CLI not found; intervision nee
 
 If `codex` is missing, or `codex login status` shows you are not logged in, say so plainly and stop. There is no peer to ask, and pretending otherwise wastes the operator's time. This is the one hard precondition.
 
-Then resolve the cheap first-pass model before any handoff:
+Then resolve the first-pass model before any handoff (add the requested `--tier` when a model was named):
 
 ```bash
 : "${CLAUDE_PLUGIN_ROOT:?CLAUDE_PLUGIN_ROOT not set; intervision needs its installed plugin helper}"
