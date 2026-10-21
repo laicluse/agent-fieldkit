@@ -255,6 +255,23 @@ end'
   [ "$status" -eq 0 ]
 }
 
+@test "Red-then-green: a name early in a spec file over 64KB is found under a caller's pipefail" {
+  export GIT_SHIM_LS_TREE_OUTPUT="test/workspace.test.js"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="test/workspace.test.js"
+  local padding
+  padding=$(printf 'assert.ok(true);\n%.0s' $(seq 1 6000))
+  set_staged_blob "test/workspace.test.js" "test(\"opens early\", () => {
+$padding
+});"
+  use_trailers "Tests: test/workspace.test.js"$'\n'"Slice: handler + spec"$'\n'"Red-then-green: test/workspace.test.js:1 # opens early"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-large-blob.txt" "$(_body_with_rtg "test/workspace.test.js:1 # opens early")")
+
+  run bash -o pipefail -c "source '$VALIDATOR'; validate_body '$file'"
+  [ "$status" -eq 0 ]
+}
+
 @test "Red-then-green: combined form name not in blob fires red-then-green-test-not-found" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="spec/services/session_spec.rb"

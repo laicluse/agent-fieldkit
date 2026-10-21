@@ -537,7 +537,10 @@ _vb_err() { _vb_errors+=("$1"); }
               local pat
               local rtg_found=0
               for pat in "${rtg_patterns[@]}"; do
-                if printf '%s' "$rtg_blob" | grep -Eq "$pat" 2>/dev/null; then
+                # A here-string, not a pipe: grep -q stops at the first match, and
+                # under a caller's pipefail the writer's SIGPIPE on a large blob
+                # would turn that match into a miss.
+                if grep -Eq "$pat" <<< "$rtg_blob" 2>/dev/null; then
                   rtg_found=1
                   break
                 fi

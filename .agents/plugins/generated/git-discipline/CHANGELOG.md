@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.95]
+
+### Fixed
+
+- A Red-then-green trailer that names a test in a spec file larger than 64KB is no longer rejected as `red-then-green-test-not-found` when the test exists.
+
 ## [v2.0.94]
 
 ### Fixed

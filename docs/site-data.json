@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.94",
+			"version": "2.0.95",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 32,
 			"latestChange": {
-				"version": "v2.0.94",
+				"version": "v2.0.95",
 				"type": "Fixed",
-				"summary": "An existing auto-deploy no longer adds a second publication approval to auto-trunk."
+				"summary": "A Red-then-green trailer that names a test in a spec file larger than 64KB is no longer rejected as red-then-green-test-not-found when the test exists."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.94",
+			"packageVersion": "2.0.95",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.94",
+			"version": "v2.0.95",
 			"type": "Fixed",
-			"summary": "An existing auto-deploy no longer adds a second publication approval to auto-trunk.",
+			"summary": "A Red-then-green trailer that names a test in a spec file larger than 64KB is no longer rejected as red-then-green-test-not-found when the test exists.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{
