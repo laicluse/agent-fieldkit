@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.16",
+			"version": "2.0.17",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -715,6 +715,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{
+			"plugin": "eye-of-the-beholder",
+			"packageVersion": "2.0.17",
+			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
+			"version": "v2.0.15",
+			"type": "Added",
+			"summary": "obvious diagnoses confusing controls, over-explaining UI and avoidable cognitive load from the current task, then improves the interaction while preserving necessary guidance and accessibility.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
+		},
+		{
 			"plugin": "anger-management",
 			"packageVersion": "2.0.16",
 			"detailPath": "agent-fieldkit/anger-management/",
@@ -722,15 +731,6 @@
 			"type": "Changed",
 			"summary": "Codex-only background diagnosis resolves the cheap model dynamically.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/anger-management/CHANGELOG.md"
-		},
-		{
-			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.16",
-			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.15",
-			"type": "Added",
-			"summary": "obvious diagnoses confusing controls, over-explaining UI and avoidable cognitive load from the current task, then improves the interaction while preserving necessary guidance and accessibility.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{
 			"plugin": "autonomous",
