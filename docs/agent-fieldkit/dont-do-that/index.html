@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.79</span>
+							<span class="meta-fact">2.0.80</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -152,7 +152,7 @@
 <p>Pass condition: merge the branch to the default branch first and run <code>ansible-playbook</code> from the canonical checkout, or restrict the worktree call to a read-only preview flag.</p>
 <h3 id="pr-discipline"><code>pr-discipline</code></h3>
 <p>Denies <code>gh pr create</code> and <code>gh pr edit</code> when the PR title starts with a placement or generic git-action verb from the git-discipline Rule 1 vocabulary, including <code>Fix</code>, <code>Improve</code>, <code>Update</code>, <code>Change</code>, <code>Refactor</code>, <code>Add</code>, <code>Move</code>, <code>Remove</code>, <code>Land</code>, <code>Ship</code>, <code>Wire</code>, and similar verbs. PR titles should describe the user-visible capability that exists now, not the placement action used to get there.</p>
-<p>The same guard denies PR bodies with fixed-section or AI-attribution signatures: <code>## Summary</code>, <code>## Test plan</code>, a generated-with footer, or a <code>Co-Authored-By</code> trailer with an <code>@anthropic.com</code> email. It also denies an unchecked task-list box (<code>- [ ]</code>) anywhere in the body: work for later does not belong in a PR, and nobody revisits the box after the merge. A ticked box stating what was shown may stay; what remains goes to the backlog as its own item.</p>
+<p>The same guard denies PR bodies with fixed-section or AI-attribution signatures: <code>## Summary</code>, <code>## Test plan</code>, a generated-with footer, or a <code>Co-Authored-By</code> trailer with an <code>@anthropic.com</code> email. It also denies an open task-list item (a line starting with <code>- [ ]</code> or <code>1. [ ]</code>): work for later does not belong in a PR. A ticked box stating what was shown may stay; what remains becomes its own backlog item.</p>
 <p>Pass condition: write the title as the capability now present, and use a short body about why the change matters without template, open checkboxes or tooling attribution.</p>
 <h3 id="followup"><code>followup</code></h3>
 <p>Denies <code>gh api</code> commands whose body contains deferral language such as &quot;follow-up&quot;, &quot;wordt opgepakt&quot;, &quot;buiten scope&quot;, or &quot;in een volgende pr&quot; unless the body starts with <code>Bewust uitgesteld:</code>. Pass condition: prefix the body with <code>Bewust uitgesteld:</code> to claim an explicit deferral, or rewrite the body without deferral language.</p>

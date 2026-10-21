@@ -59,11 +59,11 @@ guard_pr_discipline() {
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
 
-  # allow-comment: a PR describes what changed, so work for later has no place in it; an unchecked task-list box is that work in its most visible shape, and nobody revisits it after the merge (a merged PR once kept an unchecked production count for a day while the number only existed in the backlog item). A ticked box states evidence and may stay; what remains goes to the backlog as its own item.
+  # allow-comment: an open task-list item in a PR body is work for later; it is done now or becomes a backlog item. Matched at line start only (heredoc bodies keep their newlines, --body strings carry a literal \n), so a `- [ ]` quoted mid-sentence passes.
   local checkbox
-  checkbox=$(grep -oE '(^|[[:space:]]|\\n)[-*+][[:space:]]+\[ \][[:space:]]+[^\\]{0,60}' <<< "$content" | head -1 | sed -E 's/^[[:space:]]*(\\n)?//')
+  checkbox=$(grep -oE '(^|\\n)[[:space:]]*([-*+]|[0-9]+[.)])[[:space:]]+\[ \]([[:space:]][^\\]{0,60})?' <<< "$content" | head -1 | sed -E 's/^(\\n)?[[:space:]]*//')
   if [ -n "$checkbox" ]; then
-    dd_emit_deny pr-discipline "PR body contains an unchecked task-list box: '${checkbox}'. Work for later does not belong in a PR; nobody revisits it after the merge. Either do it now and tick the box with what it showed, or give it its own backlog item and drop the line here."
+    dd_emit_deny pr-discipline "PR body contains an open task: '${checkbox}'. Do it now and record the result, or give it its own backlog item and remove the line from the PR."
   fi
 
   dd_pr_image_links "$content"

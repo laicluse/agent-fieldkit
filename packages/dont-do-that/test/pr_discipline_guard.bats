@@ -132,7 +132,7 @@ advance_base() {
   run_guard $'gh pr edit 12 --body "Uitleg.\n\n- [ ] Een read-only query op productie telt de rijen\n- [x] Specs dekken de drie gevallen"'
 
   [ "$status" -eq 2 ]
-  [[ "$output" == *"unchecked task-list box"* ]]
+  [[ "$output" == *"open task"* ]]
   [[ "$output" == *"Een read-only query"* ]]
 }
 
@@ -141,7 +141,21 @@ advance_base() {
   run_guard "gh pr edit 12 --body-file $REPO/body.md"
 
   [ "$status" -eq 2 ]
-  [[ "$output" == *"unchecked task-list box"* ]]
+  [[ "$output" == *"open task"* ]]
+}
+
+@test "pr-discipline blocks a numbered or empty open task" {
+  run_guard $'gh pr edit 12 --body "Uitleg.\n1. [ ] Later nog meten\n- [ ]"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"1. [ ] Later nog meten"* ]]
+}
+
+@test "pr-discipline lets a quoted checkbox mid-sentence through" {
+  run_guard 'gh pr edit 12 --body "De guard weigert een regel die met - [ ] begint; dit voorbeeld staat midden in een zin."'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
 }
 
 @test "pr-discipline accepts ticked boxes as evidence" {
