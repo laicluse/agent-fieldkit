@@ -22,17 +22,7 @@ the whole point; a peer trained the same way as you would only echo you. Run it
 with `DD_HEADLESS=1 --setting-sources "" --tools ""` so local Claude Code stop
 hooks and user instructions do not overwrite the peer's actual answer.
 
-Both families ship in three tiers, and the peer is chosen by tier. Claude:
-**Sonnet** (fast, cheap), **Opus** (the Claude default), **Fable** (frontier).
-Codex: **Luna**, **Sol**, **Astra** in the same order. A second opinion runs
-one tier below the session's own by default: a Codex session on Sol or Astra
-asks Claude on Sonnet (`--model sonnet`) and escalates one tier per round
-(`--model opus`, then `--model fable`) only when the cheaper pass says the
-context is too large or uncertain, misses a concrete concern you can point
-to, the change is high-risk, or the operator asks for a deeper pass. Reach
-for Fable only when Opus still leaves a disagreement standing and the
-decision is hard to reverse. Two frontier models agreeing on a routine diff
-is not worth the spend.
+Default to the receiving family's middle tier, independently of the current session's model: **Opus** for Claude (`--model opus`), **Sol** for Codex. Sonnet and Luna are opt-in, not default reviewers. Escalate to Fable or Astra when a concrete unresolved concern warrants it or the operator asks. An explicitly requested model always takes precedence.
 
 Before the handoff, briefly state the selected model and why. Claude aliases (`sonnet`, `opus`, `fable`) select the latest version according to `claude --help`; if the local CLI exposes multiple versions, name the alternatives and prefer the newest available version. An explicitly requested full model ID takes precedence; never silently substitute another version. If only an alias is exposed, say that the exact version is not yet known instead of inventing a version or claiming no alternatives exist. Use `--output-format json` for the handoff and report the actual model ID from response metadata when present, alongside the findings.
 
@@ -48,7 +38,7 @@ If `claude` is missing, say so plainly and stop. There is no peer to ask, and
 pretending otherwise wastes the operator's time. This is the one hard
 precondition.
 
-Set `CLAUDE_PEER_MODEL` to the requested alias or full model ID, or `sonnet` when none was requested; use it for every handoff below.
+Set `CLAUDE_PEER_MODEL` to the requested alias or full model ID, or `opus` when none was requested; use it for every handoff below.
 
 ## Give Claude time to think
 
@@ -123,7 +113,7 @@ PROMPT
 **3. Go back and forth.** A single answer is consultation; intervision is a
 conversation. Continue with a fresh `claude -p` handoff that quotes the peer's
 prior finding and your evidence. Do not loop on vibes; push one concrete point
-at a time. To escalate, keep the same prompt with the Sonnet answer quoted
+at a time. To escalate, keep the same prompt with the previous answer quoted
 underneath and move `--model` one tier up.
 
 ```bash

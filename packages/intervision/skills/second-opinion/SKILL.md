@@ -40,28 +40,9 @@ the same repository, on its own login, with its own model behind it. That
 independence is the whole point; a peer trained the same way as you would only
 echo you.
 
-Both families ship in three tiers, and the peer is chosen by tier, never by
-one hard-coded slug. Codex: **Luna** (fast, cheap), **Sol** (the Codex
-default), **Astra** (frontier). Claude: **Sonnet**, **Opus**, **Fable** in
-the same order. A second opinion runs one tier below the session's own by
-default: routine consultations go to Luna (a Claude session on Opus or Fable
-asking Codex) or to Sonnet (a Codex session asking Claude); escalation moves
-one tier up per round.
+Default to the receiving family's middle tier, independently of the current session's model: **Sol** for Codex, **Opus** for Claude. Sonnet and Luna are opt-in, not default reviewers. Escalate to Astra or Fable when a concrete unresolved concern warrants it or the operator asks. An explicitly requested model always takes precedence.
 
-Resolve the Codex tier with `${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model`.
-Without arguments it returns the newest visible Luna slug from
-`codex debug models` (today `gpt-6-luna`; a `gpt-5.6-luna` in the same
-catalog loses on generation), and only when no Luna tier is listed it falls
-back to a Codex Spark or mini coding model, or to the legacy Spark slug when
-the catalog cannot be read. `--tier sol` and `--tier astra` resolve the
-higher tiers the same way and fail closed when that tier is absent, so an
-escalation never silently lands on the cheap model or on whatever Codex
-happens to default to. Escalate to Sol when the Luna pass says the context
-is too large or uncertain, misses a concrete concern you can point to, the
-change is high-risk, or the operator asks for a deeper pass. Reach for Astra
-only when Sol still leaves a disagreement standing and the decision is hard
-to reverse (a data contract, a public interface, a deploy shape). Two
-frontier models agreeing on a routine diff is not worth the spend.
+Resolve the Codex tier with `${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model`. Without arguments it returns the newest visible Sol model from `codex debug models`. `--tier luna`, `--tier sol`, and `--tier astra` select an explicit tier. The default fails closed if Sol is unavailable; it never silently downgrades to Luna, Spark, or mini.
 
 Before the handoff, briefly state the resolved model ID and why it was chosen. If multiple versions of the requested tier are visible in `codex debug models`, name those alternatives and explain that the newest visible generation wins by default. An explicitly requested version takes precedence: verify that exact ID in the catalog and pass it directly; never silently substitute another version. Keep catalog checks to model IDs and visibility, not the full model instructions.
 
@@ -80,7 +61,7 @@ Then resolve the first-pass model before any handoff (add the requested `--tier`
 ```bash
 : "${CLAUDE_PLUGIN_ROOT:?CLAUDE_PLUGIN_ROOT not set; intervision needs its installed plugin helper}"
 CODEX_PEER_MODEL="$("${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model" INTERVISION_CODEX_MODEL)" || {
-  echo "no Codex Luna model found; stop instead of guessing a slug or using the expensive Codex default"
+  echo "no Codex Sol model found; stop instead of guessing or downgrading"
   exit 1
 }
 ```
@@ -129,9 +110,9 @@ To escalate, resolve the next tier and start a fresh handoff with the same
 original prompt and the cheaper peer's answer quoted underneath:
 
 ```bash
-CODEX_PEER_MODEL="$("${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model" --tier sol)" || exit 1
+CODEX_PEER_MODEL="$("${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model" --tier astra)" || exit 1
 codex exec --model "$CODEX_PEER_MODEL" -s read-only - <<'PROMPT'
-<the original prompt, then the Luna answer under a heading "Earlier pass (Luna)">
+<the original prompt, then the Sol answer under a heading "Earlier pass (Sol)">
 PROMPT
 ```
 

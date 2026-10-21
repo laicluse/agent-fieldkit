@@ -6,7 +6,7 @@ const LEGACY_SPARK = 'gpt-5.3-codex-spark';
 const TIERS = ['luna', 'sol', 'astra'];
 
 const args = process.argv.slice(2);
-let tier = 'luna';
+let tier = 'sol';
 const tierIndex = args.indexOf('--tier');
 if (tierIndex >= 0) {
   tier = String(args[tierIndex + 1] || '').toLowerCase();

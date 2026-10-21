@@ -53,7 +53,7 @@
 						<p class="lede">Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.20</span>
+							<span class="meta-fact">2.0.21</span>
 							<span class="meta-fact">1 skill</span>
 						</div>
 					</div>
@@ -83,13 +83,13 @@
 <p>Use it when a change is subtle enough that a second model family is worth the cost: risky code, a design decision, a review that felt too agreeable, or a diff where the failure mode is hard to see from one perspective.</p>
 <h2 id="commands">Commands</h2>
 <h3 id="intervision-second-opinion"><code>/intervision:second-opinion</code></h3>
-<p>Hands the recent work to the other agent and talks it through. Claude uses <code>codex exec</code> on the Luna tier advertised by <code>codex debug models</code> first and escalates one tier at a time (Sol, then Astra) only when the cheaper pass is uncertain, misses a concrete concern, or the work is high-risk. The Claude ladder mirrors it as Sonnet, Opus, Fable. Codex uses <code>claude -p</code>. Three shapes, picked by what just happened:</p>
+<p>Hands the recent work to the other agent and talks it through. Claude asks Codex on <strong>Sol</strong>; Codex asks Claude on <strong>Opus</strong>. These middle-tier defaults apply independently of the caller's model. Explicit model requests override them, including Luna or Sonnet. Escalate to Astra or Fable for a concrete unresolved concern or an explicit request. Three shapes, picked by what just happened:</p>
 <ul class="term-list"><li><strong>Work just done (a diff):</strong> <span>the peer reviews the actual change set.</span></li><li><strong>A design just discussed (no code yet):</strong> <span>the peer reflects on the plan without touching the tree.</span></li><li><strong>Back and forth:</strong> <span>continue the exchange to push a point, defend yours, or ask the peer to reconsider.</span></li></ul>
 <p>The exact agent-specific invocations live in the suffixed skill sources.</p>
 <p>The peer's findings come home through three honest fates: fix, skip on cost versus value, or reject as hollow. The exchange and any remaining disagreement are surfaced to you.</p>
 <h2 id="requirements">Requirements</h2>
 <p>The peer CLI must be installed and logged in: Claude needs <code>codex</code>; Codex needs <code>claude</code>. Reviews run against your own account and quota, so a large diff is a real billed call. The skill preflights for the CLI and stops with a plain message when no peer is available.</p>
-<p>Claude-side Codex model selection lives in <code>bin/codex-fast-coding-model</code>: no argument resolves the newest Luna slug, <code>--tier sol</code> and <code>--tier astra</code> the higher tiers, each failing closed when the catalog lacks that tier. <code>INTERVISION_CODEX_MODEL</code> can override the catalog choice for one run.</p>
+<p>Claude-side Codex model selection lives in <code>bin/codex-fast-coding-model</code>: no argument resolves the newest Sol slug and fails closed when Sol is unavailable. <code>--tier luna</code>, <code>--tier sol</code>, and <code>--tier astra</code> select an explicit tier. <code>INTERVISION_CODEX_MODEL</code> can override the catalog choice for one run.</p>
 				</article>
 				
 			</section>

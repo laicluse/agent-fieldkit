@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## 2.0.21
+
+### Changed
+
+- Second opinions default to Opus when asking Claude and Sol when asking Codex, regardless of the caller's model. Explicit model choices still override the default; unavailable Sol models fail closed instead of downgrading.
+
 ## [v2.0.18]
 
 ### Changed

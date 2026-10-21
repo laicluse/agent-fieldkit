@@ -24,11 +24,11 @@ run_helper() {
   PATH="$FAKE_BIN:$NODE_DIR:/usr/bin:/bin" "$NODE_BIN" "$HELPER" "$@"
 }
 
-@test "chooses the newest Luna tier as the cheap peer" {
+@test "defaults to the newest Sol tier" {
   printf '%s\n' '{"models":[{"slug":"gpt-6-astra","display_name":"GPT-6-Astra","visibility":"list"},{"slug":"gpt-5.6-luna","display_name":"GPT-5.6-Luna","visibility":"list"},{"slug":"gpt-6-luna","display_name":"GPT-6-Luna","visibility":"list"},{"slug":"gpt-6-sol","display_name":"GPT-6-Sol","visibility":"list"}]}' > "$MODELS"
   run run_helper
   [ "$status" -eq 0 ]
-  [ "$output" = "gpt-6-luna" ]
+  [ "$output" = "gpt-6-sol" ]
 }
 
 @test "resolves the Sol and Astra tiers on request" {
@@ -43,21 +43,21 @@ run_helper() {
 
 @test "a missing Sol tier fails closed instead of falling back to Spark" {
   printf '%s\n' '{"models":[{"slug":"gpt-6.1-codex-spark","display_name":"GPT-6.1 Codex Spark","description":"Ultra-fast coding model","visibility":"list"}]}' > "$MODELS"
-  run run_helper --tier sol
+  run run_helper
   [ "$status" -eq 2 ]
   [[ "$output" == *"no Codex sol model"* ]]
 }
 
 @test "chooses the advertised Codex Spark slug" {
   printf '%s\n' '{"models":[{"slug":"gpt-6.1-codex-spark","display_name":"GPT-6.1 Codex Spark","description":"Ultra-fast coding model","visibility":"list"}]}' > "$MODELS"
-  run run_helper
+  run run_helper --tier luna
   [ "$status" -eq 0 ]
   [ "$output" = "gpt-6.1-codex-spark" ]
 }
 
 @test "falls back to mini when Spark is absent" {
   printf '%s\n' '{"models":[{"slug":"gpt-6.1-mini","display_name":"GPT-6.1 Mini","description":"Fast coding model","visibility":"list"}]}' > "$MODELS"
-  run run_helper
+  run run_helper --tier luna
   [ "$status" -eq 0 ]
   [ "$output" = "gpt-6.1-mini" ]
 }
@@ -69,9 +69,9 @@ run_helper() {
   [[ "$output" == *"invalid CODEX_FAST_CODING_MODEL"* ]]
 }
 
-@test "fails closed when the catalog has no cheap model" {
+@test "fails closed when the catalog has no Sol model" {
   printf '%s\n' '{"models":[{"slug":"gpt-6.1","display_name":"GPT-6.1","description":"Frontier model","visibility":"list"}]}' > "$MODELS"
   run run_helper
   [ "$status" -eq 2 ]
-  [[ "$output" == *"no Codex luna model"* ]]
+  [[ "$output" == *"no Codex sol model"* ]]
 }
