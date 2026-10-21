@@ -127,3 +127,26 @@ advance_base() {
   [ "$status" -eq 0 ]
   [ -z "$output" ]
 }
+
+@test "pr-discipline blocks a task-list checkbox in an inline body" {
+  run_guard $'gh pr edit 12 --body "Uitleg.\n\n- [ ] Een read-only query op productie telt de rijen\n- [x] Specs dekken de drie gevallen"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"task-list checkbox"* ]]
+  [[ "$output" == *"Een read-only query"* ]]
+}
+
+@test "pr-discipline blocks a checked checkbox from --body-file" {
+  printf '%s\n' 'Uitleg.' '' '* [x] Specs groen' > "$REPO/body.md"
+  run_guard "gh pr edit 12 --body-file $REPO/body.md"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"task-list checkbox"* ]]
+}
+
+@test "pr-discipline accepts a plain list and bracketed prose" {
+  run_guard 'gh pr edit 12 --body "- Specs dekken vijf, zeven en twaalf maanden. Zie [x] in de tabel en array[ ] in Ruby."'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}

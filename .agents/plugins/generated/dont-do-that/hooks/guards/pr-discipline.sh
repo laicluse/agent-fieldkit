@@ -59,6 +59,13 @@ guard_pr_discipline() {
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
 
+  # allow-comment: a task-list checkbox in a PR body is a promise nobody revisits after the merge; a merged PR once kept an unchecked production count for a day while the number only existed in the backlog item. Evidence reads as prose stating what was shown; work that remains goes to the backlog as its own item, not into the PR.
+  local checkbox
+  checkbox=$(grep -oE '(^|[[:space:]]|\\n)[-*+][[:space:]]+\[[ xX]\][[:space:]]+[^\\]{0,60}' <<< "$content" | head -1 | sed -E 's/^[[:space:]]*(\\n)?//')
+  if [ -n "$checkbox" ]; then
+    dd_emit_deny pr-discipline "PR body contains a task-list checkbox: '${checkbox}'. A checkbox in a PR is a promise nobody updates after the merge. State evidence as prose (what was run, what it showed), and put work that is still open in the backlog as its own work item instead of in the PR."
+  fi
+
   dd_pr_image_links "$content"
 
   # Currency check runs last: the content checks above are local and cheap,
