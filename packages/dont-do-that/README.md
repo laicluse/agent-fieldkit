@@ -159,14 +159,14 @@ there.
 
 The same guard denies PR bodies with fixed-section or AI-attribution signatures:
 `## Summary`, `## Test plan`, a generated-with footer, or a `Co-Authored-By`
-trailer with an `@anthropic.com` email. It also denies a task-list checkbox
-(`- [ ]`, `- [x]`) anywhere in the body: a checkbox is a promise nobody updates
-after the merge. Evidence is prose; open work goes to the backlog as its own
-item.
+trailer with an `@anthropic.com` email. It also denies an unchecked task-list box
+(`- [ ]`) anywhere in the body: work for later does not belong in a PR, and
+nobody revisits the box after the merge. A ticked box stating what was shown
+may stay; what remains goes to the backlog as its own item.
 
 Pass condition: write the title as the capability now present, and use a short
-body about why the change matters without template, checkboxes or tooling
-attribution.
+body about why the change matters without template, open checkboxes or
+tooling attribution.
 
 ### `followup`
 

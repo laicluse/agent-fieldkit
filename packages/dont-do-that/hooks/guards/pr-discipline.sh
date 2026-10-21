@@ -59,11 +59,11 @@ guard_pr_discipline() {
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
 
-  # allow-comment: a task-list checkbox in a PR body is a promise nobody revisits after the merge; a merged PR once kept an unchecked production count for a day while the number only existed in the backlog item. Evidence reads as prose stating what was shown; work that remains goes to the backlog as its own item, not into the PR.
+  # allow-comment: a PR describes what changed, so work for later has no place in it; an unchecked task-list box is that work in its most visible shape, and nobody revisits it after the merge (a merged PR once kept an unchecked production count for a day while the number only existed in the backlog item). A ticked box states evidence and may stay; what remains goes to the backlog as its own item.
   local checkbox
-  checkbox=$(grep -oE '(^|[[:space:]]|\\n)[-*+][[:space:]]+\[[ xX]\][[:space:]]+[^\\]{0,60}' <<< "$content" | head -1 | sed -E 's/^[[:space:]]*(\\n)?//')
+  checkbox=$(grep -oE '(^|[[:space:]]|\\n)[-*+][[:space:]]+\[ \][[:space:]]+[^\\]{0,60}' <<< "$content" | head -1 | sed -E 's/^[[:space:]]*(\\n)?//')
   if [ -n "$checkbox" ]; then
-    dd_emit_deny pr-discipline "PR body contains a task-list checkbox: '${checkbox}'. A checkbox in a PR is a promise nobody updates after the merge. State evidence as prose (what was run, what it showed), and put work that is still open in the backlog as its own work item instead of in the PR."
+    dd_emit_deny pr-discipline "PR body contains an unchecked task-list box: '${checkbox}'. Work for later does not belong in a PR; nobody revisits it after the merge. Either do it now and tick the box with what it showed, or give it its own backlog item and drop the line here."
   fi
 
   dd_pr_image_links "$content"

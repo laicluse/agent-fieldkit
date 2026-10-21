@@ -132,16 +132,23 @@ advance_base() {
   run_guard $'gh pr edit 12 --body "Uitleg.\n\n- [ ] Een read-only query op productie telt de rijen\n- [x] Specs dekken de drie gevallen"'
 
   [ "$status" -eq 2 ]
-  [[ "$output" == *"task-list checkbox"* ]]
+  [[ "$output" == *"unchecked task-list box"* ]]
   [[ "$output" == *"Een read-only query"* ]]
 }
 
-@test "pr-discipline blocks a checked checkbox from --body-file" {
-  printf '%s\n' 'Uitleg.' '' '* [x] Specs groen' > "$REPO/body.md"
+@test "pr-discipline blocks an unchecked box from --body-file" {
+  printf '%s\n' 'Uitleg.' '' '* [ ] Productietelling na de merge' > "$REPO/body.md"
   run_guard "gh pr edit 12 --body-file $REPO/body.md"
 
   [ "$status" -eq 2 ]
-  [[ "$output" == *"task-list checkbox"* ]]
+  [[ "$output" == *"unchecked task-list box"* ]]
+}
+
+@test "pr-discipline accepts ticked boxes as evidence" {
+  run_guard $'gh pr edit 12 --body "- [x] Specs dekken de drie gevallen\n- [x] Migratie herstelde 0 rijen"'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
 }
 
 @test "pr-discipline accepts a plain list and bracketed prose" {
