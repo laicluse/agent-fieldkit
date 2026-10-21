@@ -144,11 +144,25 @@ advance_base() {
   [[ "$output" == *"open task"* ]]
 }
 
-@test "pr-discipline blocks a numbered or empty open task" {
-  run_guard $'gh pr edit 12 --body "Uitleg.\n1. [ ] Later nog meten\n- [ ]"'
+@test "pr-discipline blocks a numbered open task" {
+  run_guard $'gh pr edit 12 --body "Uitleg.\n1. [ ] Later nog meten"'
 
   [ "$status" -eq 2 ]
   [[ "$output" == *"1. [ ] Later nog meten"* ]]
+}
+
+@test "pr-discipline blocks an empty open box" {
+  run_guard $'gh pr edit 12 --body "Uitleg.\n- [ ]"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"open task"* ]]
+}
+
+@test "pr-discipline blocks an open task on the first inline body line" {
+  run_guard 'gh pr edit 12 --body "- [ ] Later nog meten"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"- [ ] Later nog meten"* ]]
 }
 
 @test "pr-discipline lets a quoted checkbox mid-sentence through" {

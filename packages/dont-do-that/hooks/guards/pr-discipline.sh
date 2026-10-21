@@ -59,9 +59,9 @@ guard_pr_discipline() {
     dd_emit_deny pr-discipline "PR body contains a Co-Authored-By trailer with an @anthropic.com email. Remove the trailer; the change is the operator's, not a co-authored work."
   fi
 
-  # allow-comment: an open task-list item in a PR body is work for later; it is done now or becomes a backlog item. Matched at line start only (heredoc bodies keep their newlines, --body strings carry a literal \n), so a `- [ ]` quoted mid-sentence passes.
+  # allow-comment: an open task-list item in a PR body is work for later; it is done now or becomes a backlog item. Matched at line start only (heredoc bodies keep their newlines, --body strings carry a literal \n, and the opening quote of --body counts as a line start), so a `- [ ]` quoted mid-sentence passes.
   local checkbox
-  checkbox=$(grep -oE '(^|\\n)[[:space:]]*([-*+]|[0-9]+[.)])[[:space:]]+\[ \]([[:space:]][^\\]{0,60})?' <<< "$content" | head -1 | sed -E 's/^(\\n)?[[:space:]]*//')
+  checkbox=$(grep -oE '(^|\\n|(--body|-b)[=[:space:]]+["'"'"']?)[[:space:]]*([-*+]|[0-9]+[.)])[[:space:]]+\[ \]([[:space:]][^\\]{0,60})?' <<< "$content" | head -1 | sed -E 's/^(\\n|(--body|-b)[=[:space:]]+["'"'"']?)?[[:space:]]*//')
   if [ -n "$checkbox" ]; then
     dd_emit_deny pr-discipline "PR body contains an open task: '${checkbox}'. Do it now and record the result, or give it its own backlog item and remove the line from the PR."
   fi
