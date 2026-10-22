@@ -4,6 +4,12 @@ The post-update broadcast shows the topmost section once per machine whenever
 the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries
 short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.77]
+
+### Changed
+
+- Removing a linked worktree and its branch needs only that worktree's claim, never the primary checkout's.
+
 ## [v2.0.76]
 
 ### Changed
