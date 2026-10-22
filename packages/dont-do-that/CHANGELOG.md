@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.82] - 2026-10-22
+
+### Changed
+
+- The cache guard lets a reply through when it cites a clean profile, such as an incognito window, that behaves differently; every other cache explanation on localhost is still blocked.
+
 ## [v2.0.77] - 2026-10-20
 
 ### Breaking

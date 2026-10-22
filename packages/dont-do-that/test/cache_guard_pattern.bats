@@ -22,3 +22,10 @@ matches() {
 @test "still blocks stale assets claims" {
   matches "vermoedelijk de oude assets van gisteren"
 }
+
+@test "a clean-profile comparison is evidence, not a rationalisation" {
+  EVIDENCE=$(grep -oE 'grep -qiE "incognito[^"]*"' "$GUARD" | sed 's/^grep -qiE "//; s/"$//')
+  [ -n "$EVIDENCE" ]
+  echo "in een incognito venster laadt de demo wel goed" | grep -qiE "$EVIDENCE"
+  ! echo "de browser cache houdt de oude versie vast" | grep -qiE "$EVIDENCE"
+}
