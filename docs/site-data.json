@@ -304,7 +304,7 @@
 		},
 		{
 			"name": "intervision",
-			"version": "2.0.21",
+			"version": "2.0.22",
 			"category": "review",
 			"summary": "Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.",
 			"support": [
@@ -707,7 +707,7 @@
 		},
 		{
 			"plugin": "intervision",
-			"packageVersion": "2.0.21",
+			"packageVersion": "2.0.22",
 			"detailPath": "agent-fieldkit/intervision/",
 			"version": "v2.0.18",
 			"type": "Changed",

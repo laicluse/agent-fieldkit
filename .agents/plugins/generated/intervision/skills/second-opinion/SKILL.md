@@ -165,6 +165,8 @@ honest fate:
   with a one-line reason.
 - **Reject it** when it is hollow, with the evidence that makes it hollow.
 
+A finding without one of these fates is not done. When the operator asked to keep going with the peer until both are satisfied, a suggestion you have not settled goes back to the peer as a concrete proposal, not to the operator as an option.
+
 Then surface the exchange to the operator: what the peer raised, what you did
 with each point, and where the two of you still disagree. Do not smooth the
 disagreements away. They are the most useful thing intervision produces, because

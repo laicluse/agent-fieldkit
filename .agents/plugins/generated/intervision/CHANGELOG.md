@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## 2.0.22
+
+### Changed
+
+- A peer finding without a fate goes back to the peer as a concrete proposal instead of to the operator as an option.
+
 ## 2.0.21
 
 ### Changed
