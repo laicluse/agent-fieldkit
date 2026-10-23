@@ -7,7 +7,9 @@ description: >-
 
 # Review
 
-Inspect the actual render and accepted target before explaining code. Separate observations, hypotheses and measured facts. A passing test or correct semantic encoding does not prove aesthetic success.
+Inspect the actual render and accepted target before explaining code. Separate observations, hypotheses and measured facts. A passing test or correct semantic encoding does not prove aesthetic success. Judge with [design reasoning](../eye-of-the-beholder/design-reasoning.md); a review without an accepted target can find defects but cannot establish that a surface is convincing.
+
+Before reviewing a change, inventory what it can reach: shared components and tokens, the surfaces that use them, states, breakpoints and transitions. A surface outside the sample you were optimizing for still has to be looked at when a shared primitive under it changed.
 
 Use [image-input](image-input/protocol.md) to classify captures and references, [reference-match](reference-match/protocol.md) when a distinct reference plus match intent or a named visual axis identifies what to reproduce, and [diagnostics](diagnostics.md) for complaint-to-axis and technical diagnosis. See [background references](references.md) when deeper diagnostic context is useful. These internal protocols are supporting references, not additional public commands. Scope their heuristics to the accepted visual language; do not impose unrelated aesthetic defaults.
 
@@ -15,9 +17,7 @@ If the actual render cannot be captured or inspected, disclose the specific limi
 
 Capture at presentation resolution with enough product context to understand the state and behavior. Compare equivalent scales and data. Do not enlarge a low-resolution crop and call it evidence. Show fresh evidence in the shared artifact, not just a temporary local file.
 
-Motion evidence must also be playable by its recipient outside the capture browser. Default to H.264 MP4 with `yuv420p` pixel format and fast-start metadata for ordinary desktop handoff; use WebM only when the recipient or target surface is known to support it. Verify the delivered file itself with a local player or decoder before linking it as evidence.
-
-The capture path must preserve the timing being judged. Measure the product's displayed or instrumented frame rate during the recorded interaction and report the observed range; a recorder that materially lowers it makes the evidence invalid even when the resulting file itself is encoded at a higher nominal frame rate. Switch to hardware-accelerated rendering and native screen capture, or another path whose measured runtime remains representative, before drawing conclusions about motion quality.
+Motion evidence must be playable by its recipient outside the capture browser (H.264 MP4, `yuv420p`, fast-start for ordinary desktop handoff; verify the delivered file) and must preserve the timing being judged: measure the displayed frame rate during the recorded interaction and report it. See [motion pitfalls](pitfalls/motion.md).
 
 When explanations compensate for unclear controls, hidden state or avoidable choices, use [obvious](../obvious/SKILL.md) to reconsider the interaction before polishing its copy. Do not turn an exact visual correction into an unrelated usability redesign.
 
@@ -28,7 +28,7 @@ Assess separately:
 - Fidelity: the implementation retains the accepted concept's defining qualities on the relevant axes.
 - Interaction: density, zoom, selection combinations, transitions and motion remain legible and stable in the real runtime.
 
-Success on one dimension cannot compensate for failure on another. Point to concrete regions and visible differences. Do not invent aesthetic scores or infer measured colors from visual guesses. Independent review can challenge a reading, but agreement among uncalibrated reviewers is not evidence of user acceptance.
+Success on one dimension cannot compensate for failure on another. Point to concrete regions and visible differences. Do not invent aesthetic scores or infer measured colors from visual guesses. Independent review can challenge a reading; when judges compare candidates, follow [judging](judging.md), and remember that agreement among uncalibrated reviewers is not evidence of user acceptance. When a reviewed mechanism came from the [reference library](../explore/reference-library.md), record the outcome on its entry.
 
 For a known defect, fix the demonstrated cause, then review the whole visible surface in the fresh render, not only the changed or reported region. Exercise the states that can change the meaning of the touched surface; for repeated-object interfaces this includes populated, partial and empty content plus the transition to the next item. A control or affordance without content or a useful outcome is a defect, even when it was outside the original callout.
 

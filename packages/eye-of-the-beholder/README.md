@@ -1,6 +1,12 @@
 # eye-of-the-beholder
 
-Visual and interaction design for interfaces that communicate through their controls, layout and feedback. Start with `eye-of-the-beholder` for a new treatment, an unpleasing result, confusing controls or a redesign. It routes usability repair, image-based visual exploration and inspection of the real implementation.
+Visual and interaction design for interfaces that communicate through their controls, layout and feedback. Start with `eye-of-the-beholder` to make something better, more beautiful or clearer, for a new treatment, an unpleasing or generic result, confusing controls or a redesign. It steers away from the averaged look that unguided models and small-step improvement loops converge on, and routes usability repair, visual exploration and inspection of the real implementation.
+
+## Design reasoning
+
+Every skill applies one shared reasoning core instead of a style. It decides from meaning, attention, relations, character and medium; forms a visible design hypothesis before polishing; asks which choice could only exist for this product; researches dated references when proposals converge; keeps the point of comparisons visible; and judges novelty, appeal and fit separately, including everything a change reaches and motion over its whole sequence. It names no default font, palette or layout.
+
+Three mechanisms keep that reasoning from freezing at a model's training median. A dated **reference library** (`skills/explore/reference-library.md`, stored under `~/.laicluse/eye-of-the-beholder/references/`) records real work with its transferable mechanism and what happened when it was applied, plus a draw log that makes habits visible. A **judging protocol** (`skills/review/judging.md`) with calibration pairs (`test/calibration/`) turns judge rounds into evidence instead of position bias. A **practice test** (`test/practice/`) compares plugin versions on four briefs in two domains each, on both hosts, with human verdicts first. Rendering diagnostics are an observation method; pitfalls per axis load only when that axis is scanned.
 
 ## Skills
 
@@ -8,7 +14,7 @@ Visual and interaction design for interfaces that communicate through their cont
 | --- | --- |
 | `eye-of-the-beholder` | The single entry point: inspect context, route the request and carry accepted decisions through to the real render. |
 | `eye-of-the-beholder:obvious` | Resolve the current confusing interaction from context and reduce avoidable cognitive load through clearer controls, state and feedback. |
-| `eye-of-the-beholder:explore` | Generate visual proposals from actual references, interpret reactions and establish an accepted target. |
+| `eye-of-the-beholder:explore` | Form distinct design hypotheses from the product and real references, make them visible in the medium that suits the open question, interpret reactions and establish an accepted target. |
 | `eye-of-the-beholder:define` | Establish identity and design-system foundations when the product needs them. |
 | `eye-of-the-beholder:review` | Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately. |
 
@@ -18,7 +24,7 @@ Invoke `eye-of-the-beholder:obvious` against a screen, capture or recent result 
 
 ## Workflow
 
-Image generation is the default for genuinely new visual form. Exact fixes and reuse of accepted components skip concept exploration. During unresolved visual exploration, each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. An understood, authorized usability correction can proceed directly through implementation and verification. Combinations and rejection of every option are valid. If image generation is unavailable, agree a fallback instead of silently replacing it with CSS sketches.
+Genuinely new visual form starts with visible proposals; the medium follows the open question: image generation for atmosphere and imagery, built typography and layout studies for text-driven surfaces, small interactive studies for behavior and time. Exact fixes and reuse of accepted components skip concept exploration. Automated improvement loops refine an accepted design hypothesis and take their judging criteria from the shared reasoning. During unresolved visual exploration, each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. An understood, authorized usability correction can proceed directly through implementation and verification. Combinations and rejection of every option are valid. If the needed medium is unavailable, agree a fallback instead of silently substituting another.
 
 The canonical visual-language document records accepted image anchors and scoped accepted, rejected and unresolved decisions. Concept approval, mechanism approval and implementation approval are distinct. A generated image is a concept, not proof that the interaction works: the actual implementation must be reviewed at relevant scales, densities and combined states, including motion where it matters.
 

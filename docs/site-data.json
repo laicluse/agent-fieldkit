@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.17",
+			"version": "2.0.19",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -716,7 +716,7 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.17",
+			"packageVersion": "2.0.19",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
 			"version": "v2.0.15",
 			"type": "Added",

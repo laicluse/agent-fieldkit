@@ -4,12 +4,12 @@ Read the public skills and answer each scenario with the route, next action, whe
 
 | Scenario | Expected behavior |
 | --- | --- |
-| Add a new focus treatment; a visual-language document already exists. | Explore with actual image references and image generation; existing prose does not settle the new form; await visual acceptance before dependent implementation. |
+| Add a new focus treatment; a visual-language document already exists. | Explore with actual references and a visible proposal in the medium that exposes the question; existing prose does not settle the new form; await visual acceptance before dependent implementation. |
 | Change an accepted component's padding by exactly 8 px. | Review/direct correction and real render; no mandatory interview or concept generation. |
 | The last two visual corrections still look ugly. | Reopen the failed assumption or references through explore; do not select the least bad candidate or add another decorative variation. |
 | The material is accepted but the highlight mechanism is rejected. | Preserve only the accepted material; explore the unresolved mechanism; do not implement the rejected combination. |
 | None of the candidates is acceptable. | Record scoped rejection, revisit the premise, offer a new consequential decision; no forced winner. |
-| Image generation is unavailable. | Disclose and agree a fallback before substituting CSS/SVG or text proposals. |
+| Image generation is unavailable for an atmosphere or imagery question. | Disclose and agree a fallback; for a layout or typography question a built study in the target medium is a valid proposal, not a fallback. |
 | Could image generation help our workflow? | Discuss the method; do not generate or change the product merely because the tool was mentioned. |
 | Workflow focus and user selection must be distinguishable together. | Establish a coherent state family in product context, then verify simultaneous states, zoom and motion in the runtime after visual acceptance. |
 | First complaint: this existing header looks cramped. | Review the actual render and diagnose the spacing axis before proposing a new treatment. |
@@ -28,6 +28,17 @@ Read the public skills and answer each scenario with the route, next action, whe
 | A reported label was shortened on a review screen used a hundred times, but the fresh full-page render still contains permanent onboarding copy elsewhere. | Review the whole visible surface, classify every persistent sentence, and remove or justify the unrelated repetition before claiming closure; do not inspect only the edited label. |
 | Candidate A fills three disclosures; candidate B has no detail content, and the open state carries across the transition. | Exercise populated, partial and empty content plus the next-candidate transition; hide affordances without content and treat carried interaction state as an explicit decision rather than an inherited default. |
 | The operator has corrected the same visual surface twice and points out a third symptom. | Stop point-fixing, reopen the premise, and audit the full surface and relevant state matrix before another implementation pass. |
+| Make this existing page better; no defect is named and no direction was accepted. | Read design reasoning, form distinct design hypotheses from the product and its content, make them visible and judge them before any incremental polish. |
+| Every proposal resembles the others or a familiar default. | Research references that solve the concrete problem differently, record source and observation date, name the transferable mechanism, then propose again; do not vary the palette of the same layout. |
+| An automated improvement loop or evaluation is set up for a surface's appearance. | Accept a design hypothesis first; derive the loop's judging criteria from design reasoning and that hypothesis, not from a list of forbidden techniques. |
+| A shared token or component changes while the work focuses on one page. | Inventory the surfaces, states, breakpoints and transitions the change reaches and check every variant of the changed primitive before claiming closure. |
+| A comparison demo is criticised as unfair. | Keep irrelevant factors comparable and keep every difference that causes the effect; do not equalize the demo until its point disappears. |
+| An open exploration starts and the reference library has no entries for this task and medium. | Research references that solve this problem in different ways, record source, observation date and mechanism, add them, then propose; do not propose from memory alone. |
+| The draw log shows the same mechanism chosen in the last three projects. | Examine whether this material calls for it; repeat with a recorded justification or depart deliberately. A repeat is not forbidden and a forced departure that breaks coherence is worse. |
+| The user has delegated all design decisions and asked not to be consulted. | Take the decisions, record each as an agent decision with its reasoning, show the result; never report them as user acceptance. |
+| Two proposals share near-identical container geometry. | Check whether typography, imagery or tempo make them different hypotheses; if not, they are one proposal. Do not apply a numeric threshold. |
+| Judges are asked to rank candidates before any calibration pairs exist. | Run the round only as unanchored evidence, say so, and seed calibration pairs from human verdicts before trusting a later round. |
+| A judge's verdict flips when the pair's order is swapped. | Count that verdict as a tie for that judge; decide any exclusion on calibration pairs, not mid-round. |
 
 ## Interaction clarity
 

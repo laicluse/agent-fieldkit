@@ -42,7 +42,7 @@ For standard actions in toolbars and repeated rows, prefer conventional icons: a
 
 Development rationale, pipeline ordering, acceptance criteria and values from a brief are not product copy merely because they are true. Keep them outside the UI unless the product user needs them to make the current decision. Removing all help is not the goal. Preserve text required by law, policy or an identified content owner unless changing that requirement is explicitly authorized.
 
-Carry an already-authorized, understood correction through implementation without another generic approval round. Pause only for an unresolved trade-off that changes user agency, capability or task scope; present that specific decision before dependent changes. Use [explore](../explore/SKILL.md) for genuinely unresolved new visual form, not as a mandatory image-generation detour for a label, grouping or established control change. Do not invent a new identity to fix usability.
+Carry an already-authorized, understood correction through implementation without another generic approval round. Pause only for an unresolved trade-off that changes user agency, capability or task scope; present that specific decision before dependent changes. Use [explore](../explore/SKILL.md) for genuinely unresolved new visual form, not as a mandatory proposal round for a label, grouping or established control change. When a clarity change also changes appearance, judge it with [design reasoning](../eye-of-the-beholder/design-reasoning.md). Do not invent a new identity to fix usability.
 
 ## Verify the task, not the word count
 
