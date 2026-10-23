@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.83] - 2026-10-23
+
+### Changed
+
+- The prefer guard blocks a reply that points at a 🅰️/🅱️ decision without describing both options, such as a bare "say 🅰️ or 🅱️" reminder of a question asked earlier. The decision has to be presented whole in that message, or left out.
+
 ## [v2.0.82] - 2026-10-22
 
 ### Changed

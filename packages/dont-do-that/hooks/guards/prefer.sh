@@ -31,6 +31,17 @@ _dd_prefer_rover_tip() {
   return 0
 }
 
+_dd_prefer_defines() {
+  MARKER="$1" perl -CSD -0777 -ne '
+    my $m = $ENV{MARKER}; utf8::decode($m);
+    my $found = 0;
+    while (/\Q$m\E[ \t]*\**[ \t]*(\p{L}+)/g) {
+      $found = 1 unless lc($1) =~ /^(of|or|en|and|voor|for|kies|koos|pick|picked|choose|chose|als|as|is|blijft|stays)$/;
+    }
+    exit($found ? 0 : 1);
+  ' <<< "$2"
+}
+
 guard_prefer() {
   local input="$1"
   local text
@@ -41,9 +52,13 @@ guard_prefer() {
   local option_a_count option_b_count
   option_a_count=$(grep -oF '🅰️' <<< "$text" | wc -l | tr -d ' ')
   option_b_count=$(grep -oF '🅱️' <<< "$text" | wc -l | tr -d ' ')
-  if [ "$option_a_count" -ge 1 ] && [ "$option_b_count" -ge 1 ] \
-    && { [ "$option_a_count" -ge 2 ] || [ "$option_b_count" -ge 2 ]; }; then
-    return 0
+  if [ "$option_a_count" -ge 1 ] && [ "$option_b_count" -ge 1 ]; then
+    if ! _dd_prefer_defines '🅰️' "$text" || ! _dd_prefer_defines '🅱️' "$text"; then
+      dd_emit_block prefer "You pointed at a 🅰️/🅱️ decision without spelling it out in this message. An unanswered question means the operator never read it: they were away, or it scrolled out of view. Either present it whole here (what is being decided and why it matters, the evidence, 🅰️ and 🅱️ each described, your pick and why) or leave it out. A bare \"say 🅰️ or 🅱️\" or \"still open: 🅰️\" asks for a decision the reader cannot see."
+    fi
+    if [ "$option_a_count" -ge 2 ] || [ "$option_b_count" -ge 2 ]; then
+      return 0
+    fi
   fi
   grep -qE '^🧭' <<< "$text" && return 0
 

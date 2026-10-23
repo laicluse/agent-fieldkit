@@ -350,6 +350,15 @@ expect_block_mnemonic "prefer: lone squared-letter marker does not silence" pref
 expect_block_mnemonic "prefer: paired labels without a pick do not silence" prefer \
   "$(stop_payload "Twee wegen: 🅰️ inline, 🅱️ extract. Welke wil je? 🏁")"
 
+expect_block_mnemonic "prefer: bare reminder of an earlier decision" prefer \
+  "$(stop_payload "Ronde 6: niets veranderd."$'\n'"Nog open voor jou: de vouw over de onderrand, waar ik 🅰️ kies, de hoek per scharnier corrigeren."$'\n'"🚦 Zeg 🅰️ of 🅱️ voor de vouw over de onderrand.")"
+
+expect_block_mnemonic "prefer: bare A/B reminder in English" prefer \
+  "$(stop_payload "Still open: the fold question, I pick 🅰️."$'\n'"Say 🅰️ or 🅱️.")"
+
+expect_pass "prefer: decision restated in full passes" \
+  "$(stop_payload "De vouw over de onderrand slinkt sneller in beeld dan de andere twee."$'\n'"🅰️ **De hoek per scharnier corrigeren**, zodat elke vouw dezelfde zichtbare curve volgt."$'\n'"🅱️ **Zo laten**, want een echte kaart doet dit ook."$'\n'"Ik kies 🅰️, omdat elke vouw even snel moet aanvoelen."$'\n'"🚦 Zeg 🅰️ of 🅱️.")"
+
 expect_pass "prefer: compass escape" \
   "$(stop_payload "🧭 (a) inline of (b) extract, dit is jouw keuze. Welke wil je?")"
 
