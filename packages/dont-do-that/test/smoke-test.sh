@@ -359,6 +359,9 @@ expect_block_mnemonic "prefer: bare A/B reminder in English" prefer \
 expect_pass "prefer: decision restated in full passes" \
   "$(stop_payload "De vouw over de onderrand slinkt sneller in beeld dan de andere twee."$'\n'"🅰️ **De hoek per scharnier corrigeren**, zodat elke vouw dezelfde zichtbare curve volgt."$'\n'"🅱️ **Zo laten**, want een echte kaart doet dit ook."$'\n'"Ik kies 🅰️, omdat elke vouw even snel moet aanvoelen."$'\n'"🚦 Zeg 🅰️ of 🅱️.")"
 
+expect_pass "prefer: options described early in a long reply pass" \
+  "$(stop_payload "De vouw over de onderrand slinkt sneller in beeld."$'\n'"🅰️ **De hoek per scharnier corrigeren**, zodat elke vouw dezelfde curve volgt."$'\n'"🅱️ **Zo laten**, want een echte kaart doet dit ook."$'\n'"Ik kies 🅰️, omdat elke vouw even snel moet aanvoelen."$'\n'"$(printf 'Daarna volgt nog een lange alinea over iets anders. %.0s' {1..60})"$'\n'"🚦 Zeg 🅰️ (de hoek corrigeren) of 🅱️ (zo laten).")"
+
 expect_pass "prefer: compass escape" \
   "$(stop_payload "🧭 (a) inline of (b) extract, dit is jouw keuze. Welke wil je?")"
 
