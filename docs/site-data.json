@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.19",
+			"version": "2.0.20",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.15",
+				"version": "v2.0.20",
 				"type": "Added",
-				"summary": "obvious diagnoses confusing controls, over-explaining UI and avoidable cognitive load from the current task, then improves the interaction while preserving necessary guidance and accessibility."
+				"summary": "obvious decides where an action belongs from the task's length, frequency, stakes and need for context: inline from its control, a modal only when blocking helps (information the process cannot continue without, a deliberate confirmation), and its own page..."
 			}
 		},
 		{
@@ -716,11 +716,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.19",
+			"packageVersion": "2.0.20",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.15",
+			"version": "v2.0.20",
 			"type": "Added",
-			"summary": "obvious diagnoses confusing controls, over-explaining UI and avoidable cognitive load from the current task, then improves the interaction while preserving necessary guidance and accessibility.",
+			"summary": "obvious decides where an action belongs from the task's length, frequency, stakes and need for context: inline from its control, a modal only when blocking helps (information the process cannot continue without, a deliberate confirmation), and its own page...",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{

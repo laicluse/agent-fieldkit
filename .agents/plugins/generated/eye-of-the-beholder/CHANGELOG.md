@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.20]
+
+### Added
+
+- `obvious` decides where an action belongs from the task's length, frequency, stakes and need for context: inline from its control, a modal only when blocking helps (information the process cannot continue without, a deliberate confirmation), and its own page or cell for substantial, multi-step or comparative work. The entry point routes that question to `obvious`.
+
 ## [v2.0.15]
 
 ### Added

@@ -161,3 +161,21 @@ if (!/restore it before every run/.test(readme)) throw new Error("practice runs 
 NODE
   [ "$status" -eq 0 ]
 }
+
+@test "obvious decides an action's space from its task, not its markup" {
+  run node - "$SKILLS/obvious/SKILL.md" <<'NODE'
+const fs = require("fs");
+const text = fs.readFileSync(process.argv[2], "utf8");
+for (const rule of [
+  /earns no dialog or page of its own/,
+  /modal when blocking helps/,
+  /own task space, a page or a cell/,
+  /not from the HTML element, the number of fields/,
+  /repeat often belongs on the main surface/,
+  /confirmations, errors, feedback and focus return stay with the action/,
+]) {
+  if (!rule.test(text)) throw new Error(`obvious lacks: ${rule}`);
+}
+NODE
+  [ "$status" -eq 0 ]
+}

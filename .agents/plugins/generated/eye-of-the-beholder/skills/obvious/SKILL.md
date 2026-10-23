@@ -3,7 +3,8 @@ name: obvious
 description: >-
   Clarify confusing UI so the next action, current state and consequences are apparent.
   Use for unclear controls, over-explaining UI, excessive helper copy, cognitive
-  or mental load, choice overload, hidden state, spec leakage, or feedback such as
+  or mental load, choice overload, hidden state, spec leakage, whether an action
+  belongs inline, in a modal or on its own page or cell, or feedback such as
   "why must I think about this", "onduidelijke knop", or "te veel uitleg".
   Also use proactively when UI added or changed in the current task needs
   explanation to be usable.
@@ -34,6 +35,8 @@ For each suspect explanation, identify the recognition, decision, action, recove
 ## Make a proportionate design move
 
 Choose the simplest interaction that preserves the task's information and user agency. Consider clear action/object labels, spatial grouping, proximity, familiar conventions, sensible defaults, meaningful constraints, visible state, direct feedback and actions available at the moment of need. A requirement the product can maintain may remove a redundant toggle; independent user preferences still need independent control. For expert or repeated use, protect density, spatial stability, shortcuts and direct access; a change that eases first use but costs every later use needs a specific justification.
+
+Give an action the space its task needs, no more. A direct action or a small contextual input (toggle, follow, retry, rename in place, a one-field add) runs from its control where it sits; it earns no dialog or page of its own. A short, bounded input or a deliberate confirmation may interrupt with a modal when blocking helps: information the current process cannot continue without, or a consequence the user must see before an action that cannot be easily undone. Substantial editing, multi-step work, comparison, or anything that needs the background in view gets its own task space, a page or a cell beside the content, never a modal. Decide from the task's length, frequency, stakes and need for context, not from the HTML element, the number of fields, or whether a form or disclosure already exists; a task users repeat often belongs on the main surface even when it would fit a dialog. Keep the interruption to what the interruption is for: necessary confirmations, errors, feedback and focus return stay with the action wherever it runs.
 
 Compare the candidate with the current interaction by the decisions and inferences each requires. Prefer one defensible solution; show alternatives only for a consequential unresolved trade-off. Do not add configuration to avoid making a design decision.
 
