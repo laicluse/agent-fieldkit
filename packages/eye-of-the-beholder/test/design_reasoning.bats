@@ -173,6 +173,9 @@ for (const rule of [
   /not from the HTML element, the number of fields/,
   /repeat often belongs on the main surface/,
   /confirmations, errors, feedback and focus return stay with the action/,
+  /nngroup\.com\/articles\/modal-nonmodal-dialog/,
+  /carbondesignsystem\.com\/building-blocks\/core\/components\/modal\/guidelines/,
+  /design-system\.service\.gov\.uk\/components\/button/,
 ]) {
   if (!rule.test(text)) throw new Error(`obvious lacks: ${rule}`);
 }
