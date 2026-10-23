@@ -1,5 +1,11 @@
 # Circus changelog
 
+## [v2.0.7]
+
+### Fixed
+
+- Plugin builds preserve project skills under `.agents/skills/`. Adapter checks cover generated plugin files without claiming those project skills as generated output.
+
 ## [v2.0.6]
 
 ### Fixed

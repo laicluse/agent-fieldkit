@@ -407,7 +407,7 @@ generate_into() {
 expected_files() {
   local out_root="$1"
   {
-    find "$out_root/.agents" -type f 2>/dev/null || true
+    find "$out_root/.agents/plugins" -type f 2>/dev/null || true
     find "$out_root" -path "*/.codex-plugin/plugin.json" -type f 2>/dev/null
     find "$out_root" -path "*/skills/*/SKILL.md" -type f 2>/dev/null
   } | sort -u
@@ -416,7 +416,7 @@ expected_files() {
 actual_files() {
   local repo="$1"
   {
-    find "$repo/.agents" -type f 2>/dev/null || true
+    find "$repo/.agents/plugins" -type f 2>/dev/null || true
     find "$repo" -not -path "*/worktrees/*" -path "*/.codex-plugin/plugin.json" -type f 2>/dev/null
     generated_claude_skill_targets "$repo"
   } | sort -u
