@@ -2,10 +2,12 @@
 name: explore
 user-invocable: true
 description: >-
-  Explore a new visual treatment with image generation and real references. Show concrete proposals, resolve one consequential design decision per round, and establish an accepted visual target before implementation.
+  Explore a new visual treatment or a better version of an existing surface. Form distinct design hypotheses from the product and real references, make them visible in the medium that exposes the open question, resolve one consequential decision per round, and establish an accepted target before implementation or polishing.
 ---
 
 # Explore
+
+Apply [design reasoning](../eye-of-the-beholder/design-reasoning.md) throughout.
 
 ## Establish the brief
 
@@ -13,11 +15,15 @@ Start with the current product and accepted reference images, not adjectives alo
 
 Ask only what changes the next visual decision and cannot be learned from the artifacts or conversation. The user can react to images without naming a style.
 
-## Generate visual proposals
+When no accepted direction exists, or the request is to make a surface better without a named defect, start with a design hypothesis rather than incremental fixes. When proposals keep resembling each other or the model's defaults, research references as design reasoning describes before the next round.
 
-Resolve the real backend using [image generation across hosts](generation.md) before promising a generation round.
+## Make proposals visible
 
-For genuinely new visual treatments, image generation is the default required exploration step. Read the available image-generation tool or skill instructions and use actual accepted reference images as inputs, not only a prose description. Verify that the tool received the intended images. Follow the user's explicit tool preferences. If image generation is unavailable, disclose the limitation and agree a fallback; do not silently substitute coding-model CSS, SVG or text-only options. Exact corrections and reuse of accepted components may skip this step.
+Choose the medium from the uncertainty. Image generation suits atmosphere, material, lighting and imagery. Real typography and layout studies in the target medium suit text-driven and layout-driven surfaces. Small interactive studies suit behavior, transitions and time. An image model has defaults of its own; a generated bitmap is not automatically a better proposal than a built one.
+
+When using image generation, resolve the real backend using [image generation across hosts](generation.md) before promising a generation round. Read the tool or skill instructions and use actual accepted reference images as inputs, not only a prose description. Verify that the tool received the intended images. Follow the user's explicit tool preferences. If the medium you need is unavailable, disclose the limitation and agree a fallback. Exact corrections and reuse of accepted components may skip proposals entirely.
+
+When the direction is open, the proposals must differ in idea, composition, typography, imagery or tempo; variations of one layout do not expose a direction.
 
 Give each reference a role: current product, material, lighting, composition, interaction, or exact matching on named axes. Classify image inputs using [the protocol](../review/image-input/protocol.md). Exclude annotation and video-player chrome from product interpretation. Preserve the existing world unless redesigning it is explicitly in scope.
 
@@ -27,11 +33,11 @@ Show proposals in sufficient product context and at comparable scale and density
 
 This limit concerns design decisions. Resolve blocking input classification, backend or display questions first; they are prerequisites, not additional design rounds. Bundle closely related factual gaps where that reduces effort.
 
-1. Name the uncertainty that matters next. Choose the number and kind of proposals needed to expose it; there is no mandatory three-option format.
-2. Generate, inspect and show the proposals. Describe visible differences and state which direction you would back and why. Do not mistake your recommendation for user acceptance.
-3. Ask one consequential question and wait before dependent generation or implementation. Combinations and “none of these” are valid answers. Do not require a forced winner or design vocabulary.
+1. Name the uncertainty that matters next. Choose the number and kind of proposals needed to expose it; there is no mandatory three-option format. One decision can change many variables at once: which direction deserves development is a single decision.
+2. Make, inspect and show the proposals. Describe visible differences and state which direction you would back and why. Do not mistake your recommendation for user acceptance.
+3. Ask one consequential question and wait before dependent proposals or implementation. Combinations and “none of these” are valid answers. Do not require a forced winner or design vocabulary.
 4. Translate the reaction into the next constraint. Confirm only genuine ambiguity; an explicit decision needs no second approval.
-5. After a failed round, reconsider the assumption that produced it. After two nonconverging aesthetic corrections, revisit the brief or references before another cosmetic variation. Do not keep narrowing a rejected direction. If a reframed round still produces no acceptable direction, pause further generation and identify the missing reference or decision with the user; do not restart the same loop indefinitely.
+5. After a failed round, reconsider the assumption that produced it. After two nonconverging aesthetic corrections, revisit the brief or references before another cosmetic variation. Do not keep narrowing a rejected direction. If a reframed round still produces no acceptable direction, pause further proposals and identify the missing reference or decision with the user; do not restart the same loop indefinitely.
 
 Judge the entire material world: silhouette, palette relationships, light, depth, composition and motion. Gradients, glow, rounded forms and decorative detail are not inherently defects. A generic anti-slop checklist is not a substitute for this user's target, and code checks cannot prove beauty.
 

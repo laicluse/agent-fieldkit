@@ -41,7 +41,7 @@ Two operator corrections on the same visual surface trigger a premise reset. Sto
 
 **After every layout change: screenshot. Describe what you see BEFORE looking back at the CSS.**
 
-**Creating an image file is not the screenshot checkpoint. Immediately open every PNG produced for visual work with the host's image viewer and surface that rendered image to the user in the same turn. A local path, attachment link, or note that the file exists does not count as showing it. Do not continue iterating or hand off the work until the newly generated PNG itself has been opened and inspected.**
+**Creating an image file is not the screenshot checkpoint. Open and inspect every capture yourself before you continue. Show captures to the user when you present a decision or a result; diagnostic captures you make for your own checking do not need to be surfaced.**
 
 Not: "the padding should be 0.6rem, I see space, correct."
 Instead: "I see text pressing against the top edge." Only then: why? Which CSS causes this?
@@ -91,9 +91,9 @@ When examining a screenshot (taken yourself or provided), ask these questions in
 
    **The same trap applies one zoom step up: auto-sizing containers with text content.** Popovers, tooltips, sheets, banners, toasts, drawers, alert bodies, snackbars: each sizes itself to its content's intrinsic size. If the modifier or layout-prop order makes the intrinsic size smaller than the actual text needs (e.g. SwiftUI `.fixedSize().padding().frame(maxWidth:)` chained in the wrong order, CSS `max-height` capping a long string, `line-clamp` set to a guess number), the body is clipped silently from top, bottom, start, or end. The container looks correct in shape; the user reads a mid-string fragment that may even parse as a sentence on its own. When reviewing an open-state screenshot of any auto-sizing text container: **read every visible line of the popover/sheet/banner content against the source string. Count lines, compare wrapping. Confirm the first word and the last word are present.** A closed-state screenshot is not a substitute; the bug only exists when the container is open. If the visible text starts mid-sentence or ends mid-word, the container's intrinsic size is wrong, not the text. Fix by reordering the layout chain so the content can grow to its natural height (in SwiftUI: `.frame(width:alignment:).padding().fixedSize(horizontal: false, vertical: true)` typically works; in CSS: remove `max-height`, raise `line-clamp`, or audit `overflow: hidden` on the bubble).
 
-7. **Optical vs. mathematical bounds.** Circles, triangles, and round glyphs weigh optically less than squares with the same mathematical bounds. Designers compensate with *overshoot*: an "O" is fractionally larger than an "H", a circle must be ~113% of a square to read as equally large, a triangle must have its sharp point extend past the baseline. Does a round shape feel "smaller" than a square neighbor of the same pixel size? That is not an illusion, it is a missing overshoot.
+7. **Optical vs. mathematical bounds.** Circles, triangles, and round glyphs weigh optically less than squares with the same mathematical bounds. Designers compensate with *overshoot*: an "O" is fractionally larger than an "H", and a pointed shape extends past the baseline. If a round shape feels smaller than a square neighbor of the same pixel size, a missing overshoot is a likely cause; size the correction by eye against the neighbor, not by a fixed percentage.
 
-8. **Optical center sits higher than geometric center (Arnheim).** Mathematically centered content feels top-heavy. Push the visual center of gravity 2-5% upward. This is why `align-items: center` in CSS often feels "just too low": it is mathematically correct, not optically correct.
+8. **Optical center sits higher than geometric center (Arnheim).** Mathematically centered content can feel low. When it does, raising the visual center of gravity slightly is a likely correction; judge the amount by eye in context.
 
    **Exception for typography in icon containers** (buttons, pills, badges): here the rule works *in reverse*. A digit or letter naturally sits high within its line-box because font ascent is greater than font descent (typically 80/20). Cap-height center sits ~5% above em-box center. In a pill with an SVG icon that IS symmetrical, text feels "too high" (more whitespace below than above). Spiekermann's rule: *align to cap-height center, not to glyph bounding box*. Fix via micro-translate (~0.5-1px) or via `text-box-trim` / cap-height line-height libraries (Braid's capsize). In a review: do you see text and icon that do not feel equally centered in their container, with text higher than icon? That is font metric asymmetry, not your brain.
 
@@ -308,52 +308,7 @@ Read the frames via the Read tool. Per frame: apply the scan questions from "How
 
 ### Pixel-level animation sampling
 
-When you look at frames visually and the movements seem "roughly right", or you cannot tell whether a progress bar is retreating from 10% to 5%, that is the image-viewer limit: a 4px-wide bar over a 60px-tall row renders a 5% difference as 3 pixels. You cannot see that in a scaled-compressed image view. You need to read the pixel data directly from the frames.
-
-**Technique** (four steps, language-agnostic): extract a 1-pixel-wide vertical slice at the bar position per frame, decode the raw RGB bytes, classify each pixel by RGB threshold into a small set of categories (selected colour, unread colour, background), count per category per frame to get an exact percentage. Reference implementation in Node + ffmpeg (sessions can wire the same four steps in any language and any frame extractor):
-
-```javascript
-const { execSync } = require('child_process')
-const fs = require('fs')
-
-const X = 29  // bar x-position in the GIF (measure beforehand via a single slice)
-const gif = '/tmp/capture.gif'
-
-function classify(r, g, b) {
-  if (b > 150 && r < 180) return 'P'                    // purple/violet
-  if (r > 200 && g > 140 && g < 190 && b < 120) return 'A'  // amber
-  if (r > 200 && g > 200 && b > 200) return '.'         // background
-  return '?'                                             // transition state
-}
-
-for (let n = 0; n < 50; n++) {
-  execSync(`ffmpeg -y -v error -i ${gif} -vf "select=eq(n\\,${n}),crop=1:206:${X}:0" -vframes 1 /tmp/slice-${n}.ppm`)
-  const buf = fs.readFileSync(`/tmp/slice-${n}.ppm`)
-  // PPM: P6\n<w> <h>\n<max>\n<binary>
-  const headerEnd = buf.indexOf(0x0a, buf.indexOf(0x0a, buf.indexOf(0x0a) + 1) + 1) + 1
-  const pixels = buf.slice(headerEnd)
-  const cells = []
-  for (let i = 0; i < pixels.length; i += 3) cells.push(classify(pixels[i], pixels[i + 1], pixels[i + 2]))
-  const p = cells.filter((c) => c === 'P').length
-  const a = cells.filter((c) => c === 'A').length
-  const pct = p + a > 0 ? Math.round(p * 100 / (p + a)) : 0
-  console.log(`f${n}: ${cells.join('')}  purple=${pct}%`)
-}
-```
-
-**The output gives the true picture that image view cannot deliver.** You do not just see that the bar goes from amber to purple; you see exactly that on frame 13 there is a jump to 28%, on frame 14 a peak to 33%, on frame 27 a low of 12%, etc. Only with this data can you work backwards to determine which CSS transition, $effect race, or JS reset is the cause.
-
-**When to use**:
-- A user reports a bug in an animation that you cannot see visually.
-- You are unsure whether a progress bar fills linearly or has overshoot.
-- You see a peak/dip/oscillation and want to know how large it is.
-- Two elements animate simultaneously and you want to know whether they run in sync.
-
-**When not needed**:
-- Gross movement (entire element repositions, opacity 0 to 1).
-- A difference of 20%+ that you can see with the naked eye.
-
-**Rule of thumb**: if the user says "there is still a flicker/retreat/jitter" twice and you cannot see it, move from visual inspection to pixel sampling. Image view simply does not have the resolution for sub-5% movements.
+Image views cannot show sub-5% movement. When the user reports a flicker, retreat or jitter twice and you cannot see it, read pixel data from the frames instead of looking at them. See [pixel sampling](pixel-sampling.md) for the technique.
 
 ## Layout stability: the axis of unwanted motion
 
@@ -386,13 +341,11 @@ Apply these across a state change (hover, focus, load, expand, content update, v
 
 **Muller-Brockmann (Grid Systems):** Derive all spacing values from a shared base. The grid is a discipline that prevents arbitrariness.
 
-**Tufte:** Maximize the data-ink ratio. Every visual element must contribute to understanding. **Tschichold:** White space is an active design element, not what remains.
+**Tufte:** In data displays, every mark should earn its place in the reading of the data. Outside data, decoration and atmosphere are legitimate when they serve the chosen character. **Tschichold:** White space is an active design element, not what remains.
 
 **Arnheim (Art and Visual Perception):** Visual center of gravity matters more than pixel center. Optical center lies above geometric center. Asymmetric balance via visual weighting (mass, contrast, color) is livelier than strict symmetry.
 
 **Apple HIG / Material Design / Lucide (icon grids):** Every icon has two bounding boxes. An outer canvas and an inner "live area". Primary content stays within the live area, secondary content may extend to the outer, never beyond. Material: 24x24 canvas, 20x20 live area, 2 dp padding all around. Lucide: 24x24 canvas, 22x22 live area, stroke-width 2 centered (which pushes the actual edge a further half-stroke outward). Apple SF Symbols: inner icon-grid box plus outer bounding box. An icon that touches the outer edge feels out of place.
-
-**Bjango / Spiekermann (optical adjustments):** Mathematically identical shapes are optically unequal. Circles must overshoot the baseline and x-height. Sharp points of triangles must extend outside the bounding box. Vertical lines must appear thicker than horizontal ones to weigh equally. It is not an illusion to be fixed, it is how eyes work.
 
 ## When review does not converge
 
@@ -416,7 +369,6 @@ Return to `../explore/SKILL.md` when the visual direction is unresolved or the s
 | Declaring an auto-sizing text container done after seeing it "render" | A popover, sheet, banner, toast, or drawer auto-sizes to its intrinsic content. Wrong modifier order silently clips top/bottom or start/end of the body. Always read every visible line against the source string; check the first and last word are present. |
 | Forgetting stroke-width in a bounds check | Centered stroke adds `width/2` to all sides. A path to y=16 with stroke=2 effectively ends at y=17. |
 | Mathematically centering a glyph | Compare optical balance against the accepted reference before adding a translation; a fixed percentage is not a universal correction. |
-| Making a round shape equal to a square one | Circles must be ~113% to weigh optically equal. |
 | Only tracing the page edges | Trace is fractal. Every container with edges deserves an edge trace: component, glyph, path, pixel. |
 | Symmetrically centering text and icon in a pill | Font ascent > descent makes digits appear optically high. Align to cap-height center, not bounding box. Micro-translate of 0.5-1px or cap-height line-height. |
 | Opacity modifier as a third text color (`text-foo/50`) | You have a missing tertiary level, not half-text. Define an explicit token. |
@@ -436,44 +388,4 @@ Return to `../explore/SKILL.md` when the visual direction is unresolved or the s
 
 ## Output
 
-After viewing a screenshot:
-
-```
-Observation (before I look at the CSS):
-- Top: the title touches the top of the page
-- Right: sufficient space
-- Bottom: ~25% white at the bottom, feels empty
-- Left: the title starts further left than the step-content
-- Rhythm: steps are evenly distributed
-- Odd one out: step 3 has less content, feels narrower
-
-Diagnosis (after CSS check):
-- .print-header has padding: 0.6rem 0 (zero left/right)
-- .print-header has no margin-top (presses against content-area top)
-
-Fix:
-- padding: 0.6rem 0.9rem (0.9rem = 3x base unit, equal to .main padding-x)
-```
-
-After viewing a series of frames (animation):
-
-```
-Observation per frame (before I look at the CSS):
-- Frame 0 (start): nav shows 3 titles, content shows 3 cells, everything neatly in rhythm.
-- Frame 3 (mid): nav is already at the new layout with 2 titles, content is halfway.
-  The nav titles have snapped, the cells are still animating.
-- Frame 6 (end): nav and content both in final position.
-- Odd one out: the nav is not in rhythm with the content. They end together but
-  do not start together.
-- Disappearing content: in frame 3 the content of the sliding-away cell is already
-  hidden while its container is still moving. Teleporting element.
-
-Diagnosis (after CSS check):
-- .nav-title has inline style:width but no `transition` rule in the CSS.
-- .cell-collapsed sets visibility: hidden instantly without a delay.
-
-Fix:
-- .nav-title gets transition: width var(--duration) var(--ease).
-- .cell-collapsed gets transition: visibility 0s linear var(--duration), so
-  the visibility only flips after the movement is complete.
-```
+Report what you observed before what you diagnosed, then the cause and the fix, edge by edge for layouts and frame by frame for motion. Name the odd one out. Keep the report as short as the finding allows.

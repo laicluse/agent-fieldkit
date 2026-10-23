@@ -7,7 +7,9 @@ description: >-
 
 # Review
 
-Inspect the actual render and accepted target before explaining code. Separate observations, hypotheses and measured facts. A passing test or correct semantic encoding does not prove aesthetic success.
+Inspect the actual render and accepted target before explaining code. Separate observations, hypotheses and measured facts. A passing test or correct semantic encoding does not prove aesthetic success. Judge with [design reasoning](../eye-of-the-beholder/design-reasoning.md); a review without an accepted target can find defects but cannot establish that a surface is convincing.
+
+Before reviewing a change, inventory what it can reach: shared components and tokens, the surfaces that use them, states, breakpoints and transitions. A surface outside the sample you were optimizing for still has to be looked at when a shared primitive under it changed.
 
 Use [image-input](image-input/protocol.md) to classify captures and references, [reference-match](reference-match/protocol.md) when a distinct reference plus match intent or a named visual axis identifies what to reproduce, and [diagnostics](diagnostics.md) for complaint-to-axis and technical diagnosis. See [background references](references.md) when deeper diagnostic context is useful. These internal protocols are supporting references, not additional public commands. Scope their heuristics to the accepted visual language; do not impose unrelated aesthetic defaults.
 

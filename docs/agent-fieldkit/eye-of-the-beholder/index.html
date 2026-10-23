@@ -53,7 +53,7 @@
 						<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.17</span>
+							<span class="meta-fact">2.0.18</span>
 							<span class="meta-fact">5 skills</span>
 						</div>
 					</div>
@@ -79,7 +79,9 @@
 
 			<section class="detail-content-section">
 				<article class="readme-content">
-<p>Visual and interaction design for interfaces that communicate through their controls, layout and feedback. Start with <code>eye-of-the-beholder</code> for a new treatment, an unpleasing result, confusing controls or a redesign. It routes usability repair, image-based visual exploration and inspection of the real implementation.</p>
+<p>Visual and interaction design for interfaces that communicate through their controls, layout and feedback. Start with <code>eye-of-the-beholder</code> to make something better, more beautiful or clearer, for a new treatment, an unpleasing or generic result, confusing controls or a redesign. It steers away from the averaged look that unguided models and small-step improvement loops converge on, and routes usability repair, visual exploration and inspection of the real implementation.</p>
+<h2 id="design-reasoning">Design reasoning</h2>
+<p>Every skill applies one shared reasoning core instead of a style. It decides from meaning, attention, relations, character and medium; forms a visible design hypothesis before polishing; asks which choice could only exist for this product; researches dated references when proposals converge; keeps the point of comparisons visible; and judges novelty, appeal and fit separately, including everything a change reaches and motion over its whole sequence. It names no default font, palette or layout.</p>
 <h2 id="skills">Skills</h2>
 <table>
 <thead>
@@ -88,7 +90,7 @@
 <tbody>
 <tr><td data-label="Skill"><code>eye-of-the-beholder</code></td><td data-label="Purpose">The single entry point: inspect context, route the request and carry accepted decisions through to the real render.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:obvious</code></td><td data-label="Purpose">Resolve the current confusing interaction from context and reduce avoidable cognitive load through clearer controls, state and feedback.</td></tr>
-<tr><td data-label="Skill"><code>eye-of-the-beholder:explore</code></td><td data-label="Purpose">Generate visual proposals from actual references, interpret reactions and establish an accepted target.</td></tr>
+<tr><td data-label="Skill"><code>eye-of-the-beholder:explore</code></td><td data-label="Purpose">Form distinct design hypotheses from the product and real references, make them visible in the medium that suits the open question, interpret reactions and establish an accepted target.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:define</code></td><td data-label="Purpose">Establish identity and design-system foundations when the product needs them.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:review</code></td><td data-label="Purpose">Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately.</td></tr>
 </tbody>
@@ -96,7 +98,7 @@
 <h2 id="obvious">Obvious</h2>
 <p>Invoke <code>eye-of-the-beholder:obvious</code> against a screen, capture or recent result when the interface asks the user to decipher controls or read too much explanation. An invocation without a pointer uses the current conversation's relevant surface. The same skill can be selected when a UI addition introduces avoidable choices or hidden state. It investigates the task before changing copy, preserves meaningful information and accessibility, and verifies the resulting interaction. Necessary instructions and informed choices stay visible.</p>
 <h2 id="workflow">Workflow</h2>
-<p>Image generation is the default for genuinely new visual form. Exact fixes and reuse of accepted components skip concept exploration. During unresolved visual exploration, each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. An understood, authorized usability correction can proceed directly through implementation and verification. Combinations and rejection of every option are valid. If image generation is unavailable, agree a fallback instead of silently replacing it with CSS sketches.</p>
+<p>Genuinely new visual form starts with visible proposals; the medium follows the open question: image generation for atmosphere and imagery, built typography and layout studies for text-driven surfaces, small interactive studies for behavior and time. Exact fixes and reuse of accepted components skip concept exploration. Automated improvement loops refine an accepted design hypothesis and take their judging criteria from the shared reasoning. During unresolved visual exploration, each round shows visual evidence and a recommendation, asks one consequential question and waits before dependent work. An understood, authorized usability correction can proceed directly through implementation and verification. Combinations and rejection of every option are valid. If the needed medium is unavailable, agree a fallback instead of silently substituting another.</p>
 <p>The canonical visual-language document records accepted image anchors and scoped accepted, rejected and unresolved decisions. Concept approval, mechanism approval and implementation approval are distinct. A generated image is a concept, not proof that the interaction works: the actual implementation must be reviewed at relevant scales, densities and combined states, including motion where it matters.</p>
 <p>This method is intended to improve collaboration; aesthetic success still needs to be established with the user. Generic anti-slop rules and passing technical checks cannot prove it.</p>
 <h2 id="host-support">Host support</h2>
@@ -123,7 +125,7 @@
 <span class="code-line">node packages/eye-of-the-beholder/skills/review/reference-match/scripts/run-corpus.mjs</span></code></pre>
 <p>The manual workflow scenarios in <code>test/workflow-scenarios.md</code> exercise routing and approval boundaries. They are behavior probes, not proof of aesthetic quality. Test the installed workflow with an actual visual request before judging the design outcomes.</p>
 				</article>
-				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#skills">Skills</a></li><li><a href="#obvious">Obvious</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#design-reasoning">Design reasoning</a></li><li><a href="#skills">Skills</a></li><li><a href="#obvious">Obvious</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
 			</section>
 		</main>
 
