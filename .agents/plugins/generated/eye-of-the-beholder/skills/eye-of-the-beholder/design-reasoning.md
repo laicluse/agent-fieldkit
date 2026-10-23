@@ -24,11 +24,11 @@ When appearance is open, or a request asks to make something better, more beauti
 
 When the direction is open, produce genuinely different hypotheses. They differ in idea, composition, typography, imagery or tempo, not in a palette swap on the same layout. One decision per round does not mean one variable per round. Polish loops come after a direction holds, never instead of one.
 
-Ask of every candidate: **which visible choice could only exist here?** A candidate whose every choice would fit any product has no character yet.
+Ask of every candidate: **which visible choice could only exist here?** A candidate whose every choice would fit any product has no character yet. Conventional controls need not become unique; the product-specific choices must be explainable from this material.
 
 ## Look outward, deliberately
 
-The model's memory of design is dated and averaged. When a direction is open or proposals keep resembling each other, research references that solve this concrete problem in different ways, including other media and older work. Inspect the real work, record its source and when you observed it, and name the transferable mechanism, not an adjective. A recent capture does not prove a recent design; fresh references are input, not a guarantee of fresh work. Reopen research when proposals converge.
+The model's memory of design is dated and averaged. The [reference library](../explore/reference-library.md) is the growing, dated memory that replaces it: consult it before proposing, and when its coverage of this task is thin or proposals keep resembling each other, research references that solve this concrete problem in different ways, including other media and older work. Inspect the real work, record its source and when you observed it, and name the transferable mechanism, not an adjective. A recent capture does not prove a recent design; fresh references are input, not a guarantee of fresh work. Record what each applied mechanism did, kept or rejected, so the library becomes knowledge rather than inspiration.
 
 ## Keep the point visible
 
@@ -42,4 +42,4 @@ Judge the render, not the code. Separate three judgements: is it novel, is it ap
 - Compare against references at the same scale and density.
 - Inventory what a change can reach: shared components, surfaces, states, breakpoints and transitions. Check every variant of a changed shared primitive, not only the surface you were looking at.
 - Judge motion over its whole sequence in the runtime; stills only show key states.
-- Independent judges: state up front which open design decision they judge and give them the task, the constraints and the references. Hide the rationale, swap presentation order, allow ties, require pointed visible differences, and stop ranking when preferences flip on repetition. Functional correctness and accessibility are checks, not preferences. Agreement among judges is not the user's acceptance.
+- Independent judges follow [judging](../review/judging.md): a stated decision, abstract labels, both orders, ties, pointed differences, calibration against known human verdicts before any trust. Agreement among judges is not the user's acceptance.

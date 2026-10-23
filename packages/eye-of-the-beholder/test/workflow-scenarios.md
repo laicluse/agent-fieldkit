@@ -33,6 +33,12 @@ Read the public skills and answer each scenario with the route, next action, whe
 | An automated improvement loop or evaluation is set up for a surface's appearance. | Accept a design hypothesis first; derive the loop's judging criteria from design reasoning and that hypothesis, not from a list of forbidden techniques. |
 | A shared token or component changes while the work focuses on one page. | Inventory the surfaces, states, breakpoints and transitions the change reaches and check every variant of the changed primitive before claiming closure. |
 | A comparison demo is criticised as unfair. | Keep irrelevant factors comparable and keep every difference that causes the effect; do not equalize the demo until its point disappears. |
+| An open exploration starts and the reference library has no entries for this task and medium. | Research references that solve this problem in different ways, record source, observation date and mechanism, add them, then propose; do not propose from memory alone. |
+| The draw log shows the same mechanism chosen in the last three projects. | Examine whether this material calls for it; repeat with a recorded justification or depart deliberately. A repeat is not forbidden and a forced departure that breaks coherence is worse. |
+| The user has delegated all design decisions and asked not to be consulted. | Take the decisions, record each as an agent decision with its reasoning, show the result; never report them as user acceptance. |
+| Two proposals share near-identical container geometry. | Check whether typography, imagery or tempo make them different hypotheses; if not, they are one proposal. Do not apply a numeric threshold. |
+| Judges are asked to rank candidates before any calibration pairs exist. | Run the round only as unanchored evidence, say so, and seed calibration pairs from human verdicts before trusting a later round. |
+| A judge's verdict flips when the pair's order is swapped. | Count that verdict as a tie for that judge; decide any exclusion on calibration pairs, not mid-round. |
 
 ## Interaction clarity
 

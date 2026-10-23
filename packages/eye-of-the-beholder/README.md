@@ -6,6 +6,8 @@ Visual and interaction design for interfaces that communicate through their cont
 
 Every skill applies one shared reasoning core instead of a style. It decides from meaning, attention, relations, character and medium; forms a visible design hypothesis before polishing; asks which choice could only exist for this product; researches dated references when proposals converge; keeps the point of comparisons visible; and judges novelty, appeal and fit separately, including everything a change reaches and motion over its whole sequence. It names no default font, palette or layout.
 
+Three mechanisms keep that reasoning from freezing at a model's training median. A dated **reference library** (`skills/explore/reference-library.md`, stored under `~/.laicluse/eye-of-the-beholder/references/`) records real work with its transferable mechanism and what happened when it was applied, plus a draw log that makes habits visible. A **judging protocol** (`skills/review/judging.md`) with calibration pairs (`test/calibration/`) turns judge rounds into evidence instead of position bias. A **practice test** (`test/practice/`) compares plugin versions on four briefs in two domains each, on both hosts, with human verdicts first. Rendering diagnostics are an observation method; pitfalls per axis load only when that axis is scanned.
+
 ## Skills
 
 | Skill | Purpose |

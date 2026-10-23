@@ -1,10 +1,6 @@
 # Reference matching
 
-## The real problem
-
-The user points to an existing UI element ("ik wil dezelfde pillen als de favicon, qua corner radius, padding en font") and Claude writes CSS that comes close, reads back its own CSS, sees "padding is there", and declares done. The result does not look like it. No screenshot of the reference taken, no screenshot of the result taken, no comparison done on the axes the user explicitly named.
-
-This is a variant of the problem eye-of-the-beholder solves (confirmatory looking instead of observational looking), but more specific. The user has already named the axes. The work is not "check if it looks nice", the work is "place reference and result side by side and prove every named axis is equal".
+Read this when a user points at an existing element and names the axes to copy. It proves, with a rendered reference and a rendered result side by side, that every named axis is equal. It is not a taste judgement; the axes are given. Skip it for a direct correction to an element and for open appearance questions, which belong to explore.
 
 ## When
 

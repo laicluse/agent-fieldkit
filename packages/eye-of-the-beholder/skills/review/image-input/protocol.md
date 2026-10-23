@@ -1,12 +1,6 @@
 # Screenshot, annotation, or fat-marker sketch
 
-## The real problem
-
-An uploaded image can contain several different things: product UI, a screenshot-tool annotation layer, a rough sketch, or a finished design reference. Calling all of them a *fat-marker sketch* obscures the useful distinction. It also encourages the opposite mistake this skill exists to prevent: copying a bright arrow, callout bubble, or rough box into the product as though those pixels were design decisions.
-
-Classify the artifact first. Then decide which pixels are evidence and which are commentary. A fat-marker sketch is one possible class, not the default name for every uploaded image.
-
-The term comes from Shape Up (Basecamp): a fat-marker sketch is drawn with a pen so thick that detail is deliberately impossible. That is a useful way to read an actual rough sketch. It is not an accurate label for a crisp product screenshot that happens to have annotations on top.
+Read this when the user supplies an image. It classifies the image before anything is built from it, so that product pixels count as evidence, annotations count as commentary, and a rough sketch is read for intent rather than pixels. A fat-marker sketch (Shape Up's deliberately detail-free drawing) is one class, not the default name for every upload.
 
 ## Classify before interpreting
 
