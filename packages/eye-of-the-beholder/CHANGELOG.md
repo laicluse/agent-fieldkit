@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.22]
+
+### Changed
+
+- Design reasoning no longer counts a restyle of the same structure, section order and copy as a new direction. When the words, the page order or missing real material make a surface generic, a new hypothesis changes those first, with real material and the owner's own voice.
+
 ## [v2.0.20]
 
 ### Added

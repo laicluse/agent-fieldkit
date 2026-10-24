@@ -22,7 +22,7 @@ Then act with deliberate design moves: enlarge, reduce, compress, isolate, repea
 
 When appearance is open, or a request asks to make something better, more beautiful or more convincing, form a design hypothesis first: the idea that gives this surface its character, and what a viewer should take from it. Propose it from the product, its content and the conversation; the user should not need design vocabulary. Make it visible and judge it before investing in refinement.
 
-When the direction is open, produce genuinely different hypotheses. They differ in idea, composition, typography, imagery or tempo, not in a palette swap on the same layout. One decision per round does not mean one variable per round. Polish loops come after a direction holds, never instead of one.
+When the direction is open, produce genuinely different hypotheses. They differ in idea, composition, typography, imagery or tempo, not in a palette swap on the same layout. Restyling the same structure, section order and copy is one hypothesis in different clothes: when the existing words, the order of the page or the absence of real material make it generic, a new hypothesis changes those, with real material and the owner's own voice, before it touches styling. A theme taken from a name or a metaphor is styling, not a hypothesis, unless the content itself carries it. One decision per round does not mean one variable per round. Polish loops come after a direction holds, never instead of one.
 
 Ask of every candidate: **which visible choice could only exist here?** A candidate whose every choice would fit any product has no character yet. Conventional controls need not become unique; the product-specific choices must be explainable from this material.
 

@@ -32,6 +32,8 @@ const required = [
   /reference-library\.md/,
   /kept or rejected/,
   /keep every difference that actually causes the effect/i,
+  /one hypothesis in different clothes/,
+  /real material and the owner's own voice/,
   /every variant of a changed shared primitive/i,
   /motion over its whole sequence/i,
   /judging\.md/,
