@@ -194,7 +194,7 @@
 		},
 		{
 			"name": "dibs",
-			"version": "2.0.77",
+			"version": "2.0.78",
 			"category": "workflow",
 			"summary": "Keeps one coding agent in charge of a working directory at a time with a cross-platform occupancy lock.",
 			"support": [
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.95",
+			"version": "2.0.96",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -635,7 +635,7 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.95",
+			"packageVersion": "2.0.96",
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"version": "v2.0.95",
 			"type": "Fixed",
@@ -653,7 +653,7 @@
 		},
 		{
 			"plugin": "dibs",
-			"packageVersion": "2.0.77",
+			"packageVersion": "2.0.78",
 			"detailPath": "agent-fieldkit/dibs/",
 			"version": "v2.0.77",
 			"type": "Changed",

@@ -423,7 +423,7 @@ occ_gate() {
     # allow-comment: load-bearing. A cross-session refusal and a missing-description error both exit non-zero, so branch on the payload not rc: a refusal carries state:refused, the description error an error naming "work description".
     case "$rc" in 2 | 3) continue ;; esac
     if occ_refused_by_other "$input" "$out"; then
-      printf '[dibs/occupancy] %s; another live agent occupies this directory. Surface this to the operator now (which agent, its pid, its work, and how long ago the latest dirty-file change occurred, shown above) so they can distinguish a recently active worktree from an old dirty one; report it, do not silently route around it. %s If that holder is stale, inspect it with '\''dibs check %s'\'' and clear it with '\''dibs release %s'\''.\n' "$(printf '%s' "$out" | occ_holder_line)" "$(printf '%s' "$out" | occ_refusal_suggestion)" "$dir" "$dir" >&2
+      printf '[dibs/occupancy] %s; another live agent holds this directory. Before reporting a blockage, compare lock time with now, the latest dirty-file change or Git activity here, and the holder session latest event and workdir. A live PID alone proves no work here. Report these times in the first update; request release for an idle lock. %s Inspect with '\''dibs check %s'\''; never release another live session lock yourself.\n' "$(printf '%s' "$out" | occ_holder_line)" "$(printf '%s' "$out" | occ_refusal_suggestion)" "$dir" >&2
       exit 2
     fi
     if printf '%s' "$out" | grep -q 'work description is required'; then

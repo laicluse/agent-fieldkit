@@ -65,7 +65,7 @@ The verification command must cover the relevant behavior at the exact candidate
 
 ## Atomic two-parent merge
 
-Before a merge that updates a checked-out default, check that checkout's existing occupancy mechanism when present. The shared command also claims that checkout through Dibs when `DIBS_BIN` or its published machine runtime is available; Dibs owns identity, refusal and lifecycle semantics. The session retains acquired occupancy until its normal release. Wait if another live session owns it; a clean tree does not imply availability. Resolve conflicts in the authoring checkout before the atomic merge, not by editing the canonical integration target. This requires neither Dibs nor Bonsai when the repository uses another coordination mechanism.
+Before a merge that updates a checked-out default, check that checkout's existing occupancy mechanism when present. The shared command also claims that checkout through Dibs when `DIBS_BIN` or its published machine runtime is available; Dibs owns identity, refusal and lifecycle semantics. The session retains acquired occupancy until its normal release. If another live session owns it, perform the Dibs held-checkout activity audit before declaring a wait; a clean tree or live PID alone does not establish recent work. Resolve conflicts in the authoring checkout before the atomic merge, not by editing the canonical integration target. This requires neither Dibs nor Bonsai when the repository uses another coordination mechanism.
 
 ```bash
 "$GD_ROOT/bin/git-discipline" merge "$TARGET"
@@ -87,7 +87,7 @@ Failure case this prevents: a local-only merge reported as "merged, not deployed
 
 ## Deployment checkout contention means wait
 
-Before deployment, inspect the canonical deploy checkout's occupancy and Git state. If it is held by another session, dirty with unrelated changes, or contains committed-but-unintegrated work, stop deployment and wait for that owner to finish and release it. Report the occupied checkout and the work blocking deployment; do not turn this ordinary wait into a workaround.
+Before deployment, inspect the canonical deploy checkout's occupancy and Git state. If held by another session, perform the Dibs held-checkout activity audit immediately: report the lock age, latest checkout activity, and latest holder-session activity with their timestamps. A holder active elsewhere with no recent work here is an idle lock, not evidence of an active deployment; request its release through the holder's normal workflow. If another session still owns the checkout, or it is dirty with unrelated changes or contains committed-but-unintegrated work, stop deployment and wait for the owner to finish and release it. Report the occupied checkout and the work blocking deployment; do not turn this wait into a workaround.
 
 Do not detach, stash, reset, rebase, merge, publish unrelated work, or substitute the authoring worktree to get around that contention. Resume only the deployment step once the canonical checkout is available and can be updated to the exact merged SHA.
 
