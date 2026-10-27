@@ -2027,6 +2027,7 @@ function buildRootPage(hash, assetVersions) {
 
 		<footer class="site-footer home-footer">
 			<span>l'Aicluse</span>
+			<a href="/privacy/">Privacy</a>
 			<a href="${attributeEscape(LINKEDIN_URL)}">linkedin.com/in/lecluse</a>
 		</footer>
 	</body>
