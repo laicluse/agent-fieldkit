@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.96]
+
+### Added
+
+- `git merge main` (or `origin/main`, or whatever `origin/HEAD` names) on a feature branch is refused, also on a colleague's published PR branch. The branch catches up through the `rebase-latest-default` skill and `--force-with-lease`; a deliberately wanted merge commit takes `# allow-default-merge`.
+
 ## [v2.0.95]
 
 ### Fixed

@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 92,
-		"hookFiles": 70
+		"hookFiles": 71
 	},
 	"install": {
 		"claude": [
@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.96",
+			"version": "2.0.97",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -251,11 +251,11 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/git-discipline",
 			"skillCount": 14,
 			"commandCount": 5,
-			"hookFileCount": 32,
+			"hookFileCount": 33,
 			"latestChange": {
-				"version": "v2.0.95",
-				"type": "Fixed",
-				"summary": "A Red-then-green trailer that names a test in a spec file larger than 64KB is no longer rejected as red-then-green-test-not-found when the test exists."
+				"version": "v2.0.96",
+				"type": "Added",
+				"summary": "git merge main (or origin/main, or whatever origin/HEAD names) on a feature branch is refused, also on a colleague's published PR branch."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.96",
+			"packageVersion": "2.0.97",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.95",
-			"type": "Fixed",
-			"summary": "A Red-then-green trailer that names a test in a spec file larger than 64KB is no longer rejected as red-then-green-test-not-found when the test exists.",
+			"version": "v2.0.96",
+			"type": "Added",
+			"summary": "git merge main (or origin/main, or whatever origin/HEAD names) on a feature branch is refused, also on a colleague's published PR branch.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{

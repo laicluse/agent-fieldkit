@@ -160,6 +160,7 @@ PreToolUse:Bash dispatcher chain (`hooks/dispatch.sh`):
 | `commit-body.sh` | `git commit -m` | bodies that fail `validate-body.sh` |
 | `commit-body-posttool.sh` | PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am) | bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see) |
 | `commit-trailers.sh` | `git commit -m` | `Co-Authored-By:` with `@anthropic.com` email |
+| `default-merge.sh` | `git merge <default>` on a feature branch | merging the default branch into a feature branch; it catches up through `rebase-latest-default` (escape: `# allow-default-merge`) |
 | `push-destination.sh` | `git push` | push whose destination releases, deploys, rewrites or cannot be classified (held until `# push-agreed`), or that the repository's agreement rules out (refused) |
 | `push-wip-gate.sh` | `git push` | push range containing a `Slice: wip` commit |
 | `push-body-gate.sh` | `git push` | push range containing a body that fails `validate-body.sh` |
@@ -253,6 +254,7 @@ The BATS suite is split per concern:
 - `install-hooks/` covers the per-repo install scenarios (empty repo,
   existing hooks, `core.hooksPath`, worktree).
 - `parallel-flow/` covers default resolution, worktree rebase, SHA-bound verification, atomic local and remote merges, race loss, and native authoring guards.
+- `default-merge/` covers the refusal of merging the default branch into a feature branch.
 - `migrated-hooks/`, `migration/` cover compatibility with previous hook
   behavior.
 

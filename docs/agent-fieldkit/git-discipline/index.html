@@ -53,7 +53,7 @@
 						<p class="lede">Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.96</span>
+							<span class="meta-fact">2.0.97</span>
 							<span class="meta-fact">14 skills</span>
 						</div>
 					</div>
@@ -152,6 +152,7 @@
 <tr><td data-label="Guard"><code>commit-body.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks">bodies that fail <code>validate-body.sh</code></td></tr>
 <tr><td data-label="Guard"><code>commit-body-posttool.sh</code></td><td data-label="Triggers on">PostToolUse, any commit-graph writer (commit/rebase/cherry-pick/revert/merge/am)</td><td data-label="Blocks">bodies of the commits the command wrote (rebase/cherry-pick/merge/amend paths the string parser cannot see)</td></tr>
 <tr><td data-label="Guard"><code>commit-trailers.sh</code></td><td data-label="Triggers on"><code>git commit -m</code></td><td data-label="Blocks"><code>Co-Authored-By:</code> with <code>@anthropic.com</code> email</td></tr>
+<tr><td data-label="Guard"><code>default-merge.sh</code></td><td data-label="Triggers on"><code>git merge &lt;default&gt;</code> on a feature branch</td><td data-label="Blocks">merging the default branch into a feature branch; it catches up through <code>rebase-latest-default</code> (escape: <code># allow-default-merge</code>)</td></tr>
 <tr><td data-label="Guard"><code>push-destination.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push whose destination releases, deploys, rewrites or cannot be classified (held until <code># push-agreed</code>), or that the repository's agreement rules out (refused)</td></tr>
 <tr><td data-label="Guard"><code>push-wip-gate.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push range containing a <code>Slice: wip</code> commit</td></tr>
 <tr><td data-label="Guard"><code>push-body-gate.sh</code></td><td data-label="Triggers on"><code>git push</code></td><td data-label="Blocks">push range containing a body that fails <code>validate-body.sh</code></td></tr>
@@ -208,6 +209,7 @@
 <li><code>block-mode/</code>, <code>shadow-mode/</code>, <code>wip-gate/</code>, <code>template-fill/</code> cover the guard glue per slice.</li>
 <li><code>install-hooks/</code> covers the per-repo install scenarios (empty repo, existing hooks, <code>core.hooksPath</code>, worktree).</li>
 <li><code>parallel-flow/</code> covers default resolution, worktree rebase, SHA-bound verification, atomic local and remote merges, race loss, and native authoring guards.</li>
+<li><code>default-merge/</code> covers the refusal of merging the default branch into a feature branch.</li>
 <li><code>migrated-hooks/</code>, <code>migration/</code> cover compatibility with previous hook behavior.</li>
 </ul>
 <p>The smoke suite spins up disposable git repos and exercises the full hook chain end-to-end.</p>
