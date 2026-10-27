@@ -20,6 +20,13 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.23]
+
+### Added
+
+- Codex-only `opus-second-opinion`, `fable-second-opinion`, and `sonnet-second-opinion` shortcuts select Claude peers directly.
+- Claude-only `astra`, `sol`, and `terra` shortcuts select Codex peers directly, including Terra model resolution.
+
 ## 2.0.22
 
 ### Changed

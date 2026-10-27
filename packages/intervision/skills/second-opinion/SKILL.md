@@ -2,7 +2,7 @@
 name: second-opinion
 user-invocable: true
 description: >-
-  Ask Codex (Luna, Sol, or Astra) for a second opinion on recent work or a design.
+  Ask Codex (Luna, Sol, Astra, or Terra) for a second opinion on recent work or a design.
   Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work.
 ---
 
@@ -31,7 +31,7 @@ post-update broadcast path in this plugin; skip this block silently there.
 
 # Second opinion
 
-When the user names a peer model, resolve that tier directly with `--tier luna`, `--tier sol`, or `--tier astra` and use the result as `CODEX_PEER_MODEL` throughout; otherwise use the default below. Treat model names case-insensitively.
+When the user names a peer model, resolve that tier directly with `--tier luna`, `--tier sol`, `--tier astra`, or `--tier terra` and use the result as `CODEX_PEER_MODEL` throughout; otherwise use the default below. Treat model names case-insensitively.
 
 Intervision is peer consultation: equals looking at each other's work, not a supervisor looking down. Etymology says it plainly, `inter-` (between, among, together) against `super-` (from above). This skill brings a second coding agent in as that peer for an independent read. You hand it the work just done or just discussed, it looks with fresh eyes and a different training, and the two of you talk it through.
 
@@ -42,7 +42,7 @@ echo you.
 
 Default to the receiving family's middle tier, independently of the current session's model: **Sol** for Codex, **Opus** for Claude. Sonnet and Luna are opt-in, not default reviewers. Escalate to Astra or Fable when a concrete unresolved concern warrants it or the operator asks. An explicitly requested model always takes precedence.
 
-Resolve the Codex tier with `${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model`. Without arguments it returns the newest visible Sol model from `codex debug models`. `--tier luna`, `--tier sol`, and `--tier astra` select an explicit tier. The default fails closed if Sol is unavailable; it never silently downgrades to Luna, Spark, or mini.
+Resolve the Codex tier with `${CLAUDE_PLUGIN_ROOT}/bin/codex-fast-coding-model`. Without arguments it returns the newest visible Sol model from `codex debug models`. `--tier luna`, `--tier sol`, `--tier astra`, and `--tier terra` select an explicit tier. The default fails closed if Sol is unavailable; it never silently downgrades to Luna, Spark, or mini.
 
 Before the handoff, briefly state the resolved model ID and why it was chosen. If multiple versions of the requested tier are visible in `codex debug models`, name those alternatives and explain that the newest visible generation wins by default. An explicitly requested version takes precedence: verify that exact ID in the catalog and pass it directly; never silently substitute another version. Keep catalog checks to model IDs and visibility, not the full model instructions.
 

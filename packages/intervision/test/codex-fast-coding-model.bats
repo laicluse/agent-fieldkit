@@ -75,3 +75,14 @@ run_helper() {
   [ "$status" -eq 2 ]
   [[ "$output" == *"no Codex sol model"* ]]
 }
+
+@test "resolves the newest visible Terra without substituting another tier" {
+  printf '%s\n' '{"models":[{"slug":"gpt-6-terra"},{"slug":"gpt-6.1-terra"},{"slug":"gpt-7-terra","visibility":"hidden"},{"slug":"gpt-7-sol"}]}' > "$MODELS"
+  run run_helper --tier terra
+  [ "$status" -eq 0 ]
+  [ "$output" = "gpt-6.1-terra" ]
+  printf '%s\n' '{"models":[{"slug":"gpt-6-sol"}]}' > "$MODELS"
+  run run_helper --tier terra
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"no Codex terra model"* ]]
+}

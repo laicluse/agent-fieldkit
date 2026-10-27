@@ -36,6 +36,21 @@ The peer's findings come home through three honest fates: fix, skip on cost vers
 value, or reject as hollow. The exchange and any remaining disagreement are
 surfaced to you.
 
+### Model shortcuts
+
+Each shortcut selects its model explicitly and follows the complete `second-opinion` workflow. Shortcuts are available only on the host from the other model family:
+
+| Host | Shortcut | Peer |
+|------|----------|------|
+| Codex | `intervision:opus-second-opinion` | Claude Opus |
+| Codex | `intervision:fable-second-opinion` | Claude Fable |
+| Codex | `intervision:sonnet-second-opinion` | Claude Sonnet |
+| Claude | `/intervision:astra` | Codex Astra |
+| Claude | `/intervision:sol` | Codex Sol |
+| Claude | `/intervision:terra` | Codex Terra |
+
+In Codex, select the shortcut through the skill picker or a `$` skill mention. Claude shortcuts use slash commands. The other host does not receive these skills.
+
 ## Requirements
 
 The peer CLI must be installed and logged in: Claude needs `codex`; Codex needs
@@ -45,5 +60,5 @@ message when no peer is available.
 
 Claude-side Codex model selection lives in `bin/codex-fast-coding-model`: no
 argument resolves the newest Sol slug and fails closed when Sol is unavailable.
-`--tier luna`, `--tier sol`, and `--tier astra` select an explicit tier.
+`--tier luna`, `--tier sol`, `--tier astra`, and `--tier terra` select an explicit tier.
 `INTERVISION_CODEX_MODEL` can override the catalog choice for one run.

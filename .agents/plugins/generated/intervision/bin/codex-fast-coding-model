@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 
 const MODEL_ID = /^[A-Za-z0-9._:-]+$/;
 const LEGACY_SPARK = 'gpt-5.3-codex-spark';
-const TIERS = ['luna', 'sol', 'astra'];
+const TIERS = ['luna', 'sol', 'astra', 'terra'];
 
 const args = process.argv.slice(2);
 let tier = 'sol';
