@@ -1,5 +1,5 @@
 ---
-name: fable-second-opinion
+name: fable-opinion
 description: >-
   Request a second opinion from Fable on recent work or a design.
   Explicit shortcut for the Fable peer model.

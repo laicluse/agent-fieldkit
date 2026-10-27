@@ -1,5 +1,5 @@
 ---
-name: sonnet-second-opinion
+name: sonnet-opinion
 description: >-
   Request a second opinion from Sonnet on recent work or a design.
   Explicit shortcut for the Sonnet peer model.

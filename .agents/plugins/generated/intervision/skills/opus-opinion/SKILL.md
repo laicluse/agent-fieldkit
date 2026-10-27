@@ -1,6 +1,5 @@
 ---
-name: opus-second-opinion
-user-invocable: true
+name: opus-opinion
 description: >-
   Request a second opinion from Opus on recent work or a design.
   Explicit shortcut for the Opus peer model.

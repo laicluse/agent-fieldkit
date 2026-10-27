@@ -1,5 +1,5 @@
 ---
-name: fable-second-opinion
+name: fable-opinion
 user-invocable: true
 description: >-
   Request a second opinion from Fable on recent work or a design.

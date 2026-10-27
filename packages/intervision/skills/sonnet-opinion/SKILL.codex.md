@@ -1,5 +1,5 @@
 ---
-name: sonnet-second-opinion
+name: sonnet-opinion
 user-invocable: true
 description: >-
   Request a second opinion from Sonnet on recent work or a design.

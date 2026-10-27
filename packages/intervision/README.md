@@ -42,12 +42,12 @@ Each shortcut selects its model explicitly and follows the complete `second-opin
 
 | Host | Shortcut | Peer |
 |------|----------|------|
-| Codex | `intervision:opus-second-opinion` | Claude Opus |
-| Codex | `intervision:fable-second-opinion` | Claude Fable |
-| Codex | `intervision:sonnet-second-opinion` | Claude Sonnet |
-| Claude | `/intervision:astra` | Codex Astra |
-| Claude | `/intervision:sol` | Codex Sol |
-| Claude | `/intervision:terra` | Codex Terra |
+| Codex | `intervision:opus-opinion` | Claude Opus |
+| Codex | `intervision:fable-opinion` | Claude Fable |
+| Codex | `intervision:sonnet-opinion` | Claude Sonnet |
+| Claude | `/intervision:astra-opinion` | Codex Astra |
+| Claude | `/intervision:sol-opinion` | Codex Sol |
+| Claude | `/intervision:terra-opinion` | Codex Terra |
 
 In Codex, select the shortcut through the skill picker or a `$` skill mention. Claude shortcuts use slash commands. The other host does not receive these skills.
 

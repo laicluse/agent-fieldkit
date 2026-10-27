@@ -1,5 +1,5 @@
 ---
-name: terra
+name: terra-opinion
 user-invocable: true
 description: >-
   Request a second opinion from Terra on recent work or a design.

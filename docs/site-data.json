@@ -304,7 +304,7 @@
 		},
 		{
 			"name": "intervision",
-			"version": "2.0.23",
+			"version": "2.0.24",
 			"category": "review",
 			"summary": "Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.",
 			"support": [
@@ -319,9 +319,9 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.23",
-				"type": "Added",
-				"summary": "Codex-only opus-second-opinion, fable-second-opinion, and sonnet-second-opinion shortcuts select Claude peers directly."
+				"version": "v2.0.24",
+				"type": "Changed",
+				"summary": "Model shortcuts consistently use [model]-opinion: opus-opinion, fable-opinion, and sonnet-opinion in Codex; astra-opinion, sol-opinion, and terra-opinion in Claude."
 			}
 		},
 		{
@@ -706,6 +706,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
+			"plugin": "intervision",
+			"packageVersion": "2.0.24",
+			"detailPath": "agent-fieldkit/intervision/",
+			"version": "v2.0.24",
+			"type": "Changed",
+			"summary": "Model shortcuts consistently use [model]-opinion: opus-opinion, fable-opinion, and sonnet-opinion in Codex; astra-opinion, sol-opinion, and terra-opinion in Claude.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
+		},
+		{
 			"plugin": "eye-of-the-beholder",
 			"packageVersion": "2.0.23",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
@@ -713,15 +722,6 @@
 			"type": "Changed",
 			"summary": "Design reasoning no longer counts a restyle of the same structure, section order and copy as a new direction.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
-		},
-		{
-			"plugin": "intervision",
-			"packageVersion": "2.0.23",
-			"detailPath": "agent-fieldkit/intervision/",
-			"version": "v2.0.23",
-			"type": "Added",
-			"summary": "Codex-only opus-second-opinion, fable-second-opinion, and sonnet-second-opinion shortcuts select Claude peers directly.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{
 			"plugin": "anger-management",

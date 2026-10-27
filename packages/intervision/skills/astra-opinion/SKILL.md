@@ -1,5 +1,5 @@
 ---
-name: astra
+name: astra-opinion
 user-invocable: true
 description: >-
   Request a second opinion from Astra on recent work or a design.

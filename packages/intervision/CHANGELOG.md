@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.24]
+
+### Changed
+
+- Model shortcuts consistently use `[model]-opinion`: `opus-opinion`, `fable-opinion`, and `sonnet-opinion` in Codex; `astra-opinion`, `sol-opinion`, and `terra-opinion` in Claude. Previous shortcut names are removed.
+
 ## [v2.0.23]
 
 ### Added

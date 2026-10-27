@@ -1,5 +1,5 @@
 ---
-name: sol
+name: sol-opinion
 user-invocable: true
 description: >-
   Request a second opinion from Sol on recent work or a design.
