@@ -185,3 +185,26 @@ advance_base() {
   [ "$status" -eq 0 ]
   [ -z "$output" ]
 }
+
+@test "pr-discipline blocks a heading that hands checks to the reviewer" {
+  run_guard $'gh pr edit 12 --body "Uitleg.\n\n## Waar een reviewer op moet letten\n\n- De guard moet vóór de rename draaien."'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"hands a check to the reviewer"* ]]
+  [[ "$output" == *"Waar een reviewer op moet letten"* ]]
+}
+
+@test "pr-discipline blocks an English reviewer heading from --body-file" {
+  printf '%s\n' 'Context.' '' '### What to look for' '' '- The enum integers match.' > "$REPO/body.md"
+  run_guard "gh pr edit 12 --body-file $REPO/body.md"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"What to look for"* ]]
+}
+
+@test "pr-discipline lets prose that mentions a reviewer through" {
+  run_guard $'gh pr edit 12 --body "De reviewer ziet het verschil in de screenshot hieronder.\n\n## Productietelling\n\nstatus 0 = 15 en 1 = 5."'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}

@@ -66,6 +66,13 @@ guard_pr_discipline() {
     dd_emit_deny pr-discipline "PR body contains an open task: '${checkbox}'. Do it now and record the result, or give it its own backlog item and remove the line from the PR."
   fi
 
+  # allow-comment: a pull request is the proving ground where the author shows the change works before it goes live, not a hand-off to a reviewer. A heading that tells "the reviewer" what to check delegates verification the author owes; nobody else runs it. The only thing a PR asks a person is for knowledge the author lacks, such as a domain fact, and that is a question to a named person, not a checklist. Matched on markdown headings only (inline bodies carry a literal \n before the #), so prose that mentions a reviewer passes.
+  local reviewer_heading
+  reviewer_heading=$(grep -oiE '(^|\\n)[[:space:]]*#+[[:space:]]+[^\\]*(reviewer|op (moet|te) letten|to (look|watch) (out )?for)[^\\]*' <<< "$content" | head -1 | sed -E 's/^(\\n)?[[:space:]]*#+[[:space:]]+//')
+  if [ -n "$reviewer_heading" ]; then
+    dd_emit_deny pr-discipline "PR body hands a check to the reviewer under '${reviewer_heading}'. A PR is the proving ground where the author shows the change works; nobody else runs that check. Run each one now and record what it showed, and keep only a question that needs knowledge you lack, addressed to the person who has it. Remove the section."
+  fi
+
   dd_pr_image_links "$content"
 
   # Currency check runs last: the content checks above are local and cheap,
