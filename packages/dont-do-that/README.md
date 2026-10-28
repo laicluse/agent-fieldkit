@@ -93,6 +93,8 @@ Stop guards block weak final answers and make the agent continue:
   unless the options include an external irreversible gate. Claude, Codex.
 - `premature`: blocks clipped final answers without a substantive finish or
   waiting marker. Claude only.
+- `left-behind`: blocks naming a found defect and leaving it unfixed. Claude,
+  Codex.
 - `verify`: blocks asking the operator to verify something the agent can check
   itself. Claude, Codex.
 - `duh`: blocks giving runnable recipes instead of running the action. Claude,
@@ -327,6 +329,16 @@ it closes with `🏁`; a push or merge nobody ordered is not a reason for `🚦`
 a gate named once is not repeated every turn. Pass condition: finish with a real
 completed-work sentence, finish with a real waiting-on-a-decision sentence, or
 keep writing.
+
+### `left-behind`
+
+Blocks Stop when the answer names a defect it found and leaves it: "niet in
+deze PR", "heb ik laten liggen", "niet aangeraakt", "not in this PR". A defect
+found in the work at hand gets fixed in that work, and an unexplained finding
+gets investigated. Quoted spans and code are ignored. Pass condition: fix or
+investigate it, or start the sentence with `Bewust uitgesteld:` and name the
+gate the agent cannot pass itself, such as a host change or an operator
+decision.
 
 ### `verify`
 

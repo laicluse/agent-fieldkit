@@ -153,6 +153,12 @@
         "codex": "disabled"
       }
     },
+    "left-behind": {
+      "lane": "stop-mutex",
+      "order": 45,
+      "function": "guard_left_behind",
+      "contract": "final-answer"
+    },
     "verify": {
       "lane": "stop-mutex",
       "order": 50,
