@@ -11,6 +11,12 @@ Use it when a change is subtle enough that a second model family is worth the
 cost: risky code, a design decision, a review that felt too agreeable, or a
 diff where the failure mode is hard to see from one perspective.
 
+## Hooks
+
+### `peer-review-gate`
+
+An agent cannot observe how another lab's agent loads a skill, names it, runs a hook or loops. In a repository that carries both `.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json`, the gate denies a `git commit` that ships payload the other agent runs. When Claude commits, that is every plugin file under `packages/` except Claude-only sources (`.claude-plugin/`, `SKILL.claude.md`, `hooks/hooks.json`, `agents/`), plus the generated Codex adapters under `.agents/plugins/`. When Codex commits, it is every plugin file under `packages/` except Codex-only sources (`SKILL.codex.md`, `hooks/hooks.codex.json`, `agents.codex/`). Tests, READMEs and changelogs need no peer. Files added in the same command or committed with `-a` count too, and the repository is resolved from the tool's working directory, `cd` and `git -C`. Ask that agent's peer with `second-opinion`, settle its findings, then end the commit command with `# peer-reviewed: <model-id>` naming a model of the other lab.
+
 ## Installation
 
 ```bash

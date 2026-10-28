@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 92,
-		"hookFiles": 71
+		"hookFiles": 74
 	},
 	"install": {
 		"claude": [
@@ -304,7 +304,7 @@
 		},
 		{
 			"name": "intervision",
-			"version": "2.0.24",
+			"version": "2.0.25",
 			"category": "review",
 			"summary": "Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.",
 			"support": [
@@ -317,11 +317,11 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/intervision",
 			"skillCount": 7,
 			"commandCount": 2,
-			"hookFileCount": 0,
+			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.24",
-				"type": "Changed",
-				"summary": "Model shortcuts consistently use [model]-opinion: opus-opinion, fable-opinion, and sonnet-opinion in Codex; astra-opinion, sol-opinion, and terra-opinion in Claude."
+				"version": "v2.0.25",
+				"type": "Added",
+				"summary": "peer-review-gate hook: in a repository with both a Claude and a Codex marketplace, a commit that ships runtime payload for the other agent is denied until that agent's peer reviewed it."
 			}
 		},
 		{
@@ -707,11 +707,11 @@
 		},
 		{
 			"plugin": "intervision",
-			"packageVersion": "2.0.24",
+			"packageVersion": "2.0.25",
 			"detailPath": "agent-fieldkit/intervision/",
-			"version": "v2.0.24",
-			"type": "Changed",
-			"summary": "Model shortcuts consistently use [model]-opinion: opus-opinion, fable-opinion, and sonnet-opinion in Codex; astra-opinion, sol-opinion, and terra-opinion in Claude.",
+			"version": "v2.0.25",
+			"type": "Added",
+			"summary": "peer-review-gate hook: in a repository with both a Claude and a Codex marketplace, a commit that ships runtime payload for the other agent is denied until that agent's peer reviewed it.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{

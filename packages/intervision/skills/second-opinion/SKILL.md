@@ -3,7 +3,7 @@ name: second-opinion
 user-invocable: true
 description: >-
   Ask Codex (Luna, Sol, Astra, or Terra) for a second opinion on recent work or a design.
-  Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work.
+  Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work. Also use, unasked, before stating or shipping anything about how Codex behaves (its CLI, skills, plugins, hooks, loops or limits).
 ---
 
 <post-update-broadcast>

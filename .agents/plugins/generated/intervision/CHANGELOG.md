@@ -20,6 +20,16 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.25]
+
+### Added
+
+- `peer-review-gate` hook: in a repository with both a Claude and a Codex marketplace, a commit that ships runtime payload for the other agent is denied until that agent's peer reviewed it. End the commit command with `# peer-reviewed: <model-id>` once its findings are settled.
+
+### Changed
+
+- `second-opinion` also triggers unasked before anything is stated or shipped about how the other agent behaves.
+
 ## [v2.0.24]
 
 ### Changed

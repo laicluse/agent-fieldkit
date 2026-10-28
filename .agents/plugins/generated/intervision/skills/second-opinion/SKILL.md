@@ -2,7 +2,7 @@
 name: second-opinion
 description: >-
   Ask Claude (Sonnet, Opus, or Fable) for a second opinion on recent work or a design.
-  Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work.
+  Use when the user names one of these peer models, case-insensitively, including a bare model name referring to the current work. Also use, unasked, before stating or shipping anything about how Claude Code behaves (its CLI, skills, plugins, hooks, loops or limits).
 ---
 
 # Second opinion
