@@ -19,6 +19,7 @@ setup() {
   git init -q -b main "$REPO"
   git -C "$REPO" config user.email t@example.invalid
   git -C "$REPO" config user.name Test
+  git -C "$REPO" config core.hooksPath "$BATS_TEST_TMPDIR/no-hooks"
   echo one > "$REPO/a.txt"
   git -C "$REPO" add a.txt
   git -C "$REPO" commit -qm "first"
