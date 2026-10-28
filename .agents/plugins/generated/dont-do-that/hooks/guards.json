@@ -31,6 +31,16 @@
       "function": "guard_no_root_search",
       "contract": "tool-call"
     },
+    "nested-substitution": {
+      "lane": "pre-bash",
+      "order": 8,
+      "function": "guard_nested_substitution",
+      "contract": "tool-call",
+      "agents": {
+        "claude": "enabled",
+        "codex": "disabled"
+      }
+    },
     "no-remote": {
       "lane": "pre-bash",
       "order": 10,

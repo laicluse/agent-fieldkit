@@ -53,6 +53,7 @@ PreToolUse Bash denies invalid or risky command attempts before they run:
 
 - `no-shell-ui-control`: blocks shell commands that control or capture the host desktop. Claude, Codex.
 - `no-root-search`: blocks a recursive file search rooted at the filesystem root, the users directory, the home directory, or the home Library and its app-container directories. Claude, Codex.
+- `nested-substitution`: blocks a command substitution nested inside another one. Claude only.
 - `no-remote`: blocks `git push` with no remote or an unknown named remote.
   Claude, Codex.
 - `no-remote-create`: blocks `gh repo create` and `gh repo fork`. Claude, Codex.
@@ -119,6 +120,10 @@ Denies a recursive file search whose root is the filesystem root, the users dire
 
 
 The `no-root-search-tool` registry entry applies the same roots to Claude's built-in `Grep` and `Glob` tools, which default to the session directory. `Grep` needs a `path` outside the guarded roots; `Glob` is judged by the literal directory prefix of its pattern and by how deep the rest descends, so `*.md` in the home directory passes and `**/Gemfile` does not. These tools carry no comment, so an operator-requested search of a whole tree goes through the shell with `# allow-root-search`.
+
+### `nested-substitution`
+
+Denies a Bash command in which a `$(` opens while another `$(` is still open, such as `echo "$b: $(git rev-list "$(git merge-base a b)"..b)"`. Claude Code cannot statically resolve such a command and asks the operator for permission even in bypass mode, so an unattended session stalls. Single-quoted text and the bodies of quoted heredocs (`<<'EOF'`) are data and pass, and `$((` arithmetic is not a substitution. Pass condition: assign the inner result to a variable first, or write the loop as a script through a quoted heredoc and run it with `bash`. Append `# allow-nested-substitution` when the nesting cannot be avoided. Claude only, because the prompt comes from Claude Code's permission check.
 
 ### `no-remote`
 

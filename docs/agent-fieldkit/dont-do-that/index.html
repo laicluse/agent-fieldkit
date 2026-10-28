@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.87</span>
+							<span class="meta-fact">2.0.88</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -104,6 +104,7 @@
 <ul>
 <li><code>no-shell-ui-control</code>: blocks shell commands that control or capture the host desktop. Claude, Codex.</li>
 <li><code>no-root-search</code>: blocks a recursive file search rooted at the filesystem root, the users directory, the home directory, or the home Library and its app-container directories. Claude, Codex.</li>
+<li><code>nested-substitution</code>: blocks a command substitution nested inside another one. Claude only.</li>
 <li><code>no-remote</code>: blocks <code>git push</code> with no remote or an unknown named remote. Claude, Codex.</li>
 <li><code>no-remote-create</code>: blocks <code>gh repo create</code> and <code>gh repo fork</code>. Claude, Codex.</li>
 <li><code>no-worktree-deploy</code>: blocks <code>ansible-playbook</code> from a git worktree unless read-only flags are used. Claude, Codex.</li>
@@ -144,6 +145,8 @@
 <h3 id="no-root-search"><code>no-root-search</code></h3>
 <p>Denies a recursive file search whose root is the filesystem root, the users directory, <code>/Volumes</code>, the home directory, or the home <code>Library</code>, <code>Library/Containers</code> and <code>Library/Group Containers</code>. Walking those trees reads other apps' private data, which on macOS raises one privacy prompt per app for the operator, and it runs for many minutes where a package-manager or index query answers in a second. Covered tools are <code>find</code>, <code>bfs</code>, <code>fd</code>, <code>rg</code>, <code>grep -r</code>, <code>ag</code>, <code>ack</code>, <code>tree</code>, <code>du</code> and <code>ls -R</code>, including wrapper, <code>sh -c</code> and command-substitution forms. Every spelling of a root counts (<code>~</code>, <code>$HOME</code>, an absolute path, a <code>..</code> chain, <code>~/*</code>), and a search without a path is judged against the directory it runs in, following a leading <code>cd</code>. Quoted text, heredoc bodies and commands passed to another host are data and pass. Pass condition: decide where the answer logically lives and search only there, or ask the operator when no such place can be named; locate a dependency through its package manager (<code>bundle show</code>, <code>gem contents</code>, <code>npm ls</code>, <code>pip show -f</code>, <code>go list -m</code>); find a file by name through the file index (<code>mdfind -name</code>, <code>locate</code>). A shallow listing passes: <code>-maxdepth 2</code> from the filesystem root or the users directory, <code>-maxdepth 1</code> from the other roots. Append <code># allow-root-search</code> when the operator asked for a search of that whole tree.</p>
 <p>The <code>no-root-search-tool</code> registry entry applies the same roots to Claude's built-in <code>Grep</code> and <code>Glob</code> tools, which default to the session directory. <code>Grep</code> needs a <code>path</code> outside the guarded roots; <code>Glob</code> is judged by the literal directory prefix of its pattern and by how deep the rest descends, so <code>*.md</code> in the home directory passes and <code>**/Gemfile</code> does not. These tools carry no comment, so an operator-requested search of a whole tree goes through the shell with <code># allow-root-search</code>.</p>
+<h3 id="nested-substitution"><code>nested-substitution</code></h3>
+<p>Denies a Bash command in which a <code>$(</code> opens while another <code>$(</code> is still open, such as <code>echo &quot;$b: $(git rev-list &quot;$(git merge-base a b)&quot;..b)&quot;</code>. Claude Code cannot statically resolve such a command and asks the operator for permission even in bypass mode, so an unattended session stalls. Single-quoted text and the bodies of quoted heredocs (<code>&lt;&lt;'EOF'</code>) are data and pass, and <code>$((</code> arithmetic is not a substitution. Pass condition: assign the inner result to a variable first, or write the loop as a script through a quoted heredoc and run it with <code>bash</code>. Append <code># allow-nested-substitution</code> when the nesting cannot be avoided. Claude only, because the prompt comes from Claude Code's permission check.</p>
 <h3 id="no-remote"><code>no-remote</code></h3>
 <p>Denies <code>git push</code> when the current repo has no configured remote, or when the push names a remote that is not configured. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code> before checking remotes, then falls back to the hook cwd. Pass condition: add or choose a configured remote through the operator-approved route, or keep the work local.</p>
 <h3 id="no-remote-create"><code>no-remote-create</code></h3>

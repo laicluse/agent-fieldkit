@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.88] - 2026-10-28
+
+### Added
+
+- The nested-substitution guard blocks a Bash command with a `$(` inside another `$(`. Claude Code asks the operator for permission on such a command even in bypass mode. Assign the inner result to a variable first or write the loop as a script through a quoted heredoc. Claude only.
+
 ## [v2.0.83] - 2026-10-23
 
 ### Changed
