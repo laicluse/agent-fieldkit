@@ -54,6 +54,7 @@ PreToolUse Bash denies invalid or risky command attempts before they run:
 - `no-shell-ui-control`: blocks shell commands that control or capture the host desktop. Claude, Codex.
 - `no-root-search`: blocks a recursive file search rooted at the filesystem root, the users directory, the home directory, or the home Library and its app-container directories. Claude, Codex.
 - `nested-substitution`: blocks a command substitution nested inside another one. Claude only.
+- `rm-unguarded-var`: blocks an `rm` on a variable path without `${VAR:?}` or on a command substitution. Claude only.
 - `no-remote`: blocks `git push` with no remote or an unknown named remote.
   Claude, Codex.
 - `no-remote-create`: blocks `gh repo create` and `gh repo fork`. Claude, Codex.
@@ -124,6 +125,10 @@ The `no-root-search-tool` registry entry applies the same roots to Claude's buil
 ### `nested-substitution`
 
 Denies a Bash command in which a `$(` opens while another `$(` is still open, such as `echo "$b: $(git rev-list "$(git merge-base a b)"..b)"`. Claude Code cannot statically resolve such a command and asks the operator for permission even in bypass mode, so an unattended session stalls. Single-quoted text and the bodies of quoted heredocs (`<<'EOF'`) are data and pass, and `$((` arithmetic is not a substitution. Pass condition: assign the inner result to a variable first, or write the loop as a script through a quoted heredoc and run it with `bash`. Append `# allow-nested-substitution` when the nesting cannot be avoided. Claude only, because the prompt comes from Claude Code's permission check.
+
+### `rm-unguarded-var`
+
+Denies a Bash command with an `rm` whose arguments expand a variable without the `${VAR:?}` guard or a command substitution, such as `rm -f $D/*.png`. An empty variable or substitution would widen the path, so Claude Code asks the operator for permission and an unattended session waits until the prompt auto-denies. Single-quoted and escaped text, comments and heredoc bodies are data and pass. An `rm` counts as the first word of a command, also after `then`, `do`, `sudo` or `xargs`, and behind `find -exec`. Pass condition: write each variable as `"${D:?}"`, assign a substitution to a guarded variable first, or use a literal path. Append `# allow-rm-var` when a bare variable is intended. Claude only, because the prompt comes from Claude Code's permission check.
 
 ### `no-remote`
 

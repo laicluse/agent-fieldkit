@@ -41,6 +41,16 @@
         "codex": "disabled"
       }
     },
+    "rm-unguarded-var": {
+      "lane": "pre-bash",
+      "order": 9,
+      "function": "guard_rm_unguarded_var",
+      "contract": "tool-call",
+      "agents": {
+        "claude": "enabled",
+        "codex": "disabled"
+      }
+    },
     "no-remote": {
       "lane": "pre-bash",
       "order": 10,

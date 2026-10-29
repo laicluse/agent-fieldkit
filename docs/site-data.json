@@ -94,7 +94,7 @@
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
 		"skillEntries": 92,
-		"hookFiles": 76
+		"hookFiles": 77
 	},
 	"install": {
 		"claude": [
@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.88",
+			"version": "2.0.89",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -273,11 +273,11 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/dont-do-that",
 			"skillCount": 4,
 			"commandCount": 2,
-			"hookFileCount": 33,
+			"hookFileCount": 34,
 			"latestChange": {
-				"version": "v2.0.88",
+				"version": "v2.0.89",
 				"type": "Added",
-				"summary": "The nested-substitution guard blocks a Bash command with a $( inside another $(."
+				"summary": "The rm-unguarded-var guard blocks an rm whose path expands a variable without ${VAR:?} or a command substitution, such as rm -f $D/.png."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.88",
+			"packageVersion": "2.0.89",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.88",
+			"version": "v2.0.89",
 			"type": "Added",
-			"summary": "The nested-substitution guard blocks a Bash command with a $( inside another $(.",
+			"summary": "The rm-unguarded-var guard blocks an rm whose path expands a variable without ${VAR:?} or a command substitution, such as rm -f $D/.png.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

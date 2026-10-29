@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.88</span>
+							<span class="meta-fact">2.0.89</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -105,6 +105,7 @@
 <li><code>no-shell-ui-control</code>: blocks shell commands that control or capture the host desktop. Claude, Codex.</li>
 <li><code>no-root-search</code>: blocks a recursive file search rooted at the filesystem root, the users directory, the home directory, or the home Library and its app-container directories. Claude, Codex.</li>
 <li><code>nested-substitution</code>: blocks a command substitution nested inside another one. Claude only.</li>
+<li><code>rm-unguarded-var</code>: blocks an <code>rm</code> on a variable path without <code>${VAR:?}</code> or on a command substitution. Claude only.</li>
 <li><code>no-remote</code>: blocks <code>git push</code> with no remote or an unknown named remote. Claude, Codex.</li>
 <li><code>no-remote-create</code>: blocks <code>gh repo create</code> and <code>gh repo fork</code>. Claude, Codex.</li>
 <li><code>no-worktree-deploy</code>: blocks <code>ansible-playbook</code> from a git worktree unless read-only flags are used. Claude, Codex.</li>
@@ -147,6 +148,8 @@
 <p>The <code>no-root-search-tool</code> registry entry applies the same roots to Claude's built-in <code>Grep</code> and <code>Glob</code> tools, which default to the session directory. <code>Grep</code> needs a <code>path</code> outside the guarded roots; <code>Glob</code> is judged by the literal directory prefix of its pattern and by how deep the rest descends, so <code>*.md</code> in the home directory passes and <code>**/Gemfile</code> does not. These tools carry no comment, so an operator-requested search of a whole tree goes through the shell with <code># allow-root-search</code>.</p>
 <h3 id="nested-substitution"><code>nested-substitution</code></h3>
 <p>Denies a Bash command in which a <code>$(</code> opens while another <code>$(</code> is still open, such as <code>echo &quot;$b: $(git rev-list &quot;$(git merge-base a b)&quot;..b)&quot;</code>. Claude Code cannot statically resolve such a command and asks the operator for permission even in bypass mode, so an unattended session stalls. Single-quoted text and the bodies of quoted heredocs (<code>&lt;&lt;'EOF'</code>) are data and pass, and <code>$((</code> arithmetic is not a substitution. Pass condition: assign the inner result to a variable first, or write the loop as a script through a quoted heredoc and run it with <code>bash</code>. Append <code># allow-nested-substitution</code> when the nesting cannot be avoided. Claude only, because the prompt comes from Claude Code's permission check.</p>
+<h3 id="rm-unguarded-var"><code>rm-unguarded-var</code></h3>
+<p>Denies a Bash command with an <code>rm</code> whose arguments expand a variable without the <code>${VAR:?}</code> guard or a command substitution, such as <code>rm -f $D/*.png</code>. An empty variable or substitution would widen the path, so Claude Code asks the operator for permission and an unattended session waits until the prompt auto-denies. Single-quoted and escaped text, comments and heredoc bodies are data and pass. An <code>rm</code> counts as the first word of a command, also after <code>then</code>, <code>do</code>, <code>sudo</code> or <code>xargs</code>, and behind <code>find -exec</code>. Pass condition: write each variable as <code>&quot;${D:?}&quot;</code>, assign a substitution to a guarded variable first, or use a literal path. Append <code># allow-rm-var</code> when a bare variable is intended. Claude only, because the prompt comes from Claude Code's permission check.</p>
 <h3 id="no-remote"><code>no-remote</code></h3>
 <p>Denies <code>git push</code> when the current repo has no configured remote, or when the push names a remote that is not configured. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code> before checking remotes, then falls back to the hook cwd. Pass condition: add or choose a configured remote through the operator-approved route, or keep the work local.</p>
 <h3 id="no-remote-create"><code>no-remote-create</code></h3>

@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.89] - 2026-10-29
+
+### Added
+
+- The rm-unguarded-var guard blocks an `rm` whose path expands a variable without `${VAR:?}` or a command substitution, such as `rm -f $D/*.png`. Claude Code asks the operator for permission on such a command. Write `"${D:?}"/*.png`, assign a substitution to a guarded variable first, or use a literal path. Claude only.
+
 ## [v2.0.88] - 2026-10-28
 
 ### Added
