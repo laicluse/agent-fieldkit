@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.97",
+			"version": "2.0.98",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 33,
 			"latestChange": {
-				"version": "v2.0.96",
-				"type": "Added",
-				"summary": "git merge main (or origin/main, or whatever origin/HEAD names) on a feature branch is refused, also on a colleague's published PR branch."
+				"version": "v2.0.98",
+				"type": "Fixed",
+				"summary": "Visual captures now follow the destination vault's README and folder conventions, keeping each check and its images in the intended project folder."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.97",
+			"packageVersion": "2.0.98",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.96",
-			"type": "Added",
-			"summary": "git merge main (or origin/main, or whatever origin/HEAD names) on a feature branch is refused, also on a colleague's published PR branch.",
+			"version": "v2.0.98",
+			"type": "Fixed",
+			"summary": "Visual captures now follow the destination vault's README and folder conventions, keeping each check and its images in the intended project folder.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{

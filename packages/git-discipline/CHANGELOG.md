@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.98]
+
+### Fixed
+
+- Visual captures now follow the destination vault's README and folder conventions, keeping each check and its images in the intended project folder.
+
 ## [v2.0.96]
 
 ### Added
