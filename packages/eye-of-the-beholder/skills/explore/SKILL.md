@@ -43,6 +43,10 @@ Judge the entire material world: silhouette, palette relationships, light, depth
 
 ## Make the handoff concrete
 
+Sketch acceptance settles the stated content and topology, not finished typography, materials, spacing or visual quality. Before implementing the final product from a low-fidelity sketch, show a finished visual treatment against the actual product and brand references; under delegated design authority, select and record that treatment yourself. Replacing marker lettering with default fonts is not this design step. Record which visual axes were accepted so an implementation request cannot silently promote a wireframe into the final appearance.
+
+Inventory existing components named or pictured in the brief and trace their actual implementation before coding. Reuse them; when a new export or static state needs a capability, extend the owning component rather than drawing a local lookalike. Compare the first real render with the chosen treatment and the existing product at equivalent scale before delivery: content correctness and a successful build do not establish visual fidelity.
+
 Once a visual direction is accepted (by the user, or as a recorded agent decision under delegation) and implementation is authorized, save the accepted image or durable artifact link, its reference roles, the generation prompt and model/settings only where actually known. Record rejected decisions with their scope and reason so they do not return as new suggestions. Record the mechanisms drawn in the library's draw log, and the outcome on the entries that were applied. Separate accepted appearance from unresolved mechanism or behavior. Never claim that acceptance of one implies acceptance of the other.
 
 For a new record, use [the visual-language template](../define/templates/visual-language.md). Extend the project's canonical visual-language document instead of replacing it with a generic template. Include image anchors and a compact decision record: decision, status, image, rationale, scope, remaining uncertainty. Concepts and verified implementation captures must be distinguishable.

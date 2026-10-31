@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.89</span>
+							<span class="meta-fact">2.0.90</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -219,7 +219,7 @@
 <h3 id="premature"><code>premature</code></h3>
 <p>Blocks Stop when the last assistant message does not end with a question and does not end with <code>🏁</code> (finished) or <code>🚦</code> (blocked on an operator decision) plus a substantive sentence of at least 40 non-space, non-emoji characters with a sentence terminator. Committed work is finished whether or not it is pushed, so it closes with <code>🏁</code>; a push or merge nobody ordered is not a reason for <code>🚦</code>, and a gate named once is not repeated every turn. Pass condition: finish with a real completed-work sentence, finish with a real waiting-on-a-decision sentence, or keep writing.</p>
 <h3 id="left-behind"><code>left-behind</code></h3>
-<p>Blocks Stop when the answer names a defect it found and leaves it: &quot;niet in deze PR&quot;, &quot;heb ik laten liggen&quot;, &quot;niet aangeraakt&quot;, &quot;not in this PR&quot;. A defect found in the work at hand gets fixed in that work, and an unexplained finding gets investigated. Quoted spans and code are ignored. Pass condition: fix or investigate it, or start the sentence with <code>Bewust uitgesteld:</code> and name the gate the agent cannot pass itself, such as a host change or an operator decision.</p>
+<p>Blocks Stop when the answer names a defect it found and leaves it: &quot;niet in deze PR&quot;, &quot;heb ik laten liggen&quot;, &quot;niet aangeraakt&quot;, &quot;not in this PR&quot;. A defect found in the work at hand gets fixed in that work, and an unexplained finding gets investigated. Quoted spans and code are ignored. Pass condition: fix or investigate it, or start the sentence with <code>Bewust uitgesteld:</code> and name the gate the agent cannot pass itself, such as a host change that needs a go. What happens to parts that coding agents built is the agent's judgement, not a gate to hand to the operator.</p>
 <h3 id="verify"><code>verify</code></h3>
 <p>Blocks Stop when the assistant delegates verification to the operator with phrases like &quot;zou moeten werken&quot;, &quot;check of het werkt&quot;, or &quot;refresh de pagina&quot; instead of verifying directly. Meta-references in backticks, quotes, and table cells are stripped before matching. Pass condition: actually verify with a test, curl, grep, screenshot, browser check, or other available tool, then prefix the conclusion with <code>Geverifieerd:</code>.</p>
 <h3 id="duh"><code>duh</code></h3>
