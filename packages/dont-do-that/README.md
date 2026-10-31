@@ -347,8 +347,9 @@ deze PR", "heb ik laten liggen", "niet aangeraakt", "not in this PR". A defect
 found in the work at hand gets fixed in that work, and an unexplained finding
 gets investigated. Quoted spans and code are ignored. Pass condition: fix or
 investigate it, or start the sentence with `Bewust uitgesteld:` and name the
-gate the agent cannot pass itself, such as a host change or an operator
-decision.
+gate the agent cannot pass itself, such as a host change that needs a go.
+What happens to parts that coding agents built is the agent's judgement, not a
+gate to hand to the operator.
 
 ### `verify`
 
