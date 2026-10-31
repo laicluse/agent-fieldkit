@@ -53,7 +53,7 @@
 						<p class="lede">Dispatches autonomous work with a phase machine, decision framework, review gates, and verification evidence.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.31</span>
+							<span class="meta-fact">2.0.32</span>
 							<span class="meta-fact">8 skills</span>
 						</div>
 					</div>
@@ -84,12 +84,12 @@
 <p>Use <code>rover</code> for long-running or high-stakes work where the agent needs a field loop instead of a single conversational answer: survey the task, drive the work, inspect the result, apply pride/trim/verify gates, and return a mission report.</p>
 <h2 id="dependencies">Dependencies</h2>
 <ul>
-<li><strong><code>gurus@laicluse-agent-fieldkit</code></strong> (same marketplace): the rover invokes <code>gurus:gurus</code> once per mission at INSPECT for opinionated panel review; the orchestrator routes to <code>gurus:software</code>, <code>gurus:council</code>, <code>gurus:writers</code>, or any future panel.</li>
+<li><strong><code>gurus@laicluse-agent-fieldkit</code></strong> (same marketplace): optional opinionated review for unresolved architectural decisions; the orchestrator routes to <code>gurus:software</code>, <code>gurus:council</code>, <code>gurus:writers</code>, or any future panel.</li>
 </ul>
 <ul>
 <li><strong><code>intervision@laicluse-agent-fieldkit</code></strong> (optional, same marketplace): with each gurus review, attempt a second opinion from the other frontier lab. Codex asks Claude and Claude asks Codex through the host-specific <code>intervision:second-opinion</code> skill. The peer needs its own working CLI/login and available quota. If it is unavailable, record the reason and continue with the existing review workflow; never substitute a reviewer from the executing lab.</li>
 </ul>
-<p>No other hard dependencies. Optional integrations (notifier, reviewbot, commit-splitter) are user-named at invocation and only used when installed.</p>
+<p>No hard dependencies. Optional integrations (notifier, reviewbot, commit-splitter) are user-named at invocation and only used when installed.</p>
 <h2 id="user-invocable-skills">User-invocable skills</h2>
 <div class="readme-scan">
 <h3 id="rover-rover-loop-file-path-free-form-text"><code>/rover:rover [loop-file-path | free-form text]</code></h3>
@@ -97,9 +97,9 @@
 <h3 id="rover-stop-loop-file-path"><code>/rover:stop [loop-file-path]</code></h3>
 <p>Cleanly stop a running mission. Cancels or marks the host continuation mechanism when one was recorded, writes a final log entry, and transmits a mission-report communiqué.</p>
 <h3 id="rover-pride-git-range-uncommitted"><code>/rover:pride [git-range | uncommitted]</code></h3>
-<p>Spawns a contrarian agent that reviews a rover artefact for what the user would notice but the rover missed. Hard gate inside the rover on every artefact (code, docs, prose, research briefs, media, communiqués), not just pushes. Also invocable directly.</p>
+<p>Spawns a contrarian agent that reviews a rover artefact for what the user would notice but the rover missed. Reviews coherent changed work and actual evidence. Unchanged reports reuse existing reviews; explicit stops do not trigger another review cycle. Also invocable directly.</p>
 <h3 id="rover-trim-git-range-uncommitted"><code>/rover:trim [git-range | uncommitted]</code></h3>
-<p>The subtraction pass: what got added that does not earn its weight? Hard gate in INSPECT, the inverse of pride.</p>
+<p>The subtraction pass: what got added that does not earn its weight? Used for material added complexity or an explicit request; may share the review batch.</p>
 <h3 id="rover-verify-propose-loop-file-loop-file-free-text"><code>/rover:verify [--propose &lt;loop-file&gt; | &lt;loop-file&gt; | free text]</code></h3>
 <p>Evidence discipline. With <code>--propose</code>, writes Done criteria at the end of SURVEY. Default mode ticks each criterion with evidence at the end of INSPECT.</p>
 <h3 id="rover-decide-free-text"><code>/rover:decide [free text]</code></h3>
@@ -114,8 +114,10 @@
 <p>The loop is autonomous. It does not ask questions mid-phase. When it hits a choice it invokes <code>decide</code>. Before any artefact leaves the rover (push, PR, handoff communiqué, research brief, generated doc, media, or any other deliverable) it invokes <code>pride</code>. Pushes themselves are never autonomous: the user must say &quot;push&quot; or equivalent.</p>
 <h2 id="loop-file">Loop file</h2>
 <p>Lives in <code>.autonomous/&lt;NAME&gt;.md</code> at the git root. Holds context, plan, Done criteria, decision audit trail, and a timestamped log. Tail it to watch progress. The format is unchanged from the old <code>autonomous</code> plugin, so existing loop files still wake.</p>
+<h2 id="bounded-research">Bounded research</h2>
+<p>Explicit stops and budgets are binding. Before expensive research, record a baseline, falsifiable hypothesis, total budget and negative stop condition. A failed hypothesis is reported as failed while the product goal remains unmet. Renaming a prompt, experiment or session never resets that boundary. Another attempt requires evidence of the cause, a relevant change and a discriminating prediction; another research sequence requires a new operator instruction.</p>
 				</article>
-				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#dependencies">Dependencies</a></li><li><a href="#user-invocable-skills">User-invocable skills</a></li><li><a href="#phase-machine">Phase machine</a></li><li><a href="#loop-file">Loop file</a></li></ol></nav>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#dependencies">Dependencies</a></li><li><a href="#user-invocable-skills">User-invocable skills</a></li><li><a href="#phase-machine">Phase machine</a></li><li><a href="#loop-file">Loop file</a></li><li><a href="#bounded-research">Bounded research</a></li></ol></nav>
 			</section>
 		</main>
 

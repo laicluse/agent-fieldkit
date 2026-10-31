@@ -1,7 +1,7 @@
 {
   "name": "rover",
-  "version": "2.0.31",
-  "description": "Dispatch a rover at a task and stay back while it decides in the field: a SURVEY/DRIVE/INSPECT/STOW phase machine with a decide framework, pride and trim quality gates, verify evidence discipline, prepare for queuing missions across repos, and a stop communique. Asks the autonomous layer at startup whether it needs to keep itself alive. Depends on gurus for the INSPECT panel review.",
+  "version": "2.0.32",
+  "description": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Rover",
-    "shortDescription": "Dispatch a rover at a task and stay back while it decides in the field: a SURVEY/DRIVE/INSPECT/STOW phase machine wit...",
-    "longDescription": "Dispatch a rover at a task and stay back while it decides in the field: a SURVEY/DRIVE/INSPECT/STOW phase machine with a decide framework, pride and trim quality gates, verify evidence discipline, prepare for queuing missions across repos, and a stop communique. Asks the autonomous layer at startup whether it needs to keep itself alive. Depends on gurus for the INSPECT panel review.",
+    "shortDescription": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative o...",
+    "longDescription": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

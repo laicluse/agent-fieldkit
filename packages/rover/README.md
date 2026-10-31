@@ -18,7 +18,7 @@ inspect the result, apply pride/trim/verify gates, and return a mission report.
 
 ## Installation
 
-Install `gurus` alongside `rover`; rover uses it for the INSPECT panel review.
+`gurus` is optional for unresolved architectural decisions or an explicit panel request.
 
 ```bash
 claude plugins install rover@laicluse-agent-fieldkit gurus@laicluse-agent-fieldkit
@@ -34,14 +34,13 @@ quiet persistent run.
 
 ## Dependencies
 
-- **`gurus@laicluse-agent-fieldkit`** (same marketplace): the rover invokes
-  `gurus:gurus` once per mission at INSPECT for opinionated panel review; the
+- **`gurus@laicluse-agent-fieldkit`** (same marketplace): optional opinionated review for unresolved architectural decisions; the
   orchestrator routes to `gurus:software`, `gurus:council`, `gurus:writers`,
   or any future panel.
 
 - **`intervision@laicluse-agent-fieldkit`** (optional, same marketplace): with each gurus review, attempt a second opinion from the other frontier lab. Codex asks Claude and Claude asks Codex through the host-specific `intervision:second-opinion` skill. The peer needs its own working CLI/login and available quota. If it is unavailable, record the reason and continue with the existing review workflow; never substitute a reviewer from the executing lab.
 
-No other hard dependencies. Optional integrations (notifier, reviewbot,
+No hard dependencies. Optional integrations (notifier, reviewbot,
 commit-splitter) are user-named at invocation and only used when installed.
 
 ## User-invocable skills
@@ -66,14 +65,11 @@ mission-report communiqué.
 ### `/rover:pride [git-range | uncommitted]`
 
 Spawns a contrarian agent that reviews a rover artefact for what the user would
-notice but the rover missed. Hard gate inside the rover on every artefact
-(code, docs, prose, research briefs, media, communiqués), not just pushes. Also
-invocable directly.
+notice but the rover missed. Reviews coherent changed work and actual evidence. Unchanged reports reuse existing reviews; explicit stops do not trigger another review cycle. Also invocable directly.
 
 ### `/rover:trim [git-range | uncommitted]`
 
-The subtraction pass: what got added that does not earn its weight? Hard gate in
-INSPECT, the inverse of pride.
+The subtraction pass: what got added that does not earn its weight? Used for material added complexity or an explicit request; may share the review batch.
 
 ### `/rover:verify [--propose <loop-file> | <loop-file> | free text]`
 
@@ -112,3 +108,7 @@ Lives in `.autonomous/<NAME>.md` at the git root. Holds context, plan, Done
 criteria, decision audit trail, and a timestamped log. Tail it to watch
 progress. The format is unchanged from the old `autonomous` plugin, so existing
 loop files still wake.
+
+## Bounded research
+
+Explicit stops and budgets are binding. Before expensive research, record a baseline, falsifiable hypothesis, total budget and negative stop condition. A failed hypothesis is reported as failed while the product goal remains unmet. Renaming a prompt, experiment or session never resets that boundary. Another attempt requires evidence of the cause, a relevant change and a discriminating prediction; another research sequence requires a new operator instruction.

@@ -113,32 +113,17 @@ The rover is tempted by proxies because they are cheaper than real evidence. Rej
 | "I followed the pattern" | Pattern imitation, not correctness | Prove this instance behaves |
 | "No errors in the console" | Absence is not presence | Confirm the positive outcome happened |
 | "The pipeline works on one example, so the matrix criterion is met" | Single-instance evidence does not satisfy a quantitative criterion | Run the full matrix, produce every output the criterion names, list each one |
-| "The simulator boot loop would burn context, so I tick the criterion now" | Cost is a fate-2 candidate for findings; Done criteria have no fate-2 path | Either produce the full evidence, or mark `unverified: <route the operator needs to take>` and stay in DRIVE |
+| "The simulator boot loop would burn context, so I tick the criterion now" | Cost is a fate-2 candidate for findings; Done criteria have no fate-2 path | Produce evidence within the authorized budget or report the criterion unmet; never tick it to stop |
 
 When a proxy is the only thing available, label it: `unverified, only proxy evidence: <X>`. Honesty beats a false green.
 
-## When verification is genuinely impossible
+## Unmet criteria and negative results
 
-Sometimes a criterion cannot be verified with available tools:
+Mark missing evidence `unverified: <specific reason>` and measured failures `failed: <evidence>`. Never substitute mocks for unmeasured model quality, silently remove a criterion or mark the product goal complete because an experiment ended.
 
-- Production-only behavior (auth, third-party services, real user load)
-- Visual checks in a headless environment without a browser
-- Timing-sensitive measurements without a stable baseline
-- Behaviors that only manifest under rare conditions
+A contradiction of a success signal in the original Dispatch remains an unmet criterion even if SURVEY missed it. Do not cost-value-skip that criterion into a success claim. Repair it within the authorized scope and budget when evidence supports a remedy. An explicit stop, exhausted budget or negative experimental stop condition takes precedence: preserve work and report unmet criteria without another DRIVE or review cycle. Follow host continuation status rules rather than inventing a successful or paused state.
 
-Mark these `unverified: <specific reason>` in the Done criteria. Do not claim them met. The rover does not decide on its own that an unverified criterion is "acceptable" and push on. The rover also does not route unverified criteria to the operator; there is no operator-accept path inside an autonomous mission. The rover's job is to make every criterion verifiable and produce the evidence.
-
-Done criteria are not findings. The three-fates rubric from `rover` applies to findings raised by pride, gurus, end-user, and technical passes; it does not apply here. Done criteria are the mission's destination, not weights along the way. There is no fate-2 cost-value-skip path for a Done criterion: every criterion is either met with evidence, or unverified (which blocks STOW until the rover produces a verification route). Fate 3 (reject-as-non-issue) does not apply either: a Done criterion was committed to during SURVEY and proves the mission delivered what the Dispatch asked for, so it cannot retroactively be a non-issue.
-
-**Late-discovered success-signal contradictions are unmet criteria, not findings.** A success-signal floor (step 2a) only works if SURVEY did not have to be perfect. When any INSPECT pass surfaces that the deliverable contradicts a success-signal the Dispatch stated in its own words, or fails a state-pair distinguishability that the Dispatch's named states imply, treat it as an unmet Done criterion discovered late, even one SURVEY failed to transcribe: no fate-2, no canon-vragen, back to DRIVE until the contradiction is gone. The test is objective and anchored to the original text, not to the already-committed criteria list: quote the Dispatch phrase (or name the state-pair) the artefact contradicts. This is the same anti-shrink floor as the Plan-vs-Dispatch check, extended from action-verb decay to success-signal contradiction, so missing one phrase at SURVEY does not delete the floor. The guard cuts the other way too: a late-discovered contradiction is only a floor when the original Dispatch text carries the intent; the rover does not invent a success-signal the operator never stated in order to manufacture rework.
-
-### Unverified blocks STOW, not INSPECT activity
-
-When INSPECT runs, any criterion still marked `unverified` blocks the transition from INSPECT to STOW. It does not freeze the rover. Other criteria keep verifying, other pride findings keep getting fixed, other parallel work continues; the blocker is only on closing out the mission. The rover's legitimate move on the unverified item is:
-
-1. **Return to DRIVE and provide the evidence.** If the direct evidence is out of reach with the current setup, change the setup. Stand up a local harness, seed a test database, mock the third-party with a fixture that exercises the real code path, run a headless browser under Playwright to screenshot a UI that was previously "headless-only", instrument the code to emit a log line the criterion can assert against. Log each attempt explicitly. "I could not run the staging test" is not acceptable until "I tried A, B, and C, and here is why each failed, so I built D, which produced the evidence" has been logged. Unverified is not a final state for the rover; it is an assignment back to DRIVE.
-
-The rover **never** upgrades `unverified` to a tick on its own, never silently drops a criterion from the list, never reasons "in de praktijk zal dit wel werken" / "in practice this should be fine" to close it out, and never asks the operator to accept an unverified criterion. Those moves are the exact corner-cutting this discipline exists to prevent. If you catch yourself typing "accepting unverified" or "acceptable given context" into the loop file, revert and go back to DRIVE to produce the evidence.
+Before another attempt after failure, require the observed cause, relevant change and falsifiable prediction. Rewording or a new reviewer alone does not meet that requirement. A failed hypothesis does not prove a universal capability limit and does not authorize a new research sequence.
 
 ## Anti-patterns
 
@@ -156,9 +141,7 @@ A Done criterion that names a count or a matrix (`bin/capture-shots produces 40 
 
 The temptation is structural: when the matrix is wide (40 outputs, hours of simulator boots, a long sweep) and the mechanism is verified on one example, the rover wants to upgrade "mechanism proven" to "criterion met" because the marginal cost of the remaining N-1 runs feels disproportionate to the marginal information. That trade is wrong twice. First, the criterion was committed to during SURVEY precisely because the matrix matters; the rover does not get to redefine the criterion at INSPECT to be the part it already finished. Second, the rover routinely discovers that the mechanism works on the first instance but fails on the second or third (a scene flag the schema does not expose, a locale-specific font fallback, a device-class path the mechanism hardcoded). The matrix runs are the discovery surface, not the formality.
 
-If the matrix is genuinely too expensive to run in this session, the move is `unverified: requires <concrete-route>` with a route the operator could take, not a tick. Unverified blocks STOW, so the mission stays open and the operator sees the gap in the next read of the loop file. A ticked criterion that was not actually verified is worse than an unverified one: the operator stops looking, the gap rots, and the next reader of the communiqué believes a lie.
-
-Red flag: when typing a verify-pass log entry, watch for the construction "running N more iterations would exceed prudent context; the one-scene verification proves the pipeline works." That sentence shape is the proxy this section exists to prevent. The correct continuation is `unverified: needs full matrix run via bin/X`. Then stay in DRIVE until the matrix evidence exists, or transition out only because the operator's environment legitimately blocks the run and the unverified state is documented for them to pick up.
+If the full matrix has not run, mark the criterion unverified with the missing evidence. Do not infer a complete pass from one example. Continue only within the authorized scope and budget; a stop or negative experimental boundary ends execution with the criterion still unmet, without restarting DRIVE.
 
 ## Interaction with other skills
 
