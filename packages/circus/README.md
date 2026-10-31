@@ -57,6 +57,16 @@ circus itself does not.
 
 **Plugin level (`circus plugins`).** Applies the public `how-plugins-work` sync model to local marketplace repos. `SKILL.md` is shared source when behavior is agent-agnostic. `SKILL.claude.md` and `SKILL.codex.md` are agent-specific sources; they may exist as a pair for parity-by-variant, or singly when a multi-agent plugin has partial skill coverage. Claude manifests remain source; Codex manifests and `.agents/plugins/marketplace.json` are generated adapters. When suffix sources are present, circus materializes the runtime `SKILL.md` only for the agents that have source coverage. If Codex rejects a Claude-only frontmatter field, circus materializes a sanitized generated package under `.agents/plugins/generated/<plugin>/`. If Codex needs hooks, use `hooks/hooks.codex.json`; circus materializes it as runtime `hooks/hooks.json` in that generated package and keeps Claude-only hook metadata out of Codex's strict hook schema. Generated Codex hook commands retain the first runtime they use for each plugin version under the host-provided `PLUGIN_DATA` directory. A later plugin update can remove the old Codex cache directory without invalidating running or resumed sessions; a session that had not used its hook yet may adopt the one unambiguous active sibling version. Concurrent first invocations converge on one complete snapshot, and `.circus-source-version` records the version directory that supplied its files. Direct plugin roots stay direct. Hook-bearing generated manifests carry a `+codex.hooks.2` cachebuster so this adapter revision cannot be skipped as an unchanged source-package version. `PreToolUse` still fails closed when neither a retained nor active runtime exists, while other lifecycle events report that condition as a warning. Claude hooks keep using Claude Code's native version-retention window. Circus owns the executable adapter logic; generated manifests and runtime packages remain output.
 
+### Plugin listing copy
+
+`interface.codex.json` at a plugin's package root can supply a distinct `shortDescription` subtitle. The package manifest's `description` supplies the longer task summary. Both remain author-owned sources; `.codex-plugin/plugin.json` and `.agents/plugins/` remain generated output. Existing packages without this file keep their current fallback behavior.
+
+```json
+{"shortDescription": "Inspect connected devices"}
+```
+
+Use one nonempty line, at most 240 characters; public directory submission has a stricter 30-character subtitle limit. This UI copy does not change skill selection or invocation policy.
+
 ## Usage
 
 ```

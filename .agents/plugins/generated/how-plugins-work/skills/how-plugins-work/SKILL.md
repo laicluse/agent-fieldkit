@@ -205,6 +205,8 @@ Three anti-patterns to avoid:
 
 Skill descriptions route tasks; plugin manifest descriptions describe the installable package. Check both, but do not count shorter plugin listing copy as reduced model context without observing that host's actual catalog. Keep marketplace and package descriptions aligned, and inspect generated UI summaries for truncation.
 
+`interface.shortDescription` is a human-facing subtitle; `interface.longDescription` explains tasks, audience, and limitations. They are not skill-routing descriptions. In Circus, an optional package-root `interface.codex.json` authors `{"shortDescription":"Inspect connected devices"}`; the package manifest's `description` remains the long-description source. Keep the short copy independently useful rather than blindly truncating prose. Equal generated values are a compatible fallback when no separate subtitle exists; do not pad the long copy merely to make it different. Public directory submission currently limits subtitles to 30 characters; package validation allows 240. [OpenAI listing metadata](https://developers.openai.com/plugins/deploy/submission#listing-metadata)
+
 Current host differences (official docs checked 2026-10-31):
 
 | Host | Initial skill catalog | Invocation controls |

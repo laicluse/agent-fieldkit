@@ -37,8 +37,16 @@ display_name() {
 }
 
 codex_plugin_payload() {
-  local manifest="$1" plugin="$2" cachebuster="${3:-}"
-  jq -n --slurpfile manifest "$manifest" --arg plugin "$plugin" --arg category "Productivity" --arg cachebuster "$cachebuster" '
+  local manifest="$1" plugin="$2" cachebuster="${3:-}" interface_path interface_copy='{}'
+  interface_path="${manifest%/.claude-plugin/plugin.json}/interface.codex.json"
+  if [ -f "$interface_path" ]; then
+    interface_copy="$(cat "$interface_path")"
+    printf '%s' "$interface_copy" | jq -e '
+      type == "object" and keys == ["shortDescription"] and
+      (.shortDescription | type == "string" and length > 0 and length <= 240 and (test("[\\r\\n]") | not))
+    ' >/dev/null || die "plugin $plugin interface.codex.json requires one nonempty shortDescription string (one line, at most 240 characters)"
+  fi
+  jq -n --slurpfile manifest "$manifest" --argjson interface_copy "$interface_copy" --arg plugin "$plugin" --arg category "Productivity" --arg cachebuster "$cachebuster" '
     def titlecase: split("-") | map(if length > 0 then (.[0:1] | ascii_upcase) + .[1:] else . end) | join(" ");
     def shortdesc: if length <= 120 then . else .[0:117] + "..." end;
     ($manifest[0]) as $m |
@@ -55,7 +63,7 @@ codex_plugin_payload() {
       skills: "./skills/",
       interface: {
 	displayName: ($m.displayName // ($m.name | titlecase)),
-	shortDescription: ($desc | shortdesc),
+	shortDescription: ($interface_copy.shortDescription // ($desc | shortdesc)),
 	longDescription: $desc,
 	developerName: ($author | tostring),
 	category: $category,
