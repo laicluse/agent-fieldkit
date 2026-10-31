@@ -1,7 +1,7 @@
 {
   "name": "eye-of-the-beholder",
-  "version": "2.0.25",
-  "description": "Visual and interaction design: clarify confusing UI with obvious, explore new form with image generation, establish identity, and verify real rendering. Skills: eye-of-the-beholder, obvious, explore, define, review.",
+  "version": "2.0.26",
+  "description": "Improve visual and interaction design: clarify confusing UI, explore visual treatments, establish product identity, and review actual rendering against accepted references.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Eye Of The Beholder",
-    "shortDescription": "Visual and interaction design: clarify confusing UI with obvious, explore new form with image generation, establish i...",
-    "longDescription": "Visual and interaction design: clarify confusing UI with obvious, explore new form with image generation, establish identity, and verify real rendering. Skills: eye-of-the-beholder, obvious, explore, define, review.",
+    "shortDescription": "Design and review interfaces",
+    "longDescription": "Improve visual and interaction design: clarify confusing UI, explore visual treatments, establish product identity, and review actual rendering against accepted references.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

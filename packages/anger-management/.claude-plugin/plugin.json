@@ -1,5 +1,5 @@
 {
   "name": "anger-management",
-  "description": "Cuss at your coding agent to capture a one-line friction note, then fix the real problem later. The cuss commands (/fuck, /fucking, /fucked, /shit, /crap, /wtf, /bullshit) append one cheap line to a global log and move on; safeword commands (/safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, /banana) interrupt current work and fix one visible friction point now without logging it for later. /anger-management:repair cools down (~22 min, a background headless agent investigates), reads the full capture history, scores confidence, chooses the mitigation layer and target scope, and only applies or routes a fix when confidence is high enough. Lower-confidence findings leave the breadcrumb trail open for a future pass. Modelled on Stripe's bad-day button, course-correction-before-escalation, and the constructed-emotion view of anger; sometimes the irritation is real, sometimes it is playful. Vocabulary avoids slurs and identity-targeted abuse. State is stored locally; the optional background investigation uses the configured runner.",
-  "version": "2.0.16"
+  "description": "Capture friction with /fuck, /fucking, /fucked, /shit, /crap, /wtf, or /bullshit for later background investigation. Fix now with /safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, or /banana. /anger-management:repair reviews captured notes and applies or routes high-confidence fixes; /anger-management shows the tally. State stays local.",
+  "version": "2.0.17"
 }

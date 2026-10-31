@@ -2,7 +2,7 @@
 name: parity-audit
 user-invocable: true
 description: >-
-  The long invocation. A multi-agent, whole-codebase sweep over every entry point that promises one outcome, to find where their consequences diverge, converge the difference into the shared path, and re-run the audit to prove it moved. Runs as a named background process over minutes, not seconds. For a quick "have I seen this code before?" check, use drydry:drydry instead.
+  Audit every entry point promising the same outcome across a codebase, converge divergent consequences, and verify again. Runs as a named background multi-agent process; use drydry for a quick duplication check.
 allowed-tools:
   - Skill
   - Agent

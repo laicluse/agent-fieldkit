@@ -1,0 +1,73 @@
+{
+  "models": [
+    {
+      "pass": "opus-review",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "is_error": false
+    },
+    {
+      "pass": "opus-followup",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "is_error": false
+    },
+    {
+      "pass": "opus-closeout",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "is_error": false
+    },
+    {
+      "pass": "opus-routing-assessment",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "is_error": false
+    }
+  ],
+  "accepted": [
+    "Retain familiar-code, existing-surface, modal-placement, doubt, catch-up and scaffold cues.",
+    "Restore explicit command discoverability and verify the anger capture/background/repair distinction against the actual body.",
+    "Restore three accidentally overwritten how-plugins-work body examples and require exact body preservation.",
+    "Compare the current and baseline source inventories so deletions cannot pass silently."
+  ],
+  "reverted": [
+    "Visual entry-point description: original task cues are already useful.",
+    "Push-policy description: the small saving did not justify changing the existing framing.",
+    "Explore description: retain baseline conservatively after a changed entry; rollback did not restore direct selection, so a shortening cause is not established."
+  ],
+  "rejected_with_evidence": [
+    {
+      "claim": "Subtitle generator or package subtitles are missing.",
+      "evidence": "Existing packages/circus/templates/plugin-adapters reads interface.codex.json; generated manifests contain the authored subtitles."
+    },
+    {
+      "claim": "Gurus has no host-specific workflows because skill names match.",
+      "evidence": "All four SKILL.claude.md and SKILL.codex.md pairs have different bodies; software uses different dispatch and fallback paths."
+    },
+    {
+      "claim": "Quoted visual/correction subtitles are defective.",
+      "evidence": "Those quoted subtitles did not occur in the actual authoring files."
+    },
+    {
+      "claim": "Cuss text must be a negative control and internal skills must disable model invocation.",
+      "evidence": "Existing capture descriptions explicitly trigger on cuss commands; user-invocable false is a picker boundary, not disabled model invocation."
+    }
+  ],
+  "optional_not_changed": [
+    "Existing whats-new invocation wording remains unchanged; its Codex body documents $whats-new, and no defect in its existing routing was demonstrated.",
+    "The concise default-branch wording in rebase metadata is retained."
+  ],
+  "closeout": "Opus confirmed the corrected body delta and listing claims. Its source-inventory suggestion was implemented and passed; existing generator drift checks cover generated bodies.",
+  "routing_assessment": {
+    "judgment": "Contract-supported alternate entry, not an exact baseline match; not a blocker.",
+    "observed": "Claude28/28 same entry, Codex27/28 same entry. Codex uses the general visual router on existing-redesign.",
+    "unverified": "Native router-to-explore execution and extra context/latency were not measured.",
+    "causality": "Restoring explore did not restore direct entry. No causal attribution is established and no further prompt-specific tuning was done.",
+    "fixture_correction": "Plugin listing descriptions are not part of these routing fixtures, so listing changes cannot explain the observed fixture result."
+  }
+}

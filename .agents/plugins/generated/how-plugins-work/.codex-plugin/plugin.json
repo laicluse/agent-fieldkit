@@ -1,7 +1,7 @@
 {
   "name": "how-plugins-work",
-  "version": "2.0.47",
-  "description": "Reference for plugin naming, skill resolution, Claude/Codex adapter sync, marketplace aliases, runtime caches, and plugin:skill invocation.",
+  "version": "2.0.48",
+  "description": "Build and diagnose plugins, skills, and marketplaces across Claude and Codex: naming, invocation, generated adapters, sync, and installed-cache freshness.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "How Plugins Work",
-    "shortDescription": "Reference for plugin naming, skill resolution, Claude/Codex adapter sync, marketplace aliases, runtime caches, and pl...",
-    "longDescription": "Reference for plugin naming, skill resolution, Claude/Codex adapter sync, marketplace aliases, runtime caches, and plugin:skill invocation.",
+    "shortDescription": "Build and diagnose plugins",
+    "longDescription": "Build and diagnose plugins, skills, and marketplaces across Claude and Codex: naming, invocation, generated adapters, sync, and installed-cache freshness.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

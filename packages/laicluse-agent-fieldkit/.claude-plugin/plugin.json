@@ -1,5 +1,5 @@
 {
   "name": "laicluse-agent-fieldkit",
-  "description": "Marketplace-wide utilities for the laicluse-agent-fieldkit marketplace. Currently ships /whats-new (namespaced as /laicluse-agent-fieldkit:whats-new when needed), a one-stop reader for the post-update CHANGELOG section of any installed plugin.",
-  "version": "2.0.5"
+  "description": "Read the latest marketplace or installed-plugin CHANGELOG news with whats-new, without changing post-update broadcast state.",
+  "version": "2.0.6"
 }

@@ -2,11 +2,7 @@
 name: how-plugins-work
 user-invocable: true
 description: >-
-  Build, scaffold, or diagnose Claude/Codex plugins, skills, and marketplaces.
-  Read this BEFORE creating a new plugin, marketplace, marketplace.json source,
-  skill, or Codex adapter, and when generating adapters with Circus,
-  not only when debugging plugin/skill resolution, slash-command misses, Unknown
-  command errors, marketplace sync, or agent adapters.
+  Build, scaffold, or diagnose plugins, skills, marketplaces, and Claude/Codex adapters. Read BEFORE creating them, marketplace.json sources, or generating Circus adapters; also for missing slash commands, Unknown command errors, skill resolution, marketplace sync, and stale installs.
 ---
 
 <post-update-broadcast>
@@ -219,7 +215,7 @@ Sources: [Claude skills](https://code.claude.com/docs/en/skills), [Codex skills]
 
 Sanitizing Claude-only fields does not translate their semantics. When preserving an existing explicit-only skill in Codex, supply the skill-local invocation policy and verify it survives the adapter and installed cache. Do not translate `user-invocable: false` into disabled implicit invocation: those controls mean different things. A Claude-only flag does not establish the existing Codex policy: adding a Codex restriction can change a working workflow. Keep invocation-policy decisions separate from description cleanup, and preserve existing host behavior unless the operator requests a change.
 
-Compare realistic positive requests, nearby requests that should select another skill or none, and explicit named invocations before and after under matched conditions. Inspect real skill-loading traces where available; choosing names from a pasted catalog is a routing diagnostic, not proof of native auto-loading. Exercise the generated host metadata rather than reconstructing it by hand. With inert fixture bodies, verify their loaded markers and reject runs that read operational skills outside the fixture. Preserve raw evidence and distinguish metadata checks from behavioral results. Fewer characters or a peer opinion alone do not prove improved routing. [OpenAI's skill eval guide](https://developers.openai.com/blog/eval-skills) covers explicit, implicit, contextual, and negative-control cases.
+Compare realistic positive requests, nearby requests that should select another skill or none, and explicit named invocations before and after under matched conditions. Inspect real skill-loading traces where available; choosing names from a pasted catalog is a routing diagnostic, not proof of native auto-loading. Exercise the generated host metadata rather than reconstructing it by hand. Inventory skills per host: when a directory has agent-specific sources, use only the matching `SKILL.<host>.md`; a lone source for another host does not imply support. Do not enumerate only shared `SKILL.md` files, which can omit host-only skills and retain another host's materialized copy. With inert fixture bodies, verify their loaded markers and reject runs that read operational skills outside the fixture. Preserve raw evidence and distinguish metadata checks from behavioral results. Fewer characters or a peer opinion alone do not prove improved routing. [OpenAI's skill eval guide](https://developers.openai.com/blog/eval-skills) covers explicit, implicit, contextual, and negative-control cases.
 
 ### Frontmatter must be strict YAML
 

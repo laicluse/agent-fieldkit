@@ -1,7 +1,7 @@
 ---
 name: vaultsync
 description: >-
-  Install and operate vaultsync for the current Git checkout: a local daemon that debounces Git-visible vault changes into commits, verifies them, and syncs with upstream when one exists.
+  Install or operate vaultsync for a Git checkout, especially a Markdown vault: automatic local commits, verification, and upstream sync when configured.
 ---
 
 # Vaultsync

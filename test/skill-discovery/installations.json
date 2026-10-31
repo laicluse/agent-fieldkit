@@ -1,0 +1,346 @@
+[
+  {
+    "host": "claude",
+    "plugin": "anger-management",
+    "version": "2.0.17",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 15
+  },
+  {
+    "host": "claude",
+    "plugin": "autonomous",
+    "version": "2.0.12",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 3
+  },
+  {
+    "host": "claude",
+    "plugin": "bonsai",
+    "version": "2.0.41",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 3
+  },
+  {
+    "host": "claude",
+    "plugin": "circus",
+    "version": "2.0.9",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 2
+  },
+  {
+    "host": "claude",
+    "plugin": "clipboard",
+    "version": "2.0.12",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "claude",
+    "plugin": "dibs",
+    "version": "2.0.79",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 2
+  },
+  {
+    "host": "claude",
+    "plugin": "dont-do-that",
+    "version": "2.0.91",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "claude",
+    "plugin": "drydry",
+    "version": "2.0.7",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 8
+  },
+  {
+    "host": "claude",
+    "plugin": "eye-of-the-beholder",
+    "version": "2.0.26",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 5
+  },
+  {
+    "host": "claude",
+    "plugin": "git-discipline",
+    "version": "2.0.99",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 14
+  },
+  {
+    "host": "claude",
+    "plugin": "gurus",
+    "version": "2.0.12",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "claude",
+    "plugin": "house-rules",
+    "version": "2.0.30",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "claude",
+    "plugin": "how-plugins-work",
+    "version": "2.0.48",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 3
+  },
+  {
+    "host": "claude",
+    "plugin": "intervision",
+    "version": "2.0.26",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "claude",
+    "plugin": "laicluse-agent-fieldkit",
+    "version": "2.0.6",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "claude",
+    "plugin": "lifeline",
+    "version": "2.0.4",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 3
+  },
+  {
+    "host": "claude",
+    "plugin": "pattern-memory",
+    "version": "2.0.3",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "claude",
+    "plugin": "rover",
+    "version": "2.0.33",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 8
+  },
+  {
+    "host": "claude",
+    "plugin": "saysay",
+    "version": "2.0.10",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "claude",
+    "plugin": "self-improvement",
+    "version": "2.0.11",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "claude",
+    "plugin": "vaultsync",
+    "version": "2.0.34",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "claude",
+    "plugin": "whywhy",
+    "version": "2.0.5",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "how-plugins-work",
+    "version": "2.0.48",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 2
+  },
+  {
+    "host": "codex",
+    "plugin": "bonsai",
+    "version": "2.0.41",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 3
+  },
+  {
+    "host": "codex",
+    "plugin": "dibs",
+    "version": "2.0.79+codex.hooks.2",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 2
+  },
+  {
+    "host": "codex",
+    "plugin": "self-improvement",
+    "version": "2.0.11",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "git-discipline",
+    "version": "2.0.99+codex.hooks.2",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 9
+  },
+  {
+    "host": "codex",
+    "plugin": "dont-do-that",
+    "version": "2.0.91+codex.hooks.2",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "codex",
+    "plugin": "eye-of-the-beholder",
+    "version": "2.0.26",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 5
+  },
+  {
+    "host": "codex",
+    "plugin": "intervision",
+    "version": "2.0.26+codex.hooks.2",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "codex",
+    "plugin": "anger-management",
+    "version": "2.0.17",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 15
+  },
+  {
+    "host": "codex",
+    "plugin": "drydry",
+    "version": "2.0.7",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 8
+  },
+  {
+    "host": "codex",
+    "plugin": "pattern-memory",
+    "version": "2.0.3",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "vaultsync",
+    "version": "2.0.34+codex.hooks.2",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "laicluse-agent-fieldkit",
+    "version": "2.0.6",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "clipboard",
+    "version": "2.0.12",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "gurus",
+    "version": "2.0.12",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "codex",
+    "plugin": "rover",
+    "version": "2.0.33",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 8
+  },
+  {
+    "host": "codex",
+    "plugin": "house-rules",
+    "version": "2.0.30",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 4
+  },
+  {
+    "host": "codex",
+    "plugin": "whywhy",
+    "version": "2.0.5",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "lifeline",
+    "version": "2.0.4",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 3
+  },
+  {
+    "host": "codex",
+    "plugin": "saysay",
+    "version": "2.0.10",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 1
+  },
+  {
+    "host": "codex",
+    "plugin": "circus",
+    "version": "2.0.9",
+    "enabled": true,
+    "manifest_matches": true,
+    "matching_skill_files": 2
+  }
+]

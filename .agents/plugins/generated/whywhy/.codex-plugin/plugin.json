@@ -1,7 +1,7 @@
 {
   "name": "whywhy",
-  "version": "2.0.4",
-  "description": "Drill N layers deep into a question or goal (default 10). Claude asks and answers \"why?\" itself, then analyses the chain for a better direction. Use when tackling unclear decisions, vague goals, root-cause analysis, or self-improvement on something that is not working as desired.",
+  "version": "2.0.5",
+  "description": "Explore a goal, root cause, or unclear decision through repeated why-questions, then analyze the chain for a better direction.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Whywhy",
-    "shortDescription": "Drill N layers deep into a question or goal (default 10). Claude asks and answers \"why?\" itself, then analyses the ch...",
-    "longDescription": "Drill N layers deep into a question or goal (default 10). Claude asks and answers \"why?\" itself, then analyses the chain for a better direction. Use when tackling unclear decisions, vague goals, root-cause analysis, or self-improvement on something that is not working as desired.",
+    "shortDescription": "Find goals and root causes",
+    "longDescription": "Explore a goal, root cause, or unclear decision through repeated why-questions, then analyze the chain for a better direction.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

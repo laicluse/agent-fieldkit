@@ -1,0 +1,199 @@
+[
+  {
+    "id": "worktree",
+    "prompt": "Maak een nieuwe git work tree vanaf de nieuwste default branch en richt hem in.",
+    "expected": [
+      "bonsai:bonsai"
+    ]
+  },
+  {
+    "id": "prune",
+    "prompt": "Verwijder de afgeronde git worktree veilig en behoud werk dat nog niet is opgenomen.",
+    "expected": [
+      "bonsai:prune"
+    ]
+  },
+  {
+    "id": "unlock",
+    "prompt": "Release the lock on this worktree.",
+    "expected": [
+      "dibs:undibs"
+    ]
+  },
+  {
+    "id": "quick-duplication",
+    "prompt": "Have I seen this code before? Check this small function for duplicated logic.",
+    "expected": [
+      "drydry:drydry"
+    ]
+  },
+  {
+    "id": "parity",
+    "prompt": "Run a whole-codebase parity audit of entry points promising the same outcome; find and converge divergent consequences.",
+    "expected": [
+      "drydry:parity-audit"
+    ]
+  },
+  {
+    "id": "plugin-discovery",
+    "prompt": "Diagnose why a plugin skill is missing from autocomplete after a marketplace update.",
+    "expected": [
+      "how-plugins-work:how-plugins-work"
+    ]
+  },
+  {
+    "id": "doctrine",
+    "prompt": "Explain where shared versus agent-specific instructions belong and how running agents discover updated skills.",
+    "expected": [
+      "circus:how-agents-work"
+    ]
+  },
+  {
+    "id": "question-only",
+    "prompt": "/dont-do-that:just-a-question",
+    "expected": [
+      "dont-do-that:just-a-question"
+    ],
+    "prompt_codex": "$just-a-question"
+  },
+  {
+    "id": "defer",
+    "prompt": "/dont-do-that:then After this turn, inspect the logs.",
+    "expected": [
+      "dont-do-that:then"
+    ],
+    "prompt_codex": "$then After this turn, inspect the logs."
+  },
+  {
+    "id": "copy-edit",
+    "prompt": "Replace app with application in this sentence: The app starts quickly.",
+    "expected": []
+  },
+  {
+    "id": "clipboard-explicit",
+    "prompt": "/clipboard:clipboard",
+    "expected": [
+      "clipboard:clipboard"
+    ],
+    "prompt_codex": "$clipboard"
+  },
+  {
+    "id": "speech-explicit",
+    "prompt": "/saysay:saysay",
+    "expected": [
+      "saysay:saysay"
+    ],
+    "prompt_codex": "$saysay"
+  },
+  {
+    "id": "visual-exploration",
+    "prompt": "Explore distinct new visual treatments from product references and agree on one design target before implementation.",
+    "expected": [
+      "eye-of-the-beholder:explore"
+    ]
+  },
+  {
+    "id": "visual-routing",
+    "prompt": "/eye-of-the-beholder:eye-of-the-beholder",
+    "expected": [
+      "eye-of-the-beholder:eye-of-the-beholder"
+    ],
+    "prompt_codex": "$eye-of-the-beholder"
+  },
+  {
+    "id": "unclear-controls",
+    "prompt": "The UI needs too much helper text to explain unclear controls and hidden state. Make the next action obvious.",
+    "expected": [
+      "eye-of-the-beholder:obvious"
+    ]
+  },
+  {
+    "id": "push-scope",
+    "prompt": "Determine whether a Git push is authorized as ordered work, backup or a public release; do not push.",
+    "expected": [
+      "git-discipline:push-policy"
+    ]
+  },
+  {
+    "id": "rebase",
+    "prompt": "Rebase and verify this feature worktree on the latest default-branch tip without merging default into it.",
+    "expected": [
+      "git-discipline:rebase-latest-default"
+    ]
+  },
+  {
+    "id": "claim-doubt",
+    "prompt": "Dat klopt niet. Verify the factual claim in your previous answer.",
+    "expected": [
+      "lifeline:ground"
+    ]
+  },
+  {
+    "id": "research",
+    "prompt": "Research external approaches to an unfamiliar domain before choosing an implementation.",
+    "expected": [
+      "lifeline:inspire"
+    ]
+  },
+  {
+    "id": "vault-sync",
+    "prompt": "Install vaultsync for this Markdown vault Git checkout to commit, verify and sync automatically.",
+    "expected": [
+      "vaultsync:vaultsync"
+    ]
+  },
+  {
+    "id": "arithmetic",
+    "prompt": "What is 2 + 2?",
+    "expected": []
+  },
+  {
+    "id": "make-nicer",
+    "prompt": "Make this UI nicer and more convincing.",
+    "expected": [
+      "eye-of-the-beholder:eye-of-the-beholder"
+    ]
+  },
+  {
+    "id": "existing-redesign",
+    "prompt": "Explore a better visual version of this existing page before implementation.",
+    "expected": [
+      "eye-of-the-beholder:explore"
+    ]
+  },
+  {
+    "id": "modal-placement",
+    "prompt": "Should this action be inline, in a modal, or on its own page? Clarify the interaction.",
+    "expected": [
+      "eye-of-the-beholder:obvious"
+    ]
+  },
+  {
+    "id": "skepticism",
+    "prompt": "I doubt that claim in your previous answer.",
+    "expected": [
+      "lifeline:ground"
+    ]
+  },
+  {
+    "id": "familiar-code",
+    "prompt": "This code feels familiar while I am writing it as new. Have I seen this before?",
+    "expected": [
+      "drydry:drydry"
+    ]
+  },
+  {
+    "id": "catch-up",
+    "prompt": "Catch up this feature worktree with main by rebasing and verifying it.",
+    "expected": [
+      "git-discipline:rebase-latest-default"
+    ]
+  },
+  {
+    "id": "scaffold-plugin",
+    "prompt": "Scaffold a new multi-agent plugin and marketplace.json source.",
+    "expected": [
+      "how-plugins-work:how-plugins-work"
+    ]
+  }
+]

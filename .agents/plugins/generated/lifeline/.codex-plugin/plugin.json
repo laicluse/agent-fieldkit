@@ -1,6 +1,6 @@
 {
   "name": "lifeline",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Reach beyond a first answer: research before choosing (inspire), verify doubtful claims (ground), and reconstruct drifting projects from first principles (rethink). Skills: inspire, ground, rethink.",
   "author": {
     "name": "local"
@@ -12,7 +12,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Lifeline",
-    "shortDescription": "Reach beyond a first answer: research before choosing (inspire), verify doubtful claims (ground), and reconstruct dri...",
+    "shortDescription": "Research and verify claims",
     "longDescription": "Reach beyond a first answer: research before choosing (inspire), verify doubtful claims (ground), and reconstruct drifting projects from first principles (rethink). Skills: inspire, ground, rethink.",
     "developerName": "local",
     "category": "Productivity",

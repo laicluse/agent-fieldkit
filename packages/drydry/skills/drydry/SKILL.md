@@ -2,7 +2,7 @@
 name: drydry
 user-invocable: true
 description: >-
-  The short invocation. Ask "have I seen this before?" about something you are looking at right now: duplicated logic, a parallel path, work that feels familiar while being written as new. Answers in seconds to minutes over a scope you name, and escalates to a full duplication audit when the scope warrants it. For the long invocation, a whole-codebase sweep of entry points whose consequences have drifted apart, use drydry:parity-audit.
+  Check "have I seen this before?" for duplicated logic, parallel paths, or work that feels familiar while being written as new, in code, prose, or design. Escalate when needed; use parity-audit for a whole-codebase audit of divergent entry points.
 allowed-tools:
   - Skill
   - Agent

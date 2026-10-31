@@ -1,5 +1,5 @@
 {
   "name": "clipboard",
-  "description": "Copy core content of the last answer to the macOS clipboard via the clipboard-copy helper (pbcopy for plain, pbcopy-html for Slack rich text).",
-  "version": "2.0.11"
+  "description": "Copy the core of the last answer to the macOS clipboard, as plain text or Slack-compatible rich text.",
+  "version": "2.0.12"
 }

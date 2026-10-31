@@ -1,6 +1,6 @@
 {
   "name": "circus",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
   "author": {
     "name": "local"
@@ -12,7 +12,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Circus",
-    "shortDescription": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, ...",
+    "shortDescription": "Share agent instructions",
     "longDescription": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
     "developerName": "local",
     "category": "Productivity",

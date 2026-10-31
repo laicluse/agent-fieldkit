@@ -1,6 +1,6 @@
 {
   "name": "rover",
-  "version": "2.0.32",
+  "version": "2.0.33",
   "description": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
   "author": {
     "name": "local"
@@ -12,7 +12,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Rover",
-    "shortDescription": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative o...",
+    "shortDescription": "Run bounded autonomous work",
     "longDescription": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
     "developerName": "local",
     "category": "Productivity",

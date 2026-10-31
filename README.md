@@ -130,6 +130,8 @@ git config core.hooksPath hooks
 The pre-commit hook bumps versions, builds Codex adapters, and stages the
 generated targets. The commit-msg hook requires `PII-Doublecheck: yes`.
 
+The [skill discovery review](test/skill-discovery/README.md) records the description audit, routing diagnostic, and evidence limits.
+
 ## Local Storage
 
 All first-party runtime state for l'Aicluse Agent Fieldkit uses:

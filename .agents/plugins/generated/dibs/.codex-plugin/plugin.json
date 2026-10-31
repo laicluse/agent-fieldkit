@@ -1,7 +1,7 @@
 {
   "name": "dibs",
-  "version": "2.0.78+codex.hooks.2",
-  "description": "Single-occupancy lock for a git worktree or standalone working directory: a vendor-neutral, cross-platform CLI so only one coding agent mutates a repository checkout at a time. claim/release/check use an atomic exclusive-create lockfile keyed by the nearest git worktree root, falling back to directory realpath outside git, with pid-based liveness that self-heals a dead holder and respects a live one. No flock, no native dependency. bonsai and the discipline hooks consume it.",
+  "version": "2.0.79+codex.hooks.2",
+  "description": "Claim, check, and release directory occupancy locks so coding agents do not mutate the same checkout concurrently. Vendor-neutral CLI with live-holder protection and stale-lock recovery.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Dibs",
-    "shortDescription": "Single-occupancy lock for a git worktree or standalone working directory: a vendor-neutral, cross-platform CLI so onl...",
-    "longDescription": "Single-occupancy lock for a git worktree or standalone working directory: a vendor-neutral, cross-platform CLI so only one coding agent mutates a repository checkout at a time. claim/release/check use an atomic exclusive-create lockfile keyed by the nearest git worktree root, falling back to directory realpath outside git, with pid-based liveness that self-heals a dead holder and respects a live one. No flock, no native dependency. bonsai and the discipline hooks consume it.",
+    "shortDescription": "Coordinate directory writes",
+    "longDescription": "Claim, check, and release directory occupancy locks so coding agents do not mutate the same checkout concurrently. Vendor-neutral CLI with live-holder protection and stale-lock recovery.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

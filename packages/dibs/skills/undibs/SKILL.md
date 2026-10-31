@@ -2,10 +2,7 @@
 name: undibs
 user-invocable: true
 description: >-
-  Release the dibs occupancy locks this session holds. By default it sweeps
-  every directory the session locked in one go; pass a path to release just one.
-  Triggers on /undibs, "release the lock", "unlock this worktree", "give up
-  dibs", or "free this directory".
+  Release this session's Dibs locks, all or a named path. Use for /undibs, "release the lock", "unlock this worktree", "give up dibs", or "free this directory".
 ---
 
 # undibs

@@ -1,5 +1,5 @@
 {
   "name": "whywhy",
-  "description": "Drill N layers deep into a question or goal (default 10). Claude asks and answers \"why?\" itself, then analyses the chain for a better direction. Use when tackling unclear decisions, vague goals, root-cause analysis, or self-improvement on something that is not working as desired.",
-  "version": "2.0.4"
+  "description": "Explore a goal, root cause, or unclear decision through repeated why-questions, then analyze the chain for a better direction.",
+  "version": "2.0.5"
 }

@@ -1,6 +1,7 @@
 ---
 name: inspire
-description: Use when tackling unfamiliar topics, designing something new, evaluating approaches, or when the conversation benefits from external perspectives and research. Triggers on questions like "hoe doen anderen dit", "wat bestaat er al", research requests, and unfamiliar domains.
+description: >-
+  Research unfamiliar domains, new designs, and competing approaches. Use for research requests, "hoe doen anderen dit", "wat bestaat er al", or when external perspectives would inform the task.
 ---
 
 <post-update-broadcast>

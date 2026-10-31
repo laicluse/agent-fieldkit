@@ -2,8 +2,7 @@
 name: bonsai
 user-invocable: true
 description: >-
-  Create a ready git worktree from the freshest default branch and prime its `.bonsai` files.
-  Worktree is sometimes misspelled as "work tree" (e.g. when dictated); treat both spellings as this skill.
+  Create and set up a git worktree (or "work tree") from the freshest default branch using `.bonsai` files.
 ---
 
 # bonsai

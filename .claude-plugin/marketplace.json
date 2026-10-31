@@ -9,17 +9,17 @@
   "plugins": [
     {
       "name": "how-plugins-work",
-      "description": "Reference for plugin naming, skill resolution, Claude/Codex adapter sync, marketplace aliases, runtime caches, and plugin:skill invocation.",
+      "description": "Build and diagnose plugins, skills, and marketplaces across Claude and Codex: naming, invocation, generated adapters, sync, and installed-cache freshness.",
       "source": "./packages/how-plugins-work"
     },
     {
       "name": "bonsai",
-      "description": "Worktree lifecycle as a cross-platform CLI: create a worktree + branch off the freshest Git default, set it up from a .bonsai file list, and tear it down behind a hard safety gate that keeps non-integrated work and warns on orphaned commits or interference. Skills: bonsai (create+setup), setup, prune.",
+      "description": "Create worktrees from the freshest default branch, set them up from `.bonsai` files, and safely remove finished worktrees while preserving unintegrated work.",
       "source": "./packages/bonsai"
     },
     {
       "name": "dibs",
-      "description": "Single-occupancy lock for a git worktree or standalone working directory: a vendor-neutral, cross-platform CLI so only one coding agent mutates a repository checkout at a time. claim/release/check use an atomic exclusive-create lockfile keyed by the nearest git worktree root, falling back to directory realpath outside git, with pid-based liveness that self-heals a dead holder and respects a live one. No flock, no native dependency. bonsai and the discipline hooks consume it.",
+      "description": "Claim, check, and release directory occupancy locks so coding agents do not mutate the same checkout concurrently. Vendor-neutral CLI with live-holder protection and stale-lock recovery.",
       "source": "./packages/dibs"
     },
     {
@@ -34,27 +34,27 @@
     },
     {
       "name": "dont-do-that",
-      "description": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /then skills for Claude Code and Codex.",
+      "description": "Guardrail hooks plus explicit commands: /duh executes the previous proposal, /just-a-question keeps a turn read-only, /not-your-monkey inspects visual work, and /then defers a prompt until the current turn ends. Supports Claude Code and Codex.",
       "source": "./packages/dont-do-that"
     },
     {
       "name": "eye-of-the-beholder",
-      "description": "Visual and interaction design: clarify confusing UI with obvious, explore new form with image generation, establish identity, and verify real rendering. Skills: eye-of-the-beholder, obvious, explore, define, review.",
+      "description": "Improve visual and interaction design: clarify confusing UI, explore visual treatments, establish product identity, and review actual rendering against accepted references.",
       "source": "./packages/eye-of-the-beholder"
     },
     {
       "name": "intervision",
-      "description": "Bring another coding agent in as a peer to review work just done or just discussed. Claude hands work to Codex; Codex hands work to Claude. Intervision is peer consultation among equals, not supervision from above.",
+      "description": "Get an independent peer review of recent work or a design: Claude consults Codex, and Codex consults Claude, with explicit model choices and follow-up on disagreements.",
       "source": "./packages/intervision"
     },
     {
       "name": "anger-management",
-      "description": "Cuss at your coding agent to capture a one-line friction note, then fix the real problem later. The cuss commands (/fuck, /fucking, /fucked, /shit, /crap, /wtf, /bullshit) append one cheap line to a global log and move on; safeword commands (/safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, /banana) interrupt current work and fix one visible friction point now without logging it for later. /anger-management:repair cools down (~22 min, a background headless agent investigates), reads the full capture history, scores confidence, chooses the mitigation layer and target scope, and only applies or routes a fix when confidence is high enough. Lower-confidence findings leave the breadcrumb trail open for a future pass. Modelled on Stripe's bad-day button, course-correction-before-escalation, and the constructed-emotion view of anger; sometimes the irritation is real, sometimes it is playful. Vocabulary avoids slurs and identity-targeted abuse. State is stored locally; the optional background investigation uses the configured runner.",
+      "description": "Capture friction with /fuck, /fucking, /fucked, /shit, /crap, /wtf, or /bullshit for later background investigation. Fix now with /safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, or /banana. /anger-management:repair reviews captured notes and applies or routes high-confidence fixes; /anger-management shows the tally. State stays local.",
       "source": "./packages/anger-management"
     },
     {
       "name": "drydry",
-      "description": "Find and converge parallel paths in any artefact: code, prose, design systems. Methodology guide that disciplines how a duplication audit runs (Type-4 clone framing, verifier-burden LLM pass, allow-list scoping, drift hypothesis, triage, two-fates discipline, contrarian second-pass, method-as-artefact) without prescribing what duplication looks like in your codebase. One orchestrator (drydry:drydry) with quick and audit modes; the calling session formulates the audit checklist from the codebase in front of it. Agent-only sub-skills handle sweep, checklist seeds, triage, research, upstream/framework checks, and instruction-file audits.",
+      "description": "Find duplicated logic and parallel paths in code, prose, or design. Run a quick scoped check or a whole-codebase parity audit, then converge verified divergence and check the result.",
       "source": "./packages/drydry"
     },
     {
@@ -64,27 +64,27 @@
     },
     {
       "name": "vaultsync",
-      "description": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict handling while respecting dibs locks.",
+      "description": "Automatically commit and verify Markdown vault changes locally, then rebase and push when an upstream exists, with conflict handling and Dibs coordination.",
       "source": "./packages/vaultsync"
     },
     {
       "name": "laicluse-agent-fieldkit",
-      "description": "Marketplace-wide utilities for the laicluse-agent-fieldkit marketplace. Currently ships /whats-new (namespaced as /laicluse-agent-fieldkit:whats-new when needed), a one-stop reader for the post-update CHANGELOG section of any installed plugin.",
+      "description": "Read the latest marketplace or installed-plugin CHANGELOG news with whats-new, without changing post-update broadcast state.",
       "source": "./packages/laicluse-agent-fieldkit"
     },
     {
       "name": "autonomous",
-      "description": "Keep an autonomous mission running across turns. A startup capability probe decides whether keep-alive machinery is needed: a cron heartbeat with exponential backoff, auto-stop, and wake/restore for an interactive session; nothing for a persistent process. The rover plugin's decision framework calls this layer at dispatch.",
+      "description": "Keep autonomous missions running across turns with a host capability probe, heartbeat backoff, auto-stop, and wake/restore where needed. Persistent hosts need no heartbeat machinery.",
       "source": "./packages/autonomous"
     },
     {
       "name": "clipboard",
-      "description": "Copy core content of the last answer to the macOS clipboard via the clipboard-copy helper (pbcopy for plain, pbcopy-html for Slack rich text).",
+      "description": "Copy the core of the last answer to the macOS clipboard, as plain text or Slack-compatible rich text.",
       "source": "./packages/clipboard"
     },
     {
       "name": "gurus",
-      "description": "Opinionated review panels that challenge code, decisions, and prose from multiple perspectives. Ships gurus:software, gurus:council, gurus:writers, and the gurus:gurus orchestrator; Claude also receives the gurus:sonnet-max panel subagent.",
+      "description": "Review software, decisions, and writing through opinionated panels. Claude and Codex receive host-specific review workflows; Claude also receives the sonnet-max panel agent.",
       "source": "./packages/gurus"
     },
     {
@@ -94,12 +94,12 @@
     },
     {
       "name": "house-rules",
-      "description": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler. These are chosen conventions among defensible options, not universal law. Skills: programming-philosophy, testing-philosophy, naming-is-hard, scar-tissue.",
+      "description": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
       "source": "./packages/house-rules"
     },
     {
       "name": "whywhy",
-      "description": "Drill N layers deep into a question or goal (default 10). Claude asks and answers \"why?\" itself, then analyses the chain for a better direction. Use when tackling unclear decisions, vague goals, root-cause analysis, or self-improvement on something that is not working as desired.",
+      "description": "Explore a goal, root cause, or unclear decision through repeated why-questions, then analyze the chain for a better direction.",
       "source": "./packages/whywhy"
     },
     {
@@ -109,7 +109,7 @@
     },
     {
       "name": "saysay",
-      "description": "Speech mode for macOS: the agent speaks every response aloud through the `say` command, translating screen content into spoken language instead of reading it out verbatim. /saysay toggles it on, /saysay off exits. Ships a per-user phonetic dictionary plus serialized, ducked playback so parallel sessions speak one after another.",
+      "description": "Speak agent responses aloud on macOS, translating screen content into spoken language rather than reading it verbatim. Includes on/off commands, a phonetic dictionary, and serialized playback across sessions.",
       "source": "./packages/saysay"
     },
     {

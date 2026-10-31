@@ -1,5 +1,5 @@
 {
   "name": "drydry",
-  "description": "Find and converge parallel paths in any artefact: code, prose, design systems. Methodology guide that disciplines how a duplication audit runs (Type-4 clone framing, verifier-burden LLM pass, allow-list scoping, drift hypothesis, triage, two-fates discipline, contrarian second-pass, method-as-artefact) without prescribing what duplication looks like in your codebase. One orchestrator (drydry:drydry) with quick and audit modes; the calling session formulates the audit checklist from the codebase in front of it. Agent-only sub-skills handle sweep, checklist seeds, triage, research, upstream/framework checks, and instruction-file audits.",
-  "version": "2.0.6"
+  "description": "Find duplicated logic and parallel paths in code, prose, or design. Run a quick scoped check or a whole-codebase parity audit, then converge verified divergence and check the result.",
+  "version": "2.0.7"
 }

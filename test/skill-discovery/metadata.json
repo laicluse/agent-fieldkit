@@ -1,0 +1,227 @@
+{
+  "baseline": "3ef06bd",
+  "skills": [
+    {
+      "path": "packages/bonsai/skills/bonsai/SKILL.md",
+      "before": "Create a ready git worktree from the freshest default branch and prime its `.bonsai` files. Worktree is sometimes misspelled as \"work tree\" (e.g. when dictated); treat both spellings as this skill.",
+      "after": "Create and set up a git worktree (or \"work tree\") from the freshest default branch using `.bonsai` files.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/circus/skills/how-agents-work/SKILL.md",
+      "before": "The cross-agent mental model for briefing many coding agents from one source: the doctrine layers, the one-capability-many-adapters principle, how a running agent picks up a new skill, and the boundary between personal source data and distributed artifacts. Read this when reasoning about cross-agent doctrine, deciding where knowledge belongs, or building a plugin with Circus. For the actual commands see the circus skill.",
+      "after": "Explain cross-agent instruction layers, shared capabilities with host adapters, skill discovery in running sessions, and personal versus distributed knowledge. Use when briefing agents, placing doctrine, or designing Circus plugins; use circus for commands.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/dibs/skills/undibs/SKILL.md",
+      "before": "Release the dibs occupancy locks this session holds. By default it sweeps every directory the session locked in one go; pass a path to release just one. Triggers on /undibs, \"release the lock\", \"unlock this worktree\", \"give up dibs\", or \"free this directory\".",
+      "after": "Release this session's Dibs locks, all or a named path. Use for /undibs, \"release the lock\", \"unlock this worktree\", \"give up dibs\", or \"free this directory\".",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/drydry/skills/drydry/SKILL.md",
+      "before": "The short invocation. Ask \"have I seen this before?\" about something you are looking at right now: duplicated logic, a parallel path, work that feels familiar while being written as new. Answers in seconds to minutes over a scope you name, and escalates to a full duplication audit when the scope warrants it. For the long invocation, a whole-codebase sweep of entry points whose consequences have drifted apart, use drydry:parity-audit.",
+      "after": "Check \"have I seen this before?\" for duplicated logic, parallel paths, or work that feels familiar while being written as new, in code, prose, or design. Escalate when needed; use parity-audit for a whole-codebase audit of divergent entry points.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/drydry/skills/parity-audit/SKILL.md",
+      "before": "The long invocation. A multi-agent, whole-codebase sweep over every entry point that promises one outcome, to find where their consequences diverge, converge the difference into the shared path, and re-run the audit to prove it moved. Runs as a named background process over minutes, not seconds. For a quick \"have I seen this code before?\" check, use drydry:drydry instead.",
+      "after": "Audit every entry point promising the same outcome across a codebase, converge divergent consequences, and verify again. Runs as a named background multi-agent process; use drydry for a quick duplication check.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/eye-of-the-beholder/skills/obvious/SKILL.md",
+      "before": "Clarify confusing UI so the next action, current state and consequences are apparent. Use for unclear controls, over-explaining UI, excessive helper copy, cognitive or mental load, choice overload, hidden state, spec leakage, whether an action belongs inline, in a modal or on its own page or cell, or feedback such as \"why must I think about this\", \"onduidelijke knop\", or \"te veel uitleg\". Also use proactively when UI added or changed in the current task needs explanation to be usable.",
+      "after": "Clarify unclear controls, state, consequences, inline/modal/page/cell placement, or over-explaining UI. Use for cognitive or mental load, choice overload, hidden state, spec leakage, \"onduidelijke knop\", \"te veel uitleg\", or \"why must I think about this\"; also proactively when UI changed in this task needs explanation to be usable.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/git-discipline/skills/rebase-latest-default/SKILL.md",
+      "before": "Rebase and verify the current worktree branch on the actual default-branch tip without using a default checkout. Use whenever a feature branch, also a colleague's published PR branch, must catch up with the default branch or resolve conflicts with it; never merge the default branch into it.",
+      "after": "Rebase and verify a feature worktree on the actual default-branch tip without using the default checkout. Use whenever it must catch up with default, including published colleague branches or conflicts. Never merge default into the feature branch.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/how-plugins-work/skills/how-plugins-work/SKILL.md",
+      "before": "Build, scaffold, or diagnose Claude/Codex plugins, skills, and marketplaces. Read this BEFORE creating a new plugin, marketplace, marketplace.json source, skill, or Codex adapter, and when generating adapters with Circus, not only when debugging plugin/skill resolution, slash-command misses, Unknown command errors, marketplace sync, or agent adapters.",
+      "after": "Build, scaffold, or diagnose plugins, skills, marketplaces, and Claude/Codex adapters. Read BEFORE creating them, marketplace.json sources, or generating Circus adapters; also for missing slash commands, Unknown command errors, skill resolution, marketplace sync, and stale installs.",
+      "body_unchanged": false
+    },
+    {
+      "path": "packages/lifeline/skills/ground/SKILL.md",
+      "before": "Use when the user challenges recent output accuracy, says \"dat klopt niet\", types /ground, or expresses skepticism about a claim. Triggers on any doubt signal about factual correctness of Claude's own output.",
+      "after": "Verify claims on any skepticism or doubt signal about the agent's own output, including \"dat klopt niet\", /ground, or questions about factual accuracy.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/lifeline/skills/inspire/SKILL.md",
+      "before": "Use when tackling unfamiliar topics, designing something new, evaluating approaches, or when the conversation benefits from external perspectives and research. Triggers on questions like \"hoe doen anderen dit\", \"wat bestaat er al\", research requests, and unfamiliar domains.",
+      "after": "Research unfamiliar domains, new designs, and competing approaches. Use for research requests, \"hoe doen anderen dit\", \"wat bestaat er al\", or when external perspectives would inform the task.",
+      "body_unchanged": true
+    },
+    {
+      "path": "packages/vaultsync/skills/vaultsync/SKILL.md",
+      "before": "Install and operate vaultsync for the current Git checkout: a local daemon that debounces Git-visible vault changes into commits, verifies them, and syncs with upstream when one exists.",
+      "after": "Install or operate vaultsync for a Git checkout, especially a Markdown vault: automatic local commits, verification, and upstream sync when configured.",
+      "body_unchanged": true
+    }
+  ],
+  "plugins": [
+    {
+      "plugin": "anger-management",
+      "before": "Cuss at your coding agent to capture a one-line friction note, then fix the real problem later. The cuss commands (/fuck, /fucking, /fucked, /shit, /crap, /wtf, /bullshit) append one cheap line to a global log and move on; safeword commands (/safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, /banana) interrupt current work and fix one visible friction point now without logging it for later. /anger-management:repair cools down (~22 min, a background headless agent investigates), reads the full capture history, scores confidence, chooses the mitigation layer and target scope, and only applies or routes a fix when confidence is high enough. Lower-confidence findings leave the breadcrumb trail open for a future pass. Modelled on Stripe's bad-day button, course-correction-before-escalation, and the constructed-emotion view of anger; sometimes the irritation is real, sometimes it is playful. Vocabulary avoids slurs and identity-targeted abuse. State is stored locally; the optional background investigation uses the configured runner.",
+      "after": "Capture friction with /fuck, /fucking, /fucked, /shit, /crap, /wtf, or /bullshit for later background investigation. Fix now with /safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, or /banana. /anger-management:repair reviews captured notes and applies or routes high-confidence fixes; /anger-management shows the tally. State stays local.",
+      "subtitle": "Capture and repair friction",
+      "codex_supported": true
+    },
+    {
+      "plugin": "autonomous",
+      "before": "Keep an autonomous mission running across turns. A startup capability probe decides whether keep-alive machinery is needed: a cron heartbeat with exponential backoff, auto-stop, and wake/restore for an interactive session; nothing for a persistent process. The rover plugin's decision framework calls this layer at dispatch.",
+      "after": "Keep autonomous missions running across turns with a host capability probe, heartbeat backoff, auto-stop, and wake/restore where needed. Persistent hosts need no heartbeat machinery.",
+      "subtitle": null,
+      "codex_supported": false
+    },
+    {
+      "plugin": "bonsai",
+      "before": "Worktree lifecycle as a cross-platform CLI: create a worktree + branch off the freshest Git default, set it up from a .bonsai file list, and tear it down behind a hard safety gate that keeps non-integrated work and warns on orphaned commits or interference. Skills: bonsai (create+setup), setup, prune.",
+      "after": "Create worktrees from the freshest default branch, set them up from `.bonsai` files, and safely remove finished worktrees while preserving unintegrated work.",
+      "subtitle": "Create and prune worktrees",
+      "codex_supported": true
+    },
+    {
+      "plugin": "circus",
+      "before": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
+      "after": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
+      "subtitle": "Share agent instructions",
+      "codex_supported": true
+    },
+    {
+      "plugin": "clipboard",
+      "before": "Copy core content of the last answer to the macOS clipboard via the clipboard-copy helper (pbcopy for plain, pbcopy-html for Slack rich text).",
+      "after": "Copy the core of the last answer to the macOS clipboard, as plain text or Slack-compatible rich text.",
+      "subtitle": "Copy the last answer",
+      "codex_supported": true
+    },
+    {
+      "plugin": "dibs",
+      "before": "Single-occupancy lock for a git worktree or standalone working directory: a vendor-neutral, cross-platform CLI so only one coding agent mutates a repository checkout at a time. claim/release/check use an atomic exclusive-create lockfile keyed by the nearest git worktree root, falling back to directory realpath outside git, with pid-based liveness that self-heals a dead holder and respects a live one. No flock, no native dependency. bonsai and the discipline hooks consume it.",
+      "after": "Claim, check, and release directory occupancy locks so coding agents do not mutate the same checkout concurrently. Vendor-neutral CLI with live-holder protection and stale-lock recovery.",
+      "subtitle": "Coordinate directory writes",
+      "codex_supported": true
+    },
+    {
+      "plugin": "dont-do-that",
+      "before": "Guardrail hooks plus /duh, /just-a-question, /not-your-monkey, and /then skills for Claude Code and Codex.",
+      "after": "Guardrail hooks plus explicit commands: /duh executes the previous proposal, /just-a-question keeps a turn read-only, /not-your-monkey inspects visual work, and /then defers a prompt until the current turn ends. Supports Claude Code and Codex.",
+      "subtitle": "Correct agent behavior",
+      "codex_supported": true
+    },
+    {
+      "plugin": "drydry",
+      "before": "Find and converge parallel paths in any artefact: code, prose, design systems. Methodology guide that disciplines how a duplication audit runs (Type-4 clone framing, verifier-burden LLM pass, allow-list scoping, drift hypothesis, triage, two-fates discipline, contrarian second-pass, method-as-artefact) without prescribing what duplication looks like in your codebase. One orchestrator (drydry:drydry) with quick and audit modes; the calling session formulates the audit checklist from the codebase in front of it. Agent-only sub-skills handle sweep, checklist seeds, triage, research, upstream/framework checks, and instruction-file audits.",
+      "after": "Find duplicated logic and parallel paths in code, prose, or design. Run a quick scoped check or a whole-codebase parity audit, then converge verified divergence and check the result.",
+      "subtitle": "Find and converge duplication",
+      "codex_supported": true
+    },
+    {
+      "plugin": "eye-of-the-beholder",
+      "before": "Visual and interaction design: clarify confusing UI with obvious, explore new form with image generation, establish identity, and verify real rendering. Skills: eye-of-the-beholder, obvious, explore, define, review.",
+      "after": "Improve visual and interaction design: clarify confusing UI, explore visual treatments, establish product identity, and review actual rendering against accepted references.",
+      "subtitle": "Design and review interfaces",
+      "codex_supported": true
+    },
+    {
+      "plugin": "git-discipline",
+      "before": "Parallel-worktree Git flow, repo-aware push policy, atomic verified merges, and commit/push hooks for agent sessions and direct CLI use.",
+      "after": "Parallel-worktree Git flow, repo-aware push policy, atomic verified merges, and commit/push hooks for agent sessions and direct CLI use.",
+      "subtitle": "Verify Git changes and merges",
+      "codex_supported": true
+    },
+    {
+      "plugin": "gurus",
+      "before": "Opinionated review panels that challenge code, decisions, and prose from multiple perspectives. Ships gurus:software, gurus:council, gurus:writers, and the gurus:gurus orchestrator; Claude also receives the gurus:sonnet-max panel subagent.",
+      "after": "Review software, decisions, and writing through opinionated panels. Claude and Codex receive host-specific review workflows; Claude also receives the sonnet-max panel agent.",
+      "subtitle": "Challenge code, plans, prose",
+      "codex_supported": true
+    },
+    {
+      "plugin": "house-rules",
+      "before": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler. These are chosen conventions among defensible options, not universal law. Skills: programming-philosophy, testing-philosophy, naming-is-hard, scar-tissue.",
+      "after": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
+      "subtitle": "Naming and software craft",
+      "codex_supported": true
+    },
+    {
+      "plugin": "how-plugins-work",
+      "before": "Reference for plugin naming, skill resolution, Claude/Codex adapter sync, marketplace aliases, runtime caches, and plugin:skill invocation.",
+      "after": "Build and diagnose plugins, skills, and marketplaces across Claude and Codex: naming, invocation, generated adapters, sync, and installed-cache freshness.",
+      "subtitle": "Build and diagnose plugins",
+      "codex_supported": true
+    },
+    {
+      "plugin": "intervision",
+      "before": "Bring another coding agent in as a peer to review work just done or just discussed. Claude hands work to Codex; Codex hands work to Claude. Intervision is peer consultation among equals, not supervision from above.",
+      "after": "Get an independent peer review of recent work or a design: Claude consults Codex, and Codex consults Claude, with explicit model choices and follow-up on disagreements.",
+      "subtitle": "Ask another agent for review",
+      "codex_supported": true
+    },
+    {
+      "plugin": "laicluse-agent-fieldkit",
+      "before": "Marketplace-wide utilities for the laicluse-agent-fieldkit marketplace. Currently ships /whats-new (namespaced as /laicluse-agent-fieldkit:whats-new when needed), a one-stop reader for the post-update CHANGELOG section of any installed plugin.",
+      "after": "Read the latest marketplace or installed-plugin CHANGELOG news with whats-new, without changing post-update broadcast state.",
+      "subtitle": "Read plugin update news",
+      "codex_supported": true
+    },
+    {
+      "plugin": "lifeline",
+      "before": "Reach beyond a first answer: research before choosing (inspire), verify doubtful claims (ground), and reconstruct drifting projects from first principles (rethink). Skills: inspire, ground, rethink.",
+      "after": "Reach beyond a first answer: research before choosing (inspire), verify doubtful claims (ground), and reconstruct drifting projects from first principles (rethink). Skills: inspire, ground, rethink.",
+      "subtitle": "Research and verify claims",
+      "codex_supported": true
+    },
+    {
+      "plugin": "pattern-memory",
+      "before": "Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.",
+      "after": "Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.",
+      "subtitle": "Reuse implementation patterns",
+      "codex_supported": true
+    },
+    {
+      "plugin": "rover",
+      "before": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
+      "after": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
+      "subtitle": "Run bounded autonomous work",
+      "codex_supported": true
+    },
+    {
+      "plugin": "saysay",
+      "before": "Speech mode for macOS: the agent speaks every response aloud through the `say` command, translating screen content into spoken language instead of reading it out verbatim. /saysay toggles it on, /saysay off exits. Ships a per-user phonetic dictionary plus serialized, ducked playback so parallel sessions speak one after another.",
+      "after": "Speak agent responses aloud on macOS, translating screen content into spoken language rather than reading it verbatim. Includes on/off commands, a phonetic dictionary, and serialized playback across sessions.",
+      "subtitle": "Speak responses aloud",
+      "codex_supported": true
+    },
+    {
+      "plugin": "self-improvement",
+      "before": "Routes user feedback about agent behavior to the strongest durable target: hooks, skills, project code, or instruction files.",
+      "after": "Routes user feedback about agent behavior to the strongest durable target: hooks, skills, project code, or instruction files.",
+      "subtitle": "Fix recurring agent behavior",
+      "codex_supported": true
+    },
+    {
+      "plugin": "vaultsync",
+      "before": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict handling while respecting dibs locks.",
+      "after": "Automatically commit and verify Markdown vault changes locally, then rebase and push when an upstream exists, with conflict handling and Dibs coordination.",
+      "subtitle": "Sync Markdown vaults with Git",
+      "codex_supported": true
+    },
+    {
+      "plugin": "whywhy",
+      "before": "Drill N layers deep into a question or goal (default 10). Claude asks and answers \"why?\" itself, then analyses the chain for a better direction. Use when tackling unclear decisions, vague goals, root-cause analysis, or self-improvement on something that is not working as desired.",
+      "after": "Explore a goal, root cause, or unclear decision through repeated why-questions, then analyze the chain for a better direction.",
+      "subtitle": "Find goals and root causes",
+      "codex_supported": true
+    }
+  ]
+}

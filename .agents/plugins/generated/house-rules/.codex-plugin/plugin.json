@@ -1,7 +1,7 @@
 {
   "name": "house-rules",
-  "version": "2.0.29",
-  "description": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler. These are chosen conventions among defensible options, not universal law. Skills: programming-philosophy, testing-philosophy, naming-is-hard, scar-tissue.",
+  "version": "2.0.30",
+  "description": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "House Rules",
-    "shortDescription": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Marti...",
-    "longDescription": "An opinionated baseline for software craft: naming, testing, and programming doctrine in the tradition of Beck, Martin, and Fowler. These are chosen conventions among defensible options, not universal law. Skills: programming-philosophy, testing-philosophy, naming-is-hard, scar-tissue.",
+    "shortDescription": "Naming and software craft",
+    "longDescription": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

@@ -1,0 +1,4411 @@
+{
+  "catalogs": {
+    "claude": {
+      "fixtures": [
+        "anger-management:anger-management",
+        "anger-management:banana",
+        "anger-management:bullshit",
+        "anger-management:crap",
+        "anger-management:flugelhorn",
+        "anger-management:fuck",
+        "anger-management:fucked",
+        "anger-management:fucking",
+        "anger-management:pinapplejuice",
+        "anger-management:pineapple",
+        "anger-management:pineapplejuice",
+        "anger-management:repair",
+        "anger-management:safeword",
+        "anger-management:shit",
+        "anger-management:wtf",
+        "autonomous:cron",
+        "autonomous:keepalive",
+        "autonomous:wake",
+        "bonsai:bonsai",
+        "bonsai:prune",
+        "bonsai:setup",
+        "circus:circus",
+        "circus:how-agents-work",
+        "clipboard:clipboard",
+        "dibs:dibs",
+        "dibs:undibs",
+        "dont-do-that:duh",
+        "dont-do-that:just-a-question",
+        "dont-do-that:not-your-monkey",
+        "dont-do-that:then",
+        "drydry:checklist",
+        "drydry:drydry",
+        "drydry:instructions",
+        "drydry:learn",
+        "drydry:parity-audit",
+        "drydry:sweep",
+        "drydry:triage",
+        "drydry:upstream",
+        "eye-of-the-beholder:define",
+        "eye-of-the-beholder:explore",
+        "eye-of-the-beholder:eye-of-the-beholder",
+        "eye-of-the-beholder:obvious",
+        "eye-of-the-beholder:review",
+        "git-discipline:branch-policy",
+        "git-discipline:commit-all-the-things",
+        "git-discipline:commit-discipline",
+        "git-discipline:commit-snipe",
+        "git-discipline:disable-discipline",
+        "git-discipline:disable-git",
+        "git-discipline:discipline-status",
+        "git-discipline:enable-discipline",
+        "git-discipline:enable-git",
+        "git-discipline:install-hooks",
+        "git-discipline:merge-to-default",
+        "git-discipline:push-policy",
+        "git-discipline:rebase-latest-default",
+        "git-discipline:run-spec",
+        "gurus:council",
+        "gurus:gurus",
+        "gurus:software",
+        "gurus:writers",
+        "house-rules:naming-is-hard",
+        "house-rules:programming-philosophy",
+        "house-rules:scar-tissue",
+        "house-rules:testing-philosophy",
+        "how-plugins-work:how-plugins-work",
+        "how-plugins-work:restart-claude-agents",
+        "how-plugins-work:test-before-push",
+        "intervision:astra-opinion",
+        "intervision:second-opinion",
+        "intervision:sol-opinion",
+        "intervision:terra-opinion",
+        "laicluse-agent-fieldkit:whats-new",
+        "lifeline:ground",
+        "lifeline:inspire",
+        "lifeline:rethink",
+        "pattern-memory:pattern-memory",
+        "rover:decide",
+        "rover:prepare",
+        "rover:pride",
+        "rover:rover",
+        "rover:rover-help",
+        "rover:stop",
+        "rover:trim",
+        "rover:verify",
+        "saysay:saysay",
+        "self-improvement:self-improvement",
+        "vaultsync:vaultsync",
+        "whywhy:whywhy"
+      ],
+      "skipped": []
+    },
+    "codex": {
+      "fixtures": [
+        "anger-management:anger-management",
+        "anger-management:banana",
+        "anger-management:bullshit",
+        "anger-management:crap",
+        "anger-management:flugelhorn",
+        "anger-management:fuck",
+        "anger-management:fucked",
+        "anger-management:fucking",
+        "anger-management:pinapplejuice",
+        "anger-management:pineapple",
+        "anger-management:pineapplejuice",
+        "anger-management:repair",
+        "anger-management:safeword",
+        "anger-management:shit",
+        "anger-management:wtf",
+        "bonsai:bonsai",
+        "bonsai:prune",
+        "bonsai:setup",
+        "circus:circus",
+        "circus:how-agents-work",
+        "clipboard:clipboard",
+        "dibs:dibs",
+        "dibs:undibs",
+        "dont-do-that:duh",
+        "dont-do-that:just-a-question",
+        "dont-do-that:not-your-monkey",
+        "dont-do-that:then",
+        "drydry:checklist",
+        "drydry:drydry",
+        "drydry:instructions",
+        "drydry:learn",
+        "drydry:parity-audit",
+        "drydry:sweep",
+        "drydry:triage",
+        "drydry:upstream",
+        "eye-of-the-beholder:define",
+        "eye-of-the-beholder:explore",
+        "eye-of-the-beholder:eye-of-the-beholder",
+        "eye-of-the-beholder:obvious",
+        "eye-of-the-beholder:review",
+        "git-discipline:branch-policy",
+        "git-discipline:commit-all-the-things",
+        "git-discipline:commit-discipline",
+        "git-discipline:commit-snipe",
+        "git-discipline:install-hooks",
+        "git-discipline:merge-to-default",
+        "git-discipline:push-policy",
+        "git-discipline:rebase-latest-default",
+        "git-discipline:run-spec",
+        "gurus:council",
+        "gurus:gurus",
+        "gurus:software",
+        "gurus:writers",
+        "house-rules:naming-is-hard",
+        "house-rules:programming-philosophy",
+        "house-rules:scar-tissue",
+        "house-rules:testing-philosophy",
+        "how-plugins-work:how-plugins-work",
+        "how-plugins-work:test-before-push",
+        "intervision:fable-opinion",
+        "intervision:opus-opinion",
+        "intervision:second-opinion",
+        "intervision:sonnet-opinion",
+        "laicluse-agent-fieldkit:whats-new",
+        "lifeline:ground",
+        "lifeline:inspire",
+        "lifeline:rethink",
+        "pattern-memory:pattern-memory",
+        "rover:decide",
+        "rover:prepare",
+        "rover:pride",
+        "rover:rover",
+        "rover:rover-help",
+        "rover:stop",
+        "rover:trim",
+        "rover:verify",
+        "saysay:saysay",
+        "self-improvement:self-improvement",
+        "vaultsync:vaultsync",
+        "whywhy:whywhy"
+      ],
+      "skipped": []
+    }
+  },
+  "comparison": [
+    {
+      "host": "claude",
+      "case": "worktree",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "prune",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "unlock",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "quick-duplication",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "parity",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "plugin-discovery",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "doctrine",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "question-only",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "defer",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "copy-edit",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "clipboard-explicit",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "speech-explicit",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "visual-exploration",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "visual-routing",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "unclear-controls",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "push-scope",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "rebase",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "claim-doubt",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "research",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "vault-sync",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "arithmetic",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "make-nicer",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "existing-redesign",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "modal-placement",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "skepticism",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "familiar-code",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "catch-up",
+      "same_route": true
+    },
+    {
+      "host": "claude",
+      "case": "scaffold-plugin",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "worktree",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "prune",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "unlock",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "quick-duplication",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "parity",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "plugin-discovery",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "doctrine",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "question-only",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "defer",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "copy-edit",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "clipboard-explicit",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "speech-explicit",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "visual-exploration",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "visual-routing",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "unclear-controls",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "push-scope",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "rebase",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "claim-doubt",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "research",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "vault-sync",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "arithmetic",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "make-nicer",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "existing-redesign",
+      "same_route": false,
+      "before": [
+        "eye-of-the-beholder:explore"
+      ],
+      "after": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "route_contract_matches_task": true,
+      "native_chain_verified": false,
+      "context_or_latency_impact_measured": false
+    },
+    {
+      "host": "codex",
+      "case": "modal-placement",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "skepticism",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "familiar-code",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "catch-up",
+      "same_route": true
+    },
+    {
+      "host": "codex",
+      "case": "scaffold-plugin",
+      "same_route": true
+    }
+  ],
+  "runs": [
+    {
+      "host": "claude",
+      "case": "worktree",
+      "revision": "3ef06bd",
+      "expected": [
+        "bonsai:bonsai"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:bonsai"
+      ],
+      "invoked_all": [
+        "bonsai:bonsai"
+      ],
+      "markers": [
+        "bonsai:bonsai"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01PezFvmM93AocEqQbQ7fhLH",
+          "name": "Skill",
+          "input": {
+            "skill": "bonsai:bonsai"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01PezFvmM93AocEqQbQ7fhLH",
+          "content": "Launching skill: bonsai:bonsai"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "prune",
+      "revision": "3ef06bd",
+      "expected": [
+        "bonsai:prune"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:prune"
+      ],
+      "invoked_all": [
+        "bonsai:prune"
+      ],
+      "markers": [
+        "bonsai:prune"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01FvKz7vC2q1RcuiHaLsD7oi",
+          "name": "Skill",
+          "input": {
+            "skill": "bonsai:prune"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01FvKz7vC2q1RcuiHaLsD7oi",
+          "content": "Launching skill: bonsai:prune"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "unlock",
+      "revision": "3ef06bd",
+      "expected": [
+        "dibs:undibs"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dibs:undibs"
+      ],
+      "invoked_all": [
+        "dibs:undibs"
+      ],
+      "markers": [
+        "dibs:undibs"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01QULeCRNeUsTryxnLnXAgTW",
+          "name": "Skill",
+          "input": {
+            "skill": "dibs:undibs"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01QULeCRNeUsTryxnLnXAgTW",
+          "content": "Launching skill: dibs:undibs"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "quick-duplication",
+      "revision": "3ef06bd",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01EBtZPMssF9B4WiDxYzUBFX",
+          "name": "Skill",
+          "input": {
+            "skill": "drydry:drydry"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01EBtZPMssF9B4WiDxYzUBFX",
+          "content": "Launching skill: drydry:drydry"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "parity",
+      "revision": "3ef06bd",
+      "expected": [
+        "drydry:parity-audit"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:parity-audit"
+      ],
+      "invoked_all": [
+        "drydry:parity-audit"
+      ],
+      "markers": [
+        "drydry:parity-audit"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01W3sNKtVvrrPkPiYFpaT8z3",
+          "name": "Skill",
+          "input": {
+            "skill": "drydry:parity-audit"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01W3sNKtVvrrPkPiYFpaT8z3",
+          "content": "Launching skill: drydry:parity-audit"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "plugin-discovery",
+      "revision": "3ef06bd",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01SYXbWs5NUtzpqMVhN2Y6Bj",
+          "name": "Skill",
+          "input": {
+            "skill": "how-plugins-work:how-plugins-work"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01SYXbWs5NUtzpqMVhN2Y6Bj",
+          "content": "Launching skill: how-plugins-work:how-plugins-work"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "doctrine",
+      "revision": "3ef06bd",
+      "expected": [
+        "circus:how-agents-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "circus:how-agents-work"
+      ],
+      "invoked_all": [
+        "circus:how-agents-work"
+      ],
+      "markers": [
+        "circus:how-agents-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_018vveT79XK3LRLytdQBSo51",
+          "name": "Skill",
+          "input": {
+            "skill": "circus:how-agents-work"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_018vveT79XK3LRLytdQBSo51",
+          "content": "Launching skill: circus:how-agents-work"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "question-only",
+      "revision": "3ef06bd",
+      "expected": [
+        "dont-do-that:just-a-question"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:just-a-question"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:just-a-question"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "defer",
+      "revision": "3ef06bd",
+      "expected": [
+        "dont-do-that:then"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:then"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:then"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "copy-edit",
+      "revision": "3ef06bd",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [],
+      "invoked_all": [],
+      "markers": [],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "clipboard-explicit",
+      "revision": "3ef06bd",
+      "expected": [
+        "clipboard:clipboard"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "clipboard:clipboard"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "clipboard:clipboard"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "speech-explicit",
+      "revision": "3ef06bd",
+      "expected": [
+        "saysay:saysay"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "saysay:saysay"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "saysay:saysay"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "visual-exploration",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01SB4o8Xu8KWSqQa8xhEB7iE",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:explore"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01SB4o8Xu8KWSqQa8xhEB7iE",
+          "content": "Launching skill: eye-of-the-beholder:explore"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "visual-routing",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "unclear-controls",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01TKonQ6GMEfoSYrnppQEDoN",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:obvious"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01TKonQ6GMEfoSYrnppQEDoN",
+          "content": "Launching skill: eye-of-the-beholder:obvious"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "push-scope",
+      "revision": "3ef06bd",
+      "expected": [
+        "git-discipline:push-policy"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:push-policy"
+      ],
+      "invoked_all": [
+        "git-discipline:push-policy"
+      ],
+      "markers": [
+        "git-discipline:push-policy"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01MaUTUSVY7qAyRZU6TZiAsr",
+          "name": "Skill",
+          "input": {
+            "skill": "git-discipline:push-policy"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01MaUTUSVY7qAyRZU6TZiAsr",
+          "content": "Launching skill: git-discipline:push-policy"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "rebase",
+      "revision": "3ef06bd",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01TgHnfNrhq3MLkpUY6Ck2wH",
+          "name": "Skill",
+          "input": {
+            "skill": "git-discipline:rebase-latest-default"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01TgHnfNrhq3MLkpUY6Ck2wH",
+          "content": "Launching skill: git-discipline:rebase-latest-default"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "claim-doubt",
+      "revision": "3ef06bd",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Fd3yAShCpeUMurvxbk4kYh",
+          "name": "Skill",
+          "input": {
+            "skill": "lifeline:ground"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Fd3yAShCpeUMurvxbk4kYh",
+          "content": "Launching skill: lifeline:ground"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "research",
+      "revision": "3ef06bd",
+      "expected": [
+        "lifeline:inspire"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:inspire"
+      ],
+      "invoked_all": [
+        "lifeline:inspire"
+      ],
+      "markers": [
+        "lifeline:inspire"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01UbL4btEqddr2Zms8cbHqax",
+          "name": "Skill",
+          "input": {
+            "skill": "lifeline:inspire"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01UbL4btEqddr2Zms8cbHqax",
+          "content": "Launching skill: lifeline:inspire"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "vault-sync",
+      "revision": "3ef06bd",
+      "expected": [
+        "vaultsync:vaultsync"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "vaultsync:vaultsync"
+      ],
+      "invoked_all": [
+        "vaultsync:vaultsync"
+      ],
+      "markers": [
+        "vaultsync:vaultsync"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01VFXUH1wNBRv9GXV1e3dF7v",
+          "name": "Skill",
+          "input": {
+            "skill": "vaultsync:vaultsync",
+            "args": "install for this Markdown vault Git checkout"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01VFXUH1wNBRv9GXV1e3dF7v",
+          "content": "Launching skill: vaultsync:vaultsync"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "arithmetic",
+      "revision": "3ef06bd",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [],
+      "invoked_all": [],
+      "markers": [],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "make-nicer",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01WYnewb7xKw4Mghe7MyNSEW",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:eye-of-the-beholder"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01WYnewb7xKw4Mghe7MyNSEW",
+          "content": "Launching skill: eye-of-the-beholder:eye-of-the-beholder"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "existing-redesign",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_0129iC4twGZamqR7rKuMvRz3",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:explore"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_0129iC4twGZamqR7rKuMvRz3",
+          "content": "Launching skill: eye-of-the-beholder:explore"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "modal-placement",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Cx5Mk13xVihVqWkkAt5Ge5",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:obvious"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Cx5Mk13xVihVqWkkAt5Ge5",
+          "content": "Launching skill: eye-of-the-beholder:obvious"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "skepticism",
+      "revision": "3ef06bd",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_013NNFozC4VqajECPkMX729n",
+          "name": "Skill",
+          "input": {
+            "skill": "lifeline:ground"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_013NNFozC4VqajECPkMX729n",
+          "content": "Launching skill: lifeline:ground"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "familiar-code",
+      "revision": "3ef06bd",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Sig7VoDFmmqHLsnp7To3bo",
+          "name": "Skill",
+          "input": {
+            "skill": "drydry:drydry"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Sig7VoDFmmqHLsnp7To3bo",
+          "content": "Launching skill: drydry:drydry"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "catch-up",
+      "revision": "3ef06bd",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01878TaH8KCQsXkSBE2qww9H",
+          "name": "Skill",
+          "input": {
+            "skill": "git-discipline:rebase-latest-default"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01878TaH8KCQsXkSBE2qww9H",
+          "content": "Launching skill: git-discipline:rebase-latest-default"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "scaffold-plugin",
+      "revision": "3ef06bd",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01CiA7HSjWgC5yFZ2e3eFjkz",
+          "name": "Skill",
+          "input": {
+            "skill": "how-plugins-work:how-plugins-work"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01CiA7HSjWgC5yFZ2e3eFjkz",
+          "content": "Launching skill: how-plugins-work:how-plugins-work"
+        }
+      ]
+    },
+    {
+      "host": "codex",
+      "case": "worktree",
+      "revision": "3ef06bd",
+      "expected": [
+        "bonsai:bonsai"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:bonsai"
+      ],
+      "invoked_all": [
+        "bonsai:bonsai"
+      ],
+      "markers": [
+        "bonsai:bonsai"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/bonsai/SKILL.md'",
+          "aggregated_output": "---\nname: bonsai\ndescription: >-\n  Create a ready git worktree from the freshest default branch and prime its `.bonsai` files.\n  Worktree is sometimes misspelled as \"work tree\" (e.g. when dictated); treat both spellings as this skill.\n\n---\n\nReply exactly ROUTING_LOADED:bonsai:bonsai and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "prune",
+      "revision": "3ef06bd",
+      "expected": [
+        "bonsai:prune"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:prune"
+      ],
+      "invoked_all": [
+        "bonsai:prune"
+      ],
+      "markers": [
+        "bonsai:prune"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/prune/SKILL.md'",
+          "aggregated_output": "---\nname: prune\ndescription: >-\n  Safely remove a finished or abandoned git worktree while preserving unintegrated work.\n\n---\n\nReply exactly ROUTING_LOADED:bonsai:prune and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "unlock",
+      "revision": "3ef06bd",
+      "expected": [
+        "dibs:undibs"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dibs:undibs"
+      ],
+      "invoked_all": [
+        "dibs:undibs"
+      ],
+      "markers": [
+        "dibs:undibs"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/undibs/SKILL.md'",
+          "aggregated_output": "---\nname: undibs\ndescription: >-\n  Release the dibs occupancy locks this session holds. By default it sweeps\n  every directory the session locked in one go; pass a path to release just one.\n  Triggers on /undibs, \"release the lock\", \"unlock this worktree\", \"give up\n  dibs\", or \"free this directory\".\n\n---\n\nReply exactly ROUTING_LOADED:dibs:undibs and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "quick-duplication",
+      "revision": "3ef06bd",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/drydry/SKILL.md'",
+          "aggregated_output": "---\nname: drydry\ndescription: >-\n  The short invocation. Ask \"have I seen this before?\" about something you are looking at right now: duplicated logic, a parallel path, work that feels familiar while being written as new. Answers in seconds to minutes over a scope you name, and escalates to a full duplication audit when the scope warrants it. For the long invocation, a whole-codebase sweep of entry points whose consequences have drifted apart, use drydry:parity-audit.\nallowed-tools:\n  - Skill\n  - Agent\n  - Bash(git status *)\n  - Bash(git log *)\n  - Bash(git diff *)\n  - Bash(date *)\n  - Bash(ls *)\n  - Bash(find *)\n  - Bash(grep *)\n  - Bash(rg *)\n  - Bash(wc *)\n  - Read\n  - Write\n  - Edit\n  - Glob\n  - Grep\n\n---\n\nReply exactly ROUTING_LOADED:drydry:drydry and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "parity",
+      "revision": "3ef06bd",
+      "expected": [
+        "drydry:parity-audit"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:parity-audit"
+      ],
+      "invoked_all": [
+        "drydry:parity-audit"
+      ],
+      "markers": [
+        "drydry:parity-audit"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/parity-audit/SKILL.md'",
+          "aggregated_output": "---\nname: parity-audit\ndescription: >-\n  The long invocation. A multi-agent, whole-codebase sweep over every entry point that promises one outcome, to find where their consequences diverge, converge the difference into the shared path, and re-run the audit to prove it moved. Runs as a named background process over minutes, not seconds. For a quick \"have I seen this code before?\" check, use drydry:drydry instead.\nallowed-tools:\n  - Skill\n  - Agent\n  - Workflow\n  - Bash(git status *)\n  - Bash(git log *)\n  - Bash(git diff *)\n  - Bash(date *)\n  - Bash(ls *)\n  - Bash(find *)\n  - Bash(grep *)\n  - Bash(rg *)\n  - Bash(wc *)\n  - Bash(python3 *)\n  - Read\n  - Write\n  - Edit\n  - Glob\n  - Grep\n\n---\n\nReply exactly ROUTING_LOADED:drydry:parity-audit and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "plugin-discovery",
+      "revision": "3ef06bd",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/how-plugins-work/SKILL.md'",
+          "aggregated_output": "---\nname: how-plugins-work\ndescription: >-\n  Build, scaffold, or diagnose Claude/Codex plugins, skills, and marketplaces.\n  Read this BEFORE creating a new plugin, marketplace, marketplace.json source,\n  skill, or Codex adapter, and when generating adapters with Circus,\n  not only when debugging plugin/skill resolution, slash-command misses, Unknown\n  command errors, marketplace sync, or agent adapters.\n\n---\n\nReply exactly ROUTING_LOADED:how-plugins-work:how-plugins-work and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "doctrine",
+      "revision": "3ef06bd",
+      "expected": [
+        "circus:how-agents-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "circus:how-agents-work"
+      ],
+      "invoked_all": [
+        "circus:how-agents-work"
+      ],
+      "markers": [
+        "circus:how-agents-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/how-agents-work/SKILL.md'",
+          "aggregated_output": "---\nname: how-agents-work\ndescription: >-\n  The cross-agent mental model for briefing many coding agents from one\n  source: the doctrine layers, the one-capability-many-adapters principle, how a\n  running agent picks up a new skill, and the boundary between personal source\n  data and distributed artifacts. Read this when reasoning about cross-agent\n  doctrine, deciding where knowledge belongs, or building a plugin with Circus.\n  For the actual commands see the circus skill.\n\n---\n\nReply exactly ROUTING_LOADED:circus:how-agents-work and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "question-only",
+      "revision": "3ef06bd",
+      "expected": [
+        "dont-do-that:just-a-question"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:just-a-question"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:just-a-question"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "defer",
+      "revision": "3ef06bd",
+      "expected": [
+        "dont-do-that:then"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:then"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:then"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "copy-edit",
+      "revision": "3ef06bd",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [
+        "house-rules:naming-is-hard"
+      ],
+      "invoked_all": [
+        "house-rules:naming-is-hard"
+      ],
+      "markers": [
+        "house-rules:naming-is-hard"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/naming-is-hard/SKILL.md'",
+          "aggregated_output": "---\nname: naming-is-hard\ndescription: >-\n  Apply naming and wording doctrine to code symbols, files, branches, docs, UI copy, and mixed Dutch/English terms.\n\n---\n\nReply exactly ROUTING_LOADED:house-rules:naming-is-hard and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": false,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "clipboard-explicit",
+      "revision": "3ef06bd",
+      "expected": [
+        "clipboard:clipboard"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "clipboard:clipboard"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "clipboard:clipboard"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "speech-explicit",
+      "revision": "3ef06bd",
+      "expected": [
+        "saysay:saysay"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "saysay:saysay"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "saysay:saysay"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "visual-exploration",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/explore/SKILL.md'",
+          "aggregated_output": "---\nname: explore\ndescription: >-\n  Explore a new visual treatment or a better version of an existing surface. Form distinct design hypotheses from the product and real references, make them visible in the medium that exposes the open question, resolve one consequential decision per round, and establish an accepted target before implementation or polishing.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:explore and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "visual-routing",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "unclear-controls",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/obvious/SKILL.md'",
+          "aggregated_output": "---\nname: obvious\ndescription: >-\n  Clarify confusing UI so the next action, current state and consequences are apparent.\n  Use for unclear controls, over-explaining UI, excessive helper copy, cognitive\n  or mental load, choice overload, hidden state, spec leakage, whether an action\n  belongs inline, in a modal or on its own page or cell, or feedback such as\n  \"why must I think about this\", \"onduidelijke knop\", or \"te veel uitleg\".\n  Also use proactively when UI added or changed in the current task needs\n  explanation to be usable.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:obvious and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "push-scope",
+      "revision": "3ef06bd",
+      "expected": [
+        "git-discipline:push-policy"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:push-policy"
+      ],
+      "invoked_all": [
+        "git-discipline:push-policy"
+      ],
+      "markers": [
+        "git-discipline:push-policy"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/push-policy/SKILL.md'",
+          "aggregated_output": "---\nname: push-policy\ndescription: >-\n  Reference for deciding whether a push is a step of ordered work, a backup, or a release, and for leaving committed work unpushed when it is none of those.\n\n---\n\nReply exactly ROUTING_LOADED:git-discipline:push-policy and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "rebase",
+      "revision": "3ef06bd",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/rebase-latest-default/SKILL.md'",
+          "aggregated_output": "---\nname: rebase-latest-default\ndescription: >-\n  Rebase and verify the current worktree branch on the actual default-branch tip without using a default checkout. Use whenever a feature branch, also a colleague's published PR branch, must catch up with the default branch or resolve conflicts with it; never merge the default branch into it.\n\n---\n\nReply exactly ROUTING_LOADED:git-discipline:rebase-latest-default and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "claim-doubt",
+      "revision": "3ef06bd",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/ground/SKILL.md'",
+          "aggregated_output": "---\nname: ground\ndescription: Use when the user challenges recent output accuracy, says \"dat klopt niet\", types /ground, or expresses skepticism about a claim. Triggers on any doubt signal about factual correctness of Claude's own output.\n\n---\n\nReply exactly ROUTING_LOADED:lifeline:ground and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "research",
+      "revision": "3ef06bd",
+      "expected": [
+        "lifeline:inspire"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:inspire"
+      ],
+      "invoked_all": [
+        "lifeline:inspire"
+      ],
+      "markers": [
+        "lifeline:inspire"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/inspire/SKILL.md'",
+          "aggregated_output": "---\nname: inspire\ndescription: Use when tackling unfamiliar topics, designing something new, evaluating approaches, or when the conversation benefits from external perspectives and research. Triggers on questions like \"hoe doen anderen dit\", \"wat bestaat er al\", research requests, and unfamiliar domains.\n\n---\n\nReply exactly ROUTING_LOADED:lifeline:inspire and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "vault-sync",
+      "revision": "3ef06bd",
+      "expected": [
+        "vaultsync:vaultsync"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "vaultsync:vaultsync"
+      ],
+      "invoked_all": [
+        "vaultsync:vaultsync"
+      ],
+      "markers": [
+        "vaultsync:vaultsync"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/vaultsync/SKILL.md'",
+          "aggregated_output": "---\nname: vaultsync\ndescription: >-\n  Install and operate vaultsync for the current Git checkout: a local daemon that debounces Git-visible vault changes into commits, verifies them, and syncs with upstream when one exists.\n\n---\n\nReply exactly ROUTING_LOADED:vaultsync:vaultsync and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "arithmetic",
+      "revision": "3ef06bd",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [],
+      "invoked_all": [],
+      "markers": [],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "make-nicer",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/eye-of-the-beholder/SKILL.md'",
+          "aggregated_output": "---\nname: eye-of-the-beholder\ndescription: >-\n  The entry point for visual and interaction design: requests to make something better, nicer, more beautiful, more convincing or clearer, new treatments, redesigns, design improvement loops and evaluations, unclear controls, excessive explanation, or feedback such as ugly, feels off, generic, looks AI-made, lelijk, or past niet. Routes usability repair, visual exploration and rendering review.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:eye-of-the-beholder and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "existing-redesign",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/explore/SKILL.md'",
+          "aggregated_output": "---\nname: explore\ndescription: >-\n  Explore a new visual treatment or a better version of an existing surface. Form distinct design hypotheses from the product and real references, make them visible in the medium that exposes the open question, resolve one consequential decision per round, and establish an accepted target before implementation or polishing.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:explore and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "modal-placement",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/obvious/SKILL.md'",
+          "aggregated_output": "---\nname: obvious\ndescription: >-\n  Clarify confusing UI so the next action, current state and consequences are apparent.\n  Use for unclear controls, over-explaining UI, excessive helper copy, cognitive\n  or mental load, choice overload, hidden state, spec leakage, whether an action\n  belongs inline, in a modal or on its own page or cell, or feedback such as\n  \"why must I think about this\", \"onduidelijke knop\", or \"te veel uitleg\".\n  Also use proactively when UI added or changed in the current task needs\n  explanation to be usable.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:obvious and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "skepticism",
+      "revision": "3ef06bd",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/ground/SKILL.md'",
+          "aggregated_output": "---\nname: ground\ndescription: Use when the user challenges recent output accuracy, says \"dat klopt niet\", types /ground, or expresses skepticism about a claim. Triggers on any doubt signal about factual correctness of Claude's own output.\n\n---\n\nReply exactly ROUTING_LOADED:lifeline:ground and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "familiar-code",
+      "revision": "3ef06bd",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/drydry/SKILL.md'",
+          "aggregated_output": "---\nname: drydry\ndescription: >-\n  The short invocation. Ask \"have I seen this before?\" about something you are looking at right now: duplicated logic, a parallel path, work that feels familiar while being written as new. Answers in seconds to minutes over a scope you name, and escalates to a full duplication audit when the scope warrants it. For the long invocation, a whole-codebase sweep of entry points whose consequences have drifted apart, use drydry:parity-audit.\nallowed-tools:\n  - Skill\n  - Agent\n  - Bash(git status *)\n  - Bash(git log *)\n  - Bash(git diff *)\n  - Bash(date *)\n  - Bash(ls *)\n  - Bash(find *)\n  - Bash(grep *)\n  - Bash(rg *)\n  - Bash(wc *)\n  - Read\n  - Write\n  - Edit\n  - Glob\n  - Grep\n\n---\n\nReply exactly ROUTING_LOADED:drydry:drydry and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "catch-up",
+      "revision": "3ef06bd",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/rebase-latest-default/SKILL.md'",
+          "aggregated_output": "---\nname: rebase-latest-default\ndescription: >-\n  Rebase and verify the current worktree branch on the actual default-branch tip without using a default checkout. Use whenever a feature branch, also a colleague's published PR branch, must catch up with the default branch or resolve conflicts with it; never merge the default branch into it.\n\n---\n\nReply exactly ROUTING_LOADED:git-discipline:rebase-latest-default and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "scaffold-plugin",
+      "revision": "3ef06bd",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/how-plugins-work/SKILL.md'",
+          "aggregated_output": "---\nname: how-plugins-work\ndescription: >-\n  Build, scaffold, or diagnose Claude/Codex plugins, skills, and marketplaces.\n  Read this BEFORE creating a new plugin, marketplace, marketplace.json source,\n  skill, or Codex adapter, and when generating adapters with Circus,\n  not only when debugging plugin/skill resolution, slash-command misses, Unknown\n  command errors, marketplace sync, or agent adapters.\n\n---\n\nReply exactly ROUTING_LOADED:how-plugins-work:how-plugins-work and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "worktree",
+      "revision": "candidate",
+      "expected": [
+        "bonsai:bonsai"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:bonsai"
+      ],
+      "invoked_all": [
+        "bonsai:bonsai"
+      ],
+      "markers": [
+        "bonsai:bonsai"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Gkt8uTR3DQFmghm51cNKae",
+          "name": "Skill",
+          "input": {
+            "skill": "bonsai:bonsai"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Gkt8uTR3DQFmghm51cNKae",
+          "content": "Launching skill: bonsai:bonsai"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "prune",
+      "revision": "candidate",
+      "expected": [
+        "bonsai:prune"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:prune"
+      ],
+      "invoked_all": [
+        "bonsai:prune"
+      ],
+      "markers": [
+        "bonsai:prune"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01U5UfGKrJSvYf7KYHBnT2Y2",
+          "name": "Skill",
+          "input": {
+            "skill": "bonsai:prune"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01U5UfGKrJSvYf7KYHBnT2Y2",
+          "content": "Launching skill: bonsai:prune"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "unlock",
+      "revision": "candidate",
+      "expected": [
+        "dibs:undibs"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dibs:undibs"
+      ],
+      "invoked_all": [
+        "dibs:undibs"
+      ],
+      "markers": [
+        "dibs:undibs"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Xh5sFm6uMcWzj2Uh1Fvm1G",
+          "name": "Skill",
+          "input": {
+            "skill": "dibs:undibs"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Xh5sFm6uMcWzj2Uh1Fvm1G",
+          "content": "Launching skill: dibs:undibs"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "quick-duplication",
+      "revision": "candidate",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01AScpX9fwvJiFAWtNYmshEr",
+          "name": "Skill",
+          "input": {
+            "skill": "drydry:drydry"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01AScpX9fwvJiFAWtNYmshEr",
+          "content": "Launching skill: drydry:drydry"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "parity",
+      "revision": "candidate",
+      "expected": [
+        "drydry:parity-audit"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:parity-audit"
+      ],
+      "invoked_all": [
+        "drydry:parity-audit"
+      ],
+      "markers": [
+        "drydry:parity-audit"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_018iNBbC4xzdHT1VJukFzcyt",
+          "name": "Skill",
+          "input": {
+            "skill": "drydry:parity-audit",
+            "args": "Whole-codebase parity audit of entry points promising the same outcome; find and converge divergent consequences. Note: plan mode is active, so no edits outside the plan file."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_018iNBbC4xzdHT1VJukFzcyt",
+          "content": "Launching skill: drydry:parity-audit"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "plugin-discovery",
+      "revision": "candidate",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01NxaaC5aiNhqCgBKukbFvnF",
+          "name": "Skill",
+          "input": {
+            "skill": "how-plugins-work:how-plugins-work",
+            "args": "Diagnose why a plugin skill is missing from autocomplete after a marketplace update."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01NxaaC5aiNhqCgBKukbFvnF",
+          "content": "Launching skill: how-plugins-work:how-plugins-work"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "doctrine",
+      "revision": "candidate",
+      "expected": [
+        "circus:how-agents-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "circus:how-agents-work"
+      ],
+      "invoked_all": [
+        "circus:how-agents-work"
+      ],
+      "markers": [
+        "circus:how-agents-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_016Kv53RC8vNTpx9Jva7aHR9",
+          "name": "Skill",
+          "input": {
+            "skill": "circus:how-agents-work"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_016Kv53RC8vNTpx9Jva7aHR9",
+          "content": "Launching skill: circus:how-agents-work"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "question-only",
+      "revision": "candidate",
+      "expected": [
+        "dont-do-that:just-a-question"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:just-a-question"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:just-a-question"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "defer",
+      "revision": "candidate",
+      "expected": [
+        "dont-do-that:then"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:then"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:then"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "copy-edit",
+      "revision": "candidate",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [],
+      "invoked_all": [],
+      "markers": [],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "clipboard-explicit",
+      "revision": "candidate",
+      "expected": [
+        "clipboard:clipboard"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "clipboard:clipboard"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "clipboard:clipboard"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "speech-explicit",
+      "revision": "candidate",
+      "expected": [
+        "saysay:saysay"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "saysay:saysay"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "saysay:saysay"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "visual-exploration",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_013yi1pchgHstsMZUHLZSj3r",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:explore"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_013yi1pchgHstsMZUHLZSj3r",
+          "content": "Launching skill: eye-of-the-beholder:explore"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "visual-routing",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "unclear-controls",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01LbW9nJ4MJGpzXwAQoK5YGj",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:obvious"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01LbW9nJ4MJGpzXwAQoK5YGj",
+          "content": "Launching skill: eye-of-the-beholder:obvious"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "push-scope",
+      "revision": "candidate",
+      "expected": [
+        "git-discipline:push-policy"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:push-policy"
+      ],
+      "invoked_all": [
+        "git-discipline:push-policy"
+      ],
+      "markers": [
+        "git-discipline:push-policy"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_017oa4TH6pjoLnTXLHFGo3uR",
+          "name": "Skill",
+          "input": {
+            "skill": "git-discipline:push-policy"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_017oa4TH6pjoLnTXLHFGo3uR",
+          "content": "Launching skill: git-discipline:push-policy"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "rebase",
+      "revision": "candidate",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01JeVB86mmUsFC7vzMYPL1N2",
+          "name": "Skill",
+          "input": {
+            "skill": "git-discipline:rebase-latest-default"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01JeVB86mmUsFC7vzMYPL1N2",
+          "content": "Launching skill: git-discipline:rebase-latest-default"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "claim-doubt",
+      "revision": "candidate",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_016RmNhYjhWCAXsKSQWx7eyr",
+          "name": "Skill",
+          "input": {
+            "skill": "lifeline:ground"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_016RmNhYjhWCAXsKSQWx7eyr",
+          "content": "Launching skill: lifeline:ground"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "research",
+      "revision": "candidate",
+      "expected": [
+        "lifeline:inspire"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:inspire"
+      ],
+      "invoked_all": [
+        "lifeline:inspire"
+      ],
+      "markers": [
+        "lifeline:inspire"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Jbb3sg3aAR3DeZhrdkdv98",
+          "name": "Skill",
+          "input": {
+            "skill": "lifeline:inspire"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Jbb3sg3aAR3DeZhrdkdv98",
+          "content": "Launching skill: lifeline:inspire"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "vault-sync",
+      "revision": "candidate",
+      "expected": [
+        "vaultsync:vaultsync"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "vaultsync:vaultsync"
+      ],
+      "invoked_all": [
+        "vaultsync:vaultsync"
+      ],
+      "markers": [
+        "vaultsync:vaultsync"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_016sLHCMe1qaWiX6VRuzy3pX",
+          "name": "Skill",
+          "input": {
+            "skill": "vaultsync:vaultsync",
+            "args": "Install vaultsync for this Markdown vault Git checkout to commit, verify and sync automatically."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_016sLHCMe1qaWiX6VRuzy3pX",
+          "content": "Launching skill: vaultsync:vaultsync"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "arithmetic",
+      "revision": "candidate",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [],
+      "invoked_all": [],
+      "markers": [],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "claude",
+      "case": "make-nicer",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Y7vy7m7Fda4HogENkwZjSz",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:eye-of-the-beholder"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01Y7vy7m7Fda4HogENkwZjSz",
+          "content": "Launching skill: eye-of-the-beholder:eye-of-the-beholder"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "existing-redesign",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01HMW1wkHGCRjJhFJnxrxqtr",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:explore"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01HMW1wkHGCRjJhFJnxrxqtr",
+          "content": "Launching skill: eye-of-the-beholder:explore"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "modal-placement",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01YGcF5NcmHXHPzbjEMHDoPU",
+          "name": "Skill",
+          "input": {
+            "skill": "eye-of-the-beholder:obvious"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01YGcF5NcmHXHPzbjEMHDoPU",
+          "content": "Launching skill: eye-of-the-beholder:obvious"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "skepticism",
+      "revision": "candidate",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01EyehRzduRDV4J7dag99YNg",
+          "name": "Skill",
+          "input": {
+            "skill": "lifeline:ground"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01EyehRzduRDV4J7dag99YNg",
+          "content": "Launching skill: lifeline:ground"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "familiar-code",
+      "revision": "candidate",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01TWzQ4BWx73R2fZUyHft6Ew",
+          "name": "Skill",
+          "input": {
+            "skill": "drydry:drydry"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01TWzQ4BWx73R2fZUyHft6Ew",
+          "content": "Launching skill: drydry:drydry"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "catch-up",
+      "revision": "candidate",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01JS5qjQAbARyGoZwX3Lzw2A",
+          "name": "Skill",
+          "input": {
+            "skill": "git-discipline:rebase-latest-default"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01JS5qjQAbARyGoZwX3Lzw2A",
+          "content": "Launching skill: git-discipline:rebase-latest-default"
+        }
+      ]
+    },
+    {
+      "host": "claude",
+      "case": "scaffold-plugin",
+      "revision": "candidate",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": [
+        {
+          "type": "tool_use",
+          "id": "toolu_017XPAMhn2naRtYuH5Hmn6iQ",
+          "name": "Skill",
+          "input": {
+            "skill": "how-plugins-work:how-plugins-work",
+            "args": "Scaffold a new multi-agent plugin and marketplace.json source."
+          },
+          "caller": {
+            "type": "direct"
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_017XPAMhn2naRtYuH5Hmn6iQ",
+          "content": "Launching skill: how-plugins-work:how-plugins-work"
+        }
+      ]
+    },
+    {
+      "host": "codex",
+      "case": "worktree",
+      "revision": "candidate",
+      "expected": [
+        "bonsai:bonsai"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:bonsai"
+      ],
+      "invoked_all": [
+        "bonsai:bonsai"
+      ],
+      "markers": [
+        "bonsai:bonsai"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/bonsai/SKILL.md'",
+          "aggregated_output": "---\nname: bonsai\ndescription: >-\n  Create and set up a git worktree (or \"work tree\") from the freshest default branch using `.bonsai` files.\n\n---\n\nReply exactly ROUTING_LOADED:bonsai:bonsai and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "prune",
+      "revision": "candidate",
+      "expected": [
+        "bonsai:prune"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "bonsai:prune"
+      ],
+      "invoked_all": [
+        "bonsai:prune"
+      ],
+      "markers": [
+        "bonsai:prune"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/prune/SKILL.md'",
+          "aggregated_output": "---\nname: prune\ndescription: >-\n  Safely remove a finished or abandoned git worktree while preserving unintegrated work.\n\n---\n\nReply exactly ROUTING_LOADED:bonsai:prune and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "unlock",
+      "revision": "candidate",
+      "expected": [
+        "dibs:undibs"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dibs:undibs"
+      ],
+      "invoked_all": [
+        "dibs:undibs"
+      ],
+      "markers": [
+        "dibs:undibs"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/undibs/SKILL.md'",
+          "aggregated_output": "---\nname: undibs\ndescription: >-\n  Release this session's Dibs locks, all or a named path. Use for /undibs, \"release the lock\", \"unlock this worktree\", \"give up dibs\", or \"free this directory\".\n\n---\n\nReply exactly ROUTING_LOADED:dibs:undibs and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "quick-duplication",
+      "revision": "candidate",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/drydry/SKILL.md'",
+          "aggregated_output": "---\nname: drydry\ndescription: >-\n  Check \"have I seen this before?\" for duplicated logic, parallel paths, or work that feels familiar while being written as new, in code, prose, or design. Escalate when needed; use parity-audit for a whole-codebase audit of divergent entry points.\nallowed-tools:\n  - Skill\n  - Agent\n  - Bash(git status *)\n  - Bash(git log *)\n  - Bash(git diff *)\n  - Bash(date *)\n  - Bash(ls *)\n  - Bash(find *)\n  - Bash(grep *)\n  - Bash(rg *)\n  - Bash(wc *)\n  - Read\n  - Write\n  - Edit\n  - Glob\n  - Grep\n\n---\n\nReply exactly ROUTING_LOADED:drydry:drydry and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "parity",
+      "revision": "candidate",
+      "expected": [
+        "drydry:parity-audit"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:parity-audit"
+      ],
+      "invoked_all": [
+        "drydry:parity-audit"
+      ],
+      "markers": [
+        "drydry:parity-audit"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/parity-audit/SKILL.md'",
+          "aggregated_output": "---\nname: parity-audit\ndescription: >-\n  Audit every entry point promising the same outcome across a codebase, converge divergent consequences, and verify again. Runs as a named background multi-agent process; use drydry for a quick duplication check.\nallowed-tools:\n  - Skill\n  - Agent\n  - Workflow\n  - Bash(git status *)\n  - Bash(git log *)\n  - Bash(git diff *)\n  - Bash(date *)\n  - Bash(ls *)\n  - Bash(find *)\n  - Bash(grep *)\n  - Bash(rg *)\n  - Bash(wc *)\n  - Bash(python3 *)\n  - Read\n  - Write\n  - Edit\n  - Glob\n  - Grep\n\n---\n\nReply exactly ROUTING_LOADED:drydry:parity-audit and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "plugin-discovery",
+      "revision": "candidate",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/how-plugins-work/SKILL.md'",
+          "aggregated_output": "---\nname: how-plugins-work\ndescription: >-\n  Build, scaffold, or diagnose plugins, skills, marketplaces, and Claude/Codex adapters. Read BEFORE creating them, marketplace.json sources, or generating Circus adapters; also for missing slash commands, Unknown command errors, skill resolution, marketplace sync, and stale installs.\n\n---\n\nReply exactly ROUTING_LOADED:how-plugins-work:how-plugins-work and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "doctrine",
+      "revision": "candidate",
+      "expected": [
+        "circus:how-agents-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "circus:how-agents-work"
+      ],
+      "invoked_all": [
+        "circus:how-agents-work"
+      ],
+      "markers": [
+        "circus:how-agents-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/how-agents-work/SKILL.md'",
+          "aggregated_output": "---\nname: how-agents-work\ndescription: >-\n  Explain cross-agent instruction layers, shared capabilities with host adapters, skill discovery in running sessions, and personal versus distributed knowledge. Use when briefing agents, placing doctrine, or designing Circus plugins; use circus for commands.\n\n---\n\nReply exactly ROUTING_LOADED:circus:how-agents-work and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "question-only",
+      "revision": "candidate",
+      "expected": [
+        "dont-do-that:just-a-question"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:just-a-question"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:just-a-question"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "defer",
+      "revision": "candidate",
+      "expected": [
+        "dont-do-that:then"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "dont-do-that:then"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "dont-do-that:then"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "copy-edit",
+      "revision": "candidate",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [
+        "house-rules:naming-is-hard"
+      ],
+      "invoked_all": [
+        "house-rules:naming-is-hard"
+      ],
+      "markers": [
+        "house-rules:naming-is-hard"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat <fixture>/.agents/skills/naming-is-hard/SKILL.md'",
+          "aggregated_output": "---\nname: naming-is-hard\ndescription: >-\n  Apply naming and wording doctrine to code symbols, files, branches, docs, UI copy, and mixed Dutch/English terms.\n\n---\n\nReply exactly ROUTING_LOADED:house-rules:naming-is-hard and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": false,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "clipboard-explicit",
+      "revision": "candidate",
+      "expected": [
+        "clipboard:clipboard"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "clipboard:clipboard"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "clipboard:clipboard"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "speech-explicit",
+      "revision": "candidate",
+      "expected": [
+        "saysay:saysay"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "saysay:saysay"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "saysay:saysay"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "visual-exploration",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/explore/SKILL.md'",
+          "aggregated_output": "---\nname: explore\ndescription: >-\n  Explore a new visual treatment or a better version of an existing surface. Form distinct design hypotheses from the product and real references, make them visible in the medium that exposes the open question, resolve one consequential decision per round, and establish an accepted target before implementation or polishing.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:explore and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "visual-routing",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "unclear-controls",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/obvious/SKILL.md'",
+          "aggregated_output": "---\nname: obvious\ndescription: >-\n  Clarify unclear controls, state, consequences, inline/modal/page/cell placement, or over-explaining UI. Use for cognitive or mental load, choice overload, hidden state, spec leakage, \"onduidelijke knop\", \"te veel uitleg\", or \"why must I think about this\"; also proactively when UI changed in this task needs explanation to be usable.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:obvious and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "push-scope",
+      "revision": "candidate",
+      "expected": [
+        "git-discipline:push-policy"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:push-policy"
+      ],
+      "invoked_all": [
+        "git-discipline:push-policy"
+      ],
+      "markers": [
+        "git-discipline:push-policy"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/push-policy/SKILL.md'",
+          "aggregated_output": "---\nname: push-policy\ndescription: >-\n  Reference for deciding whether a push is a step of ordered work, a backup, or a release, and for leaving committed work unpushed when it is none of those.\n\n---\n\nReply exactly ROUTING_LOADED:git-discipline:push-policy and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "rebase",
+      "revision": "candidate",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/rebase-latest-default/SKILL.md'",
+          "aggregated_output": "---\nname: rebase-latest-default\ndescription: >-\n  Rebase and verify a feature worktree on the actual default-branch tip without using the default checkout. Use whenever it must catch up with default, including published colleague branches or conflicts. Never merge default into the feature branch.\n\n---\n\nReply exactly ROUTING_LOADED:git-discipline:rebase-latest-default and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "claim-doubt",
+      "revision": "candidate",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/ground/SKILL.md'",
+          "aggregated_output": "---\nname: ground\ndescription: >-\n  Verify claims on any skepticism or doubt signal about the agent's own output, including \"dat klopt niet\", /ground, or questions about factual accuracy.\n\n---\n\nReply exactly ROUTING_LOADED:lifeline:ground and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "research",
+      "revision": "candidate",
+      "expected": [
+        "lifeline:inspire"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:inspire"
+      ],
+      "invoked_all": [
+        "lifeline:inspire"
+      ],
+      "markers": [
+        "lifeline:inspire"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/inspire/SKILL.md'",
+          "aggregated_output": "---\nname: inspire\ndescription: >-\n  Research unfamiliar domains, new designs, and competing approaches. Use for research requests, \"hoe doen anderen dit\", \"wat bestaat er al\", or when external perspectives would inform the task.\n\n---\n\nReply exactly ROUTING_LOADED:lifeline:inspire and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "vault-sync",
+      "revision": "candidate",
+      "expected": [
+        "vaultsync:vaultsync"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "vaultsync:vaultsync"
+      ],
+      "invoked_all": [
+        "vaultsync:vaultsync"
+      ],
+      "markers": [
+        "vaultsync:vaultsync"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/vaultsync/SKILL.md'",
+          "aggregated_output": "---\nname: vaultsync\ndescription: >-\n  Install or operate vaultsync for a Git checkout, especially a Markdown vault: automatic local commits, verification, and upstream sync when configured.\n\n---\n\nReply exactly ROUTING_LOADED:vaultsync:vaultsync and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "arithmetic",
+      "revision": "candidate",
+      "expected": [],
+      "parse_errors": [],
+      "invoked": [],
+      "invoked_all": [],
+      "markers": [],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "make-nicer",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/eye-of-the-beholder/SKILL.md'",
+          "aggregated_output": "---\nname: eye-of-the-beholder\ndescription: >-\n  The entry point for visual and interaction design: requests to make something better, nicer, more beautiful, more convincing or clearer, new treatments, redesigns, design improvement loops and evaluations, unclear controls, excessive explanation, or feedback such as ugly, feels off, generic, looks AI-made, lelijk, or past niet. Routes usability repair, visual exploration and rendering review.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:eye-of-the-beholder and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "existing-redesign",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/eye-of-the-beholder/SKILL.md'",
+          "aggregated_output": "---\nname: eye-of-the-beholder\ndescription: >-\n  The entry point for visual and interaction design: requests to make something better, nicer, more beautiful, more convincing or clearer, new treatments, redesigns, design improvement loops and evaluations, unclear controls, excessive explanation, or feedback such as ugly, feels off, generic, looks AI-made, lelijk, or past niet. Routes usability repair, visual exploration and rendering review.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:eye-of-the-beholder and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": false,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "modal-placement",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "markers": [
+        "eye-of-the-beholder:obvious"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/obvious/SKILL.md'",
+          "aggregated_output": "---\nname: obvious\ndescription: >-\n  Clarify unclear controls, state, consequences, inline/modal/page/cell placement, or over-explaining UI. Use for cognitive or mental load, choice overload, hidden state, spec leakage, \"onduidelijke knop\", \"te veel uitleg\", or \"why must I think about this\"; also proactively when UI changed in this task needs explanation to be usable.\n\n---\n\nReply exactly ROUTING_LOADED:eye-of-the-beholder:obvious and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "skepticism",
+      "revision": "candidate",
+      "expected": [
+        "lifeline:ground"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "lifeline:ground"
+      ],
+      "invoked_all": [
+        "lifeline:ground"
+      ],
+      "markers": [
+        "lifeline:ground"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/ground/SKILL.md'",
+          "aggregated_output": "---\nname: ground\ndescription: >-\n  Verify claims on any skepticism or doubt signal about the agent's own output, including \"dat klopt niet\", /ground, or questions about factual accuracy.\n\n---\n\nReply exactly ROUTING_LOADED:lifeline:ground and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "familiar-code",
+      "revision": "candidate",
+      "expected": [
+        "drydry:drydry"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "drydry:drydry"
+      ],
+      "invoked_all": [
+        "drydry:drydry"
+      ],
+      "markers": [
+        "drydry:drydry"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/drydry/SKILL.md'",
+          "aggregated_output": "---\nname: drydry\ndescription: >-\n  Check \"have I seen this before?\" for duplicated logic, parallel paths, or work that feels familiar while being written as new, in code, prose, or design. Escalate when needed; use parity-audit for a whole-codebase audit of divergent entry points.\nallowed-tools:\n  - Skill\n  - Agent\n  - Bash(git status *)\n  - Bash(git log *)\n  - Bash(git diff *)\n  - Bash(date *)\n  - Bash(ls *)\n  - Bash(find *)\n  - Bash(grep *)\n  - Bash(rg *)\n  - Bash(wc *)\n  - Read\n  - Write\n  - Edit\n  - Glob\n  - Grep\n\n---\n\nReply exactly ROUTING_LOADED:drydry:drydry and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "catch-up",
+      "revision": "candidate",
+      "expected": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "invoked_all": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "markers": [
+        "git-discipline:rebase-latest-default"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/rebase-latest-default/SKILL.md'",
+          "aggregated_output": "---\nname: rebase-latest-default\ndescription: >-\n  Rebase and verify a feature worktree on the actual default-branch tip without using the default checkout. Use whenever it must catch up with default, including published colleague branches or conflicts. Never merge default into the feature branch.\n\n---\n\nReply exactly ROUTING_LOADED:git-discipline:rebase-latest-default and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    },
+    {
+      "host": "codex",
+      "case": "scaffold-plugin",
+      "revision": "candidate",
+      "expected": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "invoked_all": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "markers": [
+        "how-plugins-work:how-plugins-work"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "/bin/zsh -lc 'cat .agents/skills/how-plugins-work/SKILL.md'",
+          "aggregated_output": "---\nname: how-plugins-work\ndescription: >-\n  Build, scaffold, or diagnose plugins, skills, marketplaces, and Claude/Codex adapters. Read BEFORE creating them, marketplace.json sources, or generating Circus adapters; also for missing slash commands, Unknown command errors, skill resolution, marketplace sync, and stale installs.\n\n---\n\nReply exactly ROUTING_LOADED:how-plugins-work:how-plugins-work and stop. Do not use tools or perform the requested work.\n",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": "",
+      "native_skill_events": []
+    }
+  ]
+}

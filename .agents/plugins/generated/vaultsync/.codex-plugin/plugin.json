@@ -1,7 +1,7 @@
 {
   "name": "vaultsync",
-  "version": "2.0.33+codex.hooks.2",
-  "description": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict handling while respecting dibs locks.",
+  "version": "2.0.34+codex.hooks.2",
+  "description": "Automatically commit and verify Markdown vault changes locally, then rebase and push when an upstream exists, with conflict handling and Dibs coordination.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Vaultsync",
-    "shortDescription": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verif...",
-    "longDescription": "Local-first Git sync automation for Markdown vault repositories: debounce Git-visible changes into commits, run verification, and when an upstream exists rebase and push with LLM conflict handling while respecting dibs locks.",
+    "shortDescription": "Sync Markdown vaults with Git",
+    "longDescription": "Automatically commit and verify Markdown vault changes locally, then rebase and push when an upstream exists, with conflict handling and Dibs coordination.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

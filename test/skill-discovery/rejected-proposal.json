@@ -1,0 +1,63 @@
+{
+  "description": {
+    "path": "packages/eye-of-the-beholder/skills/explore/SKILL.md",
+    "before": "Explore a new visual treatment or a better version of an existing surface. Form distinct design hypotheses from the product and real references, make them visible in the medium that exposes the open question, resolve one consequential decision per round, and establish an accepted target before implementation or polishing.",
+    "after": "Explore new visual treatments or a better version of an existing surface, using product context and real references. Make distinct hypotheses visible, resolve one decision per round, and agree on a target before implementation or polishing.",
+    "body_unchanged": true
+  },
+  "reason": "Codex chose the general visual router rather than explore for the existing-redesign case. Restore the baseline description rather than tune around one prompt.",
+  "runs": [
+    {
+      "host": "codex",
+      "case": "existing-redesign",
+      "revision": "3ef06bd",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:explore"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:explore"
+      ],
+      "markers": [
+        "eye-of-the-beholder:explore"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": true,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "host": "codex",
+      "case": "existing-redesign",
+      "revision": "candidate",
+      "expected": [
+        "eye-of-the-beholder:explore"
+      ],
+      "parse_errors": [],
+      "invoked": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "invoked_all": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "markers": [
+        "eye-of-the-beholder:eye-of-the-beholder"
+      ],
+      "outside_fixture_reads": [],
+      "commands": [],
+      "completed": true,
+      "valid": true,
+      "pass": false,
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "rollback_result": "Restoring the baseline explore description did not restore direct entry; Codex still selected the general visual router. The router contract directs this request to explore, but the native chain and extra context/latency were not measured.",
+  "causal_hypothesis_supported": false
+}

@@ -1,13 +1,7 @@
 ---
 name: obvious
 description: >-
-  Clarify confusing UI so the next action, current state and consequences are apparent.
-  Use for unclear controls, over-explaining UI, excessive helper copy, cognitive
-  or mental load, choice overload, hidden state, spec leakage, whether an action
-  belongs inline, in a modal or on its own page or cell, or feedback such as
-  "why must I think about this", "onduidelijke knop", or "te veel uitleg".
-  Also use proactively when UI added or changed in the current task needs
-  explanation to be usable.
+  Clarify unclear controls, state, consequences, inline/modal/page/cell placement, or over-explaining UI. Use for cognitive or mental load, choice overload, hidden state, spec leakage, "onduidelijke knop", "te veel uitleg", or "why must I think about this"; also proactively when UI changed in this task needs explanation to be usable.
 ---
 
 # Obvious

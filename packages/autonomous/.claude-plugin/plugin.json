@@ -1,5 +1,5 @@
 {
   "name": "autonomous",
-  "description": "Keep an autonomous mission running across turns. A startup capability probe decides whether keep-alive machinery is needed: a cron heartbeat with exponential backoff, auto-stop, and wake/restore for an interactive session; nothing for a persistent process. The rover plugin's decision framework calls this layer at dispatch.",
-  "version": "2.0.11"
+  "description": "Keep autonomous missions running across turns with a host capability probe, heartbeat backoff, auto-stop, and wake/restore where needed. Persistent hosts need no heartbeat machinery.",
+  "version": "2.0.12"
 }

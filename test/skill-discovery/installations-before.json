@@ -1,0 +1,260 @@
+[
+  {
+    "host": "claude",
+    "plugin": "anger-management",
+    "enabled": true,
+    "version": "2.0.16"
+  },
+  {
+    "host": "claude",
+    "plugin": "autonomous",
+    "enabled": true,
+    "version": "2.0.11"
+  },
+  {
+    "host": "claude",
+    "plugin": "bonsai",
+    "enabled": true,
+    "version": "2.0.40"
+  },
+  {
+    "host": "claude",
+    "plugin": "circus",
+    "enabled": true,
+    "version": "2.0.8"
+  },
+  {
+    "host": "claude",
+    "plugin": "clipboard",
+    "enabled": true,
+    "version": "2.0.11"
+  },
+  {
+    "host": "claude",
+    "plugin": "dibs",
+    "enabled": true,
+    "version": "2.0.78"
+  },
+  {
+    "host": "claude",
+    "plugin": "dont-do-that",
+    "enabled": true,
+    "version": "2.0.90"
+  },
+  {
+    "host": "claude",
+    "plugin": "drydry",
+    "enabled": true,
+    "version": "2.0.6"
+  },
+  {
+    "host": "claude",
+    "plugin": "eye-of-the-beholder",
+    "enabled": true,
+    "version": "2.0.25"
+  },
+  {
+    "host": "claude",
+    "plugin": "git-discipline",
+    "enabled": true,
+    "version": "2.0.98"
+  },
+  {
+    "host": "claude",
+    "plugin": "gurus",
+    "enabled": true,
+    "version": "2.0.11"
+  },
+  {
+    "host": "claude",
+    "plugin": "house-rules",
+    "enabled": true,
+    "version": "2.0.29"
+  },
+  {
+    "host": "claude",
+    "plugin": "how-plugins-work",
+    "enabled": true,
+    "version": "2.0.47"
+  },
+  {
+    "host": "claude",
+    "plugin": "intervision",
+    "enabled": true,
+    "version": "2.0.25"
+  },
+  {
+    "host": "claude",
+    "plugin": "laicluse-agent-fieldkit",
+    "enabled": true,
+    "version": "2.0.5"
+  },
+  {
+    "host": "claude",
+    "plugin": "lifeline",
+    "enabled": true,
+    "version": "2.0.3"
+  },
+  {
+    "host": "claude",
+    "plugin": "pattern-memory",
+    "enabled": true,
+    "version": "2.0.2"
+  },
+  {
+    "host": "claude",
+    "plugin": "rover",
+    "enabled": true,
+    "version": "2.0.32"
+  },
+  {
+    "host": "claude",
+    "plugin": "saysay",
+    "enabled": true,
+    "version": "2.0.9"
+  },
+  {
+    "host": "claude",
+    "plugin": "self-improvement",
+    "enabled": true,
+    "version": "2.0.10"
+  },
+  {
+    "host": "claude",
+    "plugin": "vaultsync",
+    "enabled": true,
+    "version": "2.0.33"
+  },
+  {
+    "host": "claude",
+    "plugin": "whywhy",
+    "enabled": true,
+    "version": "2.0.4"
+  },
+  {
+    "host": "codex",
+    "plugin": "how-plugins-work",
+    "enabled": true,
+    "version": "2.0.48"
+  },
+  {
+    "host": "codex",
+    "plugin": "bonsai",
+    "enabled": true,
+    "version": "2.0.41"
+  },
+  {
+    "host": "codex",
+    "plugin": "dibs",
+    "enabled": true,
+    "version": "2.0.79+codex.hooks.2"
+  },
+  {
+    "host": "codex",
+    "plugin": "self-improvement",
+    "enabled": true,
+    "version": "2.0.11"
+  },
+  {
+    "host": "codex",
+    "plugin": "git-discipline",
+    "enabled": true,
+    "version": "2.0.99+codex.hooks.2"
+  },
+  {
+    "host": "codex",
+    "plugin": "dont-do-that",
+    "enabled": true,
+    "version": "2.0.91+codex.hooks.2"
+  },
+  {
+    "host": "codex",
+    "plugin": "eye-of-the-beholder",
+    "enabled": true,
+    "version": "2.0.26"
+  },
+  {
+    "host": "codex",
+    "plugin": "intervision",
+    "enabled": true,
+    "version": "2.0.26+codex.hooks.2"
+  },
+  {
+    "host": "codex",
+    "plugin": "anger-management",
+    "enabled": true,
+    "version": "2.0.17"
+  },
+  {
+    "host": "codex",
+    "plugin": "drydry",
+    "enabled": true,
+    "version": "2.0.7"
+  },
+  {
+    "host": "codex",
+    "plugin": "pattern-memory",
+    "enabled": true,
+    "version": "2.0.3"
+  },
+  {
+    "host": "codex",
+    "plugin": "vaultsync",
+    "enabled": true,
+    "version": "2.0.34+codex.hooks.2"
+  },
+  {
+    "host": "codex",
+    "plugin": "laicluse-agent-fieldkit",
+    "enabled": true,
+    "version": "2.0.6"
+  },
+  {
+    "host": "codex",
+    "plugin": "clipboard",
+    "enabled": true,
+    "version": "2.0.12"
+  },
+  {
+    "host": "codex",
+    "plugin": "gurus",
+    "enabled": true,
+    "version": "2.0.12"
+  },
+  {
+    "host": "codex",
+    "plugin": "rover",
+    "enabled": true,
+    "version": "2.0.33"
+  },
+  {
+    "host": "codex",
+    "plugin": "house-rules",
+    "enabled": true,
+    "version": "2.0.30"
+  },
+  {
+    "host": "codex",
+    "plugin": "whywhy",
+    "enabled": true,
+    "version": "2.0.5"
+  },
+  {
+    "host": "codex",
+    "plugin": "lifeline",
+    "enabled": true,
+    "version": "2.0.4"
+  },
+  {
+    "host": "codex",
+    "plugin": "saysay",
+    "enabled": true,
+    "version": "2.0.10"
+  },
+  {
+    "host": "codex",
+    "plugin": "circus",
+    "enabled": true,
+    "version": "2.0.9"
+  }
+]

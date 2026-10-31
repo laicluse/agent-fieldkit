@@ -1,7 +1,7 @@
 ---
 name: rebase-latest-default
 description: >-
-  Rebase and verify the current worktree branch on the actual default-branch tip without using a default checkout. Use whenever a feature branch, also a colleague's published PR branch, must catch up with the default branch or resolve conflicts with it; never merge the default branch into it.
+  Rebase and verify a feature worktree on the actual default-branch tip without using the default checkout. Use whenever it must catch up with default, including published colleague branches or conflicts. Never merge default into the feature branch.
 ---
 
 # Rebase Latest Default

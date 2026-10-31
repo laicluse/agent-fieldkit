@@ -2,12 +2,7 @@
 name: how-agents-work
 user-invocable: true
 description: >-
-  The cross-agent mental model for briefing many coding agents from one
-  source: the doctrine layers, the one-capability-many-adapters principle, how a
-  running agent picks up a new skill, and the boundary between personal source
-  data and distributed artifacts. Read this when reasoning about cross-agent
-  doctrine, deciding where knowledge belongs, or building a plugin with Circus.
-  For the actual commands see the circus skill.
+  Explain cross-agent instruction layers, shared capabilities with host adapters, skill discovery in running sessions, and personal versus distributed knowledge. Use when briefing agents, placing doctrine, or designing Circus plugins; use circus for commands.
 ---
 
 # how-agents-work

@@ -1,7 +1,7 @@
 {
   "name": "saysay",
-  "version": "2.0.9",
-  "description": "Speech mode for macOS: the agent speaks every response aloud through the `say` command, translating screen content into spoken language instead of reading it out verbatim. /saysay toggles it on, /saysay off exits. Ships a per-user phonetic dictionary plus serialized, ducked playback so parallel sessions speak one after another.",
+  "version": "2.0.10",
+  "description": "Speak agent responses aloud on macOS, translating screen content into spoken language rather than reading it verbatim. Includes on/off commands, a phonetic dictionary, and serialized playback across sessions.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Saysay",
-    "shortDescription": "Speech mode for macOS: the agent speaks every response aloud through the `say` command, translating screen content in...",
-    "longDescription": "Speech mode for macOS: the agent speaks every response aloud through the `say` command, translating screen content into spoken language instead of reading it out verbatim. /saysay toggles it on, /saysay off exits. Ships a per-user phonetic dictionary plus serialized, ducked playback so parallel sessions speak one after another.",
+    "shortDescription": "Speak responses aloud",
+    "longDescription": "Speak agent responses aloud on macOS, translating screen content into spoken language rather than reading it verbatim. Includes on/off commands, a phonetic dictionary, and serialized playback across sessions.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

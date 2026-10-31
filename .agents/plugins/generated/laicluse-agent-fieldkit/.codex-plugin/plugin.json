@@ -1,7 +1,7 @@
 {
   "name": "laicluse-agent-fieldkit",
-  "version": "2.0.5",
-  "description": "Marketplace-wide utilities for the laicluse-agent-fieldkit marketplace. Currently ships /whats-new (namespaced as /laicluse-agent-fieldkit:whats-new when needed), a one-stop reader for the post-update CHANGELOG section of any installed plugin.",
+  "version": "2.0.6",
+  "description": "Read the latest marketplace or installed-plugin CHANGELOG news with whats-new, without changing post-update broadcast state.",
   "author": {
     "name": "local"
   },
@@ -12,8 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Laicluse Agent Fieldkit",
-    "shortDescription": "Marketplace-wide utilities for the laicluse-agent-fieldkit marketplace. Currently ships /whats-new (namespaced as /la...",
-    "longDescription": "Marketplace-wide utilities for the laicluse-agent-fieldkit marketplace. Currently ships /whats-new (namespaced as /laicluse-agent-fieldkit:whats-new when needed), a one-stop reader for the post-update CHANGELOG section of any installed plugin.",
+    "shortDescription": "Read plugin update news",
+    "longDescription": "Read the latest marketplace or installed-plugin CHANGELOG news with whats-new, without changing post-update broadcast state.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [
