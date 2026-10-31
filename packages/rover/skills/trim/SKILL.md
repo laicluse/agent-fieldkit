@@ -17,17 +17,15 @@ Every other INSPECT pass surfaces findings that *add* to the diff. Pride says "f
 
 ## Why this matters inside an autonomous loop
 
-Code costs are paid forever. A line shipped has to be read by every future maintainer, can host a bug, gets caught up in every refactor that touches its neighbourhood. Tokens spent producing it are cheap; the line itself is permanent surface. The same is true of prose: every paragraph in a prompt or doc that does not earn its weight erodes the reader's attention budget for the parts that do.
+Code costs are paid forever. A line shipped has to be read by every future maintainer, can host a bug, gets caught up in every refactor that touches its neighbourhood. Tokens, elapsed time and maintained surface all carry cost. The same is true of prose: every paragraph in a prompt or doc that does not earn its weight erodes the reader's attention budget for the parts that do.
 
 The rover, left to its own devices, ships what every pass asked for. That works on missions where the dispatch was complex enough to absorb the additions. It fails on missions where the dispatch was small and the INSPECT passes generated proposals at their normal rate; the diff then carries far more weight than the operator wanted to move.
 
-Trim closes this gap by asking, at the end of INSPECT, the one question no other pass asks. The findings are weighed with the same three-fates rubric `rover` defines: fix (remove), cost-value-skip with structured rationale (keep with reason), or reject-as-non-issue (the trim reviewer was wrong about this chunk, confirmed by a pride second pass).
+Trim closes this gap by asking, at the end of INSPECT, the one question no other pass asks. The findings are weighed with the same three-fates rubric `rover` defines: fix (remove), cost-value-skip with structured rationale (keep with reason), or reject-as-non-issue (the trim reviewer was wrong about this chunk, checked in the single batched pride challenge).
 
 ## When to run
 
-**Auto-triggered by `rover`.** Final INSPECT pass, after the gurus pass and before STOW. Trim runs once the rover believes the work is complete and reviewed by the other passes; trim then asks whether the result is *minimal*.
-
-(If the rover finds additional work in DRIVE after trim ran, run trim again on the new batch before STOW.)
+Use for material added complexity or an explicit request. It may share the independent review batch; reuse earlier findings for unchanged work and review only material deltas. Explicit stops and budget limits take precedence over another trim pass.
 
 **Manually via `/rover:trim`:**
 - `/rover:trim` reviews the uncommitted changes plus commits on the current branch not yet on the default branch
@@ -94,9 +92,9 @@ The asymmetry is by design. Without a subtraction pass, addition wins by default
 **Inside a running loop (auto-triggered):**
 
 1. Write findings to the loop file's `## Log` section under a `[HH:MM] Trim findings:` header
-2. For each finding, name the fate and the rationale: fate 1 (remove) lists the lines to delete; fate 2 (keep with cost-value rationale) lists why the chunk earns its weight on this mission; fate 3 (reject-as-non-issue) triggers a pride second pass on the trim finding itself
+2. For each finding, name the fate and the rationale: fate 1 (remove) lists the lines to delete; fate 2 (keep with cost-value rationale) lists why the chunk earns its weight on this mission; fate 3 (reject-as-non-issue) joins the batched challenge when material
 3. After processing, commit any removals as a separate "trim" commit so the diff history shows build, review fixes, and subtraction as distinct steps. This commit lands inside INSPECT, before STOW.
-4. INSPECT cannot transition to STOW without a `[HH:MM] Trim findings:` block on record for the current mission
+4. Record `Trim findings` for this review. It may share the coherent review batch; explicit stops and budgets never require a new trim pass.
 
 **Invoked manually (`/rover:trim`):**
 

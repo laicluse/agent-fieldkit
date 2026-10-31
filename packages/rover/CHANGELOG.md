@@ -5,6 +5,14 @@ once per machine whenever the installed `version` in
 `.claude-plugin/plugin.json` changes. Header version numbers are informational;
 the broadcast is positional.
 
+## [v2.0.32]
+
+### Fixed
+
+- Honor explicit stops and cumulative research budgets across continuation and restart. Failed hypotheses remain failed rather than becoming another automatic experiment.
+- Require cause, relevant change and falsifiable prediction before another attempt. Review coherent changes and measured evidence; unchanged reports reuse existing reviews.
+- Report unmet criteria without restarting repairs or review. Status questions no longer resume stopped work, and old loop instructions are migrated without resetting their evidence or limits.
+
 ## [v2.0.30]
 
 ### Fixed

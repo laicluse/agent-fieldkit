@@ -65,7 +65,7 @@ SURVEY ──► DRIVE ──► INSPECT ──► STOW ──► STANDBY
 
 - **SURVEY.** Read the codebase, form hypotheses, lock down a plan, write Done criteria via `verify --propose`.
 - **DRIVE.** Build. Commit per logical step. Verify as you go.
-- **INSPECT.** Six passes: `verify` against Done criteria, `pride` contrarian review as the phase gate on the current batch of work, an end-user walkthrough, a technical plan-vs-diff, a `gurus` opinionated panel review, and a `trim` subtraction pass. `pride`, `gurus`, and `trim` are hard gates: INSPECT cannot reach STOW without all three on record. Any failure sends the Rover back to DRIVE. `pride` also runs separately on every artefact the Rover hands off later (the `stop` communiqué is its own pride pass, not a second invocation of this INSPECT gate).
+- **INSPECT.** Verify real outcomes against Done criteria and independently review coherent changed work, including end-user, technical and subtraction concerns. Reuse valid reviews; request focused deltas after material changes. Negative stops and budgets take precedence over further repairs.
 - **STOW.** Mechanical cleanup only. Debug prints gone, unused imports gone, half-finished refactors finished. Separate commit.
 - **STANDBY.** Watch channels (PR comments, CI, uncommitted work). Ask the host continuation to back off as idleness grows. Auto-stop after sustained quiet.
 
@@ -89,17 +89,13 @@ SURVEY ──► DRIVE ──► INSPECT ──► STOW ──► STANDBY
 
 ## What the Rover will never do on its own
 
-- Ask the operator anything mid-mission (it uses `decide` for every fork, including scope calls)
-- Defer, postpone, plan, or down-scope a finding (fix it, or reject it with evidence via pride's second-pass gate)
+- Ignore an explicit stop, budget or required authorization.
+- Mark a failed hypothesis as a completed product goal or start another research sequence without instruction.
 - Push, merge, or deploy on its own initiative (the mission ends at commits on its own branch; where those go next is your workflow, not the rover's). It pushes and opens a PR only when the brief or the project's conventions make the mission PR-bound
 - Transition out of DRIVE with a dirty working tree
-- Hand off any artefact (code, docs, prose, research brief, media, communiqué) without a logged `pride` pass covering it
+- Claim independent review of a material result when only an earlier or mocked version was reviewed.
 - Call a mission done without ticked Done criteria and evidence
 
 ## Cost awareness
 
-An autonomous continuation can drive many turns during active phases. That is the point: the Rover is working for you. During STANDBY the host continuation should back off and auto-stop after sustained quiet. A persistent process may have no heartbeat at all because it runs the phases straight through. For small tasks, a normal conversation is cheaper than a full Rover dispatch.
-
-The Rover keeps reasoning on your session model and offloads mechanical work to delegated agents when the host exposes them: STANDBY polling (`git status`, PR comments, CI checks) and the INSPECT technical pass (diff-vs-plan review). Hand work to helpers, keep head work on the session model. If no delegated-agent mechanism exists, the Rover runs those passes directly and logs the fallback.
-
-Standing by for mission parameters.
+Research needs a baseline, falsifiable hypothesis, total budget and negative stop condition before expensive execution. Include builder and reviewer effort. A new name, prompt or session does not reset the budget. After failure, require observed cause, relevant change and a discriminating prediction before another authorized attempt. Preserve the product goal and report failed or unmet criteria honestly. Do not make failure disappear through more reviews.

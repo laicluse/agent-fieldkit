@@ -18,18 +18,11 @@ In an ordinary workflow, code review and "sleeping on it" catch the pride-level 
 
 The pride check injects an independent skeptic before the loop transitions to its "done" states. If the loop is good at what it does, the pride check usually finds something real. When it finds nothing, it has to explain what it examined and why nothing was flagged. Vague "looks good" is rejected.
 
-**Pride is not a deferral engine.** Its purpose is to verify that everything is done, not to produce a list of things the rover can defer to "later" or "follow-up". When pride finds something, the rover applies the three-fates rubric from `rover`'s "Three fates" section: fix in a new DRIVE cycle, cost-value-skip with a structured rationale (concrete output cost, concrete value, named canon-vraag), or reject-as-non-issue with a second contrarian pass confirming the reject as hollow. There is no "log and ship" for any finding. There is no "we will address this in a follow-up". There is no operator-accept path for rejecting findings. Pride's output drives the loop back into work or into a logged engineering call, not toward the exit.
+**Review supports truthful outcomes.** Resolve findings before claiming success. A stop, exhausted budget or failed hypothesis instead requires an honest report of unmet criteria, not another repair or reviewer cycle. Apply the bounded disposition rules from rover.
 
 ## When to run
 
-**Auto-triggered by `rover`.** Canonical triggers:
-
-1. Before any rover artefact leaves the rover. "Artefact" is read broadly: diffs, commits, PRs, pushes, documentation, READMEs, research briefs, plans, summaries, letters, emails, slide decks, video scripts, generated images, audio, slash-command responses, communiqués, anything the rover produced that a human will read. Pride reviews all of it, not only code.
-2. As the second pass in INSPECT, right after `verify`, so pride findings feed the DRIVE-fix loop while the artefact is still fresh. Pride runs before STOW so its findings can be fixed as real logic or content changes; STOW is strictly mechanical cleanup and cannot fix what pride flags.
-
-(If a loop runs INSPECT, fixes things, then ships more work, run pride once per batch. Every new batch of artefact before handoff gets its own pride pass.)
-
-**There is no exemption for research-only missions.** A loop whose output is a research brief, a plan, an analysis document, or any other prose deliverable gets the same pride pass as a loop that ships code. The artefact IS the diff-equivalent. See "Gathering the artefact" below for how to feed a prose-only deliverable to the contrarian reviewer.
+Review a coherent batch of changed implementation or measured results before successful handoff. Cover risky source and publication boundaries before execution. Reuse a valid review for unchanged documentation, status messages and the final summary; material changes require a focused delta review. A stop or negative-result report does not require a new review cycle. Research claims need actual evidence, not merely review of a plausible plan.
 
 **Manually via `/rover:pride`:**
 - `/rover:pride` reviews the uncommitted changes plus commits on the current branch not yet on the default branch
@@ -60,7 +53,7 @@ For code artefacts, give the reviewer the diff plus this brief:
 > 6. **Race conditions.** New async code, new background jobs, new state mutations: is there a window where two callers step on each other?
 > 7. **Stale documentation.** README, comments, or docstrings that describe behavior that is no longer accurate after this change.
 > 8. **The question the user would ask.** Read the diff as if you are the user who asked for this work. What would make them say "why did you..."?
-> 9. **Effort-and-scope reflexes.** The rover has a documented reflex to skip work on effort or scope grounds. Look for the *pattern*, not only the literal phrases: any sentence that (a) acknowledges the work is not complete AND (b) suggests completion is optional, deferrable, or someone else's problem. That covers literal banned phrases ("mostly done", "roughly complete", "corners cut", "good enough for now", "small issues remain", "polish for later", "almost there", "this would take too long", "too big for this pass", "out of scope because it would take too long", "warrants a separate mission"), their equivalents in whatever language the operator works in, and every paraphrase of them ("approximately landed", "substantially resolved", "the bulk is in", "a handful of edge cases are queued", "tracked in backlog for continuity", "de minimis", "fine for a 0.9"). It also covers the structural escape: a "Follow-ups", "Next up", or "Backlog" section whose bullets are rover-originated deferrals rather than operator-chosen scope, regardless of how diplomatic the wording is.
+> 9. **Unsupported success claims.** Find unmet requirements being presented as complete or silently removed. An explicit negative result, stop or exhausted budget must remain reportable without triggering more work. Distinguish honest limits from false claims of delivery.
 >
 > For each finding: file:line, what you see, why it is a problem, and the concrete fix.
 >
@@ -79,7 +72,7 @@ For prose artefacts (research briefs, plans, analysis documents, letters, summar
 > 5. **Missing caveats.** Limitations, counter-evidence, alternatives that the author knew about but did not mention. What would a hostile reviewer say is absent?
 > 6. **Scope creep in prose.** Sections that drifted beyond the stated mission. Recommendations that the author was not asked for. Conclusions that assume facts not in evidence.
 > 7. **The question the user would ask.** Read the document as if you are the user who commissioned it. What would make them say "where did you get this?" or "did you actually check?" or "why did you include this?"
-> 8. **Effort-and-scope reflexes.** The rover has a documented reflex to skip work on effort or scope grounds and paper over it with prose that sounds measured. Look for the *pattern*, not only the literal phrases: any sentence that (a) acknowledges the work is not complete AND (b) suggests completion is optional, deferrable, or someone else's problem. That covers literal banned phrases ("mostly done", "roughly complete", "corners cut", "good enough for now", "small issues remain", "polish for later", "almost there", "this would take too long", "too big for this pass", "out of scope because it would take too long", "warrants a separate mission"), their equivalents in whatever language the operator works in, and every paraphrase of them ("approximately landed", "substantially resolved", "the bulk is in", "a handful of edge cases are queued", "tracked in backlog for continuity", "de minimis", "fine for a 0.9"). It also covers the structural escape: a "Follow-ups", "Next up", or "Backlog" section whose bullets are rover-originated deferrals rather than operator-chosen scope, regardless of how diplomatic the wording is.
+> 8. **Unsupported success claims.** Find unmet requirements being presented as complete or silently removed. An explicit negative result, stop or exhausted budget must remain reportable without triggering more work. Distinguish honest limits from false claims of delivery.
 >
 > For each finding: the exact phrase or passage, what you see, why it is a problem, and the concrete fix (strike it, rewrite it, add a source, add a caveat).
 >
@@ -148,14 +141,14 @@ Pass the collected diff to the reviewer. Large diffs: `git diff --stat "$RANGE"`
 
 ## What to do with findings
 
-Pride is not a deferral mechanism. Its output is a list of things to weigh, not a list to route around. There is no "log and ship" path. Every finding goes through one of the three fates from `rover`'s "Three fates" section: fix in a new DRIVE cycle, cost-value-skip with a structured rationale, or reject-as-non-issue with the second-pass gate below.
+Pride findings need evidence-based dispositions before successful delivery: fix, exclude with scope/cost rationale, or reject with concrete evidence. An unmet criterion cannot be excluded into a success claim. Explicit stops, exhausted budgets and negative experimental outcomes take precedence over more repairs; report unresolved findings honestly.
 
 **Inside a running loop (auto-triggered):**
 
 1. Write findings to the loop file's `## Log` section under a `[HH:MM] Pride check findings:` header
-2. For each finding, name the fate and the rationale: fate 1 (fix) lists the DRIVE target; fate 2 (cost-value-skip) lists concrete output cost (lines that would be added, files that would gain surface, maintenance burden), concrete value (severity, likelihood, who would notice), and the canon-vraag from `rover` that landed the call; fate 3 (reject-as-non-issue) triggers the second-pass gate.
-3. Set Phase back to DRIVE if there is anything in fate 1
-4. Do NOT forward findings to the operator mid-loop. The operator is not consulted mid-mission; the rover processes everything before the next handoff.
+2. For each finding, record a fix, evidence-based rejection, or scope/cost exclusion. Include execution cost and maintained complexity; never exclude an unmet criterion into a success claim.
+3. Return to DRIVE for authorized repairs only while no stop or budget boundary applies.
+4. Report material uncertainty and unmet criteria honestly; resolve routine findings independently within the active mandate.
 
 **Invoked manually (`/rover:pride`):**
 
@@ -163,33 +156,13 @@ Pride is not a deferral mechanism. Its output is a list of things to weigh, not 
 2. Fix every finding before returning. Pride is not a report-generating skill; it is a check that closes the gap between "looks done" and "actually done". Manual invocation means the user wants the work fixed, not a menu of what could be fixed.
 3. If the fix requires an external-action gate the rover cannot take, complete all local fixes and name the remaining gate once at the end. Never ask mid-fix whether to continue, and never turn the gate into a command for the user to run.
 
-### Every reject gets a second pass
+### Bounded challenge of disputed findings
 
-Fate 3 (reject-as-non-issue) is the suspect move. The rover built the work, so it has every incentive to wave a finding away; a second reader who did not build it is the most reliable correction available. A threshold-based gate ("run pass 2 only when rejects exceed N%") quietly contradicts this principle by admitting a band where rejects pass unreviewed. Any ratio above zero is arbitrary and defensible only by feel, and feel about rejects has no reason to be well-calibrated: the author's incentive to keep a reject standing is exactly the incentive the second pass exists to counter.
+Batch disputed material findings into one independent challenge with the original intent and concrete evidence. Correct real defects within the authorized budget; do not dismiss an unmet Done criterion as marginal. If the disagreement remains unresolved, report it and withhold a success claim. Do not recursively review the challenge or launch a fresh full review for an unchanged artefact. Explicit stops and budget limits take precedence over another review.
 
-So the rule is flat: **any fate-3 reject triggers a second pride pass** before it is final. Run pride a second time with a different reviewer when the host can provide one, or a separate stricter pass in the active session when it cannot ("the author rejected the following findings as non-issues; tell me which rejects are hollow and which ones are real"), reconcile the two reports, log both runs in the loop file. A fate-3 reject is only final after the second-run reviewer independently agrees (concrete-evidence-of-non-issue, per `rover`'s fate-3 definition). If the second pass says the finding is real, the rover fixes it (fate 1) or, if cost outweighs value, applies fate 2 with a structured rationale.
+### Success claims must match evidence
 
-**Fate 2 (cost-value-skip) does not trigger a second pride pass.** The structured rationale itself is the evidence: concrete output cost, concrete value, named canon-vraag from `rover`. "Bewuste keuze" without that structure is not a fate-2 rationale, it is a feeling, and feelings do not retire findings. "Out of scope" is never a fate-2 rationale inside an autonomous rover: scope is the Dispatch's job, not the rover's; the rover weighs output cost against value, not scope-fit. Neither is "pre-existing" or "not introduced by this mission" a fate-2 rationale: authorship and timing are not output-cost arguments, see `rover`'s "Origin is not a scope argument".
-
-**The one exception: a fate-2 skip that cannot prove the finding is purely additive DOES get the second pass.** Fate-2 had no skeptic, and that is exactly where the opposite error lives: an author retiring a correction-toward-intent by calling it a marginal addition (the guard against scope-creep turned against a return-to-target). So extend the second-pass trigger by one case, in line with `rover`'s "Fate 2 is for ADDITIVE findings only": before a fate-2 skip on an end-user or technical finding is final, the rover must show the finding maps to no committed Done criterion, no state-pair, and no success-signal the Dispatch stated. If it cannot point at that absence, the skip is not the author's to make alone: run the second pass, asking the second reader one objective question against the original Dispatch text, "does the built artefact contradict this success-signal the operator wrote, or fail this distinguishability the Dispatch's states imply?" If yes, the fate-2 skip is invalid; the finding is an unmet Done criterion, back to DRIVE. Output cost is never a valid skip for a success-signal contradiction, the same way cost is never a valid reason to tick an unmet Done criterion. This does not broaden the second pass to ALL fate-2 skips (that would add ceremony without a forcing function); it fires only on the detectable trigger, a skip whose purely-additive proof the author cannot produce.
-
-There is no operator-accept path for any fate. The operator is not consulted mid-mission. The rover does not retire a finding unilaterally outside the three fates, and the operator is not consulted to retire one either.
-
-### Banned closing language
-
-The following phrases are evidence the rover is handing off half-finished work. Any of them in an outbound artefact (commit messages, communiqués, PR descriptions, prose deliverables, mid-loop status lines visible to the operator) sends the rover back to DRIVE, no exceptions:
-
-- "mostly works", "mostly done", "largely addressed", "grotendeels"
-- "roughly done", "roughly complete", "a rough pass"
-- "corners cut", "some corners", "hier en daar corners"
-- "good enough for now", "good enough for v1", "good enough for this pass"
-- "nits remaining", "kleine puntjes over", "small issues remain"
-- "will follow up later", "later polish", "polish-for-later"
-- "not quite there", "not fully done", "almost done"
-
-The pattern these share: an acknowledgement that the work is not complete, paired with a suggestion that completion is optional. Pride rejects that combination in outbound artefacts. Either the work is complete or it is not; if it is not, every remaining item is a tracked finding routed through one of the three fates (see `rover`'s "Three fates").
-
-These phrases are NOT banned inside the mission-internal fate-2 cost-value rationale blocks in the loop file's pride or gurus findings log. Inside that structure the same wording is the conclusion of a logged engineering call (concrete output cost, concrete value, named canon-vraag), not a hand-wave. Pride reviews outbound artefacts; the rover's own findings log is not an outbound artefact, so the structured fate-2 form is allowed there even when its words overlap with phrases banned elsewhere.
+Do not present "mostly works", "almost done" or "good enough for now" as successful completion of unmet criteria. An honest negative or stopped outcome is not a forbidden success claim. Report what failed, what remains unknown and what work was preserved. Such reporting does not restart DRIVE or a review cycle.
 
 ## What counts as "nothing found"
 
