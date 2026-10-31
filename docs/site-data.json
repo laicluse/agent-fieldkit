@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.45",
+			"version": "2.0.47",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -611,7 +611,7 @@
 		},
 		{
 			"name": "circus",
-			"version": "2.0.7",
+			"version": "2.0.8",
 			"category": "feedback",
 			"summary": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
 			"support": [
@@ -662,7 +662,7 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.45",
+			"packageVersion": "2.0.47",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
 			"version": "v2.0.45",
 			"type": "Changed",
@@ -779,7 +779,7 @@
 		},
 		{
 			"plugin": "circus",
-			"packageVersion": "2.0.7",
+			"packageVersion": "2.0.8",
 			"detailPath": "agent-fieldkit/circus/",
 			"version": "v2.0.7",
 			"type": "Fixed",

@@ -193,13 +193,32 @@ Anthropic's [skill authoring best practices](https://platform.claude.com/docs/en
 description: Generate descriptive commit messages by analyzing git diffs. Use when the user asks for help writing commit messages or reviewing staged changes.
 ```
 
-Keep it as short as those two parts allow; every skill description is loaded on every turn. Include one boundary only when it prevents wrong activation. Procedures, edge cases, installation details, internal routing, and long alias lists belong in the body, which loads only after the skill is selected.
+Keep it as short as those two parts allow, with the distinguishing task and trigger words first. Include a boundary only when it prevents likely misrouting. Procedures, installation details, internal routing, and long alias lists belong in the body, which loads after selection. Preserve useful triggers and working distinctions; shorter alone is not better.
 
 Three anti-patterns to avoid:
 
 - **A compressed procedure.** "Inventory X, classify it by content, and remove the approved rows" tells the router how the skill works, not what the caller walks away with or when to reach for it. State the outcome and the situation instead.
 - **"Use when the user types /X" prefix.** When the skill has `disable-model-invocation: true`, the slash command is the only way in, so the prefix is redundant. When the skill is model-triggerable, name the situation, not the slash form.
 - **Embedding the skill body in the description.** Disambiguation rules, edge cases, and step-by-step procedures belong in the body, not the description.
+
+### Verify discovery in each host
+
+Skill descriptions route tasks; plugin manifest descriptions describe the installable package. Check both, but do not count shorter plugin listing copy as reduced model context without observing that host's actual catalog. Keep marketplace and package descriptions aligned, and inspect generated UI summaries for truncation.
+
+`interface.shortDescription` is a human-facing subtitle; `interface.longDescription` explains tasks, audience, and limitations. They are not skill-routing descriptions. In Circus, an optional package-root `interface.codex.json` authors `{"shortDescription":"Inspect connected devices"}`; the package manifest's `description` remains the long-description source. Keep the short copy independently useful rather than blindly truncating prose. Equal generated values are a compatible fallback when no separate subtitle exists; do not pad the long copy merely to make it different. Public directory submission currently limits subtitles to 30 characters; package validation allows 240. [OpenAI listing metadata](https://developers.openai.com/plugins/deploy/submission#listing-metadata)
+
+Current host differences (official docs checked 2026-10-31):
+
+| Host | Initial skill catalog | Invocation controls |
+| --- | --- | --- |
+| Claude Code | Names remain listed; over budget, descriptions are dropped starting with less-used skills. Default listing budget: 1% of context. Description plus `when_to_use`: at most 1536 characters. | `user-invocable: false` hides direct slash invocation but retains model invocation. `disable-model-invocation: true` prevents model invocation. |
+| Codex | Names, descriptions, and paths share a default 2% context budget. Descriptions may be shortened, then skills omitted. | Skill-local `agents/openai.yaml` with `policy.allow_implicit_invocation: false` disables implicit selection while retaining explicit invocation. |
+
+Sources: [Claude skills](https://code.claude.com/docs/en/skills), [Codex skills](https://learn.chatgpt.com/docs/build-skills). Budgets and truncation are version-sensitive; check current docs and the installed host before relying on the numbers. A context-budget percentage is not a cost figure; actual catalog tokens and prompt caching determine cost.
+
+Sanitizing Claude-only fields does not translate their semantics. When preserving an existing explicit-only skill in Codex, supply the skill-local invocation policy and verify it survives the adapter and installed cache. Do not translate `user-invocable: false` into disabled implicit invocation: those controls mean different things. A Claude-only flag does not establish the existing Codex policy: adding a Codex restriction can change a working workflow. Keep invocation-policy decisions separate from description cleanup, and preserve existing host behavior unless the operator requests a change.
+
+Compare realistic positive requests, nearby requests that should select another skill or none, and explicit named invocations before and after under matched conditions. Inspect real skill-loading traces where available; choosing names from a pasted catalog is a routing diagnostic, not proof of native auto-loading. Exercise the generated host metadata rather than reconstructing it by hand. With inert fixture bodies, verify their loaded markers and reject runs that read operational skills outside the fixture. Preserve raw evidence and distinguish metadata checks from behavioral results. Fewer characters or a peer opinion alone do not prove improved routing. [OpenAI's skill eval guide](https://developers.openai.com/blog/eval-skills) covers explicit, implicit, contextual, and negative-control cases.
 
 ### Frontmatter must be strict YAML
 
