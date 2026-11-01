@@ -5,6 +5,12 @@ once per machine whenever the installed `version` in
 `.claude-plugin/plugin.json` changes. Header version numbers are informational;
 the broadcast is positional.
 
+## [v2.0.34]
+
+### Fixed
+
+- Active missions answer side questions in progress commentary and execute their next authorized step in the same turn. Finishing a status answer or instruction repair no longer serves as mission closure; a watchdog remains a fallback. All existing mission stop conditions remain binding.
+
 ## [v2.0.32]
 
 ### Fixed

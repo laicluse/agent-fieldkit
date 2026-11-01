@@ -526,6 +526,8 @@ Read the operator's intent before acting. A stop or pause takes precedence immed
 
 Record relevant new instructions in the Log, preserving the original Dispatch. For an active mission, incorporate steering within its boundaries; when it changes the hypothesis or authorization, resolve that explicitly before dependent execution. Never use elapsed time or operator presence as permission.
 
+For an active mission, answer a status or side question briefly in progress commentary, then execute the next authorized mission step in the same turn. Do not send a final answer merely because the question or current slice is resolved. After an authorized detour such as instruction repair, return to the interrupted mission step before closing. An enabled watchdog is a fallback, not evidence that work continues after a final answer. All existing mission stop conditions still apply.
+
 ### Commits and what happens after
 
 Commits: autonomous. The operator approved them by starting the loop. Commit per logical step with a descriptive message. Follow the project's commit conventions.
