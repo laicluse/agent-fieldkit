@@ -304,7 +304,7 @@
 		},
 		{
 			"name": "intervision",
-			"version": "2.0.26",
+			"version": "2.0.27",
 			"category": "review",
 			"summary": "Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.",
 			"support": [
@@ -319,9 +319,9 @@
 			"commandCount": 2,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.25",
-				"type": "Added",
-				"summary": "peer-review-gate hook: in a repository with both a Claude and a Codex marketplace, a commit that ships runtime payload for the other agent is denied until that agent's peer reviewed it."
+				"version": "v2.0.27",
+				"type": "Fixed",
+				"summary": "Peer handoffs bound response size and automatic continuation."
 			}
 		},
 		{
@@ -706,6 +706,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
+			"plugin": "intervision",
+			"packageVersion": "2.0.27",
+			"detailPath": "agent-fieldkit/intervision/",
+			"version": "v2.0.27",
+			"type": "Fixed",
+			"summary": "Peer handoffs bound response size and automatic continuation.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
+		},
+		{
 			"plugin": "eye-of-the-beholder",
 			"packageVersion": "2.0.26",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
@@ -713,15 +722,6 @@
 			"type": "Changed",
 			"summary": "Design reasoning no longer counts a restyle of the same structure, section order and copy as a new direction.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
-		},
-		{
-			"plugin": "intervision",
-			"packageVersion": "2.0.26",
-			"detailPath": "agent-fieldkit/intervision/",
-			"version": "v2.0.25",
-			"type": "Added",
-			"summary": "peer-review-gate hook: in a repository with both a Claude and a Codex marketplace, a commit that ships runtime payload for the other agent is denied until that agent's peer reviewed it.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{
 			"plugin": "anger-management",

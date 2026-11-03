@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.27]
+
+### Fixed
+
+- Peer handoffs bound response size and automatic continuation. Truncated or budget-limited replies are treated as incomplete reviews.
+
 ## [v2.0.25]
 
 ### Added

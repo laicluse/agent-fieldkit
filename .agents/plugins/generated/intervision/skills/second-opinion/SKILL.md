@@ -40,6 +40,12 @@ precondition.
 
 Set `CLAUDE_PEER_MODEL` to the requested alias or full model ID, or `opus` when none was requested; use it for every handoff below.
 
+## Bound each handoff
+
+Default to 8000 output tokens (including thinking) and one agentic turn per handoff, including tools-disabled reviews. Use inline environment prefixes on every invocation. A response-size cap alone still permits automatic continuation. These defaults bound tokens and turns, not dollars. Choose any larger bound before calling, with a concrete reason and an explicit cost ceiling via `--max-budget-usd`; a budget check can overshoot within the current turn.
+
+Choose the review's durable artifact path before calling and set `PEER_REVIEW_OUTPUT` to it in the same shell invocation. Save the complete JSON there before interpreting it. Accept a verdict only when `subtype` is `success`, `is_error` is false, `num_turns` is one, `result` is nonempty and `usage.output_tokens` is below the configured cap. Reject an explicit token/turn/budget stop when reported, even after a successful process exit. A capped reply is incomplete; do not silently repeat or accept a continuation tail as the whole review. A bounded follow-up keeps the full artifact scope, not just its unreviewed tail.
+
 ## Give Claude time to think
 
 Claude is materially slower than Codex on substantial reviews and may produce
@@ -74,7 +80,7 @@ Do not summarize the work first:
   git diff --no-ext-diff
   printf '\n## untracked files\n'
   git ls-files --others --exclude-standard
-} | DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 CLAUDE_CODE_MAX_OUTPUT_TOKENS=8000 CLAUDE_CODE_MAX_TURNS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "$PEER_REVIEW_OUTPUT"
 ```
 
 For a branch or single commit, replace the diff block with the concrete range:
@@ -91,12 +97,12 @@ fi
 {
   printf 'Peer review this branch diff. Report findings first and do not edit files.\n\n'
   git diff --no-ext-diff "$DEFAULT"...HEAD
-} | DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 CLAUDE_CODE_MAX_OUTPUT_TOKENS=8000 CLAUDE_CODE_MAX_TURNS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "$PEER_REVIEW_OUTPUT"
 
 {
   printf 'Peer review this commit. Report findings first and do not edit files.\n\n'
   git show --stat --patch <sha>
-} | DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools ""
+} | DD_HEADLESS=1 CLAUDE_CODE_MAX_OUTPUT_TOKENS=8000 CLAUDE_CODE_MAX_TURNS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "$PEER_REVIEW_OUTPUT"
 ```
 
 **2. Weigh a design just discussed, when there is no code yet.** Give Claude
@@ -104,7 +110,7 @@ the actual design context on stdin. Keep the shaky parts in; a flattering
 summary buys a flattering review.
 
 ```bash
-DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" <<'PROMPT'
+DD_HEADLESS=1 CLAUDE_CODE_MAX_OUTPUT_TOKENS=8000 CLAUDE_CODE_MAX_TURNS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "$PEER_REVIEW_OUTPUT" <<'PROMPT'
 Peer review this plan before we build it. Do not edit files.
 <paste the design, the trade-off, the open question, including the parts we are unsure about>
 PROMPT
@@ -117,7 +123,7 @@ at a time. To escalate, keep the same prompt with the previous answer quoted
 underneath and move `--model` one tier up.
 
 ```bash
-DD_HEADLESS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" <<'PROMPT'
+DD_HEADLESS=1 CLAUDE_CODE_MAX_OUTPUT_TOKENS=8000 CLAUDE_CODE_MAX_TURNS=1 claude -p --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "$PEER_REVIEW_OUTPUT" <<'PROMPT'
 You flagged X as a race. The lock at <file:line> already serialises that path.
 Does that change your read? Do not edit files.
 PROMPT
