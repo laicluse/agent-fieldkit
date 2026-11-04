@@ -30,6 +30,10 @@ Start with the smallest sound working choice that meets the current user goal. "
 
 Slow down where a choice can destroy or reinterpret stored data, cross a public or external boundary, or leave users unable to recover. Preserve the necessary evidence and make those transitions explicit. Complexity or a delivery blocker needs a concrete current requirement, observed failure, or measured cost; a peer's hypothetical edge case is a question to evaluate, not automatically a new requirement. Before demanding a maintenance window or compatibility machinery for concurrency, measure current usage, affected operations, and the actual deployment overlap. Judge the consequence and recovery against that evidence: a brief transition in a lightly used internal app does not automatically require a high-availability rollout. Apply this checkpoint in planning, review, and delivery.
 
+## Preserve goals, re-evaluate old paths
+
+When consolidating systems, preserve the intended capabilities and data, not every branch of the former architecture. Before retaining a fallback, compatibility path, or security exception, identify its original rationale and verify that a current requirement still depends on it under the target ownership and deployment boundaries. Existing code and passing legacy tests establish former behavior, not a requirement to keep it. Do not invent a new hypothetical disaster to justify a path whose rationale disappeared. Retire it only after verifying that current consumers and stored data no longer depend on it; migrate necessary data first. Preserve published contracts and required security controls. Verified current failure modes can justify protection without a prior incident.
+
 ## Simplest thing is not the quickest hack
 
 Simple is the opposite of complex, not the opposite of hard. Spaghetti is
@@ -43,7 +47,7 @@ Do the structural work needed for the current behavior and its known constraints
 
 ## Rank alternatives by present quality and cost of change
 
-"Option 1 has the fewest lines" is not a recommendation. Compare whether each option solves the present problem, keeps today's boundaries clear, and can be revised at a reasonable cost. Spend complexity on an extension only when that extension is requested, already present, or supported by concrete evidence. Present the best fitting solution first and explain the relevant trade-off.
+"Option 1 has the fewest lines" is not a recommendation. Compare whether each option solves the present problem, keeps today's boundaries clear, and can be revised at a reasonable cost. Within the requested work, spend complexity on an extension only when it is requested or justified by a concrete current requirement, observed failure, or measured cost. Present the best fitting solution first and explain the relevant trade-off.
 
 ## Own technical choices
 

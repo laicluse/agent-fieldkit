@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.30",
+			"version": "2.0.31",
 			"category": "feedback",
 			"summary": "Apply chosen conventions for naming, testing, programming, and removing superseded residue.",
 			"support": [
@@ -698,7 +698,7 @@
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.30",
+			"packageVersion": "2.0.31",
 			"detailPath": "agent-fieldkit/house-rules/",
 			"version": "v2.0.29",
 			"type": "Changed",

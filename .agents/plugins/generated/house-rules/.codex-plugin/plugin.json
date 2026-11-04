@@ -1,6 +1,6 @@
 {
   "name": "house-rules",
-  "version": "2.0.30",
+  "version": "2.0.31",
   "description": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
   "author": {
     "name": "local"
