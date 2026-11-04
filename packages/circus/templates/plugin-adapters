@@ -5,7 +5,7 @@ set -euo pipefail
 
 CODEX_MARKETPLACE_FILE=".agents/plugins/marketplace.json"
 CLAUDE_MARKETPLACE_FILE=".claude-plugin/marketplace.json"
-CODEX_HOOK_ADAPTER_REVISION="hooks.2"
+CODEX_HOOK_ADAPTER_REVISION="hooks.3"
 
 die() {
   printf 'circus plugins: %s\n' "$1" >&2
@@ -144,18 +144,8 @@ codex_hook_command() {
     *) die "plugin $plugin $event hook has an invalid plugin-root command: $command" ;;
   esac
 
-  bootstrap='loaded_root="${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}"; plugin_data="${PLUGIN_DATA:-${CLAUDE_PLUGIN_DATA:-}}"; runtime_root="$loaded_root"; '
-  bootstrap+='case "$loaded_root" in */plugins/cache/*/*/*) version="${loaded_root##*/}"; retained_base="$plugin_data/.runtime/hooks"; retained_link="$retained_base/by-version/$version"; '
-  bootstrap+='if [ -x "$retained_link'"$runtime_path"'" ]; then runtime_root="$retained_link"; else source_root="$loaded_root"; '
-  bootstrap+='if [ ! -x "$source_root'"$runtime_path"'" ]; then plugin_base="${loaded_root%/*}"; source_root=""; source_count=0; for candidate in "$plugin_base"/*; do if [ -d "$candidate" ] && [ -x "$candidate'"$runtime_path"'" ]; then source_root="$candidate"; source_count=$((source_count + 1)); fi; done; [ "$source_count" -eq 1 ] || source_root=""; fi; '
-  bootstrap+='if [ -n "$source_root" ] && [ -n "$plugin_data" ]; then original_umask="$(umask)"; umask 077; mkdir -p "$retained_base/snapshots" "$retained_base/by-version"; '
-  bootstrap+='if [ -L "$retained_link" ] && [ ! -e "$retained_link" ]; then rm -f "$retained_link"; fi; '
-  bootstrap+='stage="$(mktemp -d "$retained_base/snapshots/$version.XXXXXX")" || stage=""; published=0; source_version="${source_root##*/}"; '
-  bootstrap+='if [ -n "$stage" ] && cp -R "$source_root/." "$stage" && printf '\''%s\n'\'' "$source_version" > "$stage/.circus-source-version" && [ -x "$stage'"$runtime_path"'" ] && ln -sn "../snapshots/${stage##*/}" "$retained_link" 2>/dev/null; then published=1; fi; '
-  bootstrap+='if [ -x "$retained_link'"$runtime_path"'" ]; then runtime_root="$retained_link"; else runtime_root="$source_root"; fi; '
-  bootstrap+='if [ -n "$stage" ] && [ "$published" -eq 0 ]; then rm -rf "$stage"; fi; umask "$original_umask"; else runtime_root="$source_root"; fi; fi ;; esac; '
-  bootstrap+='hook_entry="$runtime_root'"$runtime_path"'"; export PLUGIN_ROOT="$runtime_root" CLAUDE_PLUGIN_ROOT="$runtime_root"; '
-  message="$plugin $event hook has no retained or active runtime; restart this Codex session."
+  bootstrap='hook_entry="'"$marker$runtime_path"'"; '
+  message="$plugin $event hook entry is unavailable."
   if [ "$event" = "PreToolUse" ]; then
     printf '%sif [ ! -x "$hook_entry" ]; then printf '\''%%s\\n'\'' '\''%s'\'' >&2; exit 2; fi; %s"$hook_entry"%s\n' \
       "$bootstrap" "$message" "$prefix" "$trailing"

@@ -72,14 +72,14 @@ cat > "$repo/packages/probe/hooks/hooks.codex.json" <<'JSON'
 	  {
 	    "matcher": "Bash",
 	    "hooks": [
-	      { "type": "command", "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh" }
+	      { "type": "command", "command": "PROBE_PREFIX=kept ${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh trailing" }
 	    ]
 	  }
     ]
   }
 }
 JSON
-printf '#!/bin/sh\n[ -z "${PROBE_UMASK_OUTPUT:-}" ] || umask > "$PROBE_UMASK_OUTPUT"\n[ -z "${PROBE_ROOT_OUTPUT:-}" ] || printf "%%s\\n%%s\\n" "$PLUGIN_ROOT" "$CLAUDE_PLUGIN_ROOT" > "$PROBE_ROOT_OUTPUT"\necho dispatch\n' > "$repo/packages/probe/hooks/dispatch.sh"
+printf '#!/bin/sh\n[ -z "${PROBE_ROOT_OUTPUT:-}" ] || printf "%%s\\n%%s\\n" "$PLUGIN_ROOT" "$CLAUDE_PLUGIN_ROOT" > "$PROBE_ROOT_OUTPUT"\n[ -z "${PROBE_ARGUMENT_OUTPUT:-}" ] || printf "%%s\\n%%s\\n" "$PROBE_PREFIX" "$1" > "$PROBE_ARGUMENT_OUTPUT"\necho dispatch\n' > "$repo/packages/probe/hooks/dispatch.sh"
 printf '#!/bin/sh\necho guard\n' > "$repo/packages/probe/hooks/guards/probe.sh"
 chmod +x "$repo/packages/probe/hooks/dispatch.sh"
 chmod +x "$repo/packages/probe/hooks/guards/probe.sh"
@@ -91,90 +91,42 @@ test -f "$gen/hooks/hooks.json"
 test -f "$gen/hooks/dispatch.sh"
 test -f "$gen/hooks/guards/probe.sh"
 test ! -f "$gen/hooks/hooks.codex.json"
-test "$(jq -r '.version' "$gen/.codex-plugin/plugin.json")" = "1.0.0+codex.hooks.2"
+test "$(jq -r '.version' "$gen/.codex-plugin/plugin.json")" = "1.0.0+codex.hooks.3"
 grep -q 'PLUGIN_ROOT' "$gen/hooks/hooks.json"
-grep -q 'PLUGIN_DATA' "$gen/hooks/hooks.json"
 grep -q '"path": "./.agents/plugins/generated/probe"' "$repo/.agents/plugins/marketplace.json"
-
+if grep -Eq 'PLUGIN_DATA|retained_link|snapshots' "$gen/hooks/hooks.json"; then
+  echo 'Generated hooks must use the host-owned plugin root' >&2
+  exit 1
+fi
 loaded_command="$(jq -r '.hooks.SessionStart[0].hooks[0].command' "$gen/hooks/hooks.json")"
-cache_root="$tmp/codex home/plugins/cache/probe-marketplace/probe"
-old_root="$cache_root/1.0.0"
-plugin_data="$tmp/codex home/plugins/data/probe-probe-marketplace"
-mkdir -p "$cache_root" "$plugin_data"
-cp -R "$gen" "$old_root"
-
-umask_output="$tmp/first-hook-umask"
-root_output="$tmp/first hook roots"
-retained_link="$plugin_data/.runtime/hooks/by-version/1.0.0"
-expected_umask="$(umask)"
-first_output="$(PLUGIN_ROOT="$old_root" PLUGIN_DATA="$plugin_data" PROBE_UMASK_OUTPUT="$umask_output" PROBE_ROOT_OUTPUT="$root_output" sh -c "$loaded_command")"
-test "$first_output" = "dispatch"
-test "$(cat "$umask_output")" = "$expected_umask"
-test "$(sed -n '1p' "$root_output")" = "$retained_link"
-test "$(sed -n '2p' "$root_output")" = "$retained_link"
-test "$(cat "$retained_link/.circus-source-version")" = "1.0.0"
-
-concurrent_data="$tmp/concurrent plugin data"
-mkdir -p "$concurrent_data"
-PLUGIN_ROOT="$old_root" PLUGIN_DATA="$concurrent_data" sh -c "$loaded_command" > "$tmp/concurrent-one" &
-concurrent_one=$!
-PLUGIN_ROOT="$old_root" PLUGIN_DATA="$concurrent_data" sh -c "$loaded_command" > "$tmp/concurrent-two" &
-concurrent_two=$!
-wait "$concurrent_one"
-wait "$concurrent_two"
-test "$(cat "$tmp/concurrent-one")" = "dispatch"
-test "$(cat "$tmp/concurrent-two")" = "dispatch"
-test "$(find "$concurrent_data/.runtime/hooks/snapshots" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = "1"
-
-direct_root_output="$tmp/direct roots"
-direct_output="$(PLUGIN_ROOT="$gen" PLUGIN_DATA= CLAUDE_PLUGIN_DATA= PROBE_ROOT_OUTPUT="$direct_root_output" sh -c "$loaded_command")"
-test "$direct_output" = "dispatch"
-test "$(sed -n '1p' "$direct_root_output")" = "$gen"
-test "$(sed -n '2p' "$direct_root_output")" = "$gen"
-
-rm -rf "$old_root"
-new_root="$cache_root/1.0.1"
-cp -R "$gen" "$new_root"
-printf '#!/bin/sh\necho new-dispatch\n' > "$new_root/hooks/dispatch.sh"
-chmod +x "$new_root/hooks/dispatch.sh"
-
-retained_output="$(PLUGIN_ROOT="$old_root" PLUGIN_DATA="$plugin_data" sh -c "$loaded_command")"
-test "$retained_output" = "dispatch"
-
-retained_target="$plugin_data/.runtime/hooks/by-version/$(readlink "$retained_link")"
-rm -rf "$retained_target"
-test -L "$retained_link"
-test ! -e "$retained_link"
-dangling_recovery_output="$(PLUGIN_ROOT="$old_root" PLUGIN_DATA="$plugin_data" sh -c "$loaded_command")"
-test "$dangling_recovery_output" = "new-dispatch"
-test -x "$retained_link/hooks/dispatch.sh"
-test "$(cat "$retained_link/.circus-source-version")" = "1.0.1"
-
-fresh_plugin_data="$tmp/fresh-codex-home/plugins/data/probe-probe-marketplace"
-mkdir -p "$fresh_plugin_data"
-fallback_output="$(PLUGIN_ROOT="$old_root" PLUGIN_DATA="$fresh_plugin_data" sh -c "$loaded_command")"
-test "$fallback_output" = "new-dispatch"
-
+cache_root="$tmp/plugin root with spaces"
+cp -R "$gen" "$cache_root"
+root_output="$tmp/hook roots"
+output="$(PLUGIN_ROOT="$cache_root" PROBE_ROOT_OUTPUT="$root_output" sh -c "$loaded_command")"
+test "$output" = "dispatch"
+test "$(sed -n '1p' "$root_output")" = "$cache_root"
+fallback_output="$(PLUGIN_ROOT= CLAUDE_PLUGIN_ROOT="$cache_root" sh -c "$loaded_command")"
+test "$fallback_output" = "dispatch"
 pretool_command="$(jq -r '.hooks.PreToolUse[0].hooks[0].command' "$gen/hooks/hooks.json")"
-missing_root="$tmp/missing-codex-home/plugins/cache/probe-marketplace/probe/1.0.0"
-missing_data="$tmp/missing-codex-home/plugins/data/probe-probe-marketplace"
-mkdir -p "$missing_data"
+argument_output="$tmp/arguments"
+pretool_output="$(PLUGIN_ROOT="$cache_root" PROBE_ARGUMENT_OUTPUT="$argument_output" sh -c "$pretool_command")"
+test "$pretool_output" = "dispatch"
+test "$(sed -n '1p' "$argument_output")" = "kept"
+test "$(sed -n '2p' "$argument_output")" = "trailing"
+
 set +e
-missing_output="$(PLUGIN_ROOT="$missing_root" PLUGIN_DATA="$missing_data" sh -c "$pretool_command" 2>&1)"
+missing_output="$(PLUGIN_ROOT="$tmp/missing root" sh -c "$pretool_command" 2>&1)"
 missing_status=$?
 set -e
 test "$missing_status" -eq 2
-case "$missing_output" in *'restart this Codex session'*) ;; *) exit 1 ;; esac
-
-ambiguous_root="$cache_root/1.0.2"
-cp -R "$gen" "$ambiguous_root"
-ambiguous_data="$tmp/ambiguous plugin data"
-mkdir -p "$ambiguous_data"
+case "$missing_output" in *'hook entry is unavailable'*) ;; *) exit 1 ;; esac
+warning_output="$(PLUGIN_ROOT="$tmp/missing root" sh -c "$loaded_command")"
+printf '%s' "$warning_output" | jq -e '.systemMessage | contains("hook entry is unavailable")' >/dev/null
+chmod -x "$cache_root/hooks/dispatch.sh"
 set +e
-ambiguous_output="$(PLUGIN_ROOT="$old_root" PLUGIN_DATA="$ambiguous_data" sh -c "$pretool_command" 2>&1)"
-ambiguous_status=$?
+PLUGIN_ROOT="$cache_root" sh -c "$pretool_command" >"$tmp/non-executable.out" 2>&1
+non_executable_status=$?
 set -e
-test "$ambiguous_status" -eq 2
-case "$ambiguous_output" in *'restart this Codex session'*) ;; *) exit 1 ;; esac
+test "$non_executable_status" -eq 2
 
 "$circus_bin" plugins check "$repo" >/dev/null
