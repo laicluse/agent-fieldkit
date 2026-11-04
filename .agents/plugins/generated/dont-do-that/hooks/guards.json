@@ -6,17 +6,41 @@
     "final-answer": "The assistant's final-turn text, available at Stop."
   },
   "events": {
-    "PreToolUse": { "provides": ["tool-call"] },
-    "PostToolUse": { "provides": ["persisted-edit"] },
-    "Stop": { "provides": ["final-answer"] }
+    "PreToolUse": {
+      "provides": [
+        "tool-call"
+      ]
+    },
+    "PostToolUse": {
+      "provides": [
+        "persisted-edit"
+      ]
+    },
+    "Stop": {
+      "provides": [
+        "final-answer"
+      ]
+    }
   },
   "lanes": {
-    "pre-bash": { "event": "PreToolUse" },
-    "pre-edit": { "event": "PreToolUse" },
-    "pre-search": { "event": "PreToolUse" },
-    "post": { "event": "PostToolUse" },
-    "stop-tracked": { "event": "Stop" },
-    "stop-mutex": { "event": "Stop" }
+    "pre-bash": {
+      "event": "PreToolUse"
+    },
+    "pre-edit": {
+      "event": "PreToolUse"
+    },
+    "pre-search": {
+      "event": "PreToolUse"
+    },
+    "post": {
+      "event": "PostToolUse"
+    },
+    "stop-tracked": {
+      "event": "Stop"
+    },
+    "stop-mutex": {
+      "event": "Stop"
+    }
   },
   "guards": {
     "no-shell-ui-control": {
@@ -202,6 +226,12 @@
       "order": 80,
       "function": "guard_jargon",
       "contract": "final-answer"
+    },
+    "project-language": {
+      "lane": "pre-bash",
+      "order": 47,
+      "function": "guard_project_language",
+      "contract": "tool-call"
     }
   }
 }

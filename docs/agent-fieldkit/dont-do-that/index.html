@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.91</span>
+							<span class="meta-fact">2.0.92</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -113,6 +113,7 @@
 <li><code>plugin-mutation</code>: gates the Claude and Codex plugin commands that change which code the machine loads, being install, uninstall, disable, and marketplace add or remove. Updating or enabling an already installed plugin is ordinary agent work and stays ungated. A gated command reaches the operator through the host's own permission prompt (PreToolUse <code>permissionDecision: &quot;ask&quot;</code>, which shows the exact pending command) in the modes that still show one; in every other mode and on hosts without an ask channel it is denied, with <code>DD_PLUGIN_MUTATION=asked</code> named as the prefix to re-run with once the operator has asked for that exact change. Claude, Codex.</li>
 <li><code>pr-discipline</code>: blocks weak <code>gh pr create</code> / <code>gh pr edit</code> titles and template or tooling-attribution bodies. Claude, Codex.</li>
 <li><code>dash-bash</code>: denies Bash commands containing a real em-dash or en-dash before any side effect occurs. Claude, Codex.</li>
+<li><code>project-language</code>: denies an inline Python, Ruby or JavaScript program in a project whose manifests name other languages. Claude, Codex.</li>
 <li><code>followup</code>: blocks <code>gh api</code> bodies that quietly defer work without <code>Bewust uitgesteld:</code>. Claude, Codex.</li>
 </ul>
 <p>PreToolUse file-edit denies unclear code edits:</p>
@@ -152,6 +153,8 @@
 <p>Denies a Bash command with an <code>rm</code> whose arguments expand a variable without the <code>${VAR:?}</code> guard or a command substitution, such as <code>rm -f $D/*.png</code>. An empty variable or substitution would widen the path, so Claude Code asks the operator for permission and an unattended session waits until the prompt auto-denies. Single-quoted and escaped text, comments and heredoc bodies are data and pass. An <code>rm</code> counts as the first word of a command, also after <code>then</code>, <code>do</code>, <code>sudo</code> or <code>xargs</code>, and behind <code>find -exec</code>. Pass condition: write each variable as <code>&quot;${D:?}&quot;</code>, assign a substitution to a guarded variable first, or use a literal path. Append <code># allow-rm-var</code> when a bare variable is intended. Claude only, because the prompt comes from Claude Code's permission check.</p>
 <h3 id="no-remote"><code>no-remote</code></h3>
 <p>Denies <code>git push</code> when the current repo has no configured remote, or when the push names a remote that is not configured. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code> before checking remotes, then falls back to the hook cwd. Pass condition: add or choose a configured remote through the operator-approved route, or keep the work local.</p>
+<h3 id="project-language"><code>project-language</code></h3>
+<p>Denies a Bash command that hands an interpreter its program inline (<code>python3 -c</code>, a <code>python3 -</code> heredoc, <code>node -e</code>, <code>ruby -e</code>, or a bare interpreter reading stdin) when the project's manifests, from the command's directory up to the git toplevel, name only other languages. A <code>python3</code> heredoc in a repository with <code>go.mod</code> is the typical case: the helper belongs in Go, where it can become a test, a <code>cmd</code> tool or the feature itself. Running an existing script file is a tool invocation and passes, as do directories without any manifest and projects that also declare the interpreter's language. The guard follows a leading <code>cd &lt;path&gt; &amp;&amp;</code>. Pass condition: write the helper in the project's language, or shape JSON with <code>jq</code>; append <code># other-language: &lt;reason&gt;</code> only when the step has no route in that language at all.</p>
 <h3 id="no-remote-create"><code>no-remote-create</code></h3>
 <p>Denies forge-side remote creation through <code>gh repo create</code> and <code>gh repo fork</code>. Creating account-bound state cannot be fully undone because names, audit events, notifications, and visibility mistakes may already have existed. Pass condition: the latest user turn explicitly approves the same forge action, or the operator creates it through the active host. Local <code>git remote add</code> and <code>git remote set-url</code> configuration is allowed; the separate push policy still governs whether anything may be published.</p>
 <h3 id="no-worktree-deploy"><code>no-worktree-deploy</code></h3>

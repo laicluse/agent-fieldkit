@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.92] - 2026-11-04
+
+### Added
+
+- The project-language guard blocks an inline Python, Ruby or JavaScript program (`python3 -c`, a heredoc, `node -e`) in a project whose manifests name other languages, such as a `python3` heredoc in a repository with `go.mod`. Write the helper in the project's language or shape JSON with `jq`; append `# other-language: <reason>` only when no route in that language exists. Claude, Codex.
+
 ## [v2.0.89] - 2026-10-29
 
 ### Added

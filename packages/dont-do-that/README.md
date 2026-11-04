@@ -65,6 +65,7 @@ PreToolUse Bash denies invalid or risky command attempts before they run:
 - `pr-discipline`: blocks weak `gh pr create` / `gh pr edit` titles and
   template or tooling-attribution bodies. Claude, Codex.
 - `dash-bash`: denies Bash commands containing a real em-dash or en-dash before any side effect occurs. Claude, Codex.
+- `project-language`: denies an inline Python, Ruby or JavaScript program in a project whose manifests name other languages. Claude, Codex.
 - `followup`: blocks `gh api` bodies that quietly defer work without
   `Bewust uitgesteld:`. Claude, Codex.
 
@@ -137,6 +138,10 @@ push names a remote that is not configured. The guard follows a leading
 `cd <path> &&` before checking remotes, then falls back to the hook cwd. Pass
 condition: add or choose a configured remote through the operator-approved
 route, or keep the work local.
+
+### `project-language`
+
+Denies a Bash command that hands an interpreter its program inline (`python3 -c`, a `python3 -` heredoc, `node -e`, `ruby -e`, or a bare interpreter reading stdin) when the project's manifests, from the command's directory up to the git toplevel, name only other languages. A `python3` heredoc in a repository with `go.mod` is the typical case: the helper belongs in Go, where it can become a test, a `cmd` tool or the feature itself. Running an existing script file is a tool invocation and passes, as do directories without any manifest and projects that also declare the interpreter's language. The guard follows a leading `cd <path> &&`. Pass condition: write the helper in the project's language, or shape JSON with `jq`; append `# other-language: <reason>` only when the step has no route in that language at all.
 
 ### `no-remote-create`
 

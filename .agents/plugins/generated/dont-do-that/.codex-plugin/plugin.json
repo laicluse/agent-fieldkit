@@ -1,6 +1,6 @@
 {
   "name": "dont-do-that",
-  "version": "2.0.91+codex.hooks.2",
+  "version": "2.0.92+codex.hooks.2",
   "description": "Guardrail hooks plus explicit commands: /duh executes the previous proposal, /just-a-question keeps a turn read-only, /not-your-monkey inspects visual work, and /then defers a prompt until the current turn ends. Supports Claude Code and Codex.",
   "author": {
     "name": "local"
