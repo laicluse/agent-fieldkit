@@ -53,7 +53,7 @@
 						<p class="lede">One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.11</span>
+							<span class="meta-fact">2.0.12</span>
 							<span class="meta-fact">2 skills</span>
 						</div>
 					</div>
@@ -121,7 +121,7 @@
 <p><code>supported=auto</code> uses the target name as the detector when <code>detect=</code> is omitted. <code>circus build</code>, <code>circus check</code>, and <code>circus diff</code> skip inactive targets; <code>circus list</code> shows why they were skipped.</p>
 <h2 id="native-hook-lifecycle-probe">Native hook lifecycle probe</h2>
 <p>Run <code>python3 packages/circus/test/native-hook-lifecycle.py</code> to exercise Codex CLI 0.166.0 with a disposable <code>CODEX_HOME</code>, a local test marketplace and a local mock Responses server. It checks real PreToolUse denial, approved between-turn updates, restart and resume, and the active-turn failures caused by both explicit installation and automatic local source discovery from another process. <code>--adapter-template</code> compares an older adapter; <code>--native</code> tests a bare bundled command; <code>--user-runtime</code> tests a standalone script registered as a user hook. It uses no account credentials or model service and cleans up its temporary installation. Approval writes affect only disposable test hooks. The probe refuses other CLI versions and does not test approval UI or same-version replacement.</p>
-<p>The native lifecycle probe is a diagnostic, not an implementation of safe updates during active turns. <a href="docs/hook-lifecycle.md">Hook lifecycle findings</a> record the reproducible comparison, positive supported behavior, source references, trust differences and delivery limitations.</p>
+<p>The native lifecycle probe is a diagnostic, not an implementation of safe updates during active turns. The source report <code>packages/circus/docs/hook-lifecycle.md</code> records the reproducible comparison, positive supported behavior, source references, trust differences and delivery limitations.</p>
 				</article>
 				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#three-levels">Three Levels</a></li><li><a href="#usage">Usage</a></li><li><a href="#add-an-agent">Add an Agent</a></li><li><a href="#native-hook-lifecycle-probe">Native hook lifecycle probe</a></li></ol></nav>
 			</section>
