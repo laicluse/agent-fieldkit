@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise native plugin updates using a disposable home and local mock model."""
 import http.server
+import argparse
 import json
 import os
 from pathlib import Path
@@ -8,6 +9,7 @@ import queue
 import subprocess
 import tempfile
 import threading
+import time
 
 
 class Client:
@@ -50,18 +52,30 @@ class Client:
                 return result
 
 
-def probe():
+def assert_user_stop_completed(events):
+    runs = [e['params']['run'] for e in events if e.get('method') == 'hook/completed']
+    stops = [r for r in runs if r['eventName'] == 'stop' and r['source'] == 'user']
+    assert len(stops) == 1 and stops[0]['status'] == 'completed', events
+    assert all(r['status'] != 'failed' for r in runs), events
+    assert not any(entry['kind'] == 'error' for r in runs for entry in r['entries']), events
+    assert not any(e.get('method') == 'error' for e in events), events
+
+
+def probe(adapter_template, user_runtime=False):
     version = subprocess.run(['codex', '--version'], capture_output=True, text=True, check=True).stdout.strip()
     if version != 'codex-cli 0.166.0':
         raise RuntimeError(f'This version-specific diagnostic requires codex-cli 0.166.0; found {version}')
     print(version, flush=True)
     requested, release = threading.Event(), threading.Event()
+    request_tool, denial_received = threading.Event(), threading.Event()
     class Model(http.server.BaseHTTPRequestHandler):
         def log_message(self, *args):
             pass
 
         def do_POST(self):
-            self.rfile.read(int(self.headers.get('Content-Length', 0)))
+            request = self.rfile.read(int(self.headers.get('Content-Length', 0)))
+            if b'probe denies tool execution' in request:
+                denial_received.set()
             requested.set()
             if not release.wait(30):
                 return
@@ -72,6 +86,13 @@ def probe():
                  'content': [{'type': 'output_text', 'text': 'Done.'}]}},
                 {'type': 'response.completed', 'response': {'id': 'r1',
                  'usage': {'input_tokens': 0, 'output_tokens': 0, 'total_tokens': 0}}}]
+            if request_tool.is_set():
+                request_tool.clear()
+                events[1] = {'type': 'response.output_item.done', 'item': {
+                    'type': 'function_call', 'name': 'exec_command',
+                    'call_id': 'denied-call', 'id': 'denied-item',
+                    'arguments': json.dumps({'cmd': f'touch "{tool_marker}"',
+                                             'workdir': str(root)})}}
             body = ''.join('data: ' + json.dumps(e) + '\n\n' for e in events).encode()
             self.send_response(200)
             self.send_header('Content-Type', 'text/event-stream')
@@ -95,14 +116,47 @@ def probe():
                     'source': 'local', 'path': './probe'},
                     'policy': {'installation': 'AVAILABLE'}}]}))
             log = root/'hooks.log'
+            tool_marker = root/'tool-executed'
             command = '"${PLUGIN_ROOT}/hooks/dispatch.sh"'
-            (plugin/'hooks/hooks.json').write_text(json.dumps({'hooks': {'Stop': [
-                {'hooks': [{'type': 'command', 'command': command}]}]}}))
+            if adapter_template and not user_runtime:
+                command = subprocess.run(['bash', '-c',
+                    'source "$1" help >/dev/null; codex_hook_command probe Stop \'${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh\'',
+                    'probe', str(adapter_template)], check=True, text=True,
+                    capture_output=True).stdout.strip()
+            guard = plugin/'hooks/deny.sh'
+            guard.write_text('#!/bin/sh\necho "probe denies tool execution" >&2\nexit 2\n')
+            guard.chmod(0o755)
+            guard_command = '"${PLUGIN_ROOT}/hooks/deny.sh"'
+            if adapter_template and not user_runtime:
+                guard_command = subprocess.run(['bash', '-c',
+                    'source "$1" help >/dev/null; codex_hook_command probe PreToolUse \'${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/deny.sh\'',
+                    'probe', str(adapter_template)], check=True, text=True,
+                    capture_output=True).stdout.strip()
+            (plugin/'hooks/hooks.json').write_text(json.dumps({'hooks': {
+                'Stop': [{'hooks': [{'type': 'command', 'command': command}]}],
+                'PreToolUse': [{'matcher': 'Bash', 'hooks': [
+                    {'type': 'command', 'command': guard_command}]}]}}))
+            runtime = root/'machine runtime'
+            if user_runtime:
+                runtime.mkdir()
+                (runtime/'deny.sh').write_bytes(guard.read_bytes())
+                (runtime/'deny.sh').chmod(0o755)
+                (plugin/'hooks/hooks.json').write_text('{"hooks": {}}')
+                (home/'hooks.json').write_text(json.dumps({'hooks': {
+                    'Stop': [{'hooks': [{'type': 'command',
+                                        'command': f'"{runtime}/dispatch.sh"'}]}],
+                    'PreToolUse': [{'matcher': 'Bash', 'hooks': [
+                        {'type': 'command', 'command': f'"{runtime}/deny.sh"'}]}]}}))
             def version(v):
                 (plugin/'.codex-plugin/plugin.json').write_text(json.dumps({'name': 'probe', 'version': v}))
                 entry = plugin/'hooks/dispatch.sh'
                 entry.write_text(f'#!/bin/sh\nprintf "%s\\n" "{v}" >> "{log}"\n')
                 entry.chmod(0o755)
+                if user_runtime:
+                    staged = runtime/'.dispatch-staging'
+                    staged.write_bytes(entry.read_bytes())
+                    staged.chmod(0o755)
+                    staged.replace(runtime/'dispatch.sh')
             env = dict(os.environ, CODEX_HOME=str(home))
             for key in ['OPENAI_API_KEY', 'HC_TERMINAL_ID', 'CODEX_THREAD_ID']:
                 env.pop(key, None)
@@ -127,15 +181,17 @@ enabled = true
             try:
                 def trust():
                     listing = client.call('hooks/list', {'cwds': [str(root)]})
-                    hooks = [h for d in listing['data'] for h in d['hooks'] if h.get('pluginId')]
-                    assert len(hooks) == 1, hooks
-                    hook = hooks[0]
-                    hashes = hook['currentHash'].split('/')
-                    value = {'trusted_hash': hashes[0]}
-                    if len(hashes) > 1:
-                        value['trusted_content_hash'] = hashes[1]
+                    hooks = [h for d in listing['data'] for h in d['hooks']]
+                    assert len(hooks) == 2, hooks
+                    values = {}
+                    for hook in hooks:
+                        hashes = hook['currentHash'].split('/')
+                        value = {'trusted_hash': hashes[0]}
+                        if len(hashes) > 1:
+                            value['trusted_content_hash'] = hashes[1]
+                        values[hook['key']] = value
                     client.call('config/batchWrite', {'edits': [{'keyPath': 'hooks.state',
-                        'value': {hook['key']: value}, 'mergeStrategy': 'upsert'}],
+                        'value': values, 'mergeStrategy': 'upsert'}],
                         'reloadUserConfig': True})
                 trust()
                 thread = client.call('thread/start', {'cwd': str(root), 'model': 'mock-model',
@@ -148,13 +204,79 @@ enabled = true
                 baseline = client.finish()
                 assert log.read_text().splitlines() == ['1.0.0'], baseline
                 log.unlink()
+                request_tool.set()
+                turn()
+                denied = client.finish()
+                assert denial_received.is_set(), denied
+                assert not tool_marker.exists(), 'A denied tool was executed'
+                assert log.read_text().splitlines() == ['1.0.0'], denied
+                print('PASS: approved PreToolUse denial prevents actual command execution', flush=True)
+                log.unlink()
+                if user_runtime:
+                    for v, automatic in [('1.0.1', False), ('1.0.2', True)]:
+                        requested.clear()
+                        release.clear()
+                        turn()
+                        assert requested.wait(20), 'mock model was not called'
+                        version(v)
+                        if automatic:
+                            observer = Client(env)
+                            try:
+                                observer.call('plugin/list', {'cwds': [str(root)]})
+                                old = home/'plugins/cache/lifecycle-probe/probe/1.0.1'
+                                deadline = time.monotonic() + 20
+                                while old.exists() and time.monotonic() < deadline:
+                                    observer.call('plugin/list', {'cwds': [str(root)]})
+                                    time.sleep(0.05)
+                                assert not old.exists(), 'Discovery did not activate the local source version'
+                            finally:
+                                observer.p.terminate()
+                                observer.p.wait(timeout=10)
+                        else:
+                            cli('add', 'probe@lifecycle-probe')
+                        release.set()
+                        result = client.finish()
+                        assert log.read_text().splitlines() == [v], result
+                        assert_user_stop_completed(result)
+                        print(f'PASS: user hook executes {v} during {"automatic" if automatic else "explicit"} parallel plugin update', flush=True)
+                        log.unlink()
+                    client.p.terminate()
+                    client.p.wait(timeout=10)
+                    client = Client(env)
+                    client.call('thread/resume', {'threadId': thread, 'cwd': str(root)})
+                    turn()
+                    resumed = client.finish()
+                    assert log.read_text().splitlines() == ['1.0.2'], resumed
+                    assert_user_stop_completed(resumed)
+                    print('PASS: resumed user hook executes current runtime without renewed definition approval', flush=True)
+                    return
+                version('1.0.1')
+                cli('add', 'probe@lifecycle-probe')
+                turn()
+                unapproved = client.finish()
+                assert any('hook approval required' in json.dumps(e) for e in unapproved), unapproved
+                assert not log.exists(), 'Changed bundle executed without reapproval'
+                trust()
+                turn()
+                approved = client.finish()
+                assert log.read_text().splitlines() == ['1.0.1'], approved
+                print('PASS: between-turn update selects approved 1.0.1', flush=True)
+                client.p.terminate()
+                client.p.wait(timeout=10)
+                client = Client(env)
+                client.call('thread/resume', {'threadId': thread, 'cwd': str(root)})
+                turn()
+                resumed = client.finish()
+                assert log.read_text().splitlines() == ['1.0.1', '1.0.1'], resumed
+                print('PASS: fresh app-server resumes with approved 1.0.1', flush=True)
+                log.unlink()
                 requested.clear()
                 release.clear()
                 turn()
                 assert requested.wait(20), 'mock model was not called'
-                version('1.0.1')
+                version('1.0.2')
                 cli('add', 'probe@lifecycle-probe')
-                old = home/'plugins/cache/lifecycle-probe/probe/1.0.0'
+                old = home/'plugins/cache/lifecycle-probe/probe/1.0.1'
                 print('old bundle exists:', old.exists(), flush=True)
                 release.set()
                 first = client.finish()
@@ -169,9 +291,32 @@ enabled = true
                 print('hook log:', log.read_text() if log.exists() else '(empty)', flush=True)
                 assert not old.exists()
                 assert any('No such file' in json.dumps(e) for e in first), first
-                assert log.read_text().splitlines() == ['1.0.1']
+                assert log.read_text().splitlines() == ['1.0.2']
                 assert not any('No such file' in json.dumps(e) for e in second), second
                 print('PASS: active turn fails; reapproved next turn uses the new bundle')
+                log.unlink()
+                requested.clear()
+                release.clear()
+                turn()
+                assert requested.wait(20), 'mock model was not called'
+                version('1.0.3')
+                observer = Client(env)
+                try:
+                    observer.call('plugin/list', {'cwds': [str(root)]})
+                    old = home/'plugins/cache/lifecycle-probe/probe/1.0.2'
+                    deadline = time.monotonic() + 20
+                    while old.exists() and time.monotonic() < deadline:
+                        observer.call('plugin/list', {'cwds': [str(root)]})
+                        time.sleep(0.05)
+                    assert not old.exists(), 'Discovery did not activate the local source version'
+                finally:
+                    observer.p.terminate()
+                    observer.p.wait(timeout=10)
+                release.set()
+                discovered = client.finish()
+                assert any('No such file' in json.dumps(e) for e in discovered), discovered
+                assert not log.exists(), 'The removed bundle unexpectedly executed'
+                print('PASS: parallel discovery auto-activates 1.0.3 and breaks the held turn', flush=True)
             finally:
                 release.set()
                 client.p.terminate()
@@ -182,4 +327,10 @@ enabled = true
 
 
 if __name__ == '__main__':
-    probe()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--adapter-template', type=Path,
+        default=Path(__file__).resolve().parents[1]/'templates/plugin-adapters')
+    parser.add_argument('--native', action='store_true', help='Use an unwrapped host-native command')
+    parser.add_argument('--user-runtime', action='store_true', help='Probe an approved user hook with an atomically replaced standalone script')
+    args = parser.parse_args()
+    probe(None if args.native else args.adapter_template.resolve(), args.user_runtime)

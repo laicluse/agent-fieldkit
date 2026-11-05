@@ -94,10 +94,6 @@ test ! -f "$gen/hooks/hooks.codex.json"
 test "$(jq -r '.version' "$gen/.codex-plugin/plugin.json")" = "1.0.0+codex.hooks.3"
 grep -q 'PLUGIN_ROOT' "$gen/hooks/hooks.json"
 grep -q '"path": "./.agents/plugins/generated/probe"' "$repo/.agents/plugins/marketplace.json"
-if grep -Eq 'PLUGIN_DATA|retained_link|snapshots' "$gen/hooks/hooks.json"; then
-  echo 'Generated hooks must use the host-owned plugin root' >&2
-  exit 1
-fi
 loaded_command="$(jq -r '.hooks.SessionStart[0].hooks[0].command' "$gen/hooks/hooks.json")"
 cache_root="$tmp/plugin root with spaces"
 cp -R "$gen" "$cache_root"

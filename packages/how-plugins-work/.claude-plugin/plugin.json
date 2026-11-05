@@ -1,5 +1,5 @@
 {
   "name": "how-plugins-work",
   "description": "Build and diagnose plugins, skills, and marketplaces across Claude and Codex: naming, invocation, generated adapters, sync, and installed-cache freshness.",
-  "version": "2.0.48"
+  "version": "2.0.49"
 }

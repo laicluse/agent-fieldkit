@@ -54,7 +54,7 @@ if [ "$git_dir" != "$common_dir" ]; then
 fi
 ```
 
-Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, that merge only updates the source: Codex runs a version-keyed snapshot, so future sessions see the change only after a version bump and existing-install refresh below.
+Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, integrating a changed plugin version can trigger automatic cache reconciliation during discovery. Treat that integration as activation. If uninterrupted hooks are required, retain the isolated candidate until an independently verified activation route is chosen; otherwise follow the operator's agreement for the known interruption. Omitting an explicit install does not keep that source inactive.
 
 ## Detect the Codex source mode
 
@@ -77,7 +77,7 @@ case "$codex_source" in
 esac
 ```
 
-When this check passes, integrate the candidate into that primary checkout with a bumped plugin version and regenerated Codex adapters. The listed cached version can still be stale; refresh the existing installation as described below. A local marketplace uses the canonical checkout rather than a remote upgrade. Running sessions may retain old hook paths until reload/restart.
+When this check passes and the activation boundary is verified, integrate the candidate into that primary checkout with a bumped plugin version and regenerated Codex adapters. The listed cached version can still be stale; refresh the existing installation as described below. A local marketplace uses the canonical checkout rather than a remote upgrade. Codex 0.166.0 refreshes hook sources at the next turn; an explicit or automatic update during another active turn can still remove its required bundle. A shell-only hook test does not verify this boundary; use Circus's native lifecycle probe for host behavior.
 
 ## Existing installation refresh
 
@@ -98,7 +98,7 @@ Use one concise report such as "Updated and verified in Claude and Codex: <plugi
 
 ## Fresh session check
 
-After a merge-only local Codex change, open a fresh session and invoke the changed capability. Existing sessions keep the hook and skill set loaded at session start. After an explicitly approved Claude update, the current session can pick up the new cache with `/reload-plugins`; reload alone never snapshots working-tree edits.
+After an authorized activation, verify the changed capability through its real host route. Codex 0.166.0 refreshes hook sources on the next turn; restart and resume are separate paths to test when relevant. Do not assume that hook refresh also proves skill refresh or uninterrupted active turns. After an explicitly approved Claude update, the current session can pick up the new cache with `/reload-plugins`; reload alone never snapshots working-tree edits.
 
 ## Revert
 
