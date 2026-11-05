@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.26",
+			"version": "2.0.27",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.22",
+				"version": "v2.0.27",
 				"type": "Changed",
-				"summary": "Design reasoning no longer counts a restyle of the same structure, section order and copy as a new direction."
+				"summary": "obvious checks the whole repeated surface before rewriting a label and verifies shared concepts, alignment and necessary repetition in the populated render before delivery."
 			}
 		},
 		{
@@ -706,6 +706,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
 		},
 		{
+			"plugin": "eye-of-the-beholder",
+			"packageVersion": "2.0.27",
+			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
+			"version": "v2.0.27",
+			"type": "Changed",
+			"summary": "obvious checks the whole repeated surface before rewriting a label and verifies shared concepts, alignment and necessary repetition in the populated render before delivery.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
+		},
+		{
 			"plugin": "intervision",
 			"packageVersion": "2.0.27",
 			"detailPath": "agent-fieldkit/intervision/",
@@ -713,15 +722,6 @@
 			"type": "Fixed",
 			"summary": "Peer handoffs bound response size and automatic continuation.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
-		},
-		{
-			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.26",
-			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.22",
-			"type": "Changed",
-			"summary": "Design reasoning no longer counts a restyle of the same structure, section order and copy as a new direction.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{
 			"plugin": "anger-management",

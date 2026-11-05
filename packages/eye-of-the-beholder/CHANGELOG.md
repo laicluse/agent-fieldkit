@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.27]
+
+### Changed
+
+- `obvious` checks the whole repeated surface before rewriting a label and verifies shared concepts, alignment and necessary repetition in the populated render before delivery.
+
 ## [v2.0.22]
 
 ### Changed
