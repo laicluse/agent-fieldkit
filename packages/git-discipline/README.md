@@ -9,15 +9,14 @@ message schema, wip commits, and push policy do not depend on memory.
 
 ## Installation
 
+In Codex, submit `$git-discipline:enable-git`, `$git-discipline:disable-git <reason>`, `$git-discipline:enable-discipline`, or `$git-discipline:disable-discipline` as a standalone message. The `UserPromptSubmit` hook handles these before the model runs. Mentions in prose, quoted examples, multiline messages, and extra arguments other than a lock reason do not toggle state. Existing sessions need a restart after installing this hook. Agent tools remain forbidden from changing sentinels.
+
 ```bash
 claude plugins install git-discipline@laicluse-agent-fieldkit
 codex plugin add git-discipline@laicluse-agent-fieldkit
 ```
 
-In Claude Code, the PreToolUse:Bash hooks register automatically. In Codex, the
-generated adapter ships the workflow skills and omits the Claude-only
-PreToolUse toggle/status skills. To catch commits made outside Claude Code, or
-from Codex, install the git-native hooks into each repo:
+Claude Code and Codex register their tool guards automatically. Codex also ships the four operator toggles through `UserPromptSubmit`; the Claude-only status skill is omitted. Install the git-native hooks in each repo to protect direct terminal commits and pushes too:
 
 ```bash
 /git-discipline:install-hooks
@@ -98,11 +97,11 @@ The merge commit always has the verified default tip as first parent, the candid
 | commit-discipline | `/git-discipline:commit-discipline` | Claude, Codex | |
 | install-hooks | `/git-discipline:install-hooks` | Claude, Codex | |
 | run-spec | `/git-discipline:run-spec` | Claude, Codex | |
-| disable-session | `/git-discipline:disable-discipline` | Claude | |
-| enable-session | `/git-discipline:enable-discipline` | Claude | |
+| disable-session | `/git-discipline:disable-discipline` | Claude, Codex | |
+| enable-session | `/git-discipline:enable-discipline` | Claude, Codex | |
 | session-status | `/git-discipline:discipline-status` | Claude | |
-| disable-git | `/git-discipline:disable-git [reason]` | Claude | |
-| enable-git | `/git-discipline:enable-git` | Claude | |
+| disable-git | `/git-discipline:disable-git [reason]` | Claude, Codex | |
+| enable-git | `/git-discipline:enable-git` | Claude, Codex | |
 
 - **commit-all-the-things** inspects `git status` plus `git diff`, groups
   changes by intent (feature, fix, refactor, docs, config), and creates

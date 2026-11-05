@@ -102,3 +102,32 @@ load ../session-toggle/helpers
   [ "$status" -eq 0 ]
   [[ "$output" != *"[git-discipline/sentinel-protect]"* ]]
 }
+
+@test "operator hook replay is denied even while discipline is off" {
+  write_session_sentinel "test-session-abc"
+  run_dispatch_with_session 'bash hooks/dispatch.sh <<< '{\"hook_event_name\":\"UserPromptSubmit\"}'' "test-session-abc"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"sentinel-protect"* ]]
+}
+
+@test "direct toggle handler calls are denied" {
+  for command in 'source hooks/handlers/toggle-commands.sh' 'handle_codex_toggle_prompt payload' 'handle_toggle_commands payload' '_tc_enable_git' '_tc_disable_discipline payload'; do
+    run_dispatch_with_session "$command" "test-session-abc"
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"sentinel-protect"* ]]
+  done
+}
+
+@test "read and stage commands on toggle implementation stay available" {
+  for command in 'git add packages/git-discipline/hooks/handlers/toggle-commands.sh' 'git diff -- hooks/handlers/toggle-commands.sh' 'cat hooks/handlers/toggle-commands.sh' 'rg handle_toggle_commands'; do
+    run_dispatch_with_session "$command" "test-session-abc"
+    [ "$status" -eq 0 ]
+  done
+}
+
+@test "direct and absolute-interpreter prompt replay is denied" {
+  for command in './hooks/dispatch.sh <<< UserPromptSubmit' '/bin/bash hooks/dispatch.sh <<< UserPromptSubmit' '/bin/sh hooks/handlers/toggle-commands.sh'; do
+    run_dispatch_with_session "$command" "test-session-abc"
+    [ "$status" -eq 2 ]
+  done
+}

@@ -116,6 +116,12 @@ case "$EVENT" in
     guard_commit_body_posttool "$INPUT"
     ;;
 
+  UserPromptSubmit)
+    source "$DIR/lib/lock-info.sh"
+    source "$DIR/handlers/toggle-commands.sh"
+    handle_codex_toggle_prompt "$INPUT"
+    ;;
+
   UserPromptExpansion)
     source "$DIR/lib/lock-info.sh"
     source "$DIR/handlers/toggle-commands.sh"

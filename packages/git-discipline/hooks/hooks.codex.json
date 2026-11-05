@@ -4,7 +4,10 @@
       {
         "matcher": "startup|resume",
         "hooks": [
-          { "type": "command", "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/install-runtime.sh" }
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/install-runtime.sh"
+          }
         ]
       }
     ],
@@ -12,7 +15,10 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh" }
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh"
+          }
         ]
       }
     ],
@@ -20,7 +26,20 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh" }
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/dispatch.sh"
+          }
         ]
       }
     ]

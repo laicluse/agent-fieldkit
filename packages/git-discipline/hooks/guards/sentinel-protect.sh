@@ -10,6 +10,13 @@ guard_sentinel_protect() {
   command=$(jq -r '.tool_input.command // empty' <<< "$input" 2>/dev/null)
   [[ -z "$command" ]] && return 0
 
+  local handler_call='(^|[;&|[:space:]])(source|\.|([^;&|[:space:]]*/)?(bash|sh|zsh))[[:space:]]+[^;&|[:space:]]*toggle-commands\.sh'
+  local function_call='(^|[;&|])[[:space:]]*(handle_codex_toggle_prompt|handle_toggle_commands|_tc_enable_git|_tc_disable_git|_tc_enable_discipline|_tc_disable_discipline)([[:space:];&|]|$)'
+  local dispatch_call='(^|[;&|[:space:]])[^;&|[:space:]]*dispatch\.sh([[:space:]]|$)'
+  if [[ "$command" =~ $handler_call ]] || [[ "$command" =~ $function_call ]] || { [[ "$command" =~ $dispatch_call ]] && { [[ "$command" == *UserPromptSubmit* ]] || [[ "$command" == *UserPromptExpansion* ]]; }; }; then
+    dd_emit_deny "sentinel-protect" "Operator toggle hooks cannot be invoked or replayed by an agent tool. Submit the standalone toggle as an operator prompt instead."
+  fi
+
   if [[ "$command" != *git-discipline-disabled* ]] && [[ "$command" != *git-discipline-deny* ]]; then
     return 0
   fi

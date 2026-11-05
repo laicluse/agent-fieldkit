@@ -24,6 +24,7 @@ exec bats \
   packages/git-discipline/test/wip-gate/*.bats \
   packages/git-discipline/test/template-fill/*.bats \
   packages/git-discipline/test/cross-layer/*.bats \
+  packages/git-discipline/test/toggle-commands/*.bats \
   packages/git-discipline/test/session-toggle/*.bats \
   packages/git-discipline/test/repo-deny/*.bats \
   packages/git-discipline/test/sentinel-protect/*.bats \

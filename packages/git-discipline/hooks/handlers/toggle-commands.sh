@@ -114,3 +114,19 @@ _tc_disable_discipline() {
   touch "$sentinel"
   dd_emit_deny "disable-discipline" "Guards disabled for this session ($sentinel). Run /git-discipline:enable-discipline to restore."
 }
+
+handle_codex_toggle_prompt() {
+  local input="$1" parsed cwd
+  parsed=$(jq -ce '
+    select(.session_id | type == "string")
+    | select(.session_id | test("^[A-Za-z0-9_-]+$"))
+    | (.prompt // "") as $prompt
+    | select(($prompt | contains("\n") or contains("\r")) | not)
+    | ($prompt | capture("^[/$]git-discipline:(?<name>enable-git|disable-git|enable-discipline|disable-discipline)(?:[ \t]+(?<args>[^\\r\\n]+))?[ \t]*$")) as $command
+    | select($command.name == "disable-git" or (($command.args // "") | test("^[ \t]*$")))
+    | . + {command_name: ("git-discipline:" + $command.name), command_args: ($command.args // "")}
+  ' <<< "$input" 2>/dev/null) || return 0
+  cwd=$(jq -er '.cwd | select(type == "string" and length > 0)' <<< "$input") || return 0
+  cd "$cwd" || dd_emit_deny "toggle-cwd" "The submitted working directory is not accessible: $cwd"
+  handle_toggle_commands "$parsed"
+}
