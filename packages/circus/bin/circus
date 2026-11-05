@@ -255,6 +255,7 @@ cmd_plugins() {
     check) cmd_plugins_check "$@" ;;
     diff)  cmd_plugins_diff "$@" ;;
     versions) cmd_plugins_versions "$@" ;;
+    hooks) /usr/bin/python3 "$(dirname "${BASH_SOURCE[0]}")/../lib/hook_runtime.py" "$@" ;;
     ""|-h|--help|help)
       cat <<'EOF'
 circus plugins - generate agent-specific plugin adapters from a Claude marketplace
@@ -263,6 +264,7 @@ circus plugins - generate agent-specific plugin adapters from a Claude marketpla
   circus plugins check [repo]          report drift between Claude source and Codex targets
   circus plugins diff [repo]           show what build would change
   circus plugins versions <mode> [repo]  check or update marketplace plugin versions
+  circus plugins hooks sync [options]   publish independent user-level hooks
 EOF
       ;;
     *) die "unknown plugins command: $sub" ;;

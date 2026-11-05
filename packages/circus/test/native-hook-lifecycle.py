@@ -61,7 +61,7 @@ def assert_user_stop_completed(events):
     assert not any(e.get('method') == 'error' for e in events), events
 
 
-def probe(adapter_template, user_runtime=False):
+def probe(adapter_template, user_runtime=False, managed_runtime=False):
     version = subprocess.run(['codex', '--version'], capture_output=True, text=True, check=True).stdout.strip()
     if version != 'codex-cli 0.166.0':
         raise RuntimeError(f'This version-specific diagnostic requires codex-cli 0.166.0; found {version}')
@@ -212,6 +212,136 @@ enabled = true
                 assert log.read_text().splitlines() == ['1.0.0'], denied
                 print('PASS: approved PreToolUse denial prevents actual command execution', flush=True)
                 log.unlink()
+                if managed_runtime:
+                    managed = root/'managed runtime'
+                    manager = Path(__file__).resolve().parents[1]/'lib/hook_runtime.py'
+                    managed.mkdir()
+                    (managed/'dispatch.py').write_bytes(manager.read_bytes())
+                    def synchronize(approve=False, interrupt=False, pending=False):
+                        command = ['/usr/bin/python3', str(manager), 'sync', '--codex-home', str(home),
+                            '--runtime-root', str(managed), '--plugin', 'probe@lifecycle-probe']
+                        if approve:
+                            command.append('--approve-reviewed')
+                        if interrupt:
+                            injected = '''import importlib.util,sys
+path=sys.argv[1]
+spec=importlib.util.spec_from_file_location('publisher',path)
+module=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+original=module.Rpc.call
+def call(self,method,params):
+    result=original(self,method,params)
+    if method=='config/batchWrite':
+        raise RuntimeError('simulated interruption after config activation')
+    return result
+module.Rpc.call=call
+sys.argv=[path]+sys.argv[2:]
+module.main()
+'''
+                            command = ['/usr/bin/python3', '-c', injected, str(manager)] + command[2:]
+                        result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=30)
+                        if pending:
+                            assert result.returncode != 0 and 'await reviewed activation' in result.stderr, result.stderr
+                            return
+                        if interrupt:
+                            assert result.returncode != 0 and 'simulated interruption' in result.stderr, result.stderr
+                            pending = json.loads((managed/'managed.json').read_text())
+                            assert len(pending['masks']) == 2 and pending['pendingEdits'], pending
+                            return
+                        assert result.returncode == 0, result.stdout + result.stderr
+                    requested.clear()
+                    release.clear()
+                    turn()
+                    assert requested.wait(20), 'mock model was not called'
+                    synchronize(approve=True, interrupt=True)
+                    synchronize()
+                    assert 'pendingEdits' not in json.loads((managed/'managed.json').read_text())
+                    print('PASS: interrupted native activation resumes with mask ownership intact', flush=True)
+                    client.call('config/batchWrite', {'edits': [], 'reloadUserConfig': True})
+                    version('1.0.1')
+                    cli('add', 'probe@lifecycle-probe')
+                    synchronize()
+                    release.set()
+                    migrated = client.finish()
+                    assert_user_stop_completed(migrated)
+                    assert log.read_text().splitlines() == ['1.0.1'], migrated
+                    print('PASS: held turn migrates, shared bundle is removed, exactly one user hook completes', flush=True)
+                    log.unlink()
+                    request_tool.set()
+                    denial_received.clear()
+                    turn()
+                    denied = client.finish()
+                    assert denial_received.is_set() and not tool_marker.exists(), denied
+                    assert log.read_text().splitlines() == ['1.0.1'], denied
+                    print('PASS: published guard prevents actual command execution after migration', flush=True)
+                    log.unlink()
+                    requested.clear()
+                    release.clear()
+                    turn()
+                    assert requested.wait(20), 'mock model was not called'
+                    version('1.0.2')
+                    observer = Client(env)
+                    try:
+                        observer.call('plugin/list', {'cwds': [str(root)]})
+                        old = home/'plugins/cache/lifecycle-probe/probe/1.0.1'
+                        deadline = time.monotonic() + 20
+                        while old.exists() and time.monotonic() < deadline:
+                            observer.call('plugin/list', {'cwds': [str(root)]})
+                            time.sleep(0.05)
+                        assert not old.exists(), 'Discovery did not replace the bundle'
+                        synchronize()
+                    finally:
+                        observer.p.terminate()
+                        observer.p.wait(timeout=10)
+                    release.set()
+                    updated = client.finish()
+                    assert_user_stop_completed(updated)
+                    assert log.read_text().splitlines() == ['1.0.2'], updated
+                    print('PASS: native automatic update and complete runtime publication preserve one hook execution', flush=True)
+                    client.p.terminate()
+                    client.p.wait(timeout=10)
+                    client = Client(env)
+                    client.call('thread/resume', {'threadId': thread, 'cwd': str(root)})
+                    log.unlink()
+                    turn()
+                    resumed = client.finish()
+                    assert_user_stop_completed(resumed)
+                    assert log.read_text().splitlines() == ['1.0.2'], resumed
+                    print('PASS: resumed conversation uses the published runtime', flush=True)
+                    installed_hooks = home/'plugins/cache/lifecycle-probe/probe/1.0.2/hooks/hooks.json'
+                    declarations = json.loads(installed_hooks.read_text())
+                    declarations['hooks']['Stop'][0]['hooks'].append({'type': 'command', 'command': 'echo pending'})
+                    installed_hooks.write_text(json.dumps(declarations))
+                    synchronize(pending=True)
+                    masks = json.loads((managed/'managed.json').read_text())['masks']
+                    assert len(masks) == 3, masks
+                    log.unlink()
+                    turn()
+                    pending_turn = client.finish()
+                    assert_user_stop_completed(pending_turn)
+                    assert log.read_text().splitlines() == ['1.0.2'], pending_turn
+                    print('PASS: pending new declaration stays masked while reviewed hook runs once', flush=True)
+                    declarations['hooks']['PreToolUse'][0]['hooks'][0]['timeout'] = 24
+                    installed_hooks.write_text(json.dumps(declarations))
+                    synchronize(pending=True)
+                    log.unlink()
+                    request_tool.set()
+                    denial_received.clear()
+                    turn()
+                    pending_guard = client.finish()
+                    assert denial_received.is_set() and not tool_marker.exists(), pending_guard
+                    assert log.read_text().splitlines() == ['1.0.2'], pending_guard
+                    print('PASS: changed guard metadata keeps its approved implementation blocking during review', flush=True)
+                    client.call('config/batchWrite', {'edits': [{'keyPath': 'plugins."probe@lifecycle-probe".enabled',
+                        'value': False, 'mergeStrategy': 'replace'}], 'reloadUserConfig': True})
+                    synchronize()
+                    log.unlink()
+                    turn()
+                    disabled = client.finish()
+                    assert not log.exists(), disabled
+                    assert_user_stop_completed(disabled)
+                    print('PASS: disabling the plugin stops its already registered callback without reapproval', flush=True)
+                    return
                 if user_runtime:
                     for v, automatic in [('1.0.1', False), ('1.0.2', True)]:
                         requested.clear()
@@ -332,5 +462,6 @@ if __name__ == '__main__':
         default=Path(__file__).resolve().parents[1]/'templates/plugin-adapters')
     parser.add_argument('--native', action='store_true', help='Use an unwrapped host-native command')
     parser.add_argument('--user-runtime', action='store_true', help='Probe an approved user hook with an atomically replaced standalone script')
+    parser.add_argument('--managed-runtime', action='store_true', help='Verify real runtime publication and bundled-to-user migration during a held turn')
     args = parser.parse_args()
-    probe(None if args.native else args.adapter_template.resolve(), args.user_runtime)
+    probe(None if args.native else args.adapter_template.resolve(), args.user_runtime, args.managed_runtime)

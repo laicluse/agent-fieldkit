@@ -55,7 +55,7 @@ if [ "$git_dir" != "$common_dir" ]; then
 fi
 ```
 
-Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, integrating a changed plugin version can trigger automatic cache reconciliation during discovery. Treat that integration as activation. If uninterrupted hooks are required, retain the isolated candidate until an independently verified activation route is chosen; otherwise follow the operator's agreement for the known interruption. Omitting an explicit install does not keep that source inactive.
+Never run either host's `marketplace add` with a linked-worktree path. Finish candidate verification there and integrate it through the repository flow. For an already-registered local Codex marketplace, integrating a changed plugin version can trigger automatic cache reconciliation during discovery. Treat that integration as activation. For uninterrupted local hook execution, verify Circus's independent user-hook deployment before updating the shared cache: complete publication, real tool denial, exactly one execution per event, active-turn migration and resume. Select the technical means within the authorized task; preserve externally consequential approval boundaries. Omitting an explicit install does not keep that source inactive.
 
 ## Detect the Codex source mode
 
