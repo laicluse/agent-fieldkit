@@ -1,5 +1,9 @@
 # Circus changelog
 
+## Unreleased
+
+- Codex hooks use the installed plugin root directly. Removed runtime snapshots and sibling-version recovery, which did not prevent the reproduced missing-bundle trust failure in Codex 0.166.0. Missing-entry denial and warning behavior is preserved. Plugin updates during active work remain subject to the host lifecycle.
+
 ## [v2.0.7]
 
 ### Fixed

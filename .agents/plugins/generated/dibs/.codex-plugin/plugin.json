@@ -1,6 +1,6 @@
 {
   "name": "dibs",
-  "version": "2.0.79+codex.hooks.2",
+  "version": "2.0.79+codex.hooks.3",
   "description": "Claim, check, and release directory occupancy locks so coding agents do not mutate the same checkout concurrently. Vendor-neutral CLI with live-holder protection and stale-lock recovery.",
   "author": {
     "name": "local"

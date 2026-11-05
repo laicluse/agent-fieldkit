@@ -1,0 +1,71 @@
+---
+- name: Install independent Codex hook execution
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    hook_runtime_root: "{{ ansible_env.HOME }}/.laicluse/hooks/runtime"
+    hook_runtime_codex_home: "{{ ansible_env.HOME }}/.codex"
+    hook_runtime_codex: "{{ ansible_env.HOME }}/.local/bin/codex"
+    hook_runtime_label: com.laicluse.coding-agent-hooks
+    hook_runtime_path: "{{ ansible_env.HOME }}/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    hook_runtime_plugins: []
+    hook_runtime_approve_reviewed: false
+  tasks:
+    - name: Require an explicit selection of existing plugins
+      ansible.builtin.assert:
+        that:
+          - ansible_system == 'Darwin'
+          - hook_runtime_plugins | length > 0
+          - hook_runtime_plugins | unique | length == hook_runtime_plugins | length
+    - name: Create private hook runtime storage
+      ansible.builtin.file:
+        path: "{{ hook_runtime_root }}"
+        state: directory
+        mode: '0700'
+    - name: Install the hook publisher and dispatcher
+      ansible.builtin.copy:
+        src: ../lib/hook_runtime.py
+        dest: "{{ hook_runtime_root }}/dispatch.py"
+        mode: '0600'
+    - name: Construct the selected plugin arguments
+      ansible.builtin.set_fact:
+        hook_runtime_plugin_args: "{{ ['--plugin'] | product(hook_runtime_plugins) | list | flatten }}"
+    - name: Publish hooks and apply reviewed registrations
+      ansible.builtin.command:
+        argv: "{{ ['/usr/bin/python3', hook_runtime_root + '/dispatch.py', 'sync', '--codex-home', hook_runtime_codex_home, '--runtime-root', hook_runtime_root, '--codex', hook_runtime_codex] + hook_runtime_plugin_args + (['--approve-reviewed'] if hook_runtime_approve_reviewed | bool else []) }}"
+      environment:
+        PATH: "{{ hook_runtime_path }}"
+      register: hook_runtime_sync
+      changed_when: (hook_runtime_sync.stdout | from_json).definitionsChanged or (hook_runtime_sync.stdout | from_json).runtimeChanged
+    - name: Install periodic publication for the selected runtimes
+      ansible.builtin.template:
+        src: hook-runtime.plist.j2
+        dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/{{ hook_runtime_label }}.plist"
+        mode: '0600'
+      register: hook_runtime_launchagent
+    - name: Check the current publisher job
+      ansible.builtin.command:
+        argv: [launchctl, print, "gui/{{ ansible_user_uid }}/{{ hook_runtime_label }}"]
+      register: hook_runtime_job
+      changed_when: false
+      failed_when: false
+      check_mode: false
+    - name: Unload changed publisher configuration
+      ansible.builtin.command:
+        argv: [launchctl, bootout, "gui/{{ ansible_user_uid }}/{{ hook_runtime_label }}"]
+      when: hook_runtime_launchagent.changed and hook_runtime_job.rc == 0
+    - name: Wait for the previous publisher job to exit
+      ansible.builtin.command:
+        argv: [launchctl, print, "gui/{{ ansible_user_uid }}/{{ hook_runtime_label }}"]
+      register: hook_runtime_unloaded
+      changed_when: false
+      failed_when: false
+      until: hook_runtime_unloaded.rc != 0
+      retries: 20
+      delay: 1
+      when: hook_runtime_launchagent.changed and hook_runtime_job.rc == 0
+    - name: Load the selected hook publisher
+      ansible.builtin.command:
+        argv: [launchctl, bootstrap, "gui/{{ ansible_user_uid }}", "{{ ansible_env.HOME }}/Library/LaunchAgents/{{ hook_runtime_label }}.plist"]
+      when: hook_runtime_launchagent.changed or hook_runtime_job.rc != 0

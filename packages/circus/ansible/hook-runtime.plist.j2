@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>{{ hook_runtime_label }}</string>
+<key>ProgramArguments</key><array>
+<string>/usr/bin/python3</string><string>{{ hook_runtime_root | e }}/dispatch.py</string><string>sync</string>
+<string>--codex-home</string><string>{{ hook_runtime_codex_home | e }}</string>
+<string>--runtime-root</string><string>{{ hook_runtime_root | e }}</string>
+<string>--codex</string><string>{{ hook_runtime_codex | e }}</string>
+{% for plugin in hook_runtime_plugins %}
+<string>--plugin</string><string>{{ plugin | e }}</string>
+{% endfor %}
+</array>
+<key>EnvironmentVariables</key><dict><key>HOME</key><string>{{ ansible_env.HOME | e }}</string><key>PATH</key><string>{{ hook_runtime_path | e }}</string></dict>
+<key>StartInterval</key><integer>60</integer><key>RunAtLoad</key><true/>
+<key>ProcessType</key><string>Background</string><key>Nice</key><integer>10</integer>
+<key>StandardOutPath</key><string>{{ hook_runtime_root | e }}/sync.out.log</string>
+<key>StandardErrorPath</key><string>{{ hook_runtime_root | e }}/sync.err.log</string>
+</dict></plist>

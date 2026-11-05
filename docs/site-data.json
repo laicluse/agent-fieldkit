@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.48",
+			"version": "2.0.50",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -611,7 +611,7 @@
 		},
 		{
 			"name": "circus",
-			"version": "2.0.9",
+			"version": "2.0.13",
 			"category": "feedback",
 			"summary": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
 			"support": [
@@ -662,7 +662,7 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.48",
+			"packageVersion": "2.0.50",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
 			"version": "v2.0.45",
 			"type": "Changed",
@@ -733,6 +733,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/anger-management/CHANGELOG.md"
 		},
 		{
+			"plugin": "circus",
+			"packageVersion": "2.0.13",
+			"detailPath": "agent-fieldkit/circus/",
+			"version": "v2.0.7",
+			"type": "Fixed",
+			"summary": "Plugin builds preserve project skills under .agents/skills/.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/circus/CHANGELOG.md"
+		},
+		{
 			"plugin": "autonomous",
 			"packageVersion": "2.0.12",
 			"detailPath": "agent-fieldkit/autonomous/",
@@ -776,15 +785,6 @@
 			"type": "Fixed",
 			"summary": "Codex speech now survives the tool call.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/saysay/CHANGELOG.md"
-		},
-		{
-			"plugin": "circus",
-			"packageVersion": "2.0.9",
-			"detailPath": "agent-fieldkit/circus/",
-			"version": "v2.0.7",
-			"type": "Fixed",
-			"summary": "Plugin builds preserve project skills under .agents/skills/.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/circus/CHANGELOG.md"
 		},
 		{
 			"plugin": "drydry",
