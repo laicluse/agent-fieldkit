@@ -9,7 +9,7 @@ message schema, wip commits, and push policy do not depend on memory.
 
 ## Installation
 
-In Codex, submit `$git-discipline:enable-git`, `$git-discipline:disable-git <reason>`, `$git-discipline:enable-discipline`, or `$git-discipline:disable-discipline` as a standalone message. The `UserPromptSubmit` hook handles these before the model runs. Mentions in prose, quoted examples, multiline messages, and extra arguments other than a lock reason do not toggle state. Existing sessions need a restart after installing this hook. Agent tools remain forbidden from changing sentinels.
+In Codex, submit `$git-discipline:enable-git`, `$git-discipline:disable-git <reason>`, `$git-discipline:enable-discipline`, or `$git-discipline:disable-discipline` as a standalone message. The `UserPromptSubmit` hook handles these before the model runs. Mentions in prose, quoted examples, multiline messages, and extra arguments other than a lock reason do not toggle state. After installation, review and trust the new or modified Git Discipline hooks in Codex `/hooks`, then start a fresh session. Installing the plugin does not grant hook trust. Agent tools remain forbidden from changing sentinels.
 
 ```bash
 claude plugins install git-discipline@laicluse-agent-fieldkit
