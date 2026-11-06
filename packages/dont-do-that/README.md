@@ -61,6 +61,7 @@ PreToolUse Bash denies invalid or risky command attempts before they run:
 - `no-worktree-deploy`: blocks `ansible-playbook` from a git worktree unless
   read-only flags are used. Claude, Codex.
 - `no-worktree-marketplace`: blocks any linked git worktree passed as a persistent Claude or Codex marketplace source, regardless of the command's current directory; primary checkouts and remote sources remain valid. Claude, Codex.
+- `no-shared-dependency-link`: blocks `ln -s` of a `node_modules`, `.venv` or `vendor/bundle` directory, because the checkout would run another checkout's packages and an install through the link rewrites that checkout. Claude, Codex.
 - `plugin-mutation`: gates the Claude and Codex plugin commands that change which code the machine loads, being install, uninstall, disable, and marketplace add or remove. Updating or enabling an already installed plugin is ordinary agent work and stays ungated. A gated command reaches the operator through the host's own permission prompt (PreToolUse `permissionDecision: "ask"`, which shows the exact pending command) in the modes that still show one; in every other mode and on hosts without an ask channel it is denied, with `DD_PLUGIN_MUTATION=asked` named as the prefix to re-run with once the operator has asked for that exact change. Claude, Codex.
 - `pr-discipline`: blocks weak `gh pr create` / `gh pr edit` titles and
   template or tooling-attribution bodies. Claude, Codex.

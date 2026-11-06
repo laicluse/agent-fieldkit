@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.92</span>
+							<span class="meta-fact">2.0.93</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -110,6 +110,7 @@
 <li><code>no-remote-create</code>: blocks <code>gh repo create</code> and <code>gh repo fork</code>. Claude, Codex.</li>
 <li><code>no-worktree-deploy</code>: blocks <code>ansible-playbook</code> from a git worktree unless read-only flags are used. Claude, Codex.</li>
 <li><code>no-worktree-marketplace</code>: blocks any linked git worktree passed as a persistent Claude or Codex marketplace source, regardless of the command's current directory; primary checkouts and remote sources remain valid. Claude, Codex.</li>
+<li><code>no-shared-dependency-link</code>: blocks <code>ln -s</code> of a <code>node_modules</code>, <code>.venv</code> or <code>vendor/bundle</code> directory, because the checkout would run another checkout's packages and an install through the link rewrites that checkout. Claude, Codex.</li>
 <li><code>plugin-mutation</code>: gates the Claude and Codex plugin commands that change which code the machine loads, being install, uninstall, disable, and marketplace add or remove. Updating or enabling an already installed plugin is ordinary agent work and stays ungated. A gated command reaches the operator through the host's own permission prompt (PreToolUse <code>permissionDecision: &quot;ask&quot;</code>, which shows the exact pending command) in the modes that still show one; in every other mode and on hosts without an ask channel it is denied, with <code>DD_PLUGIN_MUTATION=asked</code> named as the prefix to re-run with once the operator has asked for that exact change. Claude, Codex.</li>
 <li><code>pr-discipline</code>: blocks weak <code>gh pr create</code> / <code>gh pr edit</code> titles and template or tooling-attribution bodies. Claude, Codex.</li>
 <li><code>dash-bash</code>: denies Bash commands containing a real em-dash or en-dash before any side effect occurs. Claude, Codex.</li>

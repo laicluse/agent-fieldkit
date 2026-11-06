@@ -232,6 +232,12 @@
       "order": 47,
       "function": "guard_project_language",
       "contract": "tool-call"
+    },
+    "no-shared-dependency-link": {
+      "lane": "pre-bash",
+      "order": 36,
+      "function": "guard_no_shared_dependency_link",
+      "contract": "tool-call"
     }
   }
 }

@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.93] - 2026-11-06
+
+### Added
+
+- The no-shared-dependency-link guard blocks `ln -s` of a `node_modules`, `.venv` or `vendor/bundle` directory, such as linking a worktree's `node_modules` to the primary checkout. The worktree would test the other checkout's packages, and an install through the link rewrites them. Install dependencies in the worktree itself; bonsai does this. Claude, Codex.
+
 ## [v2.0.92] - 2026-11-04
 
 ### Added
