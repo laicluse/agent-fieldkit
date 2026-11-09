@@ -1,6 +1,6 @@
 {
   "name": "intervision",
-  "version": "2.0.27+codex.hooks.3",
+  "version": "2.0.28+codex.hooks.3",
   "description": "Get an independent peer review of recent work or a design: Claude consults Codex, and Codex consults Claude, with explicit model choices and follow-up on disagreements.",
   "author": {
     "name": "local"

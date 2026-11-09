@@ -1,5 +1,5 @@
 {
   "name": "intervision",
   "description": "Get an independent peer review of recent work or a design: Claude consults Codex, and Codex consults Claude, with explicit model choices and follow-up on disagreements.",
-  "version": "2.0.27"
+  "version": "2.0.28"
 }
