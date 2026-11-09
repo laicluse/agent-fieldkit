@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.93</span>
+							<span class="meta-fact">2.0.94</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -135,6 +135,8 @@
 <li><code>estimate</code>: blocks effort or scope framed in hours, days, weeks, or months. Claude only.</li>
 <li><code>prefer</code>: blocks option menus handed back without a reasoned recommendation unless the options include an external irreversible gate. Claude, Codex.</li>
 <li><code>premature</code>: blocks clipped final answers without a substantive finish or waiting marker. Claude only.</li>
+<li><code>dangling-reference</code>: blocks referring to &quot;punt 4&quot; or &quot;points 2 to 4&quot; without describing those items in the same answer. Claude, Codex.</li>
+<li><code>repair-gate</code>: blocks a <code>🚦</code> that asks for a go to repair something inside the assignment. Claude, Codex.</li>
 <li><code>left-behind</code>: blocks naming a found defect and leaving it unfixed. Claude, Codex.</li>
 <li><code>verify</code>: blocks asking the operator to verify something the agent can check itself. Claude, Codex.</li>
 <li><code>duh</code>: blocks giving runnable recipes instead of running the action. Claude, Codex.</li>
@@ -222,6 +224,10 @@
 <p>The guard stands aside when the menu includes external irreversible state such as remote creation, remote attachment, push, deploy, publish, production, DNS, or shared infrastructure; those are operator gates, not preference-reflex cases.</p>
 <h3 id="premature"><code>premature</code></h3>
 <p>Blocks Stop when the last assistant message does not end with a question and does not end with <code>🏁</code> (finished) or <code>🚦</code> (blocked on an operator decision) plus a substantive sentence of at least 40 non-space, non-emoji characters with a sentence terminator. Committed work is finished whether or not it is pushed, so it closes with <code>🏁</code>; a push or merge nobody ordered is not a reason for <code>🚦</code>, and a gate named once is not repeated every turn. Pass condition: finish with a real completed-work sentence, finish with a real waiting-on-a-decision sentence, or keep writing.</p>
+<h3 id="dangling-reference"><code>dangling-reference</code></h3>
+<p>Blocks Stop when the answer refers to numbered items (&quot;punt 4&quot;, &quot;punten 2 tot en met 4&quot;, &quot;points 1, 2 and 4&quot;, &quot;items 3-5&quot;) that are not listed as <code>N.</code> or <code>N)</code> in the same answer. The reader does not scroll back to find them. Code, quotes, URLs and version numbers such as <code>2.4</code> are ignored. Pass condition: describe each item in one sentence, or drop the reference.</p>
+<h3 id="repair-gate"><code>repair-gate</code></h3>
+<p>Blocks Stop when the <code>🚦</code> line, or the line after it, asks for a go to repair, fix, herstellen or corrigeren something, unless it also names a gate the rules own: push, merge, deploy, publishing, spending or review costs, or another external irreversible action. A repair inside the assignment is verified and carried out without asking. Pass condition: do the repair, or name the real gate.</p>
 <h3 id="left-behind"><code>left-behind</code></h3>
 <p>Blocks Stop when the answer names a defect it found and leaves it: &quot;niet in deze PR&quot;, &quot;heb ik laten liggen&quot;, &quot;niet aangeraakt&quot;, &quot;not in this PR&quot;. A defect found in the work at hand gets fixed in that work, and an unexplained finding gets investigated. Quoted spans and code are ignored. Pass condition: fix or investigate it, or start the sentence with <code>Bewust uitgesteld:</code> and name the gate the agent cannot pass itself, such as a host change that needs a go. What happens to parts that coding agents built is the agent's judgement, not a gate to hand to the operator.</p>
 <h3 id="verify"><code>verify</code></h3>

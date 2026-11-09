@@ -97,6 +97,10 @@ Stop guards block weak final answers and make the agent continue:
   unless the options include an external irreversible gate. Claude, Codex.
 - `premature`: blocks clipped final answers without a substantive finish or
   waiting marker. Claude only.
+- `dangling-reference`: blocks referring to "punt 4" or "points 2 to 4" without
+  describing those items in the same answer. Claude, Codex.
+- `repair-gate`: blocks a `🚦` that asks for a go to repair something inside
+  the assignment. Claude, Codex.
 - `left-behind`: blocks naming a found defect and leaving it unfixed. Claude,
   Codex.
 - `verify`: blocks asking the operator to verify something the agent can check
@@ -345,6 +349,23 @@ it closes with `🏁`; a push or merge nobody ordered is not a reason for `🚦`
 a gate named once is not repeated every turn. Pass condition: finish with a real
 completed-work sentence, finish with a real waiting-on-a-decision sentence, or
 keep writing.
+
+### `dangling-reference`
+
+Blocks Stop when the answer refers to numbered items ("punt 4", "punten 2 tot
+en met 4", "points 1, 2 and 4", "items 3-5") that are not listed as `N.` or
+`N)` in the same answer. The reader does not scroll back to find them. Code,
+quotes, URLs and version numbers such as `2.4` are ignored. Pass condition:
+describe each item in one sentence, or drop the reference.
+
+### `repair-gate`
+
+Blocks Stop when the `🚦` line, or the line after it, asks for a go to repair,
+fix, herstellen or corrigeren something, unless it also names a gate the rules
+own: push, merge, deploy, publishing, spending or review costs, or another
+external irreversible action. A repair inside the assignment is verified and
+carried out without asking. Pass condition: do the repair, or name the real
+gate.
 
 ### `left-behind`
 

@@ -22,6 +22,13 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.94] - 2026-11-09
+
+### Added
+
+- The dangling-reference guard blocks a final answer that refers to "punt 4", "points 2 to 4" or a similar item number without describing those items in the same answer; the reader does not scroll back. Claude, Codex.
+- The repair-gate guard blocks a 🚦 that asks for a go to repair something inside the assignment. Verify and carry out the repair; keep 🚦 for an operator choice or a gate such as push, merge, spending or an external action. Claude, Codex.
+
 ## [v2.0.93] - 2026-11-06
 
 ### Added

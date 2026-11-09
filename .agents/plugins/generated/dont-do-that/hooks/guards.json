@@ -238,6 +238,18 @@
       "order": 36,
       "function": "guard_no_shared_dependency_link",
       "contract": "tool-call"
+    },
+    "dangling-reference": {
+      "lane": "stop-mutex",
+      "order": 42,
+      "function": "guard_dangling_reference",
+      "contract": "final-answer"
+    },
+    "repair-gate": {
+      "lane": "stop-mutex",
+      "order": 43,
+      "function": "guard_repair_gate",
+      "contract": "final-answer"
     }
   }
 }
