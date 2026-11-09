@@ -1,23 +1,6 @@
----
-name: learn
-user-invocable: false
-description: >-
-  Internal drydry research task that enriches duplication-checklist seeds from external sources.
-allowed-tools:
-  - Agent
-  - WebSearch
-  - WebFetch(*)
-  - Read
-  - Write
-  - Bash(date *)
-  - Bash(mkdir *)
-  - Bash(ls *)
-effort: high
----
-
 # Learn
 
-The online research pass behind the drydry plugin. Enriches the checklist vocabulary by reading what the broader community has written about parallel-paths detection in the last year, then writes checklist-enrichment proposals into the project's `.drydry/learnings/` directory (the path is the caller's choice; defaults are described below). Not user-invocable; the operator types `/drydry:drydry learn <topic>` and the orchestrator routes here.
+The online research pass behind the drydry plugin. Enriches the checklist vocabulary by reading what the broader community has written about parallel-paths detection in the last year, then writes checklist-enrichment proposals to the resolved `learnings_dir` from [artifact storage](../artifact-storage.md). The operator types `/drydry:drydry learn <topic>` and the orchestrator routes here.
 
 The premise: the coding-agent world is running into the same kind of duplication, because agents systematically generate fresh code over reusing existing code. Standing still means falling behind. A periodic `learn` pass keeps the checklist seeds and the verifier conventions current.
 
@@ -27,17 +10,17 @@ Caller supplies through `args`:
 
 - **`topic`**: optional topic narrowing (e.g., "swift-app-intents", "rails-service-objects", "react-form-state", "design-token-drift"). When absent, `learn` runs a broad sweep across all five tracks.
 - **`depth`**: optional `quick` / `normal` / `deep`. Default `normal`. Quick is one round per track; deep is two rounds plus a contrarian pass.
-- **`since`**: optional date stamp (`2025-01-01`). Filters search queries to the named window. Default is the date of the most recent file in the learnings directory, or "last 12 months" when the folder is empty.
-- **`learnings_dir`**: optional path override for the output directory. Default is `<project_root>/.drydry/learnings/`. The caller passes this when the project is not the right scope (for example, a one-off cross-project research pass).
+- **`since`**: optional date stamp (`2025-01-01`). Filters search queries to the named window. Default is the date of the most recent completed proposal for the same topic in the resolved directory, or "last 12 months" when there is no match.
+- **`learnings_dir`**: optional path override for the output directory. Resolve it once using the storage contract; the default is `${LAICLUSE_HOME:-$HOME/.laicluse}/drydry/learnings/`. Use the same directory for prior-date lookup and output, and pass it to later checklist calls.
 
 ## Output contract
 
-A markdown file at `<project_root>/.drydry/learnings/<YYYY-MM-DD>-<topic-or-broad>.md` with three sections:
+A markdown file at `<learnings_dir>/<unique-run-id>-<topic-or-broad>.md` with three sections:
 
 ```markdown
 ## Detection method chosen
 
-<scope, tracks, agents, search windows, sources crawled>
+<topic, completion state, resolved learnings_dir, scope, tracks, agents, search windows, sources crawled>
 
 ## New patterns
 
@@ -63,7 +46,7 @@ Proposed seed domain: <ios-swiftui | rails | react-typescript | markdown-prose |
 <any new verifier tactic or anti-pattern the research surfaced>
 ```
 
-The file is **not** auto-merged into the seed templates in `drydry:checklist`. The operator reads the file and decides which proposals to fold in.
+The file is **not** auto-merged into the seed templates in `checklist`. The operator reads the file and decides which proposals to fold in.
 
 ## Workflow
 
@@ -72,9 +55,9 @@ Use a three-round research shape narrowed to the drydry domain.
 ### 1. PREPARE
 
 1. Date: `date +%Y-%m-%d`.
-2. `mkdir -p "${LAICLUSE_HOME:-$HOME/.laicluse}/drydry/learnings"`.
-3. Read the most recent file in `<project_root>/.drydry/learnings/` to set the default `since` window.
-4. Read `packages/drydry/skills/checklist/SKILL.md` for the current seed templates (so the research does not re-propose existing patterns).
+2. Resolve `learnings_dir` using the storage contract and create that exact directory. If persistence is unavailable, continue the research and return the full proposal inline, explicitly noting that it was not saved for later seed consumption.
+3. Read the most recent completed proposal for this topic (or broad) in `<learnings_dir>/` to set the default `since` window. Allocate a unique output filename without overwriting an existing proposal.
+4. Read the sibling [checklist task](checklist.md) for the current seed templates (so the research does not re-propose existing patterns).
 5. Read the current `args.topic` and decide which of the five tracks are in scope.
 
 ### 2. RESEARCH
@@ -136,7 +119,7 @@ For the patterns surviving round 2, run one stronger contrarian review with this
 
 ### 3. WRITE
 
-Synthesise the surviving candidates into the output file at `<project_root>/.drydry/learnings/<date>-<topic>.md`. Group by proposed seed domain. Include the Detection method paragraph (Chapter 8) so the operator can reproduce the research.
+Synthesise the surviving candidates into the output file at `<learnings_dir>/<unique-run-id>-<topic-or-broad>.md`. Group by proposed seed domain. Mark incomplete output as such and mark it completed only after synthesis is finished. Include the Detection method paragraph (Chapter 8) so the operator can reproduce the research.
 
 ### 4. NOTIFY
 
@@ -144,7 +127,7 @@ Return to the caller: count of new pattern proposals, by-domain breakdown, path 
 
 ## Rules
 
-- **No auto-merge of seed templates.** This skill writes proposals to disk; the seed templates in `drydry:checklist` are never mutated by `learn`. The reader on the next audit run is `drydry:checklist` itself: it globs the learnings directory and appends `robust`-confidence patterns to the seed it generates (see that skill's workflow step 2.5). `probable` and `fragile` proposals stay write-only until the operator promotes them.
+- **No auto-merge of seed templates.** This task writes proposals to disk; the seed templates in `checklist` are never mutated by `learn`. The reader on the next audit run is the `checklist` task: it reads the same resolved `learnings_dir` and globs its Markdown files and appends `robust`-confidence patterns to the seed it generates (see that skill's workflow step 2.5). `probable` and `fragile` proposals stay write-only until the operator promotes them.
 - **Citation hygiene.** Every pattern carries at least two sources with one-line takeaways. A pattern with one weak source goes into the `## Parking lot` section, not into `## New patterns`.
 - **Signature-first.** A candidate without a grep-friendly signature is dropped. Drydry's downstream `sweep` needs the signature; an unproveable pattern is decoration.
 - **Token budget.** Quick depth is one round per track (5 passes); normal is round 1 + round 2 (~10 passes); deep is rounds 1+2+3 (~14 passes including one stronger contrarian review). The skill logs the budget choice in `## Detection method chosen` so the operator can reproduce.

@@ -1,25 +1,14 @@
----
-name: triage
-description: >-
-  Internal drydry classifier that buckets duplication findings by convergence cost.
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash(rg *)
-  - Bash(grep *)
-  - Bash(find *)
----
-
 # Triage
 
-The three-bucket triage pass behind the drydry audit pipeline. Takes a findings list (output of `drydry:sweep`) and classifies each finding into cheap-and-safe / partial / needs-design with a one-line convergence cost. Not user-invocable.
+The three-bucket triage pass behind the drydry audit pipeline. Takes a findings list (output of `sweep`) and classifies each finding into cheap-and-safe / partial / needs-design with a one-line convergence cost.
+
+Read-only task: return the classification inline; do not write files.
 
 ## Input contract
 
 Caller supplies through `args`:
 
-- **`findings`**: the markdown structure returned by `drydry:sweep`, either inline or as a path to a markdown file.
+- **`findings`**: the markdown structure returned by `sweep`, either inline or as a path to a markdown file.
 - **`scope`**: the directory or package the findings were collected over. Used to estimate convergence cost (count of call-sites, presence of public exports).
 
 ## Output contract
@@ -95,4 +84,4 @@ Convergence path: document the verdict and the constraint in the findings artefa
 
 - **The bucket is the verdict; the cost is the evidence for the verdict.** A `cheap-and-safe` classification with a cost of "30 files touched, interface migration" is contradictory; promote it to `partial` or `needs-design`.
 - **No fourth bucket.** Chapter 5 is explicit: three buckets, no `later`, no `backlog`, no `polish next sprint`. Either fix it (cheap-and-safe), park the design question (partial), or document the by-design constraint (needs-design).
-- **Triage is not approval.** This skill does not decide whether the operator will fix the finding; it decides how much room the convergence needs. The caller acts on the triage.
+- **Triage is not approval.** This task does not decide whether the operator will fix the finding; it decides how much room the convergence needs. The caller acts on the triage.

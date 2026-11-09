@@ -93,7 +93,7 @@
 		"codexPackages": 21,
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
-		"skillEntries": 93,
+		"skillEntries": 87,
 		"hookFiles": 79
 	},
 	"install": {
@@ -348,7 +348,7 @@
 		},
 		{
 			"name": "drydry",
-			"version": "2.0.7",
+			"version": "2.0.8",
 			"category": "review",
 			"summary": "Finds parallel paths in code, prose, and process, then converges the duplication that actually drifts.",
 			"support": [
@@ -359,13 +359,13 @@
 			"detailPath": "agent-fieldkit/drydry/",
 			"sourcePath": "packages/drydry",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/drydry",
-			"skillCount": 8,
+			"skillCount": 2,
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.0",
+				"version": "v2.0.8",
 				"type": "Breaking",
-				"summary": "Marketplace identity moved to Fieldkit."
+				"summary": "Two skill-picker entries."
 			}
 		},
 		{
@@ -788,11 +788,11 @@
 		},
 		{
 			"plugin": "drydry",
-			"packageVersion": "2.0.7",
+			"packageVersion": "2.0.8",
 			"detailPath": "agent-fieldkit/drydry/",
-			"version": "v2.0.0",
+			"version": "v2.0.8",
 			"type": "Breaking",
-			"summary": "Marketplace identity moved to Fieldkit.",
+			"summary": "Two skill-picker entries.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/drydry/CHANGELOG.md"
 		},
 		{

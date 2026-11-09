@@ -1,32 +1,13 @@
----
-name: sweep
-user-invocable: false
-description: >-
-  Internal drydry detection pass over a known scope and checklist; returns verified duplication findings only.
-allowed-tools:
-  - Agent
-  - Read
-  - Glob
-  - Grep
-  - Bash(date *)
-  - Bash(rg *)
-  - Bash(grep *)
-  - Bash(find *)
-  - Bash(wc *)
-  - Bash(ls *)
-effort: high
----
-
 # Sweep
 
-The detection pass behind the drydry audit pipeline. It runs an independent pass over a named scope against a named checklist and returns a structured findings list with a runnable verifier per finding. Not user-invocable; the operator types `/drydry:drydry` and the orchestrator routes here.
+The detection pass behind the drydry audit pipeline. It runs an independent pass over a named scope against a named checklist and returns a structured findings list with a runnable verifier per finding. The operator types `/drydry:drydry` and the orchestrator routes here.
 
 ## Input contract
 
 Caller supplies through `args`:
 
 - **`scope`**: a directory, a glob, a package root, or a comma-separated list of files. Mandatory.
-- **`checklist`**: either an inline markdown blob (the six-to-ten patterns), or a path to a markdown file containing one. Mandatory. Use `drydry:checklist` upstream when the caller does not already have one.
+- **`checklist`**: either an inline markdown blob (the six-to-ten patterns), or a path to a markdown file containing one. Mandatory. Use `checklist` upstream when the caller does not already have one.
 - **`exclude`**: optional comma-separated list of paths to exclude (vendor, generated, `.bundle/`, `node_modules/`, build outputs). Default excludes are inferred from `.gitignore` plus a built-in list.
 - **`max_findings_per_pattern`**: optional cap, default 5. Prevents one rampant pattern from drowning out the rest.
 - **`max_files`**: optional cap on the file count walked before the skill downsamples by language. Default 2000.
@@ -58,7 +39,7 @@ Patterns with zero findings appear as `_no findings under this pattern_`. Patter
 
 2. **Size the scope.** Run `find <scope> -type f | wc -l` to gauge file count after excludes. When the count exceeds the caller's `max_files` (default 2000; the caller passes a different value when their project warrants it), downsample by language: keep all the language's primary source files, drop tests and fixtures unless the checklist explicitly names them. Log the downsample decision so the caller can verify.
 
-3. **Build the detector prompt.** Use the template in this skill's body (see "Detector prompt template" below). Pass:
+3. **Build the detector prompt.** Use the template in this task's body (see "Detector prompt template" below). Pass:
    - The checklist verbatim.
    - The scope file list (or a glob the detector can expand itself).
    - The verifier-burden rule (every finding carries a runnable verifier).
@@ -74,7 +55,7 @@ Patterns with zero findings appear as `_no findings under this pattern_`. Patter
    - Cap each pattern at `max_findings_per_pattern`.
    - Keep `## Checklist gaps` separately.
 
-5b. **Run each verifier in this skill's own context.** For every finding that survived step 5, execute its `verifier_command` here in sweep, not relying on the detector's claim that it ran. Drop the finding if the command exits non-zero, produces no matching output, or returns lines that do not contain both `file_a` and `file_b`. This is the only check with teeth; the detector's self-report is not enough.
+5b. **Run each verifier in this task's own context.** For every finding that survived step 5, execute its `verifier_command` here in sweep, not relying on the detector's claim that it ran. Drop the finding if the command exits non-zero, produces no matching output, or returns lines that do not contain both `file_a` and `file_b`. This is the only check with teeth; the detector's self-report is not enough.
 
 6. **Return.** Hand back the filtered markdown structure to the caller. Do not write to disk; the caller owns the artefact.
 
@@ -136,5 +117,5 @@ whose verifier does not run cleanly.
 - **Verifier-burden is mandatory.** Hits without a runnable verifier are dropped at filter-time even if the detector reported them.
 - **Drift hypothesis is mandatory.** A hit without a Chapter 4 sentence is dropped.
 - **Off-list hits go to `## Checklist gaps`, not into the findings.** Chapter 3 keeps the audit deterministic.
-- **The orchestrator owns the artefact.** This skill returns markdown to the caller and writes nothing to disk.
+- **The orchestrator owns the artefact.** This task returns markdown to the caller and writes nothing to disk.
 - **Token honesty.** When the scope is too large to walk thoroughly, downsample and log the decision instead of pretending the walk was complete.

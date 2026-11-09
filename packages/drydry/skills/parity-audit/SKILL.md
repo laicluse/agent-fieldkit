@@ -10,12 +10,18 @@ allowed-tools:
   - Bash(git status *)
   - Bash(git log *)
   - Bash(git diff *)
+  - Bash(git remote get-url *)
+  - Bash(git rev-parse *)
+  - Bash(shasum *)
+  - Bash(sha256sum *)
   - Bash(date *)
   - Bash(ls *)
   - Bash(find *)
   - Bash(grep *)
   - Bash(rg *)
   - Bash(wc *)
+  - Bash(mkdir *)
+  - Bash(mktemp *)
   - Bash(python3 *)
   - Read
   - Write
@@ -48,6 +54,8 @@ One mechanical rule carries the audit, and it needs no domain knowledge:
 This is why the work fans out: a reviewer who has never seen the domain can apply it, in any language, and the answers are comparable across reviewers.
 
 Injected closures are the usual mechanism. A closure works for dependency inversion, but it lets each caller assemble its own subset of callbacks, so you can half-implement the set and nothing complains.
+
+Resolve destination and retention using [artifact storage](../drydry/references/artifact-storage.md) before creating run state. Keep baselines and re-mine results together outside the checkout unless a project document is explicitly intended. Preserve the prior baseline when recording a comparison run. Within a run, phase 7 compares against the phase-4 artifact; mark the completed phase-7 re-mine result as the baseline for the next run and retain both records.
 
 ## The seven phases
 

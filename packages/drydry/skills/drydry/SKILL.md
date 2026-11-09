@@ -9,12 +9,20 @@ allowed-tools:
   - Bash(git status *)
   - Bash(git log *)
   - Bash(git diff *)
+  - Bash(git remote get-url *)
+  - Bash(git rev-parse *)
+  - Bash(shasum *)
+  - Bash(sha256sum *)
   - Bash(date *)
   - Bash(ls *)
   - Bash(find *)
   - Bash(grep *)
   - Bash(rg *)
   - Bash(wc *)
+  - Bash(mkdir *)
+  - Bash(mktemp *)
+  - WebSearch
+  - WebFetch(*)
   - Read
   - Write
   - Edit
@@ -49,7 +57,7 @@ run does not mark the version as seen. In agents that do not set
 
 # Drydry Orchestrator
 
-"Is dit een dubbeling?" becomes a discipline with a runbook, not a vibe-check. This skill is the **short** of the plugin's two user-invocable surfaces: you are looking at something concrete and want to know whether it already exists. It routes between two modes and dispatches the six agent-only sub-skills that do the substance.
+"Is dit een dubbeling?" becomes a discipline with a runbook, not a vibe-check. This skill is the **short** of the plugin's two user-invocable surfaces: you are looking at something concrete and want to know whether it already exists. It routes between two modes and dispatches the six internal tasks listed below. They are supporting documents, not independently discoverable skills.
 
 The **long** surface is `drydry:parity-audit`: a named background process that sweeps every entry point in a codebase, compares what each does after the shared step, and re-runs itself to prove the divergence moved. Reach for that one when the question is not "is this duplicated?" but "do all the ways to do this actually do the same thing?".
 
@@ -63,7 +71,7 @@ Two modes. The orchestrator picks one before doing any work. The decision rules 
 |---|-------------------------------|----------|
 | 1 | `args` contains `quick` or `mode: quick` | quick mode |
 | 2 | `args` contains `audit` or `mode: audit` | audit mode |
-| 3 | `args` contains `sweep` / `checklist` / `triage` / `learn` / `upstream` / `instructions`, or `skill: <name>` | dispatch that sub-skill directly with the remaining args as its input |
+| 3 | `args` contains `sweep` / `checklist` / `triage` / `learn` / `upstream` / `instructions`, or `skill: <name>` | dispatch that internal task directly with the remaining args as its input |
 | 4 | `args` or context paste names two snippets, one file, or a transcript excerpt | quick mode |
 | 5 | `args` or context names a directory, package, or project root | audit mode |
 | 6 | Operator phrasing is ad-hoc ("is dit dubbel?", "did I just write this?", "are these the same?") | quick mode |
@@ -118,11 +126,11 @@ Output is inline conversational, no markdown file. Broader review gates do not r
 
 ## Audit mode
 
-Full eight-chapter discipline. Produces a `<scope>-drydry-findings-<checklist-version>.md` artefact in the current working directory. The independent contrarian second-pass on rejects (Chapter 7) is mandatory. Broader panel review is **deferred to a follow-up decision** (see Side quests).
+Full eight-chapter discipline. Resolve destination and retention using [artifact storage](references/artifact-storage.md) before creating files. Audit mode retains the checklist and findings together outside the checkout by default; an explicitly disposable audit delivers their full content inline before scratch cleanup. The independent contrarian second-pass on rejects (Chapter 7) is mandatory. Broader panel review is **deferred to a follow-up decision** (see Side quests).
 
 **The drydry plugin is a methodology guide, not a pattern enforcer.** It owns the eight-chapter discipline (drift hypothesis, verifier-burden, allow-list scoping, Type-4 framing, contrarian second-pass, two-fates discipline, three-bucket triage, detection-method-as-artefact); it does **not** own a canned list of what duplication looks like in your codebase. The calling session has the codebase in front of it; the plugin does not. The session formulates the checklist for the audit; the plugin disciplines how that checklist is used.
 
-**`drydry:learn` is not part of the audit pipeline.** It is a one-off enrichment that updates the discipline's external vocabulary (research write-ups, framework-specific conventions) and is invoked explicitly via `/drydry:drydry learn <topic>`. Audit mode does not trigger a fresh `learn` itself.
+**`learn` is not part of the audit pipeline.** It is a one-off enrichment that updates the discipline's external vocabulary (research write-ups, framework-specific conventions) and is invoked explicitly via `/drydry:drydry learn <topic>`. Audit mode does not trigger a fresh `learn` itself.
 
 Steps:
 
@@ -140,9 +148,9 @@ Steps:
    - **Off-template patterns specific to this project.** What patterns does *this* codebase have that no general checklist would name? Discovery heuristic: skim the project's top-level directories and `git log --oneline | head -200` for nouns that recur in commit subjects without belonging to a standard framework concept (a custom routing convention, a homegrown event bus, a specific data-shaping idiom, a domain-specific synchronisation primitive). Each recurring noun is a candidate pattern; ask "if two files implemented this concept differently, would drift hurt?" and add a checklist entry when the answer is yes.
    - **Parallel orchestrations.** Which domain actions in this codebase have two or more entry points (AppIntent `perform`, controller-action, background job, store-method, CLI command and HTTP endpoint, scheduled job and UI button) that each orchestrate their own preflight stack of domain steps above a shared leaf-call? For each candidate, list the steps every entry point runs before reaching the leaf and lay the lists next to each other. Drift hypothesis: what specifically breaks when these stacks drift? "A bit messy" is the rejected register; the failure modes that earn the finding are auth-strategy asymmetry between branches (one logs in upfront, the other relies on a lazy retry inside a session-retry wrapper), re-implemented cleanup that is applied on one side and never propagates to the other, missed edge-case handling on one branch that the other branch carries, and week-by-week drift where a fix in one entry point is silently absent in the other. Verifier signature: a single `rg "<shared-leaf-call-name>"` across the scope must surface every entry point; more than one hit inside the same domain action is the signal. Verifier-burden discipline (Chapter 2) stands but is honestly scaled here: the grep proves both sides exist and is a hard gate, the drift hypothesis carries the weight of misalignment because the misalignment lives in reading the N call-site environments, not in the grep alone. A heavier drift hypothesis is allowed to buy a second reading step, on the condition that both sides of the pair are anchored by a single greppable leaf-call name. Illustrative shape (Swift / iOS): a `StartSessionIntentHelper.executeStartSession` (AppIntent path) and a `SessionEngine.startResidentSession` (in-app accessory bar) both end in `SessionAction.beginSegments(...)`; the AppIntent branch relies on a `withSessionRetry` wrapper around the leaf, the in-app branch does `ensureLoggedIn()` upfront, and a fix to one side's preflight stack stays invisible to the other, so one path surfaces a "session expired" notification to the user while the other path succeeds. The full anonymised fixture lives at `packages/drydry/test/orchestrations/fixture-orchestration-pair.md`.
 
-   The calling session writes the checklist as markdown in the same shape `drydry:sweep` consumes: six to ten items, each with `pattern_id`, short title, one-paragraph description, grep-friendly signatures. Stamp the checklist with `v<YYYY-MM-DD>T<HH>-<MM>` from `date +%Y-%m-%dT%H-%M` so the audit artefact can cite it (Chapter 8). Six to ten is a sharpness target, not a hard rule. **Minimum evidence before declaring step 2 complete: every formulation prompt is either answered with at least one checklist entry or explicitly logged as "not applicable to this scope" with a one-sentence reason.** Skipping a prompt silently is the failure mode step 2.5's contrarian pass is designed to catch; declaring "no applicable patterns" is allowed but only with the reason on record. **Hard ban: the calling session does not load a canned template from `drydry:checklist` by default.** The whole point of this step is that the session has read the codebase and shaped the list to what is actually there. A canned template is the opposite of that work.
+   The calling session writes the checklist as markdown in the same shape `sweep` consumes: six to ten items, each with `pattern_id`, short title, one-paragraph description, grep-friendly signatures. Stamp the checklist with `v<YYYY-MM-DD>T<HH>-<MM>` from `date +%Y-%m-%dT%H-%M` so the audit artefact can cite it (Chapter 8). Six to ten is a sharpness target, not a hard rule. **Minimum evidence before declaring step 2 complete: every formulation prompt is either answered with at least one checklist entry or explicitly logged as "not applicable to this scope" with a one-sentence reason.** Skipping a prompt silently is the failure mode step 2.5's contrarian pass is designed to catch; declaring "no applicable patterns" is allowed but only with the reason on record. **Hard ban: the calling session does not load a canned template from `checklist` by default.** The whole point of this step is that the session has read the codebase and shaped the list to what is actually there. A canned template is the opposite of that work.
 
-   When the operator explicitly asks for inspiration (`/drydry:drydry audit ... seed-from <domain>`, or the calling session lacks priors on the domain idiom), step 2 may dispatch `drydry:checklist` to fetch the seed examples for that domain (iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, design tokens, generic) as a *starting point only*. The session still reads the codebase and rewrites or extends the seed before passing it to sweep; the seed becomes vocabulary, not verdict. Without the explicit `seed-from` keyword or operator request, checklist is not invoked.
+   When the operator explicitly asks for inspiration (`/drydry:drydry audit ... seed-from <domain>`, or the calling session lacks priors on the domain idiom), step 2 may dispatch `checklist` to fetch the seed examples for that domain (iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, design tokens, generic) as a *starting point only*. The session still reads the codebase and rewrites or extends the seed before passing it to sweep; the seed becomes vocabulary, not verdict. Without the explicit `seed-from` keyword or operator request, checklist is not invoked.
 
 2.5. **Contrarian pass on the checklist (mandatory).** A calling session that formulated its own list has every incentive to declare it complete. The author of the checklist is the author of any miss. Drydry closes that gap by running an independent contrarian pass against the formulated checklist *before* sweep runs. This is the analog of Chapter 7's contrarian-on-rejects, applied to the checklist itself, and it is the structural floor under the Formulation step: the worse the calling session's priors (a rover with thin scope context, a session new to the domain idiom, a session under turn-budget pressure), the more value the contrarian recovers.
 
@@ -168,26 +176,26 @@ Steps:
 
    This step is non-negotiable. A calling session that produced its own checklist without a contrarian pass is a template-canning audit waiting to happen: discipline on the discipline of how findings are handled, no discipline on what the discipline is allowed to see.
 
-3. **Dispatch `drydry:sweep`.** Pass the scope and the (now contrarian-reviewed) session-formulated checklist. The sub-skill uses an independent detection pass with verifier-burden discipline; hits without a runnable verifier are dropped. The sub-skill returns a findings list with tuples `(pattern_id, file_a:line_a, file_b:line_b, drift_hypothesis, verifier_command)`.
+3. **Dispatch `sweep`.** Pass the scope and the (now contrarian-reviewed) session-formulated checklist. The task uses an independent detection pass with verifier-burden discipline; hits without a runnable verifier are dropped. The task returns a findings list with tuples `(pattern_id, file_a:line_a, file_b:line_b, drift_hypothesis, verifier_command)`.
 
-4. **Dispatch `drydry:triage`.** Pass the findings list. The sub-skill classifies each finding into cheap-and-safe / partial / needs-design with a one-line cost note.
+4. **Dispatch `triage`.** Pass the findings list. The task classifies each finding into cheap-and-safe / partial / needs-design with a one-line cost note.
 
-5. **Apply Chapter 7 (contrarian second-pass on rejects).** For every finding the sub-skill classified as `needs-design` (which includes the `by-design` sub-case where convergence is blocked by a framework or external API), run a second independent contrarian pass with this brief: "is this rejection hollow?" A reject is final only if the contrarian independently confirms it as hollow.
+5. **Apply Chapter 7 (contrarian second-pass on rejects).** For every finding the task classified as `needs-design` (which includes the `by-design` sub-case where convergence is blocked by a framework or external API), run a second independent contrarian pass with this brief: "is this rejection hollow?" A reject is final only if the contrarian independently confirms it as hollow.
 
-6. **(Optional) Dispatch `drydry:upstream`.** When the operator named a framework (Rails, Devise, SwiftUI, React) or when the project has a recognisable manifest (Gemfile, Package.swift, package.json), include a cross-toolbox section: does the operator have helpers that duplicate framework functionality?
+6. **(Optional) Dispatch `upstream`.** When the operator named a framework (Rails, Devise, SwiftUI, React) or when the project has a recognisable manifest (Gemfile, Package.swift, package.json), include a cross-toolbox section: does the operator have helpers that duplicate framework functionality?
 
-7. **(Optional) Dispatch `drydry:instructions`.** When the project has agent instruction files (`AGENTS.md`, `CLAUDE.md`, or equivalents), include an instruction-file audit section: do the instructions themselves cause DRY violations?
+7. **(Optional) Dispatch `instructions`.** When the project has agent instruction files (`AGENTS.md`, `CLAUDE.md`, or equivalents), include an instruction-file audit section: do the instructions themselves cause DRY violations?
 
-8. **Write the artefact, including the checklist itself.** Two files are written in the current working directory:
+8. **Write the artefact, including the checklist itself.** Write both files at the destination resolved before the audit, following the storage contract:
 
-   - `<scope>-drydry-checklist-<version>.md` contains the session-formulated checklist after the step 2.5 contrarian merge, verbatim. The checklist is its own artefact, not an ephemeral intermediate. Persisting it lets a second audit run on the same scope diff against the first checklist (catching vocabulary drift between developers and between weeks), and lets a reader of the findings file see exactly what the sweep was allowed to look for.
-   - `<scope>-drydry-findings-<checklist-version>.md` carries two sections. `## Detection method chosen` records the checklist version, who formulated the checklist, the formulation prompts that produced entries versus the ones logged "not applicable", the contrarian's verdict on step 2.5, the sub-skills invoked, and the verifier conventions (Chapter 8). `## Findings` has one subsection per checklist item with the verified hits, drift hypotheses, triage, and contrarian verdict if applicable. Add `## Checklist gaps` when the sweep surfaced "interesting but off-list" hits (Chapter 3 keeps them out of the findings proper). Add `## Side quests` when out-of-scope follow-ups surfaced.
+   - `<scope>-drydry-checklist-<version>.md` contains the session-formulated checklist after the step 2.5 contrarian merge, verbatim. Keep it for the same lifetime as the findings so a comparison run can detect vocabulary drift and a reader can see exactly what the sweep was allowed to look for.
+   - `<scope>-drydry-findings-<checklist-version>.md` carries two sections. `## Detection method chosen` records the checklist version, who formulated the checklist, the formulation prompts that produced entries versus the ones logged "not applicable", the contrarian's verdict on step 2.5, the tasks invoked, and the verifier conventions (Chapter 8). `## Findings` has one subsection per checklist item with the verified hits, drift hypotheses, triage, and contrarian verdict if applicable. Add `## Checklist gaps` when the sweep surfaced "interesting but off-list" hits (Chapter 3 keeps them out of the findings proper). Add `## Side quests` when out-of-scope follow-ups surfaced.
 
    The two filenames share the version timestamp so they can be read together; two audits against the same scope in the same session produce two pairs and do not silently overwrite.
 
-9. **Report.** One short summary to the operator: scope, number of findings, triage breakdown, path to the artefact.
+9. **Report.** Summarize scope, findings and triage, linking the retained artefact. For an explicitly disposable run, deliver the complete checklist and findings inline before removing scratch files; do not report a deleted path as the result. If persistence failed, disclose that limit rather than claiming a retained artefact.
 
-The artefact is written to the project root by default, named `<scope>-drydry-findings-<checklist-version>.md` (matching step 8 above), where `<scope>` is a slug of the directory or package the audit covered. The operator decides whether to convert findings into commits, or to address them out-of-process; that decision is not the orchestrator's.
+The operator decides whether to convert findings into commits or address them out-of-process. Creating an audit report does not make it project documentation or authorize committing it.
 
 ## Skill-invoked (autonomous callers)
 
@@ -198,40 +206,42 @@ Detection: `args` carries explicit mission context as a single prose string (not
 Rules in this mode:
 
 - **Never ask the operator.** The "ask once" fallback in the No-signal section does not apply. If the implicit signals are weak, pick a default and dispatch.
-- **Default when ambiguous:** if `args` references a directory, package, or multi-file scope -> audit mode; if `args` references two snippets, one file, or a transcript excerpt -> quick mode; if `args` names a sub-skill explicitly, dispatch that sub-skill directly.
+- **Default when ambiguous:** if `args` references a directory, package, or multi-file scope -> audit mode; if `args` references two snippets, one file, or a transcript excerpt -> quick mode; if `args` names a task explicitly, dispatch that internal task directly.
 - **Caller-named mode wins.** `mode: quick` or `mode: audit` in `args` (or the equivalent bare token `quick` / `audit`) bypasses inference. The Routing section above lists both forms as equivalent; either is accepted here too.
-- **Caller-named sub-skill wins.** `skill: sweep` (etc.) in `args`, or the bare token `sweep` / `checklist` / `triage` / `learn` / `upstream` / `instructions`, dispatches that sub-skill directly with the remaining args as its input.
+- **Caller-named task wins.** `skill: sweep` (etc.) in `args`, or the bare token `sweep` / `checklist` / `triage` / `learn` / `upstream` / `instructions`, dispatches that task directly with the remaining args as its input.
 - **In audit mode, the calling skill is responsible for the Formulation step.** The orchestrator does not bootstrap a checklist for autonomous callers any more than it does for human operators; the caller reads the scope and writes the checklist before dispatching sweep. Autonomous callers that want the baked seeds as a starting point pass `seed-from <domain>` in `args`.
 - **The contrarian-on-checklist pass (step 2.5) is the autonomous caller's safety net.** A rover at INSPECT or any other agent caller will reliably produce a thinner checklist than a human operator who has been in the codebase for hours, because the caller has not lived in the scope the way an operator has. Step 2.5 runs anyway. The contrarian reviewer reads the scope, the caller's formulation gets audited against the actual code, missing forms get merged in. The structural floor is the contrarian pass, not the calling session's priors. Skipping step 2.5 is what produces a template-canning miss; the orchestrator does not skip it.
 - **No proposal line, no override prompt.** Produce the verdict or the artefact directly.
 - **Broader review gates** are the caller's responsibility, not the orchestrator's. A rover at INSPECT has already scheduled its own review passes; the orchestrator does not double-up.
 
-The contract: a skill-invoked call always produces a verdict (quick mode) or an artefact (audit mode) and never bounces back a question.
+The contract: a skill-invoked call always produces a verdict (quick mode), a retained artefact (audit mode), or its full content inline when explicitly disposable or persistence is unavailable. It never bounces back a generic routing question.
 
-## Sub-skills
+## Internal tasks
 
-| Sub-skill | When the orchestrator dispatches it | When the operator may hint it |
+For a selected task, read its linked document relative to this skill and execute its workflow in the orchestrator's own context. Delegate only the independent reviewer, detector or researcher steps prescribed by that document, with their complete instructions and inputs. Keep the task's own verification steps separate from those delegates; do not wrap the whole task in another agent or replace its instructions with a summary. Checklist, sweep, triage and instructions are read-only tasks returning markdown; learn may write research proposals and upstream may write its cache at their resolved destinations. Resolve storage before a writing task. Forward an agreed `learnings_dir` to both learn and checklist, and the resolved `upstream_cache_dir` to upstream. These documents are packaged with the skill and work without a source checkout. Do not invoke them as separate named skills.
+
+| Task | When the orchestrator dispatches it | When the operator may hint it |
 |-----------|-------------------------------------|-------------------------------|
-| `drydry:sweep` | Always in audit mode (step 3) | When the operator already has a checklist and wants the detection pass directly |
-| `drydry:checklist` | Only when the operator passes `seed-from <domain>` or the calling session explicitly requests inspiration. Never the audit-mode default. | When the operator wants the baked seed templates for a new domain as a starting point ("/drydry:drydry seed-from rails") |
-| `drydry:triage` | Always in audit mode (step 4) | When the operator already has a findings list and wants it triaged |
-| `drydry:learn` | Never in a normal audit run; this is a one-off enrichment | When the operator says "wat zegt de wereld over duplication?" or "update the discipline's external vocabulary" |
-| `drydry:upstream` | Conditionally in audit mode (step 6) when a framework is detected or named | When the operator says "audit alleen tegen Rails/SwiftUI/React conventies" |
-| `drydry:instructions` | Conditionally in audit mode (step 7) when agent instruction files exist in scope | When the operator says "audit alleen mijn instructies" |
+| [sweep](references/tasks/sweep.md) | Always in audit mode (step 3) | When the operator already has a checklist and wants the detection pass directly |
+| [checklist](references/tasks/checklist.md) | Only when the operator passes `seed-from <domain>` or the calling session explicitly requests inspiration. Never the audit-mode default. | When the operator wants the baked seed templates for a new domain as a starting point ("/drydry:drydry seed-from rails") |
+| [triage](references/tasks/triage.md) | Always in audit mode (step 4) | When the operator already has a findings list and wants it triaged |
+| [learn](references/tasks/learn.md) | Never in a normal audit run; this is a one-off enrichment | When the operator says "wat zegt de wereld over duplication?" or "update the discipline's external vocabulary" |
+| [upstream](references/tasks/upstream.md) | Conditionally in audit mode (step 6) when a framework is detected or named | When the operator says "audit alleen tegen Rails/SwiftUI/React conventies" |
+| [instructions](references/tasks/instructions.md) | Conditionally in audit mode (step 7) when agent instruction files exist in scope | When the operator says "audit alleen mijn instructies" |
 
-All six are agent-only (`user-invocable: false`). The operator never types `/drydry:sweep`; the operator types `/drydry:drydry sweep <scope>` or hints the sub-skill in their prompt and the orchestrator routes.
+Only `drydry` and `parity-audit` are exposed as skills. Request an internal task through the orchestrator, for example `/drydry:drydry sweep <scope>` or `$drydry` with `sweep <scope>` in the prompt.
 
 ## Rules
 
 - **Routing is fast.** At most one question before dispatching. A second question is a failure mode.
-- **Explicit intent wins.** When `args` names a mode or a sub-skill, skip the proposal line.
-- **Do not detect duplicates yourself.** The orchestrator routes and writes the artefact; detection happens in `drydry:sweep`. Stay neutral on which findings are "real".
+- **Explicit intent wins.** When `args` names a mode or a task, skip the proposal line.
+- **Do not detect duplicates yourself.** The orchestrator routes and writes the artefact; detection is delegated to sweep’s detector, followed by verification in the orchestrator context. Stay neutral on which findings are "real".
 - **Quick mode does not run broader review gates.** Audit mode runs Chapter 7's contrarian second-pass on rejects; panel review is a deferred decision (see Side quests).
-- **Hits without a runnable verifier are dropped.** This is enforced in `drydry:sweep`, not here, but the orchestrator may discard a hit that resurfaces without one.
+- **Hits without a runnable verifier are dropped.** This is enforced in `sweep`, not here, but the orchestrator may discard a hit that resurfaces without one.
 - **The drift hypothesis is the gate.** A finding without a sharp drift hypothesis is not a finding; it is style overlap. Both modes apply this.
 - **Verifier proves existence, not semantic equivalence.** The runnable command (`grep`, `rg`, `ast-grep`) confirms both locations exist; it does not confirm the drift hypothesis is real or that the two paths share a behaviour contract. Every finding is a candidate until a human reads both paths. False positives are most common in the Type-4 case (semantic equivalence claimed across structurally different code); the verifier alone cannot catch a wrongly-classified semantic match.
 - **A clean report is scoped to the checklist, not to the codebase.** Chapter 3's allow-list discipline means the sweep finds only what the checklist names. Zero findings on a sharp checklist proves the listed patterns are absent; it does not prove the codebase has no duplication. The `## Checklist gaps` section in the artefact is the signal that the checklist needs extending in a follow-up sweep.
-- **The calling session, not the plugin, formulates the checklist.** The plugin owns the discipline (allow-list scoping, verifier-burden, drift hypothesis, the rest of the eight chapters); the session owns the substance (which patterns this codebase has). A canned-template default produces predictable misses (the SwiftUI seed only knew View-rendering, so a SwiftUI audit on 2026-05-15 missed four user-facing String builders carrying raw plate text outside the `PlateBadgeView` formatter). The Formulation step exists to prevent that failure mode. Seed templates remain available via `drydry:checklist` for explicit opt-in, but the default audit reads the codebase first.
+- **The calling session, not the plugin, formulates the checklist.** The plugin owns the discipline (allow-list scoping, verifier-burden, drift hypothesis, the rest of the eight chapters); the session owns the substance (which patterns this codebase has). A canned-template default produces predictable misses (the SwiftUI seed only knew View-rendering, so a SwiftUI audit on 2026-05-15 missed four user-facing String builders carrying raw plate text outside the `PlateBadgeView` formatter). The Formulation step exists to prevent that failure mode. Seed templates remain available via `checklist` for explicit opt-in, but the default audit reads the codebase first.
 - **The checklist itself goes through a contrarian pass before sweep.** Step 2.5 is the structural floor under the Formulation step: an independent reviewer with read access to the scope reads the calling session's checklist and surfaces what the list is failing to name. The contrarian gate prevents the predictable failure of the Formulation step (a session that under-formulates declares its own work complete) by giving an independent reader veto power before sweep commits to a narrow scope. The relationship to Chapter 7 is symmetric: Chapter 7 audits the rejection of findings, step 2.5 audits the omission of findings. Both are mandatory; neither is for token budget.
 
 ## Side quests (deferred decisions, do not address in this skill)

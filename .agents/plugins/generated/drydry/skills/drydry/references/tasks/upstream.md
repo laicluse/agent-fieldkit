@@ -1,31 +1,13 @@
----
-name: upstream
-user-invocable: false
-description: >-
-  Internal drydry cross-toolbox audit for helpers duplicated by frameworks or libraries.
-allowed-tools:
-  - Agent
-  - Read
-  - Glob
-  - Grep
-  - WebSearch
-  - WebFetch(*)
-  - Bash(rg *)
-  - Bash(grep *)
-  - Bash(find *)
-  - Bash(ls *)
-effort: high
----
-
 # Upstream
 
-The cross-toolbox audit pass behind the drydry pipeline. The premise: DRY violations between operator code and framework code are invisible from a single-codebase view. A homegrown `current_user` helper looks fine until you remember Devise ships one; the silent drift risk surfaces at the next Devise upgrade. Not user-invocable.
+The cross-toolbox audit pass behind the drydry pipeline. The premise: DRY violations between operator code and framework code are invisible from a single-codebase view. A homegrown `current_user` helper looks fine until you remember Devise ships one; the silent drift risk surfaces at the next Devise upgrade.
 
 ## Input contract
 
 Caller supplies through `args`:
 
 - **`project_root`**: path to the project root. Mandatory.
+- **`upstream_cache_dir`**: cache directory resolved by the caller using the storage contract; use that same path for reads and writes.
 - **`framework_hint`**: optional name of a specific framework to audit (`devise`, `active-job`, `swiftui`, `combine`, `react-router`, `tanstack-query`, ...). When absent, the skill auto-detects from manifests.
 - **`scope`**: optional sub-directory; when provided, the audit is limited to that scope.
 - **`max_helpers_per_framework`**: optional cap, default 10. Prevents one framework with broad surface from dominating.
@@ -59,6 +41,8 @@ When a framework is detected but no findings survive verification, emit the head
 _no upstream duplications found; the verification pass dropped every candidate. See "## Detection method chosen" for which candidates were inspected._
 ```
 
+Resolve the cache directory using [artifact storage](../artifact-storage.md) before reading or writing cache files. Use that same resolved directory throughout this task. If cache access is unavailable, perform the required review without caching and return its findings normally; do not write a replacement cache into the checkout.
+
 ## Workflow
 
 ### 1. DETECT frameworks
@@ -84,7 +68,7 @@ Each candidate becomes a tuple `(helper_path:line, symbol_name, surface)` for th
 
 ### 3. RUN duplication review per framework (with version-keyed cache gate)
 
-For each framework, decide first whether a live search pass is necessary. The discipline is "verify against the pinned framework version", not "fetch documentation every time". When the project's lock file (`Gemfile.lock`, `Package.resolved`, `package-lock.json`, `pyproject.lock`) hash for this framework matches the hash recorded in the cache file `<project_root>/.drydry/upstream-cache/<framework>-<pinned-version>.md`, reuse the cached findings and skip the live search. Invalidate and re-run the live search when (a) no cache exists for this framework or version, (b) the lock-file hash differs, or (c) the pinned version is newer than the current model's training cutoff (in which case the cache cannot be trusted and the search is needed for ground truth).
+For each framework, decide first whether a live search pass is necessary. The discipline is "verify against the pinned framework version", not "fetch documentation every time". When the project's lock file (`Gemfile.lock`, `Package.resolved`, `package-lock.json`, `pyproject.lock`) hash for this framework matches the hash recorded in the cache file `<upstream_cache_dir>/<framework>-<pinned-version>.md`, reuse the cached findings and skip the live search. Invalidate and re-run the live search when (a) no cache exists for this framework or version, (b) the lock-file hash differs, or (c) the pinned version is newer than the current model's training cutoff (in which case the cache cannot be trusted and the search is needed for ground truth).
 
 When a live search is needed, use the host's native research/review capability with this brief (inspire-style for the discovery, ground-style for the verification). In Claude Code this can be an Agent tool pass with WebSearch/WebFetch; in Codex use native browsing/subagents when exposed, otherwise perform the research in the current session and record that limitation in the returned method notes:
 
@@ -117,7 +101,7 @@ in one sentence).
 
 ### 4. CAP, CACHE, RETURN
 
-Apply `max_helpers_per_framework` per framework. Write the per-framework findings to `<project_root>/.drydry/upstream-cache/<framework>-<pinned-version>.md` with a header line that records the lock-file hash; this is what step 3's cache gate will read on the next run. Return the assembled markdown to the caller.
+Apply `max_helpers_per_framework` per framework. Write the per-framework findings to `<upstream_cache_dir>/<framework>-<pinned-version>.md` with a header line that records the lock-file hash; this is what step 3's cache gate will read on the next run. Return the assembled markdown to the caller.
 
 ## Common upstream-duplication patterns to watch for
 
@@ -158,4 +142,4 @@ The reviewer uses these as priors, not a closed list.
 - **Verification before reporting.** A finding lands only if the upstream symbol is confirmed to exist in the pinned framework version (`ground`-style discipline). The operator's pinned version, not the latest version.
 - **Drift hypothesis is mandatory.** A finding without a Chapter 4 sentence is dropped. "It would be cleaner to use Devise" is not a drift hypothesis; "Devise's session-token storage changed in 4.9 and the operator's hand-rolled helper will silently miss the new format on the next upgrade" is.
 - **Deliberate divergence is not a finding.** When the operator helper exists because the framework's shape was insufficient (rate-limiting, multi-tenancy, an extra concern), the reviewer drops the candidate. Drydry is not "use upstream for everything"; it is "duplications that will silently drift hurt you".
-- **No auto-fix.** This skill returns findings the orchestrator folds into the audit artefact. The operator decides whether to converge.
+- **No auto-fix.** This task returns findings the orchestrator folds into the audit artefact. The operator decides whether to converge.

@@ -17,6 +17,19 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.8]
+
+### Breaking
+
+- **Two skill-picker entries.** `drydry` and `parity-audit` remain user-facing; checklist, sweep, triage, learn, upstream and instructions run as internal tasks through the orchestrator.
+- **Artifact destinations follow purpose.** Temporary work is cleaned up; retained audit state and caches use the user-state root. Project checkouts are no longer the default report destination.
+
+- **Resuming existing runs.** Move retained project-local audit records, including `.drydry/learnings/` proposals and `.drydry/upstream-cache/` cache files, to their resolved destinations and update references when resuming them; the update does not erase user-created records.
+
+### Fixed
+
+- **Research and seed lookup share one directory.** Creation, prior-date lookup, output and later seed consumption honor the same resolved `learnings_dir`.
+
 ## [v2.0.0]
 
 ### Breaking

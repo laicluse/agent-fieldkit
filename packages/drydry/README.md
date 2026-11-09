@@ -17,10 +17,16 @@ codex plugin add drydry@laicluse-agent-fieldkit
 
 ## How to invoke
 
-One user-invocable surface: `/drydry:drydry`. The orchestrator routes between two modes:
+Two user-invocable skills are available: `drydry` for duplication checks and `parity-audit` for divergence across entry points. The `drydry` orchestrator routes between two modes:
 
 - **Quick mode**: ad-hoc "is this duplicate?" check mid-session. Inline answer with a runnable verifier-grep. No artefact. Trigger with `quick` in the prompt or by pasting two snippets, naming two files, or pointing at a recent transcript excerpt. Scope is whatever the operator explicitly hands over: pasted code, named files, or a one-line description of the suspected partner. The orchestrator does not search project history or memory; it inspects only what the prompt names.
 - **Audit mode** (default for non-trivial scope): full sweep producing a `<scope>-drydry-findings-<timestamp>.md` artefact. `<scope>` is a slug of the directory or package the audit covered (for example `app-models-drydry-findings-2026-05-12T14-23.md`); the timestamp is the checklist version so two same-session audits do not silently overwrite each other.
+
+### Artifact storage
+
+Resolve purpose, audience and retention before writing. Quick checks stay inline. Temporary working files use host scratch space or an owned temporary directory and are removed after delivery. Audits retain their checklists, findings and parity baselines by default, together under `${LAICLUSE_HOME:-$HOME/.laicluse}/drydry/audits/<repository-key>/<run-id>/`, with distinct repository identities and exclusively allocated run directories. An explicitly disposable audit delivers its full checklist and findings inline before cleanup. Durable reports and knowledge follow the host’s canonical vault or documentation destination; repository storage requires intended project content. Record and link retained output from its owning context.
+
+Research and checklist lookup share one `learnings_dir`, defaulting to `${LAICLUSE_HOME:-$HOME/.laicluse}/drydry/learnings/`. Framework review caches live under `drydry/cache/<repository-key>/upstream/` in the same user-state root. Creation, lookup and writing use the same resolved paths, including agreed overrides. `skills/drydry/references/artifact-storage.md` carries the operational rules for all writing tasks.
 
 ### Worked example: full audit invocation
 
@@ -30,9 +36,9 @@ Operator types:
 /drydry:drydry audit app/services/ for duplicated service-object responsibilities
 ```
 
-The orchestrator picks audit mode (rule 5 of the Routing table). It instructs the calling session to formulate the duplication checklist by reading `app/services/` against the formulation prompts (canonical-channel bypass, parallel utilities, predicate pairs, framework-seam boilerplate, commit-history clusters, user-facing copy variants, parallel UX surfaces, off-template project-specific patterns, parallel orchestrations above a shared leaf-call). The session writes a six-to-ten item checklist grounded in what `app/services/` actually contains. Then the orchestrator dispatches `drydry:sweep` over the scope with that session-formulated checklist, runs `drydry:triage` on the findings, applies the Chapter 7 contrarian gate to any `needs-design` verdicts, and writes `app-services-drydry-findings-2026-05-12T14-23.md` in the project root.
+The orchestrator picks audit mode (rule 5 of the Routing table). It instructs the calling session to formulate the duplication checklist by reading `app/services/` against the formulation prompts (canonical-channel bypass, parallel utilities, predicate pairs, framework-seam boilerplate, commit-history clusters, user-facing copy variants, parallel UX surfaces, off-template project-specific patterns, parallel orchestrations above a shared leaf-call). The session writes a six-to-ten item checklist grounded in what `app/services/` actually contains. Then the orchestrator dispatches `sweep` over the scope with that session-formulated checklist, runs `triage` on the findings, applies the Chapter 7 contrarian gate to any `needs-design` verdicts, and writes `app-services-drydry-findings-2026-05-12T14-23.md` alongside its checklist at the destination resolved before the audit.
 
-The Rails seed templates from `drydry:checklist` are available as a starting point if the calling session asks for them (`/drydry:drydry audit app/services/ seed-from rails`); the session then rewrites the seed against the actual codebase before passing it to sweep. The seed is vocabulary, not verdict.
+The Rails seed templates from `checklist` are available as a starting point if the calling session asks for them (`/drydry:drydry audit app/services/ seed-from rails`); the session then rewrites the seed against the actual codebase before passing it to sweep. The seed is vocabulary, not verdict.
 
 The artefact has the shape:
 
@@ -42,8 +48,8 @@ The artefact has the shape:
 Scope: `app/services/` (excludes `app/services/legacy/`)
 Checklist: rails v2026-05-12T14-23 (seven baked patterns plus two
 operator-named seeds, plus `devise-helpers` extension from Gemfile)
-Detector: drydry:sweep (independent review pass), verifier-burden enforced
-locally (every finding's verifier_command was re-run by drydry:sweep
+Detector: sweep (independent review pass), verifier-burden enforced
+locally (every finding's verifier_command was re-run by sweep
 before this artefact was written)
 
 ## Findings
@@ -70,7 +76,7 @@ extending the next sweep to `app/models/`.
 
 `## Side quests` is the channel for out-of-scope follow-ups the audit surfaced without addressing. They are findings the operator should fold into the next sweep, a separate mission, or simply file for awareness; the audit does not address them.
 
-Six agent-only sub-skills handle the substance. Two of them implement the eight-chapter framework directly: `sweep` (Chapter 2 verifier-burden detection), `triage` (Chapter 5 three-bucket convergence). Chapter 3's allow-list is formulated by the calling session itself against the codebase in front of it, guided by the formulation prompts in `drydry:drydry` audit mode step 2; the plugin disciplines how the list is used, not what is on it. `checklist` is an opt-in seed source that returns starting-point templates per domain when the operator passes `seed-from <domain>`. The other three sub-skills are extensions outside the eight chapters that the operator can dispatch when the duplication question crosses an axis the core pipeline does not cover: `learn` (online research enriching the discipline's external vocabulary), `upstream` (operator code versus framework offerings; particularly valuable for native-platform code where the standard library or framework often offers the helper the operator just hand-rolled), `instructions` (agent instruction files as a duplication-cause). The operator does not invoke any sub-skill directly; the orchestrator routes. The operator can hint a sub-skill by name in the prompt and the orchestrator will dispatch (`/drydry:drydry upstream` audits only against frameworks; `/drydry:drydry instructions` audits only the instruction layer; `/drydry:drydry seed-from rails` fetches the Rails seed templates from `checklist`).
+Six internal tasks, loaded from the orchestrator’s packaged reference documents, handle the substance. Two of them implement the eight-chapter framework directly: `sweep` (Chapter 2 verifier-burden detection), `triage` (Chapter 5 three-bucket convergence). Chapter 3's allow-list is formulated by the calling session itself against the codebase in front of it, guided by the formulation prompts in `drydry:drydry` audit mode step 2; the plugin disciplines how the list is used, not what is on it. `checklist` is an opt-in seed source that returns starting-point templates per domain when the operator passes `seed-from <domain>`. The other three internal tasks are extensions outside the eight chapters that the operator can dispatch when the duplication question crosses an axis the core pipeline does not cover: `learn` (online research enriching the discipline's external vocabulary), `upstream` (operator code versus framework offerings; particularly valuable for native-platform code where the standard library or framework often offers the helper the operator just hand-rolled), `instructions` (agent instruction files as a duplication-cause). The operator does not invoke any internal task directly; the orchestrator routes. The operator can hint an internal task by name in the prompt and the orchestrator will dispatch (`/drydry:drydry upstream` audits only against frameworks; `/drydry:drydry instructions` audits only the instruction layer; `/drydry:drydry seed-from rails` fetches the Rails seed templates from `checklist`).
 
 
 ## The eight chapters
@@ -90,13 +96,13 @@ Token-based detectors (jscpd, PMD CPD, SwiftLint custom rules, Simian) are relia
 
 **Medium translation.** In prose: two paragraphs that say the same thing in different words across a chapter or a doc set. Token-detectors miss this because the wording is fresh; semantic-detectors find it. In design: two components that solve the same UX need (a confirm-action popover and a confirm-action sheet) with different visual languages. Visual diff tools see them as different; the user feels the inconsistency.
 
-Sources: Roy and Cordy 2007 ("A Survey on Software Clone Detection Research", Queen's School of Computing TR 2007-541), plus a continuing line of embedding-based Type-4 detection work in the years since. See `drydry:learn` for a current literature sweep when a specific paper is needed.
+Sources: Roy and Cordy 2007 ("A Survey on Software Clone Detection Research", Queen's School of Computing TR 2007-541), plus a continuing line of embedding-based Type-4 detection work in the years since. See `learn` for a current literature sweep when a specific paper is needed.
 
 ### Chapter 2: LLM pass with verifier-burden discipline
 
 **Improvisation, verified in practice.** Every LLM-generated finding arrives bundled with a runnable command that re-verifies the finding without the LLM in the loop. In code, that is a `grep`, `rg`, `ast-grep` query, or a `find ... -exec` pair pointing at the divergent files. In prose, it is a regex matching the duplicated semantic pattern across the markdown corpus. In design, it is the two component paths or the two Figma node IDs.
 
-The discipline closes one common LLM-output failure mode: hallucinated-confidence findings that look plausible but reference files, lines, or features that do not exist. Without the verifier command, the rapport is the LLM's word against the operator's grep; with it, the rapport contains its own counter-test. Hits without a runnable verifier are dropped (enforced in `drydry:sweep`).
+The discipline closes one common LLM-output failure mode: hallucinated-confidence findings that look plausible but reference files, lines, or features that do not exist. Without the verifier command, the rapport is the LLM's word against the operator's grep; with it, the rapport contains its own counter-test. Hits without a runnable verifier are dropped (enforced in `sweep`).
 
 The verifier proves existence, not semantic equivalence. A `grep` that re-finds both locations confirms the files and lines exist; it does not confirm the drift hypothesis is real or that the two paths share a behaviour contract. Every finding is a candidate until a human reads both paths; false positives are most common in the Type-4 case where the LLM claimed semantic equivalence between structurally different code.
 
@@ -112,7 +118,7 @@ Family in literature: adjacent to "tool-grounded generation", "retrieval-augment
 
 **The nine formulation prompts are themselves a taxonomy, deliberately so.** Drydry does not eliminate canning; it relocates canning to a more general level. The previous mechanism shipped per-domain templates (the SwiftUI seed knew View-rendering, the Rails seed knew service objects, and so on), and a session was funneled into whichever template matched the domain hint. The new mechanism ships per-discipline lenses (canonical-channel bypass, predicate pairs, framework-seam boilerplate, parallel orchestrations above a shared leaf-call, and the rest), and a session is funneled into asking the same nine questions of any scope. That is a generality improvement, not a canning escape. The honesty matters because the value of the redesign rests on the claim that questions-about-any-codebase outperform answers-for-a-named-domain; the prompts are still the plugin's prior knowledge, just held at one floor up. The template-canning failure mode survives when the nine lenses are insufficient for a specific codebase's idiom; the off-template-patterns prompt and step 2.5 exist as the explicit safety net for that case.
 
-The independent detection pass downstream (`drydry:sweep`) is allowed to find anything from the session-formulated list. It is *not* allowed to invent new categories on the fly; "interesting but off-list" findings go to a `## Checklist gaps` section in the rapport for the operator to fold into the next sweep, not into this one. The separation prevents reviewer scope-drift and keeps the rapport deterministic.
+The independent detection pass downstream (`sweep`) is allowed to find anything from the session-formulated list. It is *not* allowed to invent new categories on the fly; "interesting but off-list" findings go to a `## Checklist gaps` section in the rapport for the operator to fold into the next sweep, not into this one. The separation prevents reviewer scope-drift and keeps the rapport deterministic.
 
 A clean report is scoped to the checklist, not to the codebase. Zero findings on a sharp checklist proves the listed patterns are absent; it does not prove the codebase has no duplication. The `## Checklist gaps` section is the signal that the checklist needs extending in a follow-up sweep.
 
@@ -130,7 +136,7 @@ The new flow has a path to the four sites because the canonical-channel-bypass p
 
 The walk-through is not a guarantee. A session that writes a deliberately narrow entry, refuses to broaden it after the contrarian, and runs sweep anyway can still ship a template-canning miss. The discipline does what discipline does: it makes the failure mode visible (the contrarian's flag becomes part of the artefact's `## Detection method chosen` paragraph), and the visible failure is a finding the next audit can act on. A canned template offered no visibility.
 
-**Medium translation.** Across mediums, the same shift applies. The seed templates in `drydry:checklist` cover iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, and design tokens; they remain available as starting-point vocabulary when the calling session asks for inspiration (`/drydry:drydry audit ... seed-from <domain>`), but the session rewrites them against the actual codebase before passing the result to sweep. The seed is vocabulary, not verdict.
+**Medium translation.** Across mediums, the same shift applies. The seed templates in `checklist` cover iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, and design tokens; they remain available as starting-point vocabulary when the calling session asks for inspiration (`/drydry:drydry audit ... seed-from <domain>`), but the session rewrites them against the actual codebase before passing the result to sweep. The seed is vocabulary, not verdict.
 
 ### Chapter 4: Drift hypothesis per finding
 
@@ -177,7 +183,7 @@ In drydry: every audit run produces a `<scope>-drydry-findings.md` artefact in t
 
 ## Example checklist seeds
 
-Two of the three example domains from the framework's original write-up appear below as a starting point. The full set of seed templates lives in `packages/drydry/skills/checklist/SKILL.md` and covers iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, and design tokens; the snippets here illustrate the *shape* of a seed so a new operator can extend the plugin for their domain.
+Two of the three example domains from the framework's original write-up appear below as a starting point. The full set of seed templates lives in `packages/drydry/skills/drydry/references/tasks/checklist.md` and covers iOS/SwiftUI, Rails, React/TypeScript, Markdown prose, and design tokens; the snippets here illustrate the *shape* of a seed so a new operator can extend the plugin for their domain.
 
 ### Example A: code (Rails)
 
@@ -294,17 +300,24 @@ Signatures to look for:
 - `\.confirmationDialog\(`
 ```
 
-The full set of seed templates (including the design-system and React/TypeScript domains) lives in `packages/drydry/skills/checklist/SKILL.md`. The three examples here are enough to show a new operator how to extend the plugin for a domain the seed templates do not yet cover: write a checklist with the same shape, hand it to `drydry:sweep` via the orchestrator's `audit` mode.
+The full set of seed templates (including the design-system and React/TypeScript domains) lives in `packages/drydry/skills/drydry/references/tasks/checklist.md`. The three examples here are enough to show a new operator how to extend the plugin for a domain the seed templates do not yet cover: write a checklist with the same shape, hand it to `sweep` via the orchestrator's `audit` mode.
 
 ## Skills in this plugin
 
 | Skill | User-invocable | Purpose |
 |-------|:---:|---------|
-| `drydry:drydry` | yes | **Short invocation.** "Have I seen this before?" about something in front of you. Orchestrator: routes to a sub-skill or runs the duplication audit pipeline. Quick and audit modes. |
+| `drydry:drydry` | yes | **Short invocation.** "Have I seen this before?" about something in front of you. Orchestrator: routes to an internal task or runs the duplication audit pipeline. Quick and audit modes. |
 | `drydry:parity-audit` | yes | **Long invocation.** "Do all the ways to do this actually do the same thing?" Named background sweep of every entry point, converges diverged consequences, then re-mines to prove it. Minutes, not seconds. |
-| `drydry:sweep` | no | Detection pass. Runs an independent reviewer with verifier-burden discipline. |
-| `drydry:checklist` | no | Opt-in seed source. Returns starting-point seed templates per domain when the operator passes `seed-from <domain>`. The default audit flow does not invoke this skill; the calling session formulates the checklist from the codebase itself. |
-| `drydry:triage` | no | Three-bucket triage (cheap-and-safe / partial / needs-design). |
-| `drydry:learn` | no | Online research on de-duplication state-of-the-art. |
-| `drydry:upstream` | no | Cross-toolbox audit against framework offerings. |
-| `drydry:instructions` | no | Agent instruction-file audit for instructions that cause DRY violations. |
+
+### Internal tasks
+
+These supporting documents are read and dispatched by `drydry`; they are not standalone entries in the skill picker. Request one through the orchestrator, such as `drydry … learn <topic>`.
+
+| Task | Purpose |
+| --- | --- |
+| `sweep` | Detection pass. Runs an independent reviewer with verifier-burden discipline. |
+| `checklist` | Opt-in seed source. Returns starting-point seed templates per domain when the operator passes `seed-from <domain>`. The default audit flow does not invoke this task; the calling session formulates the checklist from the codebase itself. |
+| `triage` | Three-bucket triage (cheap-and-safe / partial / needs-design). |
+| `learn` | Online research on de-duplication state-of-the-art. |
+| `upstream` | Cross-toolbox audit against framework offerings. |
+| `instructions` | Agent instruction-file audit for instructions that cause DRY violations. |

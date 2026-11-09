@@ -1,20 +1,3 @@
----
-name: instructions
-user-invocable: false
-description: >-
-  Internal drydry audit for instruction files that create duplicate workflows or hide reusable helpers.
-allowed-tools:
-  - Agent
-  - Read
-  - Grep
-  - Glob
-  - Bash(rg *)
-  - Bash(grep *)
-  - Bash(find *)
-  - Bash(ls *)
-effort: high
----
-
 # Instructions
 
 The instruction-file audit pass behind the drydry pipeline. The premise: agent instructions sit a layer above the code; they can themselves cause DRY violations downstream. Two failure modes:
@@ -22,7 +5,6 @@ The instruction-file audit pass behind the drydry pipeline. The premise: agent i
 1. **Two paths prescribed for the same job.** An instruction file says both "use the Pundit policy" and "add a `before_action :authorize!`" without naming one as primary. Agents pick one or the other, projects accumulate both, and the code drifts. The instructions ARE the source of the duplication.
 2. **Silence on existing helpers.** A project ships a `current_workspace` helper, a `notify_owner` helper, a `with_tenant` wrapper. The instruction files never name them. Agents in fresh sessions do not know they exist; they generate new code that solves the same problem with different shape. The silence is the duplication-enabler.
 
-Not user-invocable.
 
 ## Input contract
 
@@ -34,7 +16,7 @@ Caller supplies through `args`:
 
 ## Output contract
 
-Return a markdown section the orchestrator folds into the audit artefact. The schema mirrors the rest of the audit pipeline (`pattern_id`-keyed findings) so the orchestrator's fold-in step does not special-case this skill:
+Return a markdown section the orchestrator folds into the audit artefact. The schema mirrors the rest of the audit pipeline (`pattern_id`-keyed findings) so the orchestrator's fold-in step does not special-case this task:
 
 ```markdown
 ## Instruction-file duplication
@@ -148,6 +130,6 @@ Hand back the assembled markdown to the caller. Do not write to disk; the orches
 
 - **Verifier-burden is mandatory** here too. A finding without a runnable grep is dropped; the operator must be able to re-confirm the duplication or the silence.
 - **Drift hypothesis is mandatory.** A finding without a Chapter 4 sentence is dropped. "The instruction file is incomplete" is not a drift hypothesis; "agents in fresh sessions will reinvent the `with_tenant` wrapper because nothing in the instruction files points at it" is.
-- **No auto-fix.** This skill returns findings; it does not edit instruction files. The operator decides whether to converge prescriptions or add pointers.
-- **Both patterns are real and orthogonal.** An instruction file can hit `two-prescribed-paths` without `silent-helper`, or vice versa, or both. Always run both audits when this skill is dispatched in audit mode.
+- **No auto-fix.** This task returns findings; it does not edit instruction files. The operator decides whether to converge prescriptions or add pointers.
+- **Both patterns are real and orthogonal.** An instruction file can hit `two-prescribed-paths` without `silent-helper`, or vice versa, or both. Always run both audits when this task is dispatched in audit mode.
 - **User-level instruction files are read but never proposed for edit.** The skill audits user-level files if they appear in `instruction_paths`, but its convergence proposals for those files are listed as "operator considers" rather than "edit here". User-level config is operator-personal; the audit informs, it does not prescribe.
