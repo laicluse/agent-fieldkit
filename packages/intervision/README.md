@@ -59,10 +59,7 @@ In Codex, select the shortcut through the skill picker or a `$` skill mention. C
 
 ## Requirements
 
-The peer CLI must be installed and logged in: Claude needs `codex`; Codex needs
-`claude`. Reviews run against your own account and quota, so a large diff is a
-real billed call. The skill preflights for the CLI and stops with a plain
-message when no peer is available.
+The peer CLI must be installed and logged in: Claude needs `codex`; Codex needs `claude`. Reviews use the connected account: included subscription usage is not a separate API charge. Metered or unknown billing requires explicit approval. Claude’s session dollar estimates are not invoices and do not establish that money was charged. The skill preflights for the CLI and stops with a plain message when no peer is available.
 
 Claude-side Codex model selection lives in `bin/codex-fast-coding-model`: no
 argument resolves the newest Sol slug and fails closed when Sol is unavailable.

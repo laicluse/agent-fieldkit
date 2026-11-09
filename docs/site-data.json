@@ -304,7 +304,7 @@
 		},
 		{
 			"name": "intervision",
-			"version": "2.0.28",
+			"version": "2.0.29",
 			"category": "review",
 			"summary": "Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.",
 			"support": [
@@ -319,9 +319,9 @@
 			"commandCount": 2,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.27",
+				"version": "v2.0.29",
 				"type": "Fixed",
-				"summary": "Peer handoffs bound response size and automatic continuation."
+				"summary": "Billing guidance distinguishes included subscription usage from metered calls."
 			}
 		},
 		{
@@ -707,11 +707,11 @@
 		},
 		{
 			"plugin": "intervision",
-			"packageVersion": "2.0.28",
+			"packageVersion": "2.0.29",
 			"detailPath": "agent-fieldkit/intervision/",
-			"version": "v2.0.27",
+			"version": "v2.0.29",
 			"type": "Fixed",
-			"summary": "Peer handoffs bound response size and automatic continuation.",
+			"summary": "Billing guidance distinguishes included subscription usage from metered calls.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{

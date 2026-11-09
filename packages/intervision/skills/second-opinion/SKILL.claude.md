@@ -31,6 +31,14 @@ post-update broadcast path in this plugin; skip this block silently there.
 
 # Second opinion
 
+## Billing route
+
+Use the existing account’s verified billing route. A requested or required peer review through an included Claude or ChatGPT subscription needs no separate spending approval. Check Claude with `claude auth status --json` and Codex with `codex login status`; account overrides require checking the effective route rather than assuming subscription or API billing. Never expose credentials.
+
+For metered or unknown billing, explain which account would pay and obtain explicit approval before calling. Never enable paid extra usage, switch to API credentials or choose a monetary budget without authorization. At a plan limit, stop rather than arranging a paid fallback.
+
+The [Claude Code cost documentation](https://code.claude.com/docs/en/costs) identifies session dollar figures as locally calculated list-price estimates, not invoices. `--max-budget-usd` limits that estimate; it does not enable paid billing. Do not report a calculated amount as money charged. Separately enabled usage credits can apply after plan limits; do not claim a charge or invent one from a dollar estimate.
+
 When the user names a peer model, resolve that tier directly with `--tier luna`, `--tier sol`, `--tier astra`, or `--tier terra` and use the result as `CODEX_PEER_MODEL` throughout; otherwise use the default below. Treat model names case-insensitively.
 
 Intervision is peer consultation: equals looking at each other's work, not a supervisor looking down. Etymology says it plainly, `inter-` (between, among, together) against `super-` (from above). This skill brings a second coding agent in as that peer for an independent read. You hand it the work just done or just discussed, it looks with fresh eyes and a different training, and the two of you talk it through.

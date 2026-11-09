@@ -7,6 +7,14 @@ description: >-
 
 # Second opinion
 
+## Billing route
+
+Use the existing account’s verified billing route. A requested or required peer review through an included Claude or ChatGPT subscription needs no separate spending approval. Check Claude with `claude auth status --json` and Codex with `codex login status`; account overrides require checking the effective route rather than assuming subscription or API billing. Never expose credentials.
+
+For metered or unknown billing, explain which account would pay and obtain explicit approval before calling. Never enable paid extra usage, switch to API credentials or choose a monetary budget without authorization. At a plan limit, stop rather than arranging a paid fallback.
+
+The [Claude Code cost documentation](https://code.claude.com/docs/en/costs) identifies session dollar figures as locally calculated list-price estimates, not invoices. `--max-budget-usd` limits that estimate; it does not enable paid billing. Do not report a calculated amount as money charged. Separately enabled usage credits can apply after plan limits; do not claim a charge or invent one from a dollar estimate.
+
 When the user names a peer model, use that model directly (`--model opus` or `--model fable`, for example); otherwise use the default below. Treat model names case-insensitively.
 
 Intervision is peer consultation: equals looking at each other's work, not a
@@ -42,7 +50,7 @@ Set `CLAUDE_PEER_MODEL` to the requested alias or full model ID, or `opus` when 
 
 ## Bound each handoff
 
-Use the model's native output allowance instead of imposing a fixed token cap. Pass `--max-turns 1 --effort medium` on every invocation. The turn flag does not bound internal output-limit recovery: in Claude Code 2.1.319, a controlled call with `CLAUDE_CODE_MAX_OUTPUT_TOKENS=512` still produced `num_turns: 4`. Recovery can also occur at the native limit; validate the result rather than assuming one API call. Do not rely on `CLAUDE_CODE_MAX_TURNS`. Select an explicit cost ceiling before calling and set `PEER_REVIEW_MAX_COST_USD`; internal recovery may overshoot it by several full responses, so it is not a hard spend guarantee.
+Use the model's native output allowance instead of imposing a fixed token cap. Pass `--max-turns 1 --effort medium` on every invocation. The turn flag does not bound internal output-limit recovery: in Claude Code 2.1.319, a controlled call with `CLAUDE_CODE_MAX_OUTPUT_TOKENS=512` still produced `num_turns: 4`. Recovery can also occur at the native limit; validate the result rather than assuming one API call. Do not rely on `CLAUDE_CODE_MAX_TURNS`. Do not pass `--max-budget-usd` by default. It bounds a local list-price estimate, not actual charges, and internal recovery can overshoot it. On a metered route, use it only with a limit the operator approved.
 
 Choose a distinct new durable artifact path for each handoff before calling and set `PEER_REVIEW_OUTPUT` to it in the same shell invocation. Save the complete JSON there before interpreting it. Accept a verdict only when `subtype` is `success`, `is_error` is false, `num_turns` is one, `result` is nonempty, `api_error` is null or absent and `terminal_reason` is absent or `completed`. Reject `stop_reason: max_tokens`. `subtype: success` and `stop_reason` alone do not exclude an internal recovery failure. Reject an explicit token/turn/budget stop when reported, even after a successful process exit. A capped reply is incomplete; do not silently repeat or accept a continuation tail as the whole review. A bounded follow-up keeps the full artifact scope, not just its unreviewed tail.
 
@@ -80,7 +88,7 @@ Do not summarize the work first:
   git diff --no-ext-diff
   printf '\n## untracked files\n'
   git ls-files --others --exclude-standard
-} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --max-budget-usd "${PEER_REVIEW_MAX_COST_USD:?choose a review cost ceiling}" --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
+} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
 ```
 
 For a branch or single commit, replace the diff block with the concrete range:
@@ -97,12 +105,12 @@ fi
 {
   printf 'Peer review this branch diff. Report findings first and do not edit files.\n\n'
   git diff --no-ext-diff "$DEFAULT"...HEAD
-} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --max-budget-usd "${PEER_REVIEW_MAX_COST_USD:?choose a review cost ceiling}" --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
+} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
 
 {
   printf 'Peer review this commit. Report findings first and do not edit files.\n\n'
   git show --stat --patch <sha>
-} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --max-budget-usd "${PEER_REVIEW_MAX_COST_USD:?choose a review cost ceiling}" --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
+} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
 ```
 
 **2. Weigh a design just discussed, when there is no code yet.** Give Claude
@@ -110,7 +118,7 @@ the actual design context on stdin. Keep the shaky parts in; a flattering
 summary buys a flattering review.
 
 ```bash
-env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --max-budget-usd "${PEER_REVIEW_MAX_COST_USD:?choose a review cost ceiling}" --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
+env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
 Peer review this plan before we build it. Do not edit files.
 <paste the design, the trade-off, the open question, including the parts we are unsure about>
 PROMPT
@@ -123,7 +131,7 @@ at a time. To escalate, keep the same prompt with the previous answer quoted
 underneath and move `--model` one tier up.
 
 ```bash
-env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --max-budget-usd "${PEER_REVIEW_MAX_COST_USD:?choose a review cost ceiling}" --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
+env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
 You flagged X as a race. The lock at <file:line> already serialises that path.
 Does that change your read? Do not edit files.
 PROMPT
