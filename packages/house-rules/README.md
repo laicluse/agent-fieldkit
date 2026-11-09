@@ -5,9 +5,7 @@ Robert C. Martin, and Martin Fowler. These are chosen conventions among
 defensible options, not universal law: house rules, not received wisdom. Adopt
 them, adapt them, or argue with them.
 
-Use it when the agent needs a shared craft baseline before naming, coding,
-refactoring, testing, or reviewing. These skills are deliberately written as
-doctrine: they should steer judgment, not replace project-specific evidence.
+Use it when the agent needs a shared craft baseline before naming, coding, refactoring, testing, reviewing, or checking what belongs in an artifact. These skills are deliberately written as doctrine: they should steer judgment, not replace project-specific evidence.
 
 ## Installation
 
@@ -38,3 +36,7 @@ test-suite health. Model-invocable.
 ### `scar-tissue`
 
 Doctrine for consolidating superseded residue, keeping living artifacts focused on current responsibilities, and resolving diagnostic stitches during Refactor. An explicit stitch marker creates a session-local cleanup obligation that must be resolved before handoff. Model-invocable.
+
+### `exhaust-inhalation`
+
+Detect and repair personal circumstances or authoring discussion leaking into artifacts, including code, tests, documentation, commit messages, UI and persistent instructions. Follows the same leaked premise across related output and its source while preserving required domain content and authorized personal content. Invoke with `$exhaust-inhalation` in Codex or `/house-rules:exhaust-inhalation` in Claude Code. Also model-invocable within an authorized task.

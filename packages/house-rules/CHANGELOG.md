@@ -18,6 +18,12 @@ Categories:
 Patch-level fixes that change nothing the user can observe are intentionally
 omitted; the broadcast budget is for things the user benefits from knowing.
 
+## [v2.0.32]
+
+### Added
+
+- **Exhaust inhalation.** Invoke the `exhaust-inhalation` skill to repair personal circumstances or authoring discussion leaking into artifacts. The skill also supports proactive review while preserving necessary domain content and authorized personal content.
+
 ## [v2.0.29]
 
 - **Measure rollout impact before blocking delivery.** Concurrency concerns require current usage, affected operations, and deployment evidence before adding maintenance windows or compatibility machinery.

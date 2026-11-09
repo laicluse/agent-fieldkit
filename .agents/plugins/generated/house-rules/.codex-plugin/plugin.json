@@ -1,7 +1,7 @@
 {
   "name": "house-rules",
-  "version": "2.0.31",
-  "description": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
+  "version": "2.0.32",
+  "description": "Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts. An opinionated baseline among defensible alternatives.",
   "author": {
     "name": "local"
   },
@@ -13,7 +13,7 @@
   "interface": {
     "displayName": "House Rules",
     "shortDescription": "Naming and software craft",
-    "longDescription": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
+    "longDescription": "Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts. An opinionated baseline among defensible alternatives.",
     "developerName": "local",
     "category": "Productivity",
     "capabilities": [

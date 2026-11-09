@@ -94,7 +94,7 @@
     },
     {
       "name": "house-rules",
-      "description": "Apply chosen conventions for naming, testing, programming, and removing superseded residue. An opinionated baseline among defensible alternatives.",
+      "description": "Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts. An opinionated baseline among defensible alternatives.",
       "source": "./packages/house-rules"
     },
     {

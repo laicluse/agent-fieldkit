@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>house-rules · l'Aicluse Agent Fieldkit</title>
-		<meta name="description" content="Apply chosen conventions for naming, testing, programming, and removing superseded residue.">
+		<meta name="description" content="Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts.">
 		<link rel="canonical" href="https://laicluse.com/agent-fieldkit/house-rules/">
 
 		<meta property="og:type" content="article">
@@ -12,17 +12,17 @@
 		<meta property="og:locale" content="en_US">
 		<meta property="og:url" content="https://laicluse.com/agent-fieldkit/house-rules/">
 		<meta property="og:title" content="house-rules · l'Aicluse Agent Fieldkit">
-		<meta property="og:description" content="Apply chosen conventions for naming, testing, programming, and removing superseded residue.">
-		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=44d1678dd0">
-		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=44d1678dd0">
+		<meta property="og:description" content="Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts.">
+		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=d70aa194b6">
+		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=d70aa194b6">
 		<meta property="og:image:type" content="image/png">
 		<meta property="og:image:width" content="1200">
 		<meta property="og:image:height" content="630">
 
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="house-rules · l'Aicluse Agent Fieldkit">
-		<meta name="twitter:description" content="Apply chosen conventions for naming, testing, programming, and removing superseded residue.">
-		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=44d1678dd0">
+		<meta name="twitter:description" content="Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts.">
+		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=d70aa194b6">
 
 		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
@@ -50,11 +50,11 @@
 					<p class="eyebrow">Feedback and utilities</p>
 					<div class="detail-hero-copy">
 						<h1>house-rules</h1>
-						<p class="lede">Apply chosen conventions for naming, testing, programming, and removing superseded residue.</p>
+						<p class="lede">Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.31</span>
-							<span class="meta-fact">4 skills</span>
+							<span class="meta-fact">2.0.32</span>
+							<span class="meta-fact">5 skills</span>
 						</div>
 					</div>
 					<aside class="detail-install" aria-label="Install">
@@ -80,7 +80,7 @@
 			<section class="detail-content-section">
 				<article class="readme-content">
 <p>An opinionated baseline for software craft, in the tradition of Kent Beck, Robert C. Martin, and Martin Fowler. These are chosen conventions among defensible options, not universal law: house rules, not received wisdom. Adopt them, adapt them, or argue with them.</p>
-<p>Use it when the agent needs a shared craft baseline before naming, coding, refactoring, testing, or reviewing. These skills are deliberately written as doctrine: they should steer judgment, not replace project-specific evidence.</p>
+<p>Use it when the agent needs a shared craft baseline before naming, coding, refactoring, testing, reviewing, or checking what belongs in an artifact. These skills are deliberately written as doctrine: they should steer judgment, not replace project-specific evidence.</p>
 <h2 id="skills">Skills</h2>
 <div class="readme-scan">
 <h3 id="naming-is-hard"><code>/naming-is-hard</code></h3>
@@ -91,6 +91,8 @@
 <p>TDD workflow (Red-Green-Refactor), specs-specify-not-verify, Cucumber/Gherkin conventions, scar-tissue and absence-pinning smells, flaky-test discipline, and test-suite health. Model-invocable.</p>
 <h3 id="scar-tissue"><code>scar-tissue</code></h3>
 <p>Doctrine for consolidating superseded residue, keeping living artifacts focused on current responsibilities, and resolving diagnostic stitches during Refactor. An explicit stitch marker creates a session-local cleanup obligation that must be resolved before handoff. Model-invocable.</p>
+<h3 id="exhaust-inhalation"><code>exhaust-inhalation</code></h3>
+<p>Detect and repair personal circumstances or authoring discussion leaking into artifacts, including code, tests, documentation, commit messages, UI and persistent instructions. Follows the same leaked premise across related output and its source while preserving required domain content and authorized personal content. Invoke with <code>$exhaust-inhalation</code> in Codex or <code>/house-rules:exhaust-inhalation</code> in Claude Code. Also model-invocable within an authorized task.</p>
 </div>
 
 				</article>
