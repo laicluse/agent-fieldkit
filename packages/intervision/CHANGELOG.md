@@ -20,6 +20,16 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.30]
+
+### Fixed
+
+- Tool-free Claude reviews now use an isolated reviewer context and a checked stream runner. Fabricated tool calls, blank-output loops, overflow and refusals are detected during streaming; only one complete result identifying the requested model is accepted. The runner requests no continuation or fallback and does not claim to prevent an already-issued CLI recovery request.
+
+### Changed
+
+- Checked reviews retain the native output allowance rather than the older fixed cap; a turn flag alone is not an API-call or spend ceiling.
+
 ## [v2.0.29]
 
 ### Fixed

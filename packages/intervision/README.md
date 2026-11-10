@@ -17,6 +17,14 @@ diff where the failure mode is hard to see from one perspective.
 
 An agent cannot observe how another lab's agent loads a skill, names it, runs a hook or loops. In a repository that carries both `.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json`, the gate denies a `git commit` that ships payload the other agent runs. When Claude commits, that is every plugin file under `packages/` except Claude-only sources (`.claude-plugin/`, `SKILL.claude.md`, `hooks/hooks.json`, `agents/`), plus the generated Codex adapters under `.agents/plugins/`. When Codex commits, it is every plugin file under `packages/` except Codex-only sources (`SKILL.codex.md`, `hooks/hooks.codex.json`, `agents.codex/`). Tests, READMEs and changelogs need no peer. Files added in the same command or committed with `-a` count too, and the repository is resolved from the tool's working directory, `cd` and `git -C`. Ask that agent's peer with `second-opinion`, settle its findings, then end the commit command with `# peer-reviewed: <model-id>` naming a model of the other lab.
 
+## Checked Claude reviews
+
+`bin/claude-review` reads a complete review request from stdin and saves one result JSON to a new `--output` path. It requires Python 3 and a Claude Code version supporting safe mode and partial stream events. Select the peer with `--model`; the default is Opus. `--input-format stream-json` accepts a user message containing images.
+
+The runner gives the peer an explicit tool-free reviewer role and uses safe mode to isolate local coding customizations while retaining existing authentication. It watches public text and protocol events, stops as soon as it observes fabricated tool invocations, loops of empty lines, output exhaustion or refusal, and rejects incomplete or substituted-model results. Detection of continued output depends on the CLI forwarding its stream events. It never requests a continuation or fallback. Early malformed-output detection stops the observed tool-text/blank-loop failure without waiting for output exhaustion. A CLI recovery request already issued when a terminal stream event arrives cannot be recalled, so this is not a hard API-call or spend ceiling. Normal complete reviews retain the model's native allowance.
+
+Existing billing approval remains required for metered routes. Check the effective route with `claude --safe-mode auth status --json`; do not assume a custom settings-based route remains the same in safe mode. The runner does not provide API credentials. Review artifacts omit CLI account-expiry metadata. Do not replace safe mode with bare mode: current Claude Code bare mode skips OAuth and Keychain authentication.
+
 ## Installation
 
 ```bash

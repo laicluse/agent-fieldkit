@@ -304,7 +304,7 @@
 		},
 		{
 			"name": "intervision",
-			"version": "2.0.29",
+			"version": "2.0.30",
 			"category": "review",
 			"summary": "Brings another coding agent in as a peer reviewer for code, plans, wording, or design choices.",
 			"support": [
@@ -316,12 +316,12 @@
 			"sourcePath": "packages/intervision",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/intervision",
 			"skillCount": 7,
-			"commandCount": 2,
+			"commandCount": 3,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.29",
+				"version": "v2.0.30",
 				"type": "Fixed",
-				"summary": "Billing guidance distinguishes included subscription usage from metered calls."
+				"summary": "Tool-free Claude reviews now use an isolated reviewer context and a checked stream runner."
 			}
 		},
 		{
@@ -707,11 +707,11 @@
 		},
 		{
 			"plugin": "intervision",
-			"packageVersion": "2.0.29",
+			"packageVersion": "2.0.30",
 			"detailPath": "agent-fieldkit/intervision/",
-			"version": "v2.0.29",
+			"version": "v2.0.30",
 			"type": "Fixed",
-			"summary": "Billing guidance distinguishes included subscription usage from metered calls.",
+			"summary": "Tool-free Claude reviews now use an isolated reviewer context and a checked stream runner.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/intervision/CHANGELOG.md"
 		},
 		{

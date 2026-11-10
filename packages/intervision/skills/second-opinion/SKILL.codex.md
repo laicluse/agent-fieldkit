@@ -9,7 +9,7 @@ description: >-
 
 ## Billing route
 
-Use the existing account’s verified billing route. A requested or required peer review through an included Claude or ChatGPT subscription needs no separate spending approval. Check Claude with `claude auth status --json` and Codex with `codex login status`; account overrides require checking the effective route rather than assuming subscription or API billing. Never expose credentials.
+Use the existing account’s verified billing route. A requested or required peer review through an included Claude or ChatGPT subscription needs no separate spending approval. Check the runner’s effective Claude route with `claude --safe-mode auth status --json` and Codex with `codex login status`; account overrides require checking the effective route rather than assuming subscription or API billing. Never expose credentials.
 
 For metered or unknown billing, explain which account would pay and obtain explicit approval before calling. Never enable paid extra usage, switch to API credentials or choose a monetary budget without authorization. At a plan limit, stop rather than arranging a paid fallback.
 
@@ -26,13 +26,11 @@ of you talk it through.
 
 The peer here is Claude, reached through `claude -p`. It runs from the same
 repository, on its own login, with its own model behind it. That independence is
-the whole point; a peer trained the same way as you would only echo you. Run it
-with `DD_HEADLESS=1 --setting-sources "" --tools ""` so local Claude Code stop
-hooks and user instructions do not overwrite the peer's actual answer.
+the whole point; a peer trained the same way as you would only echo you. Use the checked `claude-review` runner below so the peer receives a tool-free reviewer role and malformed output is checked while it streams.
 
 Default to the receiving family's middle tier, independently of the current session's model: **Opus** for Claude (`--model opus`), **Sol** for Codex. Sonnet and Luna are opt-in, not default reviewers. Escalate to Fable or Astra when a concrete unresolved concern warrants it or the operator asks. An explicitly requested model always takes precedence.
 
-Before the handoff, briefly state the selected model and why. Claude aliases (`sonnet`, `opus`, `fable`) select the latest version according to `claude --help`; if the local CLI exposes multiple versions, name the alternatives and prefer the newest available version. An explicitly requested full model ID takes precedence; never silently substitute another version. If only an alias is exposed, say that the exact version is not yet known instead of inventing a version or claiming no alternatives exist. Use `--output-format json` for the handoff and report the actual model ID from response metadata when present, alongside the findings.
+Before the handoff, briefly state the selected model and why. Claude aliases (`sonnet`, `opus`, `fable`) select the latest version according to `claude --help`; if the local CLI exposes multiple versions, name the alternatives and prefer the newest available version. An explicitly requested full model ID takes precedence; never silently substitute another version. If only an alias is exposed, say that the exact version is not yet known instead of inventing a version or claiming no alternatives exist. The runner saves the review result JSON without account-expiry metadata; report the actual model ID from response metadata alongside the findings.
 
 ## The peer has to be there
 
@@ -48,11 +46,23 @@ precondition.
 
 Set `CLAUDE_PEER_MODEL` to the requested alias or full model ID, or `opus` when none was requested; use it for every handoff below.
 
-## Bound each handoff
+## Run a checked handoff
 
-Use the model's native output allowance instead of imposing a fixed token cap. Pass `--max-turns 1 --effort medium` on every invocation. The turn flag does not bound internal output-limit recovery: in Claude Code 2.1.319, a controlled call with `CLAUDE_CODE_MAX_OUTPUT_TOKENS=512` still produced `num_turns: 4`. Recovery can also occur at the native limit; validate the result rather than assuming one API call. Do not rely on `CLAUDE_CODE_MAX_TURNS`. Do not pass `--max-budget-usd` by default. It bounds a local list-price estimate, not actual charges, and internal recovery can overshoot it. On a metered route, use it only with a limit the operator approved.
+Resolve the installed helper before calling:
 
-Choose a distinct new durable artifact path for each handoff before calling and set `PEER_REVIEW_OUTPUT` to it in the same shell invocation. Save the complete JSON there before interpreting it. Accept a verdict only when `subtype` is `success`, `is_error` is false, `num_turns` is one, `result` is nonempty, `api_error` is null or absent and `terminal_reason` is absent or `completed`. Reject `stop_reason: max_tokens`. `subtype: success` and `stop_reason` alone do not exclude an internal recovery failure. Reject an explicit token/turn/budget stop when reported, even after a successful process exit. A capped reply is incomplete; do not silently repeat or accept a continuation tail as the whole review. A bounded follow-up keeps the full artifact scope, not just its unreviewed tail.
+```bash
+INTERVISION_ROOT="$(codex plugin list --json | jq -er '.installed[] | select(.pluginId == "intervision@laicluse-agent-fieldkit") | .source.path')" || exit 1
+CLAUDE_REVIEW="$INTERVISION_ROOT/bin/claude-review"
+test -x "$CLAUDE_REVIEW" || { echo "intervision review runner is missing; refresh the installed plugin" >&2; exit 1; }
+```
+
+The runner uses `claude -p` with the selected model, medium effort, native output allowance, one turn, `--safe-mode`, an explicit reviewer role and no tools. Supplied skills, prompts and transcripts are review data, not instructions to execute. It preserves the verified billing route; do not substitute `--bare`, whose current CLI authentication is API-key-only. Give the complete task and artifacts on stdin; missing context remains a finding rather than a fabricated tool call.
+
+Choose a distinct durable path and set `PEER_REVIEW_OUTPUT` before each call. The runner writes result JSON itself, preserves the provider result when final validation fails, and refuses an existing output path. Interrupted runs retain an explicit incomplete receipt. For images, supply the complete user message as stream-json with `--input-format stream-json`.
+
+Streaming checks stop the owned peer process as soon as literal tool-invocation markup, a blank-output loop, `max_tokens` or refusal is observed. The runner requests no continuation or fallback, but a recovery request the CLI already issued cannot be recalled; this is not a hard API-call or spend bound. Overflow detection depends on the CLI forwarding its stream events. `--max-turns 1` alone does not bound Claude Code's internal output-limit recovery. A stopped or incomplete response is not a review; preserve its result and investigate the failure before any new execution. Do not narrow the artifact scope, resume a refusal, change models or retry merely because a call failed.
+
+Accept only a successful runner exit and a complete result with `subtype: success`, `is_error: false`, one turn, nonempty `result`, no `api_error`, `terminal_reason` absent or `completed`, and no limit stop. The result must identify exactly one matching model; absent model metadata, a substituted model or observed recovery is invalid. Do not impose an arbitrary output cap or dollar budget: native allowance avoids truncating normal reviews, while stream checks reject the observed malformed output. For metered routes, the billing approval above still applies.
 
 ## Give Claude time to think
 
@@ -69,7 +79,7 @@ operator informed during the wait at the host's normal progress-update cadence.
 
 ## Three ways to get the second opinion
 
-Pick by what just happened. All three run through `claude -p`, and they
+Pick by what just happened. All three use the checked `claude-review` runner, and they
 combine: review a diff first, then go back and forth on whatever the review
 leaves open.
 
@@ -88,7 +98,7 @@ Do not summarize the work first:
   git diff --no-ext-diff
   printf '\n## untracked files\n'
   git ls-files --others --exclude-standard
-} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
+} | "$CLAUDE_REVIEW" --model "$CLAUDE_PEER_MODEL" --output "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
 ```
 
 For a branch or single commit, replace the diff block with the concrete range:
@@ -105,12 +115,12 @@ fi
 {
   printf 'Peer review this branch diff. Report findings first and do not edit files.\n\n'
   git diff --no-ext-diff "$DEFAULT"...HEAD
-} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
+} | "$CLAUDE_REVIEW" --model "$CLAUDE_PEER_MODEL" --output "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
 
 {
   printf 'Peer review this commit. Report findings first and do not edit files.\n\n'
   git show --stat --patch <sha>
-} | env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
+} | "$CLAUDE_REVIEW" --model "$CLAUDE_PEER_MODEL" --output "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}"
 ```
 
 **2. Weigh a design just discussed, when there is no code yet.** Give Claude
@@ -118,20 +128,20 @@ the actual design context on stdin. Keep the shaky parts in; a flattering
 summary buys a flattering review.
 
 ```bash
-env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
+"$CLAUDE_REVIEW" --model "$CLAUDE_PEER_MODEL" --output "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
 Peer review this plan before we build it. Do not edit files.
 <paste the design, the trade-off, the open question, including the parts we are unsure about>
 PROMPT
 ```
 
 **3. Go back and forth.** A single answer is consultation; intervision is a
-conversation. Continue with a fresh `claude -p` handoff that quotes the peer's
+conversation. Continue with a fresh checked handoff that quotes the peer's
 prior finding and your evidence. Do not loop on vibes; push one concrete point
 at a time. To escalate, keep the same prompt with the previous answer quoted
 underneath and move `--model` one tier up.
 
 ```bash
-env -u CLAUDE_CODE_MAX_OUTPUT_TOKENS DD_HEADLESS=1 claude -p --max-turns 1 --effort medium --model "$CLAUDE_PEER_MODEL" --output-format json --input-format text --setting-sources "" --tools "" > "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
+"$CLAUDE_REVIEW" --model "$CLAUDE_PEER_MODEL" --output "${PEER_REVIEW_OUTPUT:?choose a durable artifact path}" <<'PROMPT'
 You flagged X as a race. The lock at <file:line> already serialises that path.
 Does that change your read? Do not edit files.
 PROMPT
@@ -160,7 +170,7 @@ The round-trip only earns its cost if the handoff is honest.
   yours.
 - **Stay a peer, not a deferrer.** A second agent is not an authority. When the
   peer is wrong, say so and push back. When it is right, concede plainly.
-- **Keep the peer reviewing, not editing.** `--tools ""` removes file and shell
+- **Keep the peer reviewing, not editing.** The checked runner removes file and shell
   tools from the Claude handoff; the prompt still says "do not edit files"
   because the peer is there to propose, not land changes.
 - **Never expand the handoff through the shell.** A pasted design or follow-up

@@ -5,3 +5,4 @@
 !.agents/
 !.agents/plugins/
 !.agents/plugins/**
+__pycache__/
