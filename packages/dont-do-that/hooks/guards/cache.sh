@@ -9,7 +9,7 @@ guard_cache() {
   dd_is_wip "$text" && return 0
 
   echo "$text" \
-    | grep -qiE "(het probleem is|komt door|ligt aan|veroorzaakt door|schuld van).*(cache|gecachet)|(cache|gecachet).*(stale|verouderd|invalide|probleem|oorzaak)|wacht.*(cache|10 minuten).*invalideer|browser.*(cache|gecachet|oude.*versie)|hard.refresh|Cmd.*Shift.*R|esbuild.*watcher.*(niet|cache)|oude.*\b(JS|javascript|bundle|assets)\b" \
+    | grep -qiE "(het probleem is|komt door|ligt aan|veroorzaakt door|schuld van).*(cache|gecachet)|(cache|gecachet).*(stale|verouderd|invalide|probleem|oorzaak)|wacht.*(cache|10 minuten).*invalideer|browser.*(cache|gecachet|oude.*versie)|hard.refresh|Cmd.*Shift.*R|esbuild.*watcher.*(niet|cache)|\boude[^[:alnum:].!?:;]+([[:alnum:]-]+[^[:alnum:].!?:;]+){0,3}(JS|javascript|bundle|assets)\b" \
     || return 0
 
   # A clean profile that behaves differently is evidence, not a rationalisation.

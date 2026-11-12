@@ -15,6 +15,19 @@ matches() {
   ! matches "oude en.yml (enige verschil: de zes lijstnummers)"
 }
 
+@test "reads oude as a whole word at most three words before the asset in the same sentence" {
+  ! matches "De oude remote branch. Na \`bundle install\` zijn de gems bijgewerkt."
+  matches "de oude bundle"
+  matches "de oude versie van de bundle"
+  matches "oude, JS bundle"
+  matches "oude  assets"
+  matches "oude **assets**"
+  matches "oude \`assets\`"
+  ! matches "een verouderde bundle"
+  ! matches "de oude versie van de nieuwe bundle"
+  ! matches "de oude remote branch van gisteren en daarna bundle install"
+}
+
 @test "still blocks stale JS bundle claims" {
   matches "de oude JS bundle staat nog in de browser"
 }

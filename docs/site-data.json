@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.94",
+			"version": "2.0.95",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 38,
 			"latestChange": {
-				"version": "v2.0.94",
-				"type": "Added",
-				"summary": "The dangling-reference guard blocks a final answer that refers to \"punt 4\", \"points 2 to 4\" or a similar item number without describing those items in the same answer; the reader does not scroll back."
+				"version": "v2.0.95",
+				"type": "Fixed",
+				"summary": "The cache guard no longer blocks \"een verouderde bundle\" or an answer that mentions \"de oude remote branch\" and later bundle install."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.94",
+			"packageVersion": "2.0.95",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.94",
-			"type": "Added",
-			"summary": "The dangling-reference guard blocks a final answer that refers to \"punt 4\", \"points 2 to 4\" or a similar item number without describing those items in the same answer; the reader does not scroll back.",
+			"version": "v2.0.95",
+			"type": "Fixed",
+			"summary": "The cache guard no longer blocks \"een verouderde bundle\" or an answer that mentions \"de oude remote branch\" and later bundle install.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

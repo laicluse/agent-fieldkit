@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.95] - 2026-11-12
+
+### Fixed
+
+- The cache guard no longer blocks "een verouderde bundle" or an answer that mentions "de oude remote branch" and later `bundle install`. It read "oude" inside longer words and across a whole line. It now needs "oude" as a whole word at most three words before JS, javascript, bundle or assets, within the same sentence. Claude, Codex.
+
 ## [v2.0.94] - 2026-11-09
 
 ### Added
