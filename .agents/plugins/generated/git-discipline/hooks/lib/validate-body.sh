@@ -417,7 +417,7 @@ _vb_err() { _vb_errors+=("$1"); }
       done <<< "$tests_paths"
 
       # Validate path format for at least one entry.
-      local path_re='[a-zA-Z0-9_./ -]+\.(rb|py|js|mjs|cjs|ts|go|rs|sh|bash|bats|feature|tsx|jsx|swift)$'
+      local path_re='[a-zA-Z0-9_./ -]+\.(rb|py|js|mjs|cjs|ts|go|rs|sh|bash|bats|feature|tsx|jsx|swift|kt)$'
       local has_valid_format=0
       while IFS= read -r path; do
         local clean_path="${path%%#*}"
@@ -459,7 +459,7 @@ _vb_err() { _vb_errors+=("$1"); }
       # The path must end in a recognized spec extension and must appear in
       # the staged diff so the rote attestation "yes" cannot be replaced by
       # an equally rote "name some random spec file in the repo".
-      local rtg_path_re='^([a-zA-Z0-9_./ -]+\.(rb|py|js|mjs|cjs|ts|tsx|jsx|go|rs|sh|bash|bats|feature|swift))(:.*)?$'
+      local rtg_path_re='^([a-zA-Z0-9_./ -]+\.(rb|py|js|mjs|cjs|ts|tsx|jsx|go|rs|sh|bash|bats|feature|swift|kt))(:.*)?$'
       if [[ "$rtg_value" =~ $rtg_path_re ]]; then
         local rtg_path="${BASH_REMATCH[1]}"
         local rtg_suffix="${BASH_REMATCH[3]#:}"
@@ -531,7 +531,7 @@ _vb_err() { _vb_errors+=("$1"); }
 				"(it|test|describe|context|specify)[[:space:]]*\\(?[[:space:]]*[\"']${rtg_esc}[\"']"
 				"(@test|@Test\\()[[:space:]]*[\"']${rtg_esc}[\"']"
                 "Scenario:[[:space:]]*${rtg_esc}([[:space:]]|$)"
-                "func[[:space:]]+${rtg_esc}[[:space:]]*\\("
+                "(func|fun)[[:space:]]+${rtg_esc}[[:space:]]*\\("
                 "def[[:space:]]+${rtg_esc}[[:space:]]*\\("
               )
               local pat
@@ -727,7 +727,7 @@ _vb_err() { _vb_errors+=("$1"); }
       # was actually observed; `Verified: red-then-green` is the form that
       # anchors a claim to a spec, and it checks that spec against the
       # staged diff.
-      if [[ "${verified_value%%:*}" =~ \.(sh|bash|bats|rb|py|js|mjs|cjs|ts|tsx|jsx|go|swift|feature)$ ]]; then
+      if [[ "${verified_value%%:*}" =~ \.(sh|bash|bats|rb|py|js|mjs|cjs|ts|tsx|jsx|go|swift|kt|feature)$ ]]; then
         _vb_err "$(printf 'verified-path-is-source: Verified path "%s" is a source/spec file, not an artefact of something you observed. Naming a runner claims a test exists, not that it exercised THIS change. Use Verified: red-then-green (which anchors the spec to the staged diff), Verified: agent-confirmed with a Verified-how sentence, Verified: operator-confirmed, an artefact path (screenshot / log / recording), or n/a (reason).' "$verified_value")"
       fi
 

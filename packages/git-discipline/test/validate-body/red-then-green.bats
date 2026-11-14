@@ -115,6 +115,34 @@ MSG
   [ "$status" -eq 0 ]
 }
 
+@test "Red-then-green: Kotlin test path present in staged diff is accepted" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="app/src/test/NotesTest.kt"
+  use_trailers "Tests: spec/services/session_spec.rb"$'\n'"Slice: Android integration"$'\n'"Red-then-green: app/src/test/NotesTest.kt"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-kotlin-path-staged.txt" "$(_body_with_rtg "app/src/test/NotesTest.kt")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
+@test "Red-then-green: Kotlin named test is accepted" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="app/src/test/NotesTest.kt"
+  set_staged_blob "app/src/test/NotesTest.kt" '@Test
+fun opensExistingNotebook() {
+  assertTrue(opened)
+}'
+  use_trailers "Tests: spec/services/session_spec.rb"$'\n'"Slice: Android integration"$'\n'"Red-then-green: app/src/test/NotesTest.kt:2 # opensExistingNotebook"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-kotlin-named-test.txt" "$(_body_with_rtg "app/src/test/NotesTest.kt:2 # opensExistingNotebook")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "Red-then-green: spec-path NOT in staged diff fails with red-then-green-path-not-in-staged" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="app/services/session.rb"

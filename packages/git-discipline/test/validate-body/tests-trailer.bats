@@ -51,6 +51,18 @@ MSG
   [ "$status" -eq 0 ]
 }
 
+@test "Kotlin Tests path present in staged diff passes" {
+  export GIT_SHIM_LS_TREE_OUTPUT=""
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="app/src/test/NotesTest.kt"
+  use_trailers "Tests: app/src/test/NotesTest.kt"$'\n'"Slice: Android integration"$'\n'"Red-then-green: n/a (fixture verifies Kotlin test evidence)"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "kotlin-tests-found.txt" "$(_body_with_trailers "Tests: app/src/test/NotesTest.kt")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
 @test "Node .mjs Tests path present in staged diff passes" {
   export GIT_SHIM_LS_TREE_OUTPUT=""
   export GIT_SHIM_DIFF_CACHED_OUTPUT="packages/tilt/test/skill-contract.test.mjs"

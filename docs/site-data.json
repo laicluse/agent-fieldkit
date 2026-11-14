@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.101",
+			"version": "2.0.102",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -253,9 +253,9 @@
 			"commandCount": 5,
 			"hookFileCount": 33,
 			"latestChange": {
-				"version": "v2.0.98",
+				"version": "v2.0.102",
 				"type": "Fixed",
-				"summary": "Visual captures now follow the destination vault's README and folder conventions, keeping each check and its images in the intended project folder."
+				"summary": "Kotlin tests can now be named in Tests and Red-then-green, including identifier-named fun declarations."
 			}
 		},
 		{
@@ -635,11 +635,11 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.101",
+			"packageVersion": "2.0.102",
 			"detailPath": "agent-fieldkit/git-discipline/",
-			"version": "v2.0.98",
+			"version": "v2.0.102",
 			"type": "Fixed",
-			"summary": "Visual captures now follow the destination vault's README and folder conventions, keeping each check and its images in the intended project folder.",
+			"summary": "Kotlin tests can now be named in Tests and Red-then-green, including identifier-named fun declarations.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/git-discipline/CHANGELOG.md"
 		},
 		{

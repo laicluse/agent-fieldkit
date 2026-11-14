@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.102]
+
+### Fixed
+
+- Kotlin tests can now be named in `Tests` and `Red-then-green`, including identifier-named `fun` declarations. Kotlin source files remain ineligible as observation artifacts in `Verified`.
+
 ## [v2.0.98]
 
 ### Fixed

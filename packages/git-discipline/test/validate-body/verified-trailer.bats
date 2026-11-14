@@ -117,6 +117,21 @@ _trailers_with_agent_confirmed() {
   [[ "$output" == *"verified-path-is-source"* ]]
 }
 
+@test "Verified: Kotlin spec path is not an observation artifact" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  local artefact
+  artefact=$(write_visual_path "app/src/test/NotesTest.kt")
+  local rel="app/src/test/NotesTest.kt"
+  use_trailers "$(_trailers_with_verified "$rel")"
+
+  local file
+  file=$(write_fixture "verified-kotlin-source.txt" "$(_body_with_verified "$rel")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"verified-path-is-source"* ]]
+}
+
 @test "Verified: <artefact path> stays accepted alongside the source guard" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   local artefact
