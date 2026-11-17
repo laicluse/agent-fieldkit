@@ -143,6 +143,38 @@ fun opensExistingNotebook() {
   [ "$status" -eq 0 ]
 }
 
+@test "Red-then-green: Ruby minitest def without parentheses is accepted" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="test/test_notes.rb"
+  set_staged_blob "test/test_notes.rb" 'class NotesTest < Minitest::Test
+  def test_opens_existing_notebook
+    assert opened
+  end
+end'
+  use_trailers "Tests: spec/services/session_spec.rb"$'\n'"Slice: notes service"$'\n'"Red-then-green: test/test_notes.rb:2 # test_opens_existing_notebook"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-ruby-minitest-def.txt" "$(_body_with_rtg "test/test_notes.rb:2 # test_opens_existing_notebook")")
+
+  run invoke_validator "$file"
+  [ "$status" -eq 0 ]
+}
+
+@test "Red-then-green: a def whose name only starts with the named test is not a match" {
+  export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
+  export GIT_SHIM_DIFF_CACHED_OUTPUT="test/test_notes.rb"
+  set_staged_blob "test/test_notes.rb" '  def test_opens_existing_notebook_twice
+  end'
+  use_trailers "Tests: spec/services/session_spec.rb"$'\n'"Slice: notes service"$'\n'"Red-then-green: test/test_notes.rb:1 # test_opens_existing_notebook"$'\n'"Verified: operator-confirmed"
+
+  local file
+  file=$(write_fixture "rtg-ruby-minitest-prefix.txt" "$(_body_with_rtg "test/test_notes.rb:1 # test_opens_existing_notebook")")
+
+  run invoke_validator "$file"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"red-then-green-test-not-found"* ]]
+}
+
 @test "Red-then-green: spec-path NOT in staged diff fails with red-then-green-path-not-in-staged" {
   export GIT_SHIM_LS_TREE_OUTPUT="spec/services/session_spec.rb"
   export GIT_SHIM_DIFF_CACHED_OUTPUT="app/services/session.rb"
