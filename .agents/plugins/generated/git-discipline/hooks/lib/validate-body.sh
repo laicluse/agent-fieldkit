@@ -524,7 +524,8 @@ _vb_err() { _vb_errors+=("$1"); }
               # Quoted-name patterns (Quick / RSpec / Jest / Mocha / bats /
               # Swift Testing / Cucumber Scenario): match the literal name
               # inside the quotes or after the keyword. Function-name patterns
-              # (XCTest, pytest): match the bare identifier.
+              # (XCTest, pytest, minitest): match the bare identifier; Ruby
+              # defs may omit the parentheses.
               local rtg_esc
               rtg_esc=$(printf '%s' "$rtg_name" | sed 's/[][\.*^$(){}+?|/]/\\&/g')
               local rtg_patterns=(
@@ -532,7 +533,7 @@ _vb_err() { _vb_errors+=("$1"); }
 				"(@test|@Test\\()[[:space:]]*[\"']${rtg_esc}[\"']"
                 "Scenario:[[:space:]]*${rtg_esc}([[:space:]]|$)"
                 "(func|fun)[[:space:]]+${rtg_esc}[[:space:]]*\\("
-                "def[[:space:]]+${rtg_esc}[[:space:]]*\\("
+                "def[[:space:]]+${rtg_esc}([[:space:]]*\\(|[[:space:]]*$|[[:space:]]*;)"
               )
               local pat
               local rtg_found=0

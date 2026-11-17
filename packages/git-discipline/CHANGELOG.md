@@ -19,6 +19,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 Version numbers may therefore be non-contiguous (an internal refactor bumps
 the version without producing an entry here).
 
+## [v2.0.103]
+
+### Fixed
+
+- `Red-then-green` now finds Ruby minitest tests declared as `def test_name` without parentheses.
+
 ## [v2.0.102]
 
 ### Fixed
