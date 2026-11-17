@@ -20,6 +20,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.46]
+
+### Added
+
+- **The reference now covers project skills that live outside a plugin.** It records which project path each host loads, that Codex prefers `AGENTS.override.md`, and the three separate claims of findable, loadable and working. `circus project build` derives a Codex stack from a Claude-authored repository.
+
 ## [v2.0.45]
 
 ### Changed

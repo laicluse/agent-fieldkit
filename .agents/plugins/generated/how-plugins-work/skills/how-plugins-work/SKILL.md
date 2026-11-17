@@ -132,6 +132,25 @@ A Codex plugin is technically needed only when Codex must receive plugin runtime
 
 Decision rule: choose `skills add` for instruction-only skills, choose a Codex plugin when the workflow depends on MCP tools or other plugin-owned runtime files, and keep both routes documented when they serve different users. The reference may still have an opinion about the cleaner product shape; say "prefer the plugin route because it keeps generated runtime views and install metadata together" when that is the judgment. Do not relabel that judgment as "technically necessary" unless a platform rule or a local install test proves the `skills` route cannot provide the needed behavior.
 
+## Project skills without a plugin
+
+A repository can keep skills in its tree without packaging them. No project path is read by both hosts (binaries inspected and Codex prompt input rendered on 2026-11-17, Claude Code 2.1.326 and Codex CLI 0.169.0):
+
+| Host | Loads project skills from | Does not load |
+| --- | --- | --- |
+| Claude Code | `.claude/skills/<skill>/SKILL.md` | `.agents/skills/` (only an importer reads it, and it skips symlinks) |
+| Codex | `.agents/skills/<skill>/SKILL.md`, also when Git ignores the path | `.claude/skills/` |
+
+Per directory Codex reads one instruction file, `AGENTS.override.md` when present and otherwise `AGENTS.md`, along the path from the project root to the working directory. A generated override therefore replaces a tracked `AGENTS.md` for Codex without touching it.
+
+Three levels of support are separate claims; state the one you verified:
+
+1. **Findable.** The host lists the skill. Verify in the host, for Codex with `codex debug prompt-input "x"`, which renders the model-visible skill catalog without a model call. That catalog is budgeted, so a missing skill there is not yet a discovery failure.
+2. **Loadable.** The frontmatter parses under the host's rules. Codex 0.169.0 reads `name`, `description` and `metadata.short-description`, rejects a skill without a description, and repairs only some invalid plain scalars; emit strict YAML and do not rely on the repair.
+3. **Working.** The workflow completes in that host. A skill that waits, resumes, notifies or keeps session state through one host's tools is not portable by copying; skip it for the other host until a variant exists and has run there.
+
+`circus project build` implements levels 1 and 2 for a Claude-authored repository and skips skills whose `SKILL.md` mentions a host-only facility. That check matches mentions, not dependencies, and it cannot prove level 3; only a run in the host does.
+
 ## OpenCode: Agent Skills without a marketplace
 
 OpenCode does not consume the Claude or Codex marketplace manifests described above. It discovers Agent Skills from `.opencode/skills/<name>/SKILL.md`, `.claude/skills/<name>/SKILL.md`, and `.agents/skills/<name>/SKILL.md`, both project-local and in the corresponding user-level roots. It exposes each discovered skill's `name` and `description` through its native `skill` tool, and the agent loads the full body on demand with `skill({ name: "<skill>" })`. See the [OpenCode Agent Skills documentation](https://opencode.ai/docs/skills/).

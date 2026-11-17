@@ -8,7 +8,7 @@ description: >-
 # circus
 
 The Circus (le Carre's nickname for MI6) is a central source that briefs each
-coding agent. It has three levels and three command groups.
+coding agent. It has three levels; the project level has two command groups.
 
 ## Explicit Invocation
 
@@ -22,7 +22,9 @@ First identify the intended level:
 - **User level**: global agent doctrine under `~/.laicluse/circus/`; edit the
   source there and run `circus build`.
 - **Project level**: instructions inside the current repo or directory; create
-  or edit `CIRCUS.md` as the source of truth and run `circus sync <path>`.
+  or edit `CIRCUS.md` as the source of truth and run `circus sync <path>`. When
+  the repo is authored for Claude only and must not depend on Circus, leave
+  its files alone and run `circus project build <path>`.
 - **Plugin level**: marketplace/plugin metadata or skill adapters; edit the
   plugin source and run the relevant `circus plugins build|check|diff`.
 
@@ -75,6 +77,53 @@ file was edited:
 - both `CLAUDE.md` and `AGENTS.md` edited differently -> conflict
 
 Commit the synced state so the ancestor moves with it.
+
+## Project Level: `circus project`
+
+Derives a Codex project stack from a repo whose originals are Claude-shaped:
+`CLAUDE.md` files and plugin-less skills under `.claude/skills/`. Use it when
+the repo must keep working without Circus, or when its maintainers only
+author for Claude. `circus sync` keeps three files identical; this command
+supports differences per agent.
+
+```
+circus project build [repo]   write the stack
+circus project check [repo]   exit 1 on drift
+circus project diff [repo]    show what build would change
+```
+
+Output, each file with a `<!-- GENERATED from <original> ... -->` banner that
+names its own original:
+
+- `.agents/skills/<skill>/`: a copy of each skill. The frontmatter keeps
+  `name`, `description`, `license`, `compatibility` and `metadata` as strict
+  YAML; the banner follows the frontmatter. Support files keep their mode.
+- `AGENTS.override.md` beside a `CLAUDE.md` whose Codex view differs from the
+  `AGENTS.md` already there. Codex reads the override instead of `AGENTS.md`,
+  so a tracked `AGENTS.md` stays untouched.
+
+The banner decides ownership. Build rewrites and removes only what carries it;
+a skill directory or override without the banner is handwritten and kept.
+Circus does not touch ignore rules: whether the output is tracked or hidden
+from collaborators is decided in `.gitignore`, the global ignore file or
+`info/exclude`, like any other file.
+
+A skill that mentions a Claude Code facility for waiting, resuming or session
+state (`Monitor` in `allowed-tools`, `ScheduleWakeup`, `TaskStop`,
+`CronCreate`, `CLAUDE_CODE_SESSION_ID`, `/loop`) is skipped and reported with
+the reason. Softer mentions (`PushNotification`, `AskUserQuestion`, `Skill(`)
+are built and reported. The check matches mentions in `SKILL.md`, not real
+dependencies, and does not read support files; correct it per skill below. A
+built skill is findable, not proven to work.
+
+Differences per agent:
+
+- In `CLAUDE.md`, wrap Claude-only text in `<!-- circus:only claude -->` and
+  `<!-- circus:end -->`; it is left out of the Codex view.
+- `.circus/codex.md` is appended to the root Codex view.
+- `.circus/skills` overrides detection per line: `+name` builds, `-name` skips.
+
+Rebuild after the originals change; `check` tells whether that is needed.
 
 ## Plugin Level: `circus plugins`
 
@@ -138,6 +187,7 @@ agent merges with its own judgment:
 ```
 circus build [--force] [name]  user level: generate supported targets from shared + specifics
 circus sync [path]             project level: keep CIRCUS.md/CLAUDE.md/AGENTS.md equal
+circus project <command>       project level: build/check/diff a Codex stack from CLAUDE.md and .claude/skills
 circus check                   report drift between source and user targets
 circus diff                    show what a build would change
 circus plugins <command>       build/check adapters or check/update plugin versions

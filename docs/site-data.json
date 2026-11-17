@@ -150,7 +150,7 @@
 	"plugins": [
 		{
 			"name": "how-plugins-work",
-			"version": "2.0.50",
+			"version": "2.0.51",
 			"category": "feedback",
 			"summary": "Explains plugin naming, runtime caches, adapter sync, and invocation rules when the marketplace shape gets confusing.",
 			"support": [
@@ -165,9 +165,9 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.45",
-				"type": "Changed",
-				"summary": "The authoring guidance now warns that disable-model-invocation blocks mid-message slash commands."
+				"version": "v2.0.46",
+				"type": "Added",
+				"summary": "The reference now covers project skills that live outside a plugin."
 			}
 		},
 		{
@@ -611,7 +611,7 @@
 		},
 		{
 			"name": "circus",
-			"version": "2.0.13",
+			"version": "2.0.14",
 			"category": "feedback",
 			"summary": "One source of truth for shared and agent-specific instructions, project-level CIRCUS.md sync, Codex plugin adapters, and marketplace versioning across coding agents.",
 			"support": [
@@ -662,11 +662,11 @@
 		},
 		{
 			"plugin": "how-plugins-work",
-			"packageVersion": "2.0.50",
+			"packageVersion": "2.0.51",
 			"detailPath": "agent-fieldkit/how-plugins-work/",
-			"version": "v2.0.45",
-			"type": "Changed",
-			"summary": "The authoring guidance now warns that disable-model-invocation blocks mid-message slash commands.",
+			"version": "v2.0.46",
+			"type": "Added",
+			"summary": "The reference now covers project skills that live outside a plugin.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/how-plugins-work/CHANGELOG.md"
 		},
 		{
@@ -734,7 +734,7 @@
 		},
 		{
 			"plugin": "circus",
-			"packageVersion": "2.0.13",
+			"packageVersion": "2.0.14",
 			"detailPath": "agent-fieldkit/circus/",
 			"version": "v2.0.7",
 			"type": "Fixed",

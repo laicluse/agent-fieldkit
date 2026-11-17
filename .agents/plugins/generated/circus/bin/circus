@@ -344,6 +344,7 @@ circus - briefs every coding agent with shared doctrine plus an agent-specific l
 
   circus build [--force] [name]   generate all targets (or one target)
   circus sync [path]              keep project-level CIRCUS.md/CLAUDE.md/AGENTS.md in sync
+  circus project <command>        build, check, or diff a Codex project stack derived from CLAUDE.md and .claude/skills
   circus check                    report drift between source and targets (exit 1 on drift)
   circus diff                     show what a build would change for each target
   circus plugins <command>        build, check, diff, or version plugin adapters
@@ -365,6 +366,7 @@ main() {
     check) cmd_check "$@" ;;
     diff)  cmd_diff "$@" ;;
     plugins) cmd_plugins "$@" ;;
+    project) /usr/bin/python3 "$(dirname "${BASH_SOURCE[0]}")/../lib/project_stack.py" "$@" ;;
     list)  cmd_list "$@" ;;
     edit)  cmd_edit "$@" ;;
     ""|-h|--help|help) usage ;;
