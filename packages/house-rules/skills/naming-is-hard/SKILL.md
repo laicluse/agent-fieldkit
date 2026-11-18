@@ -68,8 +68,10 @@ Public attribution references:
 - Notes, folders and attachments in a Markdown vault are titles, not code
   names. Name them like a person titles them, in the vault's language, with
   sentence-case capitals, spaces and diacritics: `Gap-analyse visuele taal.md`,
-  never `gap-analyse-2026-09-30.md`. A distinguishing date or sequence goes in
-  front with ` · `, as Tilt does: `2026-09-30 · Gap-analyse visuele taal`.
+  never `gap-analyse-2026-09-30.md`. A distinguishing moment goes in front as
+  the minute it was made, with ` · `: `20260930-1028 · Gap-analyse visuele
+  taal`; a second dossier in the same folder and minute takes `-2`. A
+  distinguishing sequence works the same way: `01 · Agenda.png`.
 - Human conversation may be Dutch when the channel or project uses Dutch, but
   technical terms, library names, framework names, product names, and domain
   jargon stay in their established language.

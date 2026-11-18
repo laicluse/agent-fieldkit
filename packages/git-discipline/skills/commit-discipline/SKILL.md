@@ -269,7 +269,7 @@ file).
 
 **`Visual` rules:** the trailer exists so you look at the visual result of your own work before it is committed, pushed and published. Code and HTML that pass every test can still render wrong, and only looking shows it. The point is to test your own assumption about the result, not to hand the operator a picture.
 
-The value is `<what you expected to see, and saw> -> <capture path>`, for example `Visual: searching "reset button" lists the reset chapter first -> ~/notes/visual-checks/2026-10-01 · search order.png`. The sentence before `->` names the assumption you checked in the render (at least 15 characters); the path points to the screenshot or recording you looked at. At commit time the file must exist and must be newer than the newest UI file in the staged diff, so a capture from before the last change does not count. Relative paths resolve against the repo root; `~/` and absolute paths are allowed.
+The value is `<what you expected to see, and saw> -> <capture path>`, for example `Visual: searching "reset button" lists the reset chapter first -> ~/notes/visual-checks/20261001-1415 · search order.png`. The sentence before `->` names the assumption you checked in the render (at least 15 characters); the path points to the screenshot or recording you looked at. At commit time the file must exist and must be newer than the newest UI file in the staged diff, so a capture from before the last change does not count. Relative paths resolve against the repo root; `~/` and absolute paths are allowed.
 
 Keep captures where this machine keeps visual checks. Before saving one, look among your available skills and the user's agent instructions for a shared notes vault meant for screenshots or visual checks; an Obsidian-compatible Markdown vault is a common setup. When it exists, read its vault skill and README before writing and follow their folder and attachment conventions. Save one note per check with the assumption, commit and image in the intended folder, and point the trailer at that image. Without such a place, use a folder the repository ignores. Whether captures are committed is the repository's choice; the check itself is what the trailer asks for.
 
@@ -607,7 +607,7 @@ Slice: frontend layer
 Red-then-green: spec/views/onboarding_view_spec.rb:18 # renders the banner above the tab strip
 Verified: agent-confirmed
 Verified-how: Due to the banner only showing in a running app, this was confirmed by opening onboarding in the simulator and seeing the banner above the tab strip.
-Visual: the banner sits above the tab strip and pushes nothing off screen -> ~/notes/visual-checks/2026-10-01 · onboarding banner.png
+Visual: the banner sits above the tab strip and pushes nothing off screen -> ~/notes/visual-checks/20261001-1415 · onboarding banner.png
 ```
 
 `Visual:` may also be `n/a (reason)` for false positives of the

@@ -238,7 +238,7 @@
 		},
 		{
 			"name": "git-discipline",
-			"version": "2.0.103",
+			"version": "2.0.104",
 			"category": "workflow",
 			"summary": "Coordinates verified worktree candidates, atomic default-branch merges, and shared commit and push enforcement.",
 			"support": [
@@ -523,7 +523,7 @@
 		},
 		{
 			"name": "house-rules",
-			"version": "2.0.32",
+			"version": "2.0.33",
 			"category": "feedback",
 			"summary": "Apply chosen conventions for naming, testing, programming, removing superseded residue, and keeping authoring context out of artifacts.",
 			"support": [
@@ -635,7 +635,7 @@
 	"changelog": [
 		{
 			"plugin": "git-discipline",
-			"packageVersion": "2.0.103",
+			"packageVersion": "2.0.104",
 			"detailPath": "agent-fieldkit/git-discipline/",
 			"version": "v2.0.103",
 			"type": "Fixed",
@@ -698,7 +698,7 @@
 		},
 		{
 			"plugin": "house-rules",
-			"packageVersion": "2.0.32",
+			"packageVersion": "2.0.33",
 			"detailPath": "agent-fieldkit/house-rules/",
 			"version": "v2.0.32",
 			"type": "Added",

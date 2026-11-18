@@ -120,8 +120,10 @@ Markdown vault content is the exception. A note, folder or attachment in an
 Obsidian-style vault is read by people, so its name is a title in the vault's
 language: sentence-case capitals, spaces and diacritics, such as
 `Gap-analyse visuele taal.md` instead of `gap-analyse-2026-09-30.md`. When a
-date or sequence distinguishes siblings, it goes in front with ` · `, as Tilt
-names its ideas: `2026-09-30 · Gap-analyse visuele taal`, `01 · Agenda.png`.
+moment distinguishes siblings, the minute it was made goes in front with
+` · `: `20260930-1028 · Gap-analyse visuele taal`, and a second dossier in the
+same folder and minute takes `-2`. A distinguishing sequence works the same
+way: `01 · Agenda.png`.
 Conventional files such as `README.md`, instruction files and code inside a
 vault keep their code names.
 
