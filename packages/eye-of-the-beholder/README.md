@@ -10,13 +10,15 @@ Three mechanisms keep that reasoning from freezing at a model's training median.
 
 ## Skills
 
+The entry point selects `explore`, `define` and `review` as internal stages. In Claude Code only `eye-of-the-beholder` and `eye-of-the-beholder:obvious` appear in the slash menu; the stages are hidden (`user-invocable: false`) and stay available to the model. Codex has no setting that hides a skill from its `$` picker while keeping it available to the model, so the stages remain listed there.
+
 | Skill | Purpose |
 | --- | --- |
 | `eye-of-the-beholder` | The single entry point: inspect context, route the request and carry accepted decisions through to the real render. |
 | `eye-of-the-beholder:obvious` | Resolve the current confusing interaction from context and reduce avoidable cognitive load through clearer controls, state and feedback. |
-| `eye-of-the-beholder:explore` | Form distinct design hypotheses from the product and real references, make them visible in the medium that suits the open question, interpret reactions and establish an accepted target. |
-| `eye-of-the-beholder:define` | Establish identity and design-system foundations when the product needs them. |
-| `eye-of-the-beholder:review` | Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately. |
+| `eye-of-the-beholder:explore` (internal stage) | Form distinct design hypotheses from the product and real references, make them visible in the medium that suits the open question, interpret reactions and establish an accepted target. |
+| `eye-of-the-beholder:define` (internal stage) | Establish identity and design-system foundations when the product needs them. |
+| `eye-of-the-beholder:review` (internal stage) | Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately. |
 
 ## Obvious
 
@@ -43,7 +45,7 @@ Both Claude Code and Codex use the same instructions; available tools must be ve
 
 ## Migration
 
-The old public skills `taste-test`, `art-director`, `fat-marker-sketch` and `visual-inspection` are retired. Use `eye-of-the-beholder` as the entry point, or `explore`, `define` and `review` when deliberately selecting a stage. Update saved instructions that invoke the old names. Image classification and reference matching remain internal protocols under `skills/review`; their useful measurement tools and fixtures are retained.
+The old public skills `taste-test`, `art-director`, `fat-marker-sketch` and `visual-inspection` are retired. Use `eye-of-the-beholder` as the entry point; it selects the `explore`, `define` and `review` stages. Update saved instructions that invoke the old names. Image classification and reference matching remain internal protocols under `skills/review`; their useful measurement tools and fixtures are retained.
 
 ## Verification
 

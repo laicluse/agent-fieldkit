@@ -1,6 +1,6 @@
 ---
 name: define
-user-invocable: true
+user-invocable: false
 description: >-
   Establish a visual identity for a new product or an explicitly requested redesign, using image references and collaborative exploration before recording design-system foundations.
 ---
