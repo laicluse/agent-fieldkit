@@ -221,6 +221,12 @@
       "function": "guard_compliance",
       "contract": "final-answer"
     },
+    "copyable-table": {
+      "lane": "stop-mutex",
+      "order": 75,
+      "function": "guard_copyable_table",
+      "contract": "final-answer"
+    },
     "jargon": {
       "lane": "stop-mutex",
       "order": 80,

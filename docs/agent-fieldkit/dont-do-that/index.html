@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.95</span>
+							<span class="meta-fact">2.0.96</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -142,6 +142,7 @@
 <li><code>duh</code>: blocks giving runnable recipes instead of running the action. Claude, Codex.</li>
 <li><code>compliance</code>: blocks reversible local confirmation questions after a clear instruction while letting external irreversible gates stay questions. Claude, Codex.</li>
 <li><code>jargon</code>: blocks coined approval-gate <code>-go</code> compounds in operator-facing text. Claude, Codex.</li>
+<li><code>copyable-table</code>: blocks a URL or long inline-code value inside a markdown table. Claude, Codex.</li>
 </ul>
 <h2 id="bash-guards">Bash guards</h2>
 <h3 id="no-shell-ui-control"><code>no-shell-ui-control</code></h3>
@@ -240,6 +241,9 @@
 <h3 id="jargon"><code>jargon</code></h3>
 <p>Blocks Stop when operator-facing text uses coined approval-gate <code>-go</code> compounds such as <code>push-go</code>, <code>ship-go</code>, <code>merge-go</code>, <code>deploy-go</code>, <code>commit-go</code>, <code>release-go</code>, <code>publish-go</code>, <code>send-go</code>, <code>post-go</code>, <code>launch-go</code>, <code>user-go</code>, <code>yolo-go</code>, or <code>approval-go</code>. Fenced code and inline-code mentions are ignored, and <code>🚧</code> skips the guard while work is in progress.</p>
 <p>Pass condition: phrase it plainly, for example &quot;waiting for your go to push&quot; or &quot;ik push zodra je het zegt&quot;, or wrap the term in backticks when naming the jargon itself.</p>
+<h3 id="copyable-table"><code>copyable-table</code></h3>
+<p>Blocks Stop when a markdown table row outside fenced code contains a URL or an inline-code value of 40 or more characters without spaces. A terminal wraps the cell, and copying the value then yields fragments joined by table borders. <code>🚧</code> skips the guard while work is in progress.</p>
+<p>Pass condition: give each copyable value its own fenced code block on its own line, outside the table. The table may name the item and refer to the block.</p>
 <h2 id="operator-skills">Operator skills</h2>
 <h3 id="duh"><code>/duh</code></h3>
 <p>The operator types <code>/duh</code> when the previous assistant turn offered a recipe, instruction, browser action, confirmation question, multi-step operator-facing plan, or declaration of inability instead of executing. The skill re-reads the immediately preceding assistant turn, resolves the proposed action, and runs it with the available shell, file-edit, browser, research, or host-native tooling.</p>

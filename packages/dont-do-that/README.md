@@ -112,6 +112,8 @@ Stop guards block weak final answers and make the agent continue:
   Codex.
 - `jargon`: blocks coined approval-gate `-go` compounds in operator-facing
   text. Claude, Codex.
+- `copyable-table`: blocks a URL or long inline-code value inside a markdown
+  table. Claude, Codex.
 
 ## Bash guards
 
@@ -420,6 +422,16 @@ and `🚧` skips the guard while work is in progress.
 Pass condition: phrase it plainly, for example "waiting for your go to push" or
 "ik push zodra je het zegt", or wrap the term in backticks when naming the
 jargon itself.
+
+### `copyable-table`
+
+Blocks Stop when a markdown table row outside fenced code contains a URL or an
+inline-code value of 40 or more characters without spaces. A terminal wraps
+the cell, and copying the value then yields fragments joined by table borders.
+`🚧` skips the guard while work is in progress.
+
+Pass condition: give each copyable value its own fenced code block on its own
+line, outside the table. The table may name the item and refer to the block.
 
 ## Operator skills
 
