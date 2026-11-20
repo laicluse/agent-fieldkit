@@ -74,16 +74,16 @@
 		{
 			"name": "Supermax",
 			"category": "Open-source JavaScript library",
-			"tagline": "Responsive cell distribution primitives for multi-pane layouts.",
+			"tagline": "A framework-free workspace shell for multi-pane applications.",
 			"pagePath": "supermax/",
 			"homepageUrl": "https://laicluse.com/supermax/",
 			"packageName": "@laicluse/supermax",
-			"install": "corepack pnpm add github:laicluse/supermax#69bf385",
+			"install": "corepack pnpm add github:laicluse/supermax#beaf89b",
 			"repoUrl": "https://github.com/laicluse/supermax",
 			"features": [
-				"Distribute a left-to-right layout across a fixed column budget.",
-				"Let a reader, editor, or dashboard decide which cells stay visible at each size.",
-				"Use a framework-free ESM package while the host application owns rendering."
+				"Open cells in chains and branching rows that fit the window.",
+				"Fold what no longer fits and keep every open cell reachable through Show.",
+				"Use a framework-free ESM package while your application owns its content, data and routing."
 			]
 		}
 	],

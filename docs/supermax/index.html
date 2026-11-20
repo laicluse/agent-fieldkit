@@ -6,7 +6,7 @@
 		<title>Supermax</title>
 		<meta
 			name="description"
-			content="Responsive cell distribution primitives for multi-pane layouts."
+			content="A framework-free workspace shell for multi-pane applications."
 		>
 		<link rel="canonical" href="https://laicluse.com/supermax/">
 
@@ -15,17 +15,17 @@
 		<meta property="og:locale" content="en_US">
 		<meta property="og:url" content="https://laicluse.com/supermax/">
 		<meta property="og:title" content="Supermax">
-		<meta property="og:description" content="Responsive cell distribution primitives for multi-pane layouts.">
+		<meta property="og:description" content="A framework-free workspace shell for multi-pane applications.">
 		<meta property="og:image" content="https://laicluse.com/assets/supermax-og-image.png?v=45a1f25293">
 		<meta property="og:image:secure_url" content="https://laicluse.com/assets/supermax-og-image.png?v=45a1f25293">
 		<meta property="og:image:type" content="image/png">
 		<meta property="og:image:width" content="1200">
 		<meta property="og:image:height" content="630">
-		<meta property="og:image:alt" content="Supermax: responsive cell distribution primitives for multi-pane layouts.">
+		<meta property="og:image:alt" content="Supermax: a framework-free workspace shell for multi-pane applications.">
 
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="Supermax">
-		<meta name="twitter:description" content="Responsive cell distribution primitives for multi-pane layouts.">
+		<meta name="twitter:description" content="A framework-free workspace shell for multi-pane applications.">
 		<meta name="twitter:image" content="https://laicluse.com/assets/supermax-og-image.png?v=45a1f25293">
 		<meta name="twitter:image:alt" content="Supermax package share card">
 
@@ -53,7 +53,7 @@
 					<div class="hero-copy">
 						<p class="eyebrow">Open-source JavaScript library</p>
 						<h1>Supermax</h1>
-						<p class="lede">Responsive cell distribution primitives for a left-to-right layout. Give Supermax a column budget and it returns which cells stay visible, how wide each cell should be, and which zoomable anchor gets priority.</p>
+						<p class="lede">A framework-free workspace shell for multi-pane applications. Cells open to the right and in branching rows, fold when room runs out, and every open cell keeps a way back. Your application keeps its content, data and routing.</p>
 						<div class="hero-actions" aria-label="Primary actions">
 							<a class="button primary" href="#install">Install the package</a>
 							<a class="button secondary" href="https://github.com/laicluse/supermax">View source</a>
@@ -68,11 +68,11 @@
 						<div class="supermax-preview-grid" aria-hidden="true">
 							<div class="supermax-preview-cell article">
 								<strong>Article</strong>
-								<span>14.6 cols</span>
+								<span>11.3 cols</span>
 							</div>
 							<div class="supermax-preview-cell notes">
 								<strong>Notes</strong>
-								<span>9.4 cols</span>
+								<span>12.7 cols</span>
 							</div>
 						</div>
 						<div class="supermax-preview-note">Zoom anchor: Article. Menu and List are hidden: reported, not rendered.</div>
@@ -164,7 +164,7 @@
 						<p class="eyebrow">Package</p>
 						<h2 id="install-title">Install the package and let the host render.</h2>
 					</div>
-					<p>Supermax is a framework-free ESM package. It does the distribution math; the host application owns rendering, transitions, persistence, and any reader, editor, or dashboard controls around it.</p>
+					<p>Supermax is a framework-free ESM package. Its workspace decides which cells show, fold or move, and animates them; your application renders what goes inside each cell and keeps its own data, routing and persistence.</p>
 				</div>
 				<div class="install-grid install-grid-three">
 					<article class="install-block">
@@ -172,32 +172,38 @@
 							<h3>1. Add it</h3>
 						</div>
 						<p>Pin the public GitHub package until it is published through a registry.</p>
-						<pre data-copyable><code>corepack pnpm add github:laicluse/supermax#69bf385</code></pre>
+						<pre data-copyable><code>corepack pnpm add github:laicluse/supermax#beaf89b</code></pre>
 					</article>
 					<article class="install-block">
 						<div class="block-heading">
-							<h3>2. Describe cells</h3>
+							<h3>2. Declare destinations</h3>
 						</div>
-						<p>Each cell declares a minimum, maximum, title, and optional zoomable anchor behavior.</p>
-						<pre data-copyable><code><span class="code-line">import { CellCollection } from &quot;@laicluse/supermax&quot;;</span>
+						<p>Each destination is a cell with a title and a minimum and maximum width; one may grow into the space that is left.</p>
+						<pre data-copyable><code><span class="code-line">import { Navigator } from &quot;@laicluse/supermax&quot;;</span>
 <span class="code-line"></span>
-<span class="code-line">const cells = new CellCollection([</span>
-<span class="code-line">  { id: &quot;menu&quot;, title: &quot;Menu&quot;, min: 3, max: 4 },</span>
-<span class="code-line">  { id: &quot;list&quot;, title: &quot;List&quot;, min: 5, max: 10 },</span>
-<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>
-<span class="code-line">  { id: &quot;notes&quot;, title: &quot;Notes&quot;, min: 6, max: 18 },</span>
-<span class="code-line">]);</span>
-<span class="code-line"></span>
-<span class="code-line">const layout = cells.distribute(24, &quot;article&quot;);</span></code></pre>
+<span class="code-line">const navigator = new Navigator({</span>
+<span class="code-line">  root: &quot;inbox&quot;,</span>
+<span class="code-line">  minViewportHeight: 360,</span>
+<span class="code-line">  destinations: {</span>
+<span class="code-line">    inbox: { title: &quot;Inbox&quot;, min: 240, max: 360 },</span>
+<span class="code-line">    &quot;message:1&quot;: { title: &quot;Weekly report&quot;, min: 320, max: &quot;*&quot;, preferred: 420 },</span>
+<span class="code-line">  },</span>
+<span class="code-line">});</span></code></pre>
 					</article>
 					<article class="install-block">
 						<div class="block-heading">
-							<h3>3. Render anywhere</h3>
+							<h3>3. Open a workspace</h3>
 						</div>
-						<p>The result is plain data: actual width, visibility, hidden count, rightmost hidden title, and spare columns.</p>
-						<pre><code>layout.hiddenCount;          // 2
-layout.rightmostHiddenTitle; // "List"
-layout.spareColumns;         // 0</code></pre>
+						<p>The workspace fills its element and asks your content callback for what goes inside each cell it opens.</p>
+						<pre data-copyable><code><span class="code-line">import { Workspace } from &quot;@laicluse/supermax&quot;;</span>
+<span class="code-line">import &quot;@laicluse/supermax/workspace.css&quot;;</span>
+<span class="code-line"></span>
+<span class="code-line">const workspace = new Workspace(element, {</span>
+<span class="code-line">  navigator,</span>
+<span class="code-line">  content: (occurrence, definition) =&gt; ({ element: renderFor(definition) }),</span>
+<span class="code-line">});</span>
+<span class="code-line"></span>
+<span class="code-line">workspace.navigate(&quot;message:1&quot;, { from: &quot;inbox&quot;, origin: null });</span></code></pre>
 					</article>
 				</div>
 			</section>
@@ -205,20 +211,20 @@ layout.spareColumns;         // 0</code></pre>
 			<section id="model" class="section supermax-model-section" aria-labelledby="model-title">
 				<div class="section-heading">
 					<p class="eyebrow">Model</p>
-					<h2 id="model-title">Small package, one job: fit cells into a changing viewport.</h2>
+					<h2 id="model-title">One shell that fits open work into a changing viewport.</h2>
 				</div>
 				<div class="supermax-detail-grid">
 					<article class="supermax-detail-card">
-						<h3>Column budget</h3>
-						<p>The column budget is the only input that needs to change with the viewport. Supermax fills visible cells by weight and clamps them to each cell's min and max.</p>
+						<h3>Chains and rows</h3>
+						<p>A cell opens to the right of the cell it came from. A split gives independent tasks their own rows, each with its own chain, and takes its width from its widest row.</p>
 					</article>
 					<article class="supermax-detail-card">
-						<h3>Zoomable anchors</h3>
-						<p>When a zoomable cell becomes the anchor, earlier cells can collapse first so the active work area stays readable instead of blindly centered.</p>
+						<h3>Folds and Show</h3>
+						<p>When room runs out, earlier cells leave the window or fold to a handle. Every open cell keeps a route back: its fold handle, the Show control, or zooming out.</p>
 					</article>
 					<article class="supermax-detail-card">
-						<h3>Plain output</h3>
-						<p>The package returns serializable layout data. A reader, editor, or dashboard can map that data to CSS grid, panes, portals, or baked static HTML.</p>
+						<h3>Your content, your look</h3>
+						<p>Supermax never measures or renders your content. A content callback mounts it, a renderer map restyles the shell, and an optional plugin teaches coding agents the contract.</p>
 					</article>
 				</div>
 			</section>
@@ -229,12 +235,12 @@ layout.spareColumns;         // 0</code></pre>
 						<p class="eyebrow">Source</p>
 						<h2 id="source-title">A public source package under l'Aicluse.</h2>
 					</div>
-					<p>The package exports <code>CellCollection</code> and <code>CellProxy</code>, and also assigns <code>globalThis.Supermax</code> for bundled browser compatibility. The public source lives at <a href="https://github.com/laicluse/supermax">github.com/laicluse/supermax</a>.</p>
+					<p>The package exports <code>Navigator</code>, <code>Workspace</code>, <code>CellCollection</code> and <code>CellStrip</code> as named ESM exports, with the stylesheet at <code>@laicluse/supermax/workspace.css</code>. The public source, its guides and the migration guide from version 1 live at <a href="https://github.com/laicluse/supermax">github.com/laicluse/supermax</a>.</p>
 				</div>
 				<ul class="supermax-feature-list">
-					<li>Distribute a left-to-right layout across a fixed column budget.</li>
-					<li>Let a reader, editor, or dashboard decide which cells stay visible at each size.</li>
-					<li>Use a framework-free ESM package while the host application owns rendering.</li>
+					<li>Open cells in chains and branching rows that fit the window.</li>
+					<li>Fold what no longer fits and keep every open cell reachable through Show.</li>
+					<li>Use a framework-free ESM package while your application owns its content, data and routing.</li>
 				</ul>
 			</section>
 		</main>

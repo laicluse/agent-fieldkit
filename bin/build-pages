@@ -14,7 +14,7 @@ const VOCALIST_PATH = "vocalist/";
 const VOCALIST_URL = `${PAGES_URL}/${VOCALIST_PATH}`;
 const SUPERMAX_PATH = "supermax/";
 const SUPERMAX_URL = `${PAGES_URL}/${SUPERMAX_PATH}`;
-const SUPERMAX_PACKAGE_COMMIT = "69bf385";
+const SUPERMAX_PACKAGE_COMMIT = "beaf89b";
 const SAYSAY_PATH = "agent-fieldkit/saysay/";
 const SITE_TITLE = "l'Aicluse Agent Fieldkit";
 const SITE_DESCRIPTION =
@@ -25,7 +25,7 @@ const SITE_IMAGE_ALT = "l'Aicluse Agent Fieldkit: guardrails for coding agents t
 const SITE_TWITTER_IMAGE_ALT = "l'Aicluse Agent Fieldkit share card";
 const VOCALIST_IMAGE_ALT = "Vocalist: hands-free prompting for Codex and Claude Code.";
 const VOCALIST_TWITTER_IMAGE_ALT = "Vocalist app share card";
-const SUPERMAX_IMAGE_ALT = "Supermax: responsive cell distribution primitives for multi-pane layouts.";
+const SUPERMAX_IMAGE_ALT = "Supermax: a framework-free workspace shell for multi-pane applications.";
 const SUPERMAX_TWITTER_IMAGE_ALT = "Supermax package share card";
 const ROOT_TITLE = "l'Aicluse";
 const ROOT_DESCRIPTION = "Tools, workflows and assistance for agentic coding";
@@ -149,16 +149,16 @@ const openSource = [
 	{
 		name: "Supermax",
 		category: "Open-source JavaScript library",
-		tagline: "Responsive cell distribution primitives for multi-pane layouts.",
+		tagline: "A framework-free workspace shell for multi-pane applications.",
 		pagePath: SUPERMAX_PATH,
 		homepageUrl: SUPERMAX_URL,
 		packageName: "@laicluse/supermax",
 		install: `corepack pnpm add github:laicluse/supermax#${SUPERMAX_PACKAGE_COMMIT}`,
 		repoUrl: "https://github.com/laicluse/supermax",
 		features: [
-			"Distribute a left-to-right layout across a fixed column budget.",
-			"Let a reader, editor, or dashboard decide which cells stay visible at each size.",
-			"Use a framework-free ESM package while the host application owns rendering.",
+			"Open cells in chains and branching rows that fit the window.",
+			"Fold what no longer fits and keep every open cell reachable through Show.",
+			"Use a framework-free ESM package while your application owns its content, data and routing.",
 		],
 	},
 ];
@@ -1331,16 +1331,25 @@ function renderVocalistPage(repoRoot, data, hash, assetVersions) {
 function buildSupermaxPage(app, hash, assetVersions) {
 	const pageUrl = SUPERMAX_URL;
 	const imageUrl = `${PAGES_URL}/assets/supermax-og-image.png?v=${hash}`;
-	const usage = `import { CellCollection } from "@laicluse/supermax";
+	const declare = `import { Navigator } from "@laicluse/supermax";
 
-const cells = new CellCollection([
-  { id: "menu", title: "Menu", min: 3, max: 4 },
-  { id: "list", title: "List", min: 5, max: 10 },
-  { id: "article", title: "Article", min: 8, max: 28, zoomable: true },
-  { id: "notes", title: "Notes", min: 6, max: 18 },
-]);
+const navigator = new Navigator({
+  root: "inbox",
+  minViewportHeight: 360,
+  destinations: {
+    inbox: { title: "Inbox", min: 240, max: 360 },
+    "message:1": { title: "Weekly report", min: 320, max: "*", preferred: 420 },
+  },
+});`;
+	const render = `import { Workspace } from "@laicluse/supermax";
+import "@laicluse/supermax/workspace.css";
 
-const layout = cells.distribute(24, "article");`;
+const workspace = new Workspace(element, {
+  navigator,
+  content: (occurrence, definition) => ({ element: renderFor(definition) }),
+});
+
+workspace.navigate("message:1", { from: "inbox", origin: null });`;
 
 	return `<!doctype html>
 <html lang="en">
@@ -1397,7 +1406,7 @@ const layout = cells.distribute(24, "article");`;
 					<div class="hero-copy">
 						<p class="eyebrow">${htmlEscape(app.category)}</p>
 						<h1>${htmlEscape(app.name)}</h1>
-						<p class="lede">Responsive cell distribution primitives for a left-to-right layout. Give Supermax a column budget and it returns which cells stay visible, how wide each cell should be, and which zoomable anchor gets priority.</p>
+						<p class="lede">A framework-free workspace shell for multi-pane applications. Cells open to the right and in branching rows, fold when room runs out, and every open cell keeps a way back. Your application keeps its content, data and routing.</p>
 						<div class="hero-actions" aria-label="Primary actions">
 							<a class="button primary" href="#install">Install the package</a>
 							<a class="button secondary" href="${attributeEscape(app.repoUrl)}">View source</a>
@@ -1412,11 +1421,11 @@ const layout = cells.distribute(24, "article");`;
 						<div class="supermax-preview-grid" aria-hidden="true">
 							<div class="supermax-preview-cell article">
 								<strong>Article</strong>
-								<span>14.6 cols</span>
+								<span>11.3 cols</span>
 							</div>
 							<div class="supermax-preview-cell notes">
 								<strong>Notes</strong>
-								<span>9.4 cols</span>
+								<span>12.7 cols</span>
 							</div>
 						</div>
 						<div class="supermax-preview-note">Zoom anchor: Article. Menu and List are hidden: reported, not rendered.</div>
@@ -1508,7 +1517,7 @@ const layout = cells.distribute(24, "article");`;
 						<p class="eyebrow">Package</p>
 						<h2 id="install-title">Install the package and let the host render.</h2>
 					</div>
-					<p>Supermax is a framework-free ESM package. It does the distribution math; the host application owns rendering, transitions, persistence, and any reader, editor, or dashboard controls around it.</p>
+					<p>Supermax is a framework-free ESM package. Its workspace decides which cells show, fold or move, and animates them; your application renders what goes inside each cell and keeps its own data, routing and persistence.</p>
 				</div>
 				<div class="install-grid install-grid-three">
 					<article class="install-block">
@@ -1520,19 +1529,17 @@ const layout = cells.distribute(24, "article");`;
 					</article>
 					<article class="install-block">
 						<div class="block-heading">
-							<h3>2. Describe cells</h3>
+							<h3>2. Declare destinations</h3>
 						</div>
-						<p>Each cell declares a minimum, maximum, title, and optional zoomable anchor behavior.</p>
-						<pre data-copyable><code>${hangingCodeLines(usage)}</code></pre>
+						<p>Each destination is a cell with a title and a minimum and maximum width; one may grow into the space that is left.</p>
+						<pre data-copyable><code>${hangingCodeLines(declare)}</code></pre>
 					</article>
 					<article class="install-block">
 						<div class="block-heading">
-							<h3>3. Render anywhere</h3>
+							<h3>3. Open a workspace</h3>
 						</div>
-						<p>The result is plain data: actual width, visibility, hidden count, rightmost hidden title, and spare columns.</p>
-						<pre><code>layout.hiddenCount;          // 2
-layout.rightmostHiddenTitle; // "List"
-layout.spareColumns;         // 0</code></pre>
+						<p>The workspace fills its element and asks your content callback for what goes inside each cell it opens.</p>
+						<pre data-copyable><code>${hangingCodeLines(render)}</code></pre>
 					</article>
 				</div>
 			</section>
@@ -1540,20 +1547,20 @@ layout.spareColumns;         // 0</code></pre>
 			<section id="model" class="section supermax-model-section" aria-labelledby="model-title">
 				<div class="section-heading">
 					<p class="eyebrow">Model</p>
-					<h2 id="model-title">Small package, one job: fit cells into a changing viewport.</h2>
+					<h2 id="model-title">One shell that fits open work into a changing viewport.</h2>
 				</div>
 				<div class="supermax-detail-grid">
 					<article class="supermax-detail-card">
-						<h3>Column budget</h3>
-						<p>The column budget is the only input that needs to change with the viewport. Supermax fills visible cells by weight and clamps them to each cell's min and max.</p>
+						<h3>Chains and rows</h3>
+						<p>A cell opens to the right of the cell it came from. A split gives independent tasks their own rows, each with its own chain, and takes its width from its widest row.</p>
 					</article>
 					<article class="supermax-detail-card">
-						<h3>Zoomable anchors</h3>
-						<p>When a zoomable cell becomes the anchor, earlier cells can collapse first so the active work area stays readable instead of blindly centered.</p>
+						<h3>Folds and Show</h3>
+						<p>When room runs out, earlier cells leave the window or fold to a handle. Every open cell keeps a route back: its fold handle, the Show control, or zooming out.</p>
 					</article>
 					<article class="supermax-detail-card">
-						<h3>Plain output</h3>
-						<p>The package returns serializable layout data. A reader, editor, or dashboard can map that data to CSS grid, panes, portals, or baked static HTML.</p>
+						<h3>Your content, your look</h3>
+						<p>Supermax never measures or renders your content. A content callback mounts it, a renderer map restyles the shell, and an optional plugin teaches coding agents the contract.</p>
 					</article>
 				</div>
 			</section>
@@ -1564,7 +1571,7 @@ layout.spareColumns;         // 0</code></pre>
 						<p class="eyebrow">Source</p>
 						<h2 id="source-title">A public source package under l'Aicluse.</h2>
 					</div>
-					<p>The package exports <code>CellCollection</code> and <code>CellProxy</code>, and also assigns <code>globalThis.Supermax</code> for bundled browser compatibility. The public source lives at <a href="${attributeEscape(app.repoUrl)}">github.com/laicluse/supermax</a>.</p>
+					<p>The package exports <code>Navigator</code>, <code>Workspace</code>, <code>CellCollection</code> and <code>CellStrip</code> as named ESM exports, with the stylesheet at <code>@laicluse/supermax/workspace.css</code>. The public source, its guides and the migration guide from version 1 live at <a href="${attributeEscape(app.repoUrl)}">github.com/laicluse/supermax</a>.</p>
 				</div>
 				<ul class="supermax-feature-list">
 ${renderList(app.features, "\t\t\t\t\t")}
@@ -2017,7 +2024,7 @@ function buildRootPage(hash, assetVersions) {
 							</div>
 							<p class="eyebrow">Open source</p>
 							<h2>Supermax</h2>
-							<p>A framework-free JavaScript library for responsive multi-pane layouts, zoom anchors, and side-by-side workspaces.</p>
+							<p>A framework-free workspace shell for multi-pane applications, with branching rows, folds and a way back to every open cell.</p>
 							<a class="home-card-link" href="/supermax/">See Supermax</a>
 						</article>
 					</div>

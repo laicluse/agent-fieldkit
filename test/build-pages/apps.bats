@@ -43,7 +43,7 @@ HTML
 }
 
 @test "site-data.json carries a Supermax open-source package entry" {
-  run node -e 'const data=require(process.argv[1]);const s=(data.openSource||[]).find(x=>x.name==="Supermax");const stillApp=(data.apps||[]).some(x=>x.name==="Supermax");const ok=s && !stillApp && s.category==="Open-source JavaScript library" && s.pagePath==="supermax/" && s.homepageUrl==="https://laicluse.com/supermax/" && s.packageName==="@laicluse/supermax" && s.repoUrl==="https://github.com/laicluse/supermax" && /github:laicluse\/supermax#69bf385/.test(s.install||"");process.exit(ok?0:1)' "$REPO/docs/site-data.json"
+  run node -e 'const data=require(process.argv[1]);const s=(data.openSource||[]).find(x=>x.name==="Supermax");const stillApp=(data.apps||[]).some(x=>x.name==="Supermax");const ok=s && !stillApp && s.category==="Open-source JavaScript library" && s.pagePath==="supermax/" && s.homepageUrl==="https://laicluse.com/supermax/" && s.packageName==="@laicluse/supermax" && s.repoUrl==="https://github.com/laicluse/supermax" && /github:laicluse\/supermax#beaf89b/.test(s.install||"");process.exit(ok?0:1)' "$REPO/docs/site-data.json"
   [ "$status" -eq 0 ]
 }
 
@@ -111,7 +111,7 @@ HTML
   grep -q '<title>Supermax</title>' "$REPO/docs/supermax/index.html"
   grep -q '<a class="brand" href="../" aria-label="l'"'"'Aicluse Open Source">' "$REPO/docs/supermax/index.html"
   grep -q '<span class="wordmark" aria-hidden="true"></span><span class="brand-suffix">Open Source</span><span class="sr-only">l'"'"'Aicluse Open Source</span>' "$REPO/docs/supermax/index.html"
-  grep -q 'Responsive cell distribution primitives' "$REPO/docs/supermax/index.html"
+  grep -q 'framework-free workspace shell' "$REPO/docs/supermax/index.html"
   run grep -q 'l'"'"'Aicluse Apps' "$REPO/docs/supermax/index.html"
   [ "$status" -ne 0 ]
 }
@@ -138,8 +138,8 @@ HTML
 
 @test "the /supermax route carries the public package and source links" {
   grep -q 'Install the package' "$REPO/docs/supermax/index.html"
-  grep -q 'corepack pnpm add github:laicluse/supermax#69bf385' "$REPO/docs/supermax/index.html"
-  grep -q '<pre data-copyable><code>corepack pnpm add github:laicluse/supermax#69bf385</code></pre>' "$REPO/docs/supermax/index.html"
+  grep -q 'corepack pnpm add github:laicluse/supermax#beaf89b' "$REPO/docs/supermax/index.html"
+  grep -q '<pre data-copyable><code>corepack pnpm add github:laicluse/supermax#beaf89b</code></pre>' "$REPO/docs/supermax/index.html"
   grep -Eq '<script src="../code-panel-copy\.js\?v=[0-9a-f]{10}"></script>' "$REPO/docs/supermax/index.html"
   grep -q 'https://github.com/laicluse/supermax' "$REPO/docs/supermax/index.html"
   grep -q '@laicluse/supermax' "$REPO/docs/supermax/index.html"
@@ -147,11 +147,11 @@ HTML
   [ "$status" -ne 0 ]
 }
 
-@test "the /supermax route explains responsive cell distribution in user terms" {
-  grep -q 'column budget' "$REPO/docs/supermax/index.html"
-  grep -q 'left-to-right layout' "$REPO/docs/supermax/index.html"
-  grep -q 'reader, editor, or dashboard' "$REPO/docs/supermax/index.html"
-  grep -q 'host application owns rendering' "$REPO/docs/supermax/index.html"
+@test "the /supermax route explains the workspace shell in user terms" {
+  grep -q 'workspace shell for multi-pane applications' "$REPO/docs/supermax/index.html"
+  grep -q 'branching rows' "$REPO/docs/supermax/index.html"
+  grep -q 'every open cell keeps a way back' "$REPO/docs/supermax/index.html"
+  grep -q 'never measures or renders your content' "$REPO/docs/supermax/index.html"
   grep -q 'one focused pane on small screens' "$REPO/docs/supermax/index.html"
   grep -q 'iOS-style navigation stack' "$REPO/docs/supermax/index.html"
   grep -q '34-inch monitor' "$REPO/docs/supermax/index.html"
@@ -415,14 +415,14 @@ NODE
 }
 
 @test "the Supermax usage example renders hanging code lines" {
-  grep -q '<span class="code-line">  { id: &quot;article&quot;, title: &quot;Article&quot;, min: 8, max: 28, zoomable: true },</span>' "$REPO/docs/supermax/index.html"
+  grep -q '<span class="code-line">    inbox: { title: &quot;Inbox&quot;, min: 240, max: 360 },</span>' "$REPO/docs/supermax/index.html"
 }
 
 @test "the /supermax hero preview shows the library's real 24-column result" {
   html="$REPO/docs/supermax/index.html"
   grep -q '<strong>Article</strong>' "$html"
-  grep -q '<span>14.6 cols</span>' "$html"
-  grep -q '<span>9.4 cols</span>' "$html"
+  grep -q '<span>11.3 cols</span>' "$html"
+  grep -q '<span>12.7 cols</span>' "$html"
   grep -q 'Menu and List are hidden' "$html"
   ! grep -q '<div class="supermax-preview-cell source">' "$html"
 }
