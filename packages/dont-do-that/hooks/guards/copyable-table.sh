@@ -19,32 +19,45 @@ guard_copyable_table() {
       }
       return 0
     }
+    function cells(line,   s) {
+      s = line
+      gsub(/\\\|/, "x", s)
+      sub(/^[ \t]*\|/, "", s)
+      sub(/\|[ \t]*$/, "", s)
+      return gsub(/\|/, "|", s) + 1
+    }
     {
       line = $0
+      quoted = 0
+      while (line ~ /^ ? ? ?>/) { sub(/^ *>[ \t]?/, "", line); quoted++ }
+      if (in_fence && quoted < fence_quoted) in_fence = 0
+      if (in_table && quoted != table_quoted) in_table = 0
+      if (quoted != prev_quoted) prev = ""
+      prev_quoted = quoted
       if (match(line, /^[ \t]*(```+|~~~+)/)) {
         marker = substr(line, RSTART, RLENGTH)
         sub(/^[ \t]*/, "", marker)
         if (!in_fence) {
-          in_fence = 1; fence_char = substr(marker, 1, 1); fence_len = length(marker)
+          in_fence = 1; fence_char = substr(marker, 1, 1); fence_len = length(marker); fence_quoted = quoted
           in_table = 0; prev = ""
           next
         }
-        if (substr(marker, 1, 1) == fence_char && length(marker) >= fence_len && line ~ /^[ \t]*[`~]+[ \t]*$/) {
+        if (quoted == fence_quoted && substr(marker, 1, 1) == fence_char && length(marker) >= fence_len && line ~ /^[ \t]*[`~]+[ \t]*$/) {
           in_fence = 0
           next
         }
       }
       if (in_fence) next
       if (in_table) {
-        if (line !~ /^[ \t]*$/ && line !~ /^[ \t]*(#+[ \t]|>|[-*+][ \t]|[0-9]+[.)][ \t])/ && line !~ /^[ \t]*([-*_][ \t]*)([-*_][ \t]*)([-*_][ \t]*)+$/) {
+        if (line !~ /^[ \t]*$/ && (line !~ /^(    |\t)/ || index(line, "|")) && line !~ /^[ \t]*(#+[ \t]|>|[-*+][ \t]|[0-9]+[.)][ \t])/ && line !~ /^[ \t]*([-*_][ \t]*)([-*_][ \t]*)([-*_][ \t]*)+$/) {
           if (copyable(line)) { print line; exit }
           next
         }
         in_table = 0
       }
       if (line ~ /^(    |\t)/ || prev ~ /^(    |\t)/) { prev = line; next }
-      if (index(prev, "|") && index(line, "|") && line ~ /^[ \t]*\|?[ \t]*:?---*:?[ \t]*(\|[ \t]*:?---*:?[ \t]*)*\|?[ \t]*$/) {
-        in_table = 1
+      if (index(prev, "|") && index(line, "|") && cells(prev) == cells(line) && line ~ /^[ \t]*\|?[ \t]*:?---*:?[ \t]*(\|[ \t]*:?---*:?[ \t]*)*\|?[ \t]*$/) {
+        in_table = 1; table_quoted = quoted
         if (copyable(prev)) { print prev; exit }
         next
       }

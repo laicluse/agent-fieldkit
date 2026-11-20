@@ -89,3 +89,58 @@ stop_with() {
   stop_with $'Issue | Link\n--- | ---\n#123 | https://example.com/issues/123'
   [[ "$output" == *"[dont-do-that/copyable-table]"* ]]
 }
+
+@test "a separator with fewer columns than the header is not a table" {
+  stop_with $'A | B\n|---|\nSee https://example.com/long/path'
+  [ -z "$output" ]
+}
+
+@test "a table inside a blockquote is still a table" {
+  stop_with $'> | a | b |\n> |---|---|\n> | x | https://example.com/long/path |'
+  [[ "$output" == *"[dont-do-that/copyable-table]"* ]]
+}
+
+@test "a fence inside a blockquote closes inside the blockquote" {
+  stop_with $'> ```\n> code\n> ```\n\n| a | b |\n|---|---|\n| x | https://example.com/long/path |'
+  [[ "$output" == *"[dont-do-that/copyable-table]"* ]]
+}
+
+@test "a blockquote right after a table ends the table" {
+  stop_with $'| a | b |\n|---|---|\n| x | y |\n> See https://example.com/long/path'
+  [ -z "$output" ]
+}
+
+@test "an escaped pipe in the header keeps the column count" {
+  stop_with $'| \\| | URL |\n|---|---|\n| x | https://example.com/long/path |'
+  [[ "$output" == *"[dont-do-that/copyable-table]"* ]]
+}
+
+@test "a fence left open in a blockquote ends with the blockquote" {
+  stop_with $'> ```\n> code\n\n| a | b |\n|---|---|\n| x | https://example.com/long/path |'
+  [[ "$output" == *"[dont-do-that/copyable-table]"* ]]
+}
+
+@test "a deeper blockquote after a quoted table ends the table" {
+  stop_with $'> | a | b |\n> |---|---|\n> | x | y |\n> > See https://example.com/long/path'
+  [ -z "$output" ]
+}
+
+@test "quote markers inside indented code stay code" {
+  stop_with $'Example:\n\n    > | a | b |\n    > |---|---|\n    > | x | https://example.com/long/path |'
+  [ -z "$output" ]
+}
+
+@test "a quoted fence marker inside an unquoted fence is code" {
+  stop_with $'```\n> ```\n| a | b |\n|---|---|\n| x | https://example.com/long/path |\n```'
+  [ -z "$output" ]
+}
+
+@test "indented code right after a table ends the table" {
+  stop_with $'> | a | b |\n> |---|---|\n> | x | y |\n>     https://example.com/long/path'
+  [ -z "$output" ]
+}
+
+@test "an indented row with a pipe stays in the table" {
+  stop_with $'a | b\n--- | ---\n    x | https://example.com/long/path'
+  [[ "$output" == *"[dont-do-that/copyable-table]"* ]]
+}
