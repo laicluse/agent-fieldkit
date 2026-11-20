@@ -22,7 +22,7 @@ The shared Claude runtime descriptions decrease from 11782 to 10630 characters (
 
 The proposed catalog selected the general visual router on existing-redesign. Restoring the baseline explore description did not restore direct selection, so shortening explore is not an established cause. The router and explore descriptions are both baseline-exact. Its baseline description is retained conservatively; [rejected-proposal.json](rejected-proposal.json) records the proposal and rollback result. No further keyword tuning was attempted to force one exact entry.
 
-The exact [body and inventory check](check-metadata.py) verifies that every baseline source still exists, flags are unchanged, and instruction bodies differ only by the deliberately added inventory lesson. It caught a global description replacement inside three how-plugins-work examples before those examples were restored; the check failed before restoration and passed afterward.
+The exact [body and inventory check](check-metadata.py) compares the baseline with the audited commit `1ba229e`, both read from Git so later skill changes do not affect it. It verifies that every baseline source still exists, flags are unchanged, and instruction bodies differ only by the deliberately added inventory lesson. It caught a global description replacement inside three how-plugins-work examples before those examples were restored; the check failed before restoration and passed afterward.
 
 The existing subtitle-generator regression and all 21 plugin detail-page tests pass, as does the adapter check. The generated page was inspected at desktop size: the existing layout and installation context remain readable. No visual layout change is part of this review.
 
