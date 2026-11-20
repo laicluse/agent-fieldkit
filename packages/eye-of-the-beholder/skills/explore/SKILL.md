@@ -1,6 +1,6 @@
 ---
 name: explore
-user-invocable: true
+user-invocable: false
 description: >-
   Explore a new visual treatment or a better version of an existing surface. Form distinct design hypotheses from the product and real references, make them visible in the medium that exposes the open question, resolve one consequential decision per round, and establish an accepted target before implementation or polishing.
 ---

@@ -1,6 +1,6 @@
 ---
 name: review
-user-invocable: true
+user-invocable: false
 description: >-
   Review actual visual output against its accepted references, meaning and behavior. Diagnose known defects, verify combinations and scales, and return unresolved aesthetics to exploration.
 ---
