@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.96] - 2026-11-20
+
+### Added
+
+- The copyable-table guard blocks a final answer that puts a URL or a long inline-code value inside a markdown table. The terminal wraps the cell, so copying it gave fragments with table borders; each copyable value now goes in its own code block. Claude, Codex.
+
 ## [v2.0.95] - 2026-11-12
 
 ### Fixed
