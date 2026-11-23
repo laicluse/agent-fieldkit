@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.29]
+
+### Changed
+
+- `obvious` treats a value shown as both a number and a mark, and a headline that restates a table row, as repetition, draws no bar or percentage for a quantity the product cannot compute, and fails a render that still needs a caption or annotation to explain a visual.
+
 ## [v2.0.27]
 
 ### Changed

@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.28",
+			"version": "2.0.29",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.27",
+				"version": "v2.0.29",
 				"type": "Changed",
-				"summary": "obvious checks the whole repeated surface before rewriting a label and verifies shared concepts, alignment and necessary repetition in the populated render before delivery."
+				"summary": "obvious treats a value shown as both a number and a mark, and a headline that restates a table row, as repetition, draws no bar or percentage for a quantity the product cannot compute, and fails a render that still needs a caption or annotation to explain a visual."
 			}
 		},
 		{
@@ -716,11 +716,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.28",
+			"packageVersion": "2.0.29",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.27",
+			"version": "v2.0.29",
 			"type": "Changed",
-			"summary": "obvious checks the whole repeated surface before rewriting a label and verifies shared concepts, alignment and necessary repetition in the populated render before delivery.",
+			"summary": "obvious treats a value shown as both a number and a mark, and a headline that restates a table row, as repetition, draws no bar or percentage for a quantity the product cannot compute, and fails a render that still needs a caption or annotation to explain a visual.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{
