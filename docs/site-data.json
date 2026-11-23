@@ -348,7 +348,7 @@
 		},
 		{
 			"name": "drydry",
-			"version": "2.0.8",
+			"version": "2.0.9",
 			"category": "review",
 			"summary": "Finds parallel paths in code, prose, and process, then converges the duplication that actually drifts.",
 			"support": [
@@ -363,9 +363,9 @@
 			"commandCount": 1,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.8",
-				"type": "Breaking",
-				"summary": "Two skill-picker entries."
+				"version": "v2.0.9",
+				"type": "Changed",
+				"summary": "Related findings are resolved, not parked."
 			}
 		},
 		{
@@ -788,11 +788,11 @@
 		},
 		{
 			"plugin": "drydry",
-			"packageVersion": "2.0.8",
+			"packageVersion": "2.0.9",
 			"detailPath": "agent-fieldkit/drydry/",
-			"version": "v2.0.8",
-			"type": "Breaking",
-			"summary": "Two skill-picker entries.",
+			"version": "v2.0.9",
+			"type": "Changed",
+			"summary": "Related findings are resolved, not parked.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/drydry/CHANGELOG.md"
 		},
 		{

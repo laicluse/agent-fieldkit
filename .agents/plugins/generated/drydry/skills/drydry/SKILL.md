@@ -118,7 +118,7 @@ Steps:
    - **Duplicate, cheap-and-safe to converge.** Name the convergence direction in one sentence and the cost.
    - **Duplicate, but needs design.** Name the open question that has to be resolved before convergence (which side wins, what to name the unified abstraction, how callers migrate).
    - **Not a duplicate.** Explain why the structural similarity does not imply a shared behaviour contract.
-5. **Side quests, if any.** If the inspection surfaced something out-of-scope ("we should also look at X", "Y feels related"), list it as a side quest. Do not detour to address it now.
+5. **Related findings.** If the inspection surfaced something beyond the candidates ("we should also look at X", "Y feels related"), give it the same fate as any finding. When the task allows changes, converge it within the work in progress or name the concrete trade-off; in a read-only check, report it with that fate. The trade-off goes to the operator, or into the verdict when another skill is the caller. Do not park it as out of scope or as a list of open points; nobody owns such a list.
 
 Output is inline conversational, no markdown file. Broader review gates do not run in quick mode; the scope does not warrant the cost.
 
@@ -187,13 +187,13 @@ Steps:
 8. **Write the artefact, including the checklist itself.** Write both files at the destination resolved before the audit, following the storage contract:
 
    - `<scope>-drydry-checklist-<version>.md` contains the session-formulated checklist after the step 2.5 contrarian merge, verbatim. Keep it for the same lifetime as the findings so a comparison run can detect vocabulary drift and a reader can see exactly what the sweep was allowed to look for.
-   - `<scope>-drydry-findings-<checklist-version>.md` carries two sections. `## Detection method chosen` records the checklist version, who formulated the checklist, the formulation prompts that produced entries versus the ones logged "not applicable", the contrarian's verdict on step 2.5, the tasks invoked, and the verifier conventions (Chapter 8). `## Findings` has one subsection per checklist item with the verified hits, drift hypotheses, triage, and contrarian verdict if applicable. Add `## Checklist gaps` when the sweep surfaced "interesting but off-list" hits (Chapter 3 keeps them out of the findings proper). Add `## Side quests` when out-of-scope follow-ups surfaced.
+   - `<scope>-drydry-findings-<checklist-version>.md` carries two sections. `## Detection method chosen` records the checklist version, who formulated the checklist, the formulation prompts that produced entries versus the ones logged "not applicable", the contrarian's verdict on step 2.5, the tasks invoked, and the verifier conventions (Chapter 8). `## Findings` has one subsection per checklist item with the verified hits, drift hypotheses, triage, and contrarian verdict if applicable. Add `## Checklist gaps` when the sweep surfaced "interesting but off-list" hits (Chapter 3 keeps them out of the findings proper). Add `## Side quests` when out-of-scope follow-ups surfaced; an audit on a change in progress has none, its findings follow the rule under step 9.
 
    The two filenames share the version timestamp so they can be read together; two audits against the same scope in the same session produce two pairs and do not silently overwrite.
 
 9. **Report.** Summarize scope, findings and triage, linking the retained artefact. For an explicitly disposable run, deliver the complete checklist and findings inline before removing scratch files; do not report a deleted path as the result. If persistence failed, disclose that limit rather than claiming a retained artefact.
 
-The operator decides whether to convert findings into commits or address them out-of-process. Creating an audit report does not make it project documentation or authorize committing it.
+The operator decides whether to convert findings into commits or address them out-of-process. When the audit runs on a change in progress (a branch, a pull request), its findings belong to that change. When the task allows changes, converge the cheap-and-safe ones there. Bring the open design choice of a partial or needs-design finding forward as a concrete trade-off, to the operator or in the artefact when another skill is the caller, and record a confirmed by-design difference without turning it into a decision. None of them becomes a list of points outside the change. Creating an audit report does not make it project documentation or authorize committing it.
 
 ## Skill-invoked (autonomous callers)
 

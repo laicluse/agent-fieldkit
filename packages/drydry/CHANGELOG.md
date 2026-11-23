@@ -17,6 +17,12 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.9]
+
+### Changed
+
+- **Related findings are resolved, not parked.** What an inspection surfaces beside its candidates is converged in the work in progress or brought to the operator as a concrete trade-off. Findings of an audit on a change in progress belong to that change; they no longer end up as a list of points outside it.
+
 ## [v2.0.8]
 
 ### Breaking
