@@ -66,3 +66,45 @@ pretool_json() {
   dd_cd_to_bash_target "$(pretool_json "git -C $BATS_TEST_TMPDIR/missing commit -m x")"
   [ "$PWD" = "$ORIGIN" ]
 }
+
+@test "explicit tool workdir repositions a command without a cd prefix" {
+  dd_cd_to_bash_target "$(jq -cn --arg target "$TARGET" '{tool_input:{command:"git status",workdir:$target}}')"
+  [ "$PWD" = "$TARGET" ]
+}
+
+@test "payload cwd provides the base for a relative tool workdir" {
+  dd_cd_to_bash_target "$(jq -cn --arg base "$BATS_TEST_TMPDIR" '{cwd:$base,tool_input:{command:"git status",workdir:"target-repo"}}')"
+  [ "$PWD" = "$TARGET" ]
+}
+
+@test "a relative cd prefix resolves inside the tool workdir" {
+  install -d "$TARGET/nested"
+  dd_cd_to_bash_target "$(jq -cn --arg target "$TARGET" '{tool_input:{command:"cd nested && git status",workdir:$target}}')"
+  [ "$PWD" = "$TARGET/nested" ]
+}
+
+@test "relative workdir ignores CDPATH and emits no directory output" {
+  local other="$BATS_TEST_TMPDIR/elsewhere" actual
+  install -d "$other/target-repo"
+  actual=$(
+    CDPATH="$other" dd_cd_to_bash_target "$(jq -cn --arg base "$BATS_TEST_TMPDIR" '{cwd:$base,tool_input:{command:"git status",workdir:"target-repo"}}')"
+    printf '%s' "$PWD"
+  )
+  [ "$actual" = "$TARGET" ]
+}
+
+@test "a workdir beginning with a dash is a directory rather than a cd option" {
+  install -d "$BATS_TEST_TMPDIR/-target"
+  dd_cd_to_bash_target "$(jq -cn --arg base "$BATS_TEST_TMPDIR" '{cwd:$base,tool_input:{command:"git status",workdir:"-target"}}')"
+  [ "$PWD" = "$BATS_TEST_TMPDIR/-target" ]
+}
+
+@test "payload cwd alone repositions a Claude-shaped command" {
+  dd_cd_to_bash_target "$(jq -cn --arg target "$TARGET" '{cwd:$target,tool_input:{command:"git status"}}')"
+  [ "$PWD" = "$TARGET" ]
+}
+
+@test "tool cwd alias overrides the payload cwd" {
+  dd_cd_to_bash_target "$(jq -cn --arg base "$BATS_TEST_TMPDIR" --arg target "$TARGET" '{cwd:$base,tool_input:{command:"git status",cwd:$target}}')"
+  [ "$PWD" = "$TARGET" ]
+}

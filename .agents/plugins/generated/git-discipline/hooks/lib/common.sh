@@ -58,6 +58,15 @@ dd_is_wip() {
 
 dd_cd_to_bash_target() {
   local input="$1"
+  local cwd workdir
+  cwd=$(jq -r '.cwd // empty' <<< "$input" 2>/dev/null)
+  workdir=$(jq -r '.tool_input.workdir // .tool_input.cwd // empty' <<< "$input" 2>/dev/null)
+  if [ -n "$cwd" ] && [ -d "$cwd" ]; then
+    CDPATH= cd -- "$cwd" >/dev/null 2>&1 || return 0
+  fi
+  if [ -n "$workdir" ] && [ -d "$workdir" ]; then
+    CDPATH= cd -- "$workdir" >/dev/null 2>&1 || return 0
+  fi
   local command
   command=$(jq -r '.tool_input.command // empty' <<< "$input" 2>/dev/null)
   [ -z "$command" ] && return 0
@@ -77,7 +86,7 @@ dd_cd_to_bash_target() {
   fi
 
   if [ -n "$target" ] && [ -d "$target" ]; then
-    cd "$target" 2>/dev/null || return 0
+    CDPATH= cd -- "$target" >/dev/null 2>&1 || return 0
   fi
 }
 

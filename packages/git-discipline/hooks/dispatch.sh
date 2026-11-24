@@ -92,6 +92,8 @@ case "$EVENT" in
     TOOL=$(dd_tool_name "$INPUT")
     [ "$TOOL" = "Bash" ] || exit 0
 
+    dd_cd_to_bash_target "$INPUT"
+
     SESSION_ID=$(dd_session_id "$INPUT")
     if [[ -n "$SESSION_ID" ]] && [[ -f "${LAICLUSE_HOME:-$HOME/.laicluse}/git-discipline/git-discipline-disabled-$SESSION_ID" ]]; then
       exit 0
@@ -109,7 +111,6 @@ case "$EVENT" in
     # allow-comment: identical to push-body-gate. Blocks via exit 2 so the body is
     # allow-comment: fixed at creation time, before any push (remote-less repos
     # allow-comment: never reach the push gate).
-    dd_cd_to_bash_target "$INPUT"
     source "$DIR/lib/validate-body.sh"
     source "$DIR/lib/wip-gate.sh"
     source "$DIR/guards/commit-body-posttool.sh"
