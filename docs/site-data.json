@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.32",
+			"version": "2.0.33",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.32",
-				"type": "Added",
-				"summary": "unslop replaces the averaged look of a generated surface."
+				"version": "v2.0.33",
+				"type": "Changed",
+				"summary": "unslop sets the level of a redesign from current work that was opened and captured, next to the product's own material."
 			}
 		},
 		{
@@ -707,11 +707,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.32",
+			"packageVersion": "2.0.33",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.32",
-			"type": "Added",
-			"summary": "unslop replaces the averaged look of a generated surface.",
+			"version": "v2.0.33",
+			"type": "Changed",
+			"summary": "unslop sets the level of a redesign from current work that was opened and captured, next to the product's own material.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{

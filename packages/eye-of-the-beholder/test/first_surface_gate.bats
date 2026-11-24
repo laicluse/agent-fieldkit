@@ -237,6 +237,10 @@ for (const rule of [
   /A value without a source is a default/,
   /the look you would give any surface once asked to unslop it/,
   /Swap the subject as a test/,
+  /A source makes a value specific, not good/,
+  /Set the level from current work/,
+  /specific but below that level is themed, not designed/,
+  /Fitness for the role outranks the source/,
 ]) {
   if (!rule.test(unslop)) throw new Error(`unslop lacks: ${rule}`);
 }

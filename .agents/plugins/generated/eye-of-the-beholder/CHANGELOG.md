@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.33]
+
+### Changed
+
+- `unslop` sets the level of a redesign from current work that was opened and captured, next to the product's own material. A value with a source can still be wrong for its place, so fitness for the role now outranks the source, and a result that is specific but below that level is reported as themed.
+
 ## [v2.0.32]
 
 ### Added
