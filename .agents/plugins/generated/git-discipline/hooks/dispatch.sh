@@ -103,7 +103,6 @@ case "$EVENT" in
     fi
 
     source "$DIR/guards/commit-subject.sh"
-    guard_commit_subject_posttool "$INPUT"
 
     # allow-comment: validate the bodies of commits a commit-graph writer just
     # allow-comment: wrote (rebase/cherry-pick/merge/amend); the shared
@@ -114,7 +113,14 @@ case "$EVENT" in
     source "$DIR/lib/validate-body.sh"
     source "$DIR/lib/wip-gate.sh"
     source "$DIR/guards/commit-body-posttool.sh"
-    guard_commit_body_posttool "$INPUT"
+    # allow-comment: both guards can add context for the same commit, and the
+    # allow-comment: harness reads one JSON document, so their notes are joined.
+    POST_STATUS=0
+    POST_NOTES=$(guard_commit_subject_posttool "$INPUT"; guard_commit_body_posttool "$INPUT") || POST_STATUS=$?
+    if [ -n "$POST_NOTES" ]; then
+      jq -cs '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: (map(.hookSpecificOutput.additionalContext) | join("\n\n"))}}' <<< "$POST_NOTES" 2>/dev/null || printf '%s\n' "$POST_NOTES"
+    fi
+    exit "$POST_STATUS"
     ;;
 
   UserPromptSubmit)

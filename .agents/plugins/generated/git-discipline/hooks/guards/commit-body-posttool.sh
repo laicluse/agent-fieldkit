@@ -94,7 +94,7 @@ guard_commit_body_posttool() {
   local me
   me=$(git config user.email 2>/dev/null || true)
 
-  local violations=() sha subject line short_sha
+  local violations=() captures=() sha subject line short_sha capture
   while IFS= read -r sha; do
     [[ -z "$sha" ]] && continue
     # allow-comment: a rebase onto an advanced default branch sweeps teammate
@@ -103,6 +103,15 @@ guard_commit_body_posttool() {
     # allow-comment: gate. In a remote-less personal repo every commit is ours.
     wip_gate_commit_is_ours "$sha" "$me" || continue
     if line=$(vb_validate_commit "$sha"); then
+      # allow-comment: the validator judges the first Visual trailer and splits
+      # allow-comment: it on its first arrow, so the reminder reads it the same way.
+      capture=$(git log -1 --format='%(trailers:key=Visual,valueonly)' "$sha" 2>/dev/null | head -n 1)
+      case "$capture" in
+        [nN]/[aA]*) capture="" ;;
+        *" -> "*) capture="${capture#* -> }" ;;
+        *) capture="" ;;
+      esac
+      [[ -n "$capture" ]] && captures+=("$capture")
       continue
     fi
     subject=$(git log -1 --pretty=format:%s "$sha" 2>/dev/null || true)
@@ -110,7 +119,16 @@ guard_commit_body_posttool() {
     violations+=("${short_sha} \"${subject}\": ${line}")
   done <<< "$commits"
 
-  [[ ${#violations[@]} -eq 0 ]] && return 0
+  if [[ ${#violations[@]} -eq 0 ]]; then
+    # allow-comment: the Visual trailer proves the author looked. The person they
+    # allow-comment: work for has not seen it yet, and a path in a commit or a
+    # allow-comment: report is not a picture on their screen.
+    [[ ${#captures[@]} -eq 0 ]] && return 0
+    local shown
+    shown=$(printf '%s; ' "${captures[@]}")
+    dd_emit_context "visual-shown" "This commit carries a visual check: ${shown%; }. You looked at it; the person you work for has not. A path in a commit or a report is not a picture on their screen. Before you report this work, put the capture where their instructions say visual checks are shown (a viewer, a sidebar, a shared notes vault, a pull request), next to what it shows."
+    return 0
+  fi
 
   local msg
   msg=$(printf 'Body schema misses in commits this command just wrote:\n')

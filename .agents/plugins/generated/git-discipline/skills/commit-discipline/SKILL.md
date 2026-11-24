@@ -271,6 +271,8 @@ The value is `<what you expected to see, and saw> -> <capture path>`, for exampl
 
 Keep captures where this machine keeps visual checks. Before saving one, look among your available skills and the user's agent instructions for a shared notes vault meant for screenshots or visual checks; an Obsidian-compatible Markdown vault is a common setup. When it exists, read its vault skill and README before writing and follow their folder and attachment conventions. Save one note per check with the assumption, commit and image in the intended folder, and point the trailer at that image. Without such a place, use a folder the repository ignores. Whether captures are committed is the repository's choice; the check itself is what the trailer asks for.
 
+Looking is half of it: the capture also has to reach the person you work for. After a commit with a visual check the hook names the capture and reminds you to show it where their instructions say visual checks are shown, such as a viewer, a sidebar, a shared notes vault or a pull request. A path in a commit or a report is not a picture on their screen.
+
 `n/a (reason)` is allowed with a rationale of at least 10 characters on commits without UI touches; bare `n/a` without rationale is rejected. The trailer is only required when the heuristic below detects UI touches in the staged diff; backend-only commits do not see the rule and need not include `Visual`.
 
 **`Verified n/a` closed enum:** the `n/a (reason)` form is only accepted when
