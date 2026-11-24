@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.35]
+
+### Added
+
+- Foundations of typography and of colour. Each states the rules of the discipline with their reasons, their sources and what neglect looks like: how people read, how text is set, how emphasis and hierarchy work, how type behaves in an interface, how a face carries tone, and how a palette is built as tint families under named roles. An agent reads the foundation of a plane before deciding on it, follows each rule or breaks it on purpose and records why; anything that looks unintended counts as a defect.
+
 ## [v2.0.34]
 
 ### Added

@@ -6,6 +6,12 @@ Read this before proposing, changing or judging anything visual. It governs ever
 
 Left without direction, a model produces the most common answer in its training data, and an evaluation loop of small accepted steps settles on the nearest safe optimum. A list of forbidden techniques only moves that median somewhere else. Quality has to be designed toward, not merely defended.
 
+## Follow the rules of the discipline, or break them on purpose
+
+Design has had rules for a long time, with reasons behind them. How they are filled in is what makes one design differ from the next; each design still follows them or breaks them deliberately. Anything that looks unintended is a defect. A default is neither following nor breaking: it does not know the rule exists.
+
+Before deciding on a plane, read its foundation: [typography](foundations/typography.md), [colour](foundations/colour.md). Each states the rule, its reason and what its neglect looks like. Record in the project's record every rule you broke and why. Requirements of accessibility and of law are not rules of this kind: they are met, not weighed. Then read the render for anything that looks unintended, and treat each as a defect until it has a reason.
+
 ## Reason from the material
 
 Decide from what this surface must do, not from what such surfaces usually look like:

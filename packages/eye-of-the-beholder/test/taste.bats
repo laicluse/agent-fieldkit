@@ -88,3 +88,17 @@ setup() {
   grep -q "without your reasoning" "$skills/review/judge.md"
   grep -q "Insufficient evidence" "$skills/review/judge.md"
 }
+
+@test "a design decision follows the rules of its plane or breaks them on purpose" {
+  skills="$BATS_TEST_DIRNAME/../skills"
+  grep -q "break them on purpose" "$skills/eye-of-the-beholder/design-reasoning.md"
+  grep -q "Anything that looks unintended is a defect" "$skills/eye-of-the-beholder/design-reasoning.md"
+  for plane in typography colour; do
+    grep -q "foundations/$plane.md" "$skills/eye-of-the-beholder/design-reasoning.md"
+    grep -q "An oversight looks like" "$skills/eye-of-the-beholder/foundations/$plane.md"
+    grep -q "^## Sources" "$skills/eye-of-the-beholder/foundations/$plane.md"
+  done
+  grep -q "foundations/typography.md" "$skills/unslop/SKILL.md"
+  grep -q "foundations/colour.md" "$skills/unslop/SKILL.md"
+  grep -q "they are met, not weighed" "$skills/eye-of-the-beholder/design-reasoning.md"
+}
