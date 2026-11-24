@@ -33,5 +33,6 @@ exec bats \
   packages/git-discipline/test/cd-target/*.bats \
   packages/git-discipline/test/merge-conflict-markers/*.bats \
   packages/git-discipline/test/parallel-flow/*.bats \
+  packages/git-discipline/test/posttool-body/*.bats \
   packages/git-discipline/test/skill-docs/*.bats \
   "$@"

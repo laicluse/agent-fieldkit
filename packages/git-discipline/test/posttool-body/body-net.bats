@@ -82,3 +82,44 @@ commit_with_body() {
   run bash "$DISPATCH" <<< "$(post_json 'git status')"
   [ "$status" -eq 0 ]
 }
+
+VISUAL_BODY=$'Add a clear capability\n\nThe system gains a real behaviour here, described in two sentences so the\nWHY block is satisfied and the gate is happy.\n\nSlice: docs-only\nVisual: the reset button stands first in the list -> notes/visual-checks/reset-first.png\nVerified: n/a (no behaviour change)'
+
+NO_VISUAL_CHECK_BODY=$'Add a clear capability\n\nThe system gains a real behaviour here, described in two sentences so the\nWHY block is satisfied and the gate is happy.\n\nSlice: docs-only\nVisual: n/a (no visual change)\nVerified: n/a (no behaviour change)'
+
+@test "a commit that carries a visual check reminds to show the capture" {
+  bash "$DISPATCH" <<< "$(pre_json 'git commit -F msg')" || true
+  commit_with_body "$VISUAL_BODY"
+  run bash "$DISPATCH" <<< "$(post_json 'git commit -F msg')"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"[git-discipline/visual-shown]"* ]]
+  [[ "$output" == *"notes/visual-checks/reset-first.png"* ]]
+  [ "$(jq -s 'length' <<< "$output")" -eq 1 ]
+}
+
+@test "a commit without a visual check gives no reminder to show one" {
+  bash "$DISPATCH" <<< "$(pre_json 'git commit -F msg')" || true
+  commit_with_body "$NO_VISUAL_CHECK_BODY"
+  run bash "$DISPATCH" <<< "$(post_json 'git commit -F msg')"
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"visual-shown"* ]]
+}
+
+ARROW_PATH_BODY=$'Add a clear capability\n\nThe system gains a real behaviour here, described in two sentences so the\nWHY block is satisfied and the gate is happy.\n\nSlice: docs-only\nVisual: the list is sorted -> captures/before -> after.png\nVerified: n/a (no behaviour change)'
+
+NO_CHECK_THEN_ARROW_BODY=$'Add a clear capability\n\nThe system gains a real behaviour here, described in two sentences so the\nWHY block is satisfied and the gate is happy.\n\nSlice: docs-only\nVisual: n/a (no visual change)\nVisual: stray second trailer -> captures/unchecked.png\nVerified: n/a (no behaviour change)'
+
+@test "the reminder names the capture after the first arrow, like the validator" {
+  bash "$DISPATCH" <<< "$(pre_json 'git commit -F msg')" || true
+  commit_with_body "$ARROW_PATH_BODY"
+  run bash "$DISPATCH" <<< "$(post_json 'git commit -F msg')"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"captures/before -> after.png"* ]]
+}
+
+@test "only the first Visual trailer counts, so a stray second one gives no reminder" {
+  bash "$DISPATCH" <<< "$(pre_json 'git commit -F msg')" || true
+  commit_with_body "$NO_CHECK_THEN_ARROW_BODY"
+  run bash "$DISPATCH" <<< "$(post_json 'git commit -F msg')"
+  [[ "$output" != *"visual-shown"* ]]
+}
