@@ -37,3 +37,69 @@ stop_with() {
   stop_with "Beide panelen tonen nu de image-naam en de CI is groen. 🏁"
   [ -z "$output" ]
 }
+
+@test "a decision that belongs to someone else is not a gate" {
+  stop_with "Bewust uitgesteld: de kleurkeuze. Dat besluit is van de productowner. 🏁"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+  [[ "$output" == *"recommendation"* ]]
+}
+
+@test "a choice someone else has to make is not a gate" {
+  stop_with "Bewust uitgesteld: de retentie van de auditregistratie, daarover moet de eigenaar nog beslissen. 🏁"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+}
+
+@test "a choice put to the operator passes" {
+  stop_with "Bewust uitgesteld: de keuze is aan jou. Ik raad aan de kolom te laten staan, want verwijderen wint niets. 🏁"
+  [ -z "$output" ]
+}
+
+@test "a decision named on the line after the deferral is not a gate either" {
+  stop_with "$(printf 'Bewust uitgesteld: de kleurkeuze.\nDat besluit is van de productowner. 🏁')"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+}
+
+@test "a go the operator still has to give passes" {
+  stop_with "Bewust uitgesteld: de hostwijziging wacht op expliciete toestemming; je moet nog beslissen of die nu mag. 🏁"
+  [ -z "$output" ]
+}
+
+@test "a deferral in another paragraph does not excuse a third-party decision elsewhere" {
+  stop_with "$(printf 'Bewust uitgesteld: de hostwijziging wacht op een go.\n\nDe indeling is klaar en de keuze is aan jou. 🏁')"
+  [ -z "$output" ]
+}
+
+@test "a sentence to the operator does not excuse a third-party decision beside it" {
+  stop_with "Bewust uitgesteld: de kleurkeuze. Dat besluit is van de productowner. Wil je dat ik het hem vraag? 🏁"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+}
+
+@test "a settled decision before the deferral does not count" {
+  stop_with "De keuze is van de productowner en is al verwerkt. Bewust uitgesteld: de hostwijziging wacht op expliciete toestemming. 🏁"
+  [ -z "$output" ]
+}
+
+@test "a form of address elsewhere in the sentence does not excuse a third-party decision" {
+  stop_with "Bewust uitgesteld: de productowner moet nog beslissen over je voorstel. 🏁"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+}
+
+@test "a quoted escape token does not excuse a defect left behind" {
+  stop_with "De hook kent de opening \`Bewust uitgesteld:\`. Het loggroeipanel heb ik laten liggen. 🏁"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+}
+
+@test "waiting for someone else's decision is not a gate" {
+  stop_with "Bewust uitgesteld: ik wacht op het besluit van de productowner. 🏁"
+  [[ "$output" == *"[dont-do-that/left-behind]"* ]]
+}
+
+@test "a choice laid before the operator by role passes" {
+  stop_with "Bewust uitgesteld: de hostwijziging wacht op een go. De keuze is aan de operator; ik raad rollback aan. 🏁"
+  [ -z "$output" ]
+}
+
+@test "a question about the agent's own next step passes" {
+  stop_with "Bewust uitgesteld: de hostwijziging wacht op een go. Moet ik de huidige configuratie laten staan of voor rollback kiezen? 🏁"
+  [ -z "$output" ]
+}

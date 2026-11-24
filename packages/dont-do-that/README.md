@@ -383,6 +383,10 @@ found in the work at hand gets fixed in that work, and an unexplained finding
 gets investigated. Quoted spans and code are ignored. Pass condition: fix or
 investigate it, or start the sentence with `Bewust uitgesteld:` and name the
 gate the agent cannot pass itself, such as a host change that needs a go.
+A decision that belongs to someone else is not such a gate: a deferral that
+names one ("dat besluit is van …", "moet … nog beslissen") is blocked, and the
+agent looks up what was already decided and puts the rest to the operator with
+a recommendation. A choice addressed to the operator ("aan jou") passes.
 What happens to parts that coding agents built is the agent's judgement, not a
 gate to hand to the operator.
 
