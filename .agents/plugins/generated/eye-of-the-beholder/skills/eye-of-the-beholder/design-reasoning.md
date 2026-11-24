@@ -26,6 +26,18 @@ When the direction is open, produce genuinely different hypotheses. They differ 
 
 Ask of every candidate: **which visible choice could only exist here?** A candidate whose every choice would fit any product has no character yet. Conventional controls need not become unique; the product-specific choices must be explainable from this material.
 
+## Starting a new surface
+
+A new page, app or site whose look nobody has decided gets that look decided before its first styles. This holds when it is small, private or disposable, and when the request was only to build it. Skipped, the step is filled by the model's default, and every surface made that way looks like the others.
+
+1. **Material.** List what is on this surface and around it: the names, dates, objects, numbers and occasions, who looks at it, on what device, in what mood. Character comes from here.
+2. **Name your default.** Write down the look you would produce without deciding: its ground and accent, its type pairing, its containers and its labels. No element of that description is forbidden; a surface that matches it as a whole has not been designed. A default explained afterwards from the material is still the default: when the explanation would fit another subject as well, start from a different part of the material.
+3. **Recent surfaces.** Read `surfaces.md` in the [reference library](../explore/reference-library.md), the looks of the surfaces made before this one. Repeating their ground, type and container form needs a reason from this material. A missing log is an empty one.
+4. **Hypothesis.** Form the design hypothesis as above, from the material and the library, and derive ground, type, the form of things and the layout from it.
+5. **Decide in proportion.** When the user follows along and the look matters to them, show directions through explore. When they delegated, or asked only for a working thing, decide yourself, record it as an agent decision and keep building. A throwaway project is no reason to ask and no reason to skip.
+6. **Record first.** Write material, the default you named, the hypothesis and the choices that follow in the project's visual-language record before the styles.
+7. **Sibling test.** Look at the first render beside the most recent surfaces in the log. When it could be swapped for one of them, the hypothesis did not reach the styles. On delivery, add this surface to `surfaces.md`; where the library cannot be written, keep the entry in the project record.
+
 ## Look outward, deliberately
 
 The model's memory of design is dated and averaged. The [reference library](../explore/reference-library.md) is the growing, dated memory that replaces it: consult it before proposing, and when its coverage of this task is thin or proposals keep resembling each other, research references that solve this concrete problem in different ways, including other media and older work. Inspect the real work, record its source and when you observed it, and name the transferable mechanism, not an adjective. A recent capture does not prove a recent design; fresh references are input, not a guarantee of fresh work. Record what each applied mechanism did, kept or rejected, so the library becomes knowledge rather than inspiration.

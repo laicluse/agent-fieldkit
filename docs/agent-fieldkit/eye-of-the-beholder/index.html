@@ -53,7 +53,7 @@
 						<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.29</span>
+							<span class="meta-fact">2.0.30</span>
 							<span class="meta-fact">5 skills</span>
 						</div>
 					</div>
@@ -83,6 +83,18 @@
 <h2 id="design-reasoning">Design reasoning</h2>
 <p>Every skill applies one shared reasoning core instead of a style. It decides from meaning, attention, relations, character and medium; forms a visible design hypothesis before polishing; asks which choice could only exist for this product; researches dated references when proposals converge; keeps the point of comparisons visible; and judges novelty, appeal and fit separately, including everything a change reaches and motion over its whole sequence. It names no default font, palette or layout.</p>
 <p>Three mechanisms keep that reasoning from freezing at a model's training median. A dated <strong>reference library</strong> (<code>skills/explore/reference-library.md</code>, stored under <code>~/.laicluse/eye-of-the-beholder/references/</code>) records real work with its transferable mechanism and what happened when it was applied, plus a draw log that makes habits visible. A <strong>judging protocol</strong> (<code>skills/review/judging.md</code>) with calibration pairs (<code>test/calibration/</code>) turns judge rounds into evidence instead of position bias. A <strong>practice test</strong> (<code>test/practice/</code>) compares plugin versions on four briefs in two domains each, on both hosts, with human verdicts first. Rendering diagnostics are an observation method; pitfalls per axis load only when that axis is scanned.</p>
+<h2 id="new-surfaces">New surfaces</h2>
+<p>A page, app or site built from nothing gets the model's default look unless something interrupts: the request was to build a working thing, so no design skill is selected. Two parts close that gap.</p>
+<table>
+<thead>
+<tr><th>Part</th><th>What it does</th></tr>
+</thead>
+<tbody>
+<tr><td data-label="Part"><code>first-surface</code> hook</td><td data-label="What it does">Holds the first stylesheet, or the first page with inline styles, of a project that has no stylesheet and no visual-language record yet. The refusal points at the procedure below. It sees files written with the host's file-writing tool, not shell redirects. It passes once <code>visual-language.md</code> (or <code>docs/visual-language.md</code>) exists, and ignores temporary directories and <code>test</code>, <code>fixtures</code>, <code>vendor</code>, <code>dist</code> and <code>build</code> paths.</td></tr>
+<tr><td data-label="Part">Starting a new surface (<code>skills/eye-of-the-beholder/design-reasoning.md</code>)</td><td data-label="What it does">List the surface's own material, name the default you would have produced, compare with the surfaces made before (<code>surfaces.md</code> in the reference library), form a hypothesis, decide in proportion to the project, record it, and check the first render beside its predecessors.</td></tr>
+</tbody>
+</table>
+<p>The surfaces log is what makes sameness visible across projects: a look that returns on unrelated surfaces is a default, whatever it consists of. A small or disposable project is decided by the agent and recorded as an agent decision; it is not a reason to ask and not a reason to skip.</p>
 <h2 id="skills">Skills</h2>
 <p>The entry point selects <code>explore</code>, <code>define</code> and <code>review</code> as internal stages. In Claude Code only <code>eye-of-the-beholder</code> and <code>eye-of-the-beholder:obvious</code> appear in the slash menu; the stages are hidden (<code>user-invocable: false</code>) and stay available to the model. Codex has no setting that hides a skill from its <code>$</code> picker while keeping it available to the model, so the stages remain listed there.</p>
 <table>
@@ -118,7 +130,7 @@
 <pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="commands-cd26904522-codex">codex plugin add eye-of-the-beholder@laicluse-agent-fieldkit</code></pre>
 	</div>
 </div>
-<p>Both Claude Code and Codex use the same instructions; available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow <a href="skills/explore/generation.md">backend resolution</a> before starting. Reload the plugin catalog or start a fresh session after an update.</p>
+<p>Both Claude Code and Codex use the same instructions and the same <code>first-surface</code> hook (on <code>Write</code> in Claude Code, on <code>apply_patch</code> in Codex; it needs <code>node</code>); available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow <a href="skills/explore/generation.md">backend resolution</a> before starting. Reload the plugin catalog or start a fresh session after an update.</p>
 <h2 id="migration">Migration</h2>
 <p>The old public skills <code>taste-test</code>, <code>art-director</code>, <code>fat-marker-sketch</code> and <code>visual-inspection</code> are retired. Use <code>eye-of-the-beholder</code> as the entry point; it selects the <code>explore</code>, <code>define</code> and <code>review</code> stages. Update saved instructions that invoke the old names. Image classification and reference matching remain internal protocols under <code>skills/review</code>; their useful measurement tools and fixtures are retained.</p>
 <h2 id="verification">Verification</h2>
@@ -127,7 +139,7 @@
 <span class="code-line">node packages/eye-of-the-beholder/skills/review/reference-match/scripts/run-corpus.mjs</span></code></pre>
 <p>The manual workflow scenarios in <code>test/workflow-scenarios.md</code> exercise routing and approval boundaries. They are behavior probes, not proof of aesthetic quality. Test the installed workflow with an actual visual request before judging the design outcomes.</p>
 				</article>
-				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#design-reasoning">Design reasoning</a></li><li><a href="#skills">Skills</a></li><li><a href="#obvious">Obvious</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#design-reasoning">Design reasoning</a></li><li><a href="#new-surfaces">New surfaces</a></li><li><a href="#skills">Skills</a></li><li><a href="#obvious">Obvious</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
 			</section>
 		</main>
 

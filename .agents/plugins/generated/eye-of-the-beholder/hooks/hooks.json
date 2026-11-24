@@ -1,0 +1,15 @@
+{
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Write|apply_patch",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "hook_entry=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/first-surface.mjs\"; if [ ! -x \"$hook_entry\" ]; then printf '%s\\n' 'eye-of-the-beholder PreToolUse hook entry is unavailable.' >&2; exit 2; fi; \"$hook_entry\" codex"
+					}
+				]
+			}
+		]
+	}
+}

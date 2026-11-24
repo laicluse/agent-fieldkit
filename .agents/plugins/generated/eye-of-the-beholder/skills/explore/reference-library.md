@@ -33,6 +33,17 @@ The mechanism field is the entry's value. "Feels premium" is not a mechanism; "t
 
 `draws.md` in the same directory logs, per task, which mechanisms were drawn and why. Draws and applications in the shared library carry only transferable, anonymised findings (the kind of surface, the mechanism, the outcome); project identity, client names and evidence captures stay in the project's own record. Before proposing, read the recent draws. A mechanism drawn three times in a row is a habit to examine, not a prohibition: a repeated draw is justified when this material calls for it, and a forced departure that damages coherence is worse than a repeat. Record the justification either way.
 
+## Surfaces
+
+`surfaces.md` in the same directory lists the surfaces made, newest first, so a new one can be compared with its predecessors. Entries are anonymised like draws; captures stay in the project. A look that returns across unrelated surfaces is a default, whatever it consists of; the log shows that where a list of forbidden techniques cannot.
+
+```markdown
+## <date> <kind of surface, anonymised>
+Ground and accent: <…>. Type: <…>. Form: <containers, labels, marks>. Only here: <the visible choice that came from this material, or "none">.
+```
+
+Add the entry on delivery, also for a surface that turned out generic; "none" is the entry the next surface learns most from.
+
 ## Coverage, not freshness
 
 A new entry does not make the library current. Before an open exploration, check coverage for this task and medium: are there entries that solve this problem from different directions? When coverage is thin, research first, as design reasoning describes, and add what you learn. When every proposal keeps resembling the others or a familiar default, coverage is thin by definition.

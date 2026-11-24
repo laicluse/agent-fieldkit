@@ -1,5 +1,13 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.30]
+
+### Added
+
+- A `first-surface` hook holds the first stylesheet, or the first inline styles, that an agent writes with its file-writing tool for a new page, app or site, until the project has a visual-language record. Styles written through a shell command are not seen. A project built from nothing used to get the model's default look, because a request to build a working thing selected no design skill.
+- Design reasoning has a procedure for starting a new surface: list its material, name the default you would have produced, compare with earlier surfaces, form a hypothesis, record it, and check the first render beside its predecessors. Small and disposable projects are decided by the agent and recorded as agent decisions.
+- The reference library keeps `surfaces.md`, a log of the looks of surfaces already made, so a look that keeps returning becomes visible.
+
 ## [v2.0.29]
 
 ### Changed

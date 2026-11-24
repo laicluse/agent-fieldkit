@@ -8,6 +8,17 @@ Every skill applies one shared reasoning core instead of a style. It decides fro
 
 Three mechanisms keep that reasoning from freezing at a model's training median. A dated **reference library** (`skills/explore/reference-library.md`, stored under `~/.laicluse/eye-of-the-beholder/references/`) records real work with its transferable mechanism and what happened when it was applied, plus a draw log that makes habits visible. A **judging protocol** (`skills/review/judging.md`) with calibration pairs (`test/calibration/`) turns judge rounds into evidence instead of position bias. A **practice test** (`test/practice/`) compares plugin versions on four briefs in two domains each, on both hosts, with human verdicts first. Rendering diagnostics are an observation method; pitfalls per axis load only when that axis is scanned.
 
+## New surfaces
+
+A page, app or site built from nothing gets the model's default look unless something interrupts: the request was to build a working thing, so no design skill is selected. Two parts close that gap.
+
+| Part | What it does |
+| --- | --- |
+| `first-surface` hook | Holds the first stylesheet, or the first page with inline styles, of a project that has no stylesheet and no visual-language record yet. The refusal points at the procedure below. It sees files written with the host's file-writing tool, not shell redirects. It passes once `visual-language.md` (or `docs/visual-language.md`) exists, and ignores temporary directories and `test`, `fixtures`, `vendor`, `dist` and `build` paths. |
+| Starting a new surface (`skills/eye-of-the-beholder/design-reasoning.md`) | List the surface's own material, name the default you would have produced, compare with the surfaces made before (`surfaces.md` in the reference library), form a hypothesis, decide in proportion to the project, record it, and check the first render beside its predecessors. |
+
+The surfaces log is what makes sameness visible across projects: a look that returns on unrelated surfaces is a default, whatever it consists of. A small or disposable project is decided by the agent and recorded as an agent decision; it is not a reason to ask and not a reason to skip.
+
 ## Skills
 
 The entry point selects `explore`, `define` and `review` as internal stages. In Claude Code only `eye-of-the-beholder` and `eye-of-the-beholder:obvious` appear in the slash menu; the stages are hidden (`user-invocable: false`) and stay available to the model. Codex has no setting that hides a skill from its `$` picker while keeping it available to the model, so the stages remain listed there.
@@ -41,7 +52,7 @@ claude plugins install eye-of-the-beholder@laicluse-agent-fieldkit
 codex plugin add eye-of-the-beholder@laicluse-agent-fieldkit
 ```
 
-Both Claude Code and Codex use the same instructions; available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow [backend resolution](skills/explore/generation.md) before starting. Reload the plugin catalog or start a fresh session after an update.
+Both Claude Code and Codex use the same instructions and the same `first-surface` hook (on `Write` in Claude Code, on `apply_patch` in Codex; it needs `node`); available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow [backend resolution](skills/explore/generation.md) before starting. Reload the plugin catalog or start a fresh session after an update.
 
 ## Migration
 

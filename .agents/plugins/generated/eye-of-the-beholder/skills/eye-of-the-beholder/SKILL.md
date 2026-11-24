@@ -1,7 +1,7 @@
 ---
 name: eye-of-the-beholder
 description: >-
-  The entry point for visual and interaction design: requests to make something better, nicer, more beautiful, more convincing or clearer, new treatments, redesigns, design improvement loops and evaluations, unclear controls, excessive explanation, or feedback such as ugly, feels off, generic, looks AI-made, lelijk, or past niet. Routes usability repair, visual exploration and rendering review.
+  The entry point for visual and interaction design: building a new page, app or site whose look is not yet decided, requests to make something better, nicer, more beautiful, more convincing or clearer, new treatments, redesigns, design improvement loops and evaluations, unclear controls, excessive explanation, or feedback such as ugly, feels off, generic, looks AI-made, lelijk, or past niet. Routes usability repair, visual exploration and rendering review.
 ---
 
 # Eye of the Beholder
@@ -23,11 +23,12 @@ Read the project's visual-language document and inspect the actual current rende
 | Situation | Route |
 | --- | --- |
 | Confusing controls, over-explaining UI, cognitive load, a task that requires avoidable interpretation, or where an action belongs: inline, modal, or its own page or cell | [obvious](../obvious/SKILL.md) |
+| Building a new page, app or site whose look nobody has decided, including a small or disposable one requested only as a working thing | [Starting a new surface](design-reasoning.md#starting-a-new-surface), before the first styles |
 | New visual treatment, explicitly unresolved appearance, a request to make an existing surface better, nicer or more convincing without a named defect, or a direction that remains rejected after diagnosis | [explore](../explore/SKILL.md) |
 | Explicit identity work or missing foundations necessary for the current product decision | [define](../define/SKILL.md), which uses explore as needed |
 | A first complaint about an existing render, exact correction, component reuse, rendering defect, or target verification | [review](../review/SKILL.md) |
 
-For a first complaint such as “cramped” or “off”, review the actual render and diagnose the relevant axis before deciding that a new visual treatment is needed. Do not interpret every gut-word as a redesign request. A greenfield screen does not automatically require brand work.
+For a first complaint such as “cramped” or “off”, review the actual render and diagnose the relevant axis before deciding that a new visual treatment is needed. Do not interpret every gut-word as a redesign request. A greenfield screen does not automatically require brand work. It does require a decided look.
 
 A visual-language document does not resolve every future appearance. An available semantic channel is not an aesthetic recommendation. Genuinely new visual form needs a visible proposal even when its function is fully specified; explore chooses the medium that exposes the open question. Exact corrections and reuse do not need a concept round.
 
