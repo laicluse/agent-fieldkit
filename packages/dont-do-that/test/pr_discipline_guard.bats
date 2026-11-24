@@ -98,6 +98,28 @@ advance_base() {
   [ -z "$output" ]
 }
 
+@test "pr-discipline accepts an inline image that links to its file page" {
+  run_guard 'gh pr edit 12 --body "[![after](https://github.com/o/shots/blob/0a1b2c3/2026/11/topic/after.png?raw=true)](https://github.com/o/shots/blob/0a1b2c3/2026/11/topic/after.png)"'
+
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "pr-discipline denies an image link whose text starts with an exclamation mark" {
+  run_guard 'gh pr edit 12 --body "[!Bekijk screenshot](https://example.com/a.png)"'
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"links to an image"* ]]
+}
+
+@test "pr-discipline points a linked image at the publication route of the project" {
+  run_guard 'gh pr edit 12 --body "Zie [de capture](https://example.com/shots/after.png)"'
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"publication route"* ]]
+  [[ "$output" != *"release asset"* ]]
+}
+
 @test "pr-discipline reads the body from --body-file" {
   printf '%s\n' 'Beeld:' '' '![monitor](https://github.com/o/r/blob/feature/doc/monitor.png)' > "$REPO/body.md"
   run_guard "gh pr edit 12 --body-file $REPO/body.md"

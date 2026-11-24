@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.98] - 2026-11-24
+
+### Changed
+
+- The pr-discipline guard accepts an inline image that links to its own file page, `[![alt](url)](page)`, and no longer recommends release assets for PR images: it points to the publication route of the project. Claude, Codex.
+
 ## [v2.0.96] - 2026-11-20
 
 ### Added

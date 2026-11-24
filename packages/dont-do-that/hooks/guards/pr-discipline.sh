@@ -146,9 +146,9 @@ dd_pr_image_links() {
 
   local image_ext='\.(png|gif|jpe?g|webp|svg|mov|mp4|webm)'
   local linked
-  linked=$(grep -oE "(^|[^!])\[[^]]*\]\((https?://[^) ]*${image_ext}(\?[^) ]*)?)\)" <<< "$cmd" | head -1)
+  linked=$(grep -oE "(^|[^!])\[(!([^][][^]]*)?|[^]!][^]]*)?\]\((https?://[^) ]*${image_ext}(\?[^) ]*)?)\)" <<< "$cmd" | head -1)
   if [ -n "$linked" ]; then
-    dd_emit_deny pr-discipline "PR body links to an image instead of showing it: ${linked#?}. A capture is inline, so the reviewer sees it without clicking: markdown image syntax ![alt](url) with a URL that serves the bytes. For a file committed in the repo use the blob URL with ?raw=true (https://github.com/OWNER/REPO/blob/BRANCH/path.png?raw=true); otherwise upload it as a release asset (pr-NUMBER-assets) and use its download URL. Portrait shots go in a table with captions (two or more) or in <img width=...> (one). Append '# allow-image-link' for a deliberate link."
+    dd_emit_deny pr-discipline "PR body links to an image instead of showing it: ${linked#?}. A capture is inline, so the reviewer sees it without clicking: markdown image syntax ![alt](url) with a URL that serves the bytes. For a file committed in the repo use the blob URL with ?raw=true (https://github.com/OWNER/REPO/blob/BRANCH/path.png?raw=true); otherwise publish it through the publication route of the project and embed the URL that route gives. An image may link to its own file page: [![alt](url)](page). Portrait shots go in a table with captions (two or more) or in <img width=...> (one). Append '# allow-image-link' for a deliberate link."
   fi
 
   local blob
