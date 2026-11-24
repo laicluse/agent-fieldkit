@@ -45,7 +45,7 @@ setup_file() {
   [ "$refusal" -eq 2 ]
   [ "$guard_status" -eq 0 ]
   [ "$linked_status" -eq 0 ]
-  [[ "$refusal_output" == *"occupies this directory"* ]]
+  [[ "$refusal_output" == *"holds this directory"* ]]
   [[ "$plan_output" == *"authoring_branch=parallel-feature"* ]]
 }
 
@@ -87,7 +87,7 @@ setup_file() {
   local refusal=$status
   kill "$holder"
   [ "$refusal" -eq 2 ]
-  [[ "$output" == *"occupies this directory"* ]]
+  [[ "$output" == *"holds this directory"* ]]
 }
 
 @test "a worktree-only repository can bootstrap its first commit with both guards" {
@@ -176,7 +176,7 @@ setup_file() {
   local payload=$(jq -nc --arg root "$TEST_REPO" --arg target "$other/nested" '{hook_event_name:"PreToolUse",tool_name:"Bash",session_id:"create",cwd:$root,tool_input:{command:("git worktree add -b innocent " + $target)}}')
   run env DIBS_BIN="$dibs" DIBS_HOLDER_PID=$$ DIBS_DESCRIPTION='create feature' bash "$hook" <<< "$payload"
   [ "$status" -eq 2 ]
-  [[ "$output" == *"occupies this directory"* ]]
+  [[ "$output" == *"holds this directory"* ]]
   git -C "$TEST_REPO" config codingAgent.git.branchPolicy worktree
   mkdir -p "$TEST_REPO/worktrees"
   printf '*\n' > "$TEST_REPO/worktrees/.gitignore"
@@ -215,7 +215,7 @@ setup_file() {
     local payload=$(jq -nc --arg root "$TEST_REPO" --arg command "$command" '{hook_event_name:"PreToolUse",tool_name:"Bash",session_id:"create",cwd:$root,tool_input:{command:$command}}')
     run env DIBS_BIN="$dibs" DIBS_HOLDER_PID=$$ DIBS_DESCRIPTION='forced feature' bash "$hook" <<< "$payload"
     [ "$status" -eq 2 ]
-    [[ "$output" == *"occupies this directory"* ]]
+    [[ "$output" == *"holds this directory"* ]]
   done
 }
 
