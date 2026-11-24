@@ -205,3 +205,45 @@ if (!/Starting a new surface/.test(router)) throw new Error("the router does not
 NODE
   [ "$status" -eq 0 ]
 }
+
+@test "unslop replaces default values by role and leaves the product alone" {
+  run node - "$BATS_TEST_DIRNAME/../skills" <<'NODE'
+const fs = require("fs");
+const path = require("path");
+const skills = process.argv[2];
+const unslop = fs.readFileSync(path.join(skills, "unslop/SKILL.md"), "utf8");
+const router = fs.readFileSync(path.join(skills, "eye-of-the-beholder/SKILL.md"), "utf8");
+const description = unslop.match(/^description: >-\n([\s\S]*?)\n---/m)[1];
+for (const word of ['"unslop"', '"slop"', '"defaultism"', "looks AI-made", "small adjustments"]) {
+  if (!description.includes(word)) throw new Error(`unslop does not trigger on: ${word}`);
+}
+if (!/^user-invocable: true$/m.test(unslop)) throw new Error("unslop cannot be typed as a command");
+for (const rule of [
+  /Slop is defaultism: convergence on the mode/,
+  /features, information order, structure and data are the owner's/,
+  /second most likely value is not unslop/,
+  /Mark each value you would have produced for any subject/,
+  /repeats across elements with different roles/,
+  /Include what you added yourself/,
+  /before any style/,
+  /A value follows from the role of its element/,
+  /Build the styles from an empty file/,
+  /names unslop or slop delegates the visual decisions/,
+  /the states, the conditions and the steps of a task may not/,
+  /beside the capture from step 1/,
+  /Show old and new side by side/,
+  /decide yourself, build it, show it/,
+  /A style recalled from memory has not been looked at/,
+  /A value without a source is a default/,
+  /the look you would give any surface once asked to unslop it/,
+  /Swap the subject as a test/,
+]) {
+  if (!rule.test(unslop)) throw new Error(`unslop lacks: ${rule}`);
+}
+if (!/"Unslop", "slop", defaultism[^|]*\| \[unslop\]/.test(router)) throw new Error("the entry point does not route to unslop");
+const generated = path.join(skills, "..", "..", "..", ".agents/plugins/generated/eye-of-the-beholder/skills/unslop/SKILL.md");
+const adapted = fs.readFileSync(generated, "utf8").match(/^description: >-\n([\s\S]*?)\n---/m);
+if (!adapted || adapted[1] !== description) throw new Error("the Codex copy of unslop has a different description");
+NODE
+  [ "$status" -eq 0 ]
+}

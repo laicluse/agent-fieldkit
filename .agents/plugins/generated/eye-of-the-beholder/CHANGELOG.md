@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.32]
+
+### Added
+
+- `unslop` replaces the averaged look of a generated surface. It lists every visible value that is a default, derives one style from the product's story and from material it has looked at, records a source for every colour, typeface and form, decides each value by the role of its element, rebuilds the styles from an empty file and shows old and new side by side. What the product does stays as it is. Requests to improve a generic look used to end in small edits to the stylesheet that was already there.
+
 ## [v2.0.30]
 
 ### Added

@@ -13,8 +13,8 @@
 		<meta property="og:url" content="https://laicluse.com/agent-fieldkit/eye-of-the-beholder/">
 		<meta property="og:title" content="eye-of-the-beholder · l'Aicluse Agent Fieldkit">
 		<meta property="og:description" content="Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.">
-		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=7052f70606">
-		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=7052f70606">
+		<meta property="og:image" content="https://laicluse.com/assets/og-image.png?v=36c8e253de">
+		<meta property="og:image:secure_url" content="https://laicluse.com/assets/og-image.png?v=36c8e253de">
 		<meta property="og:image:type" content="image/png">
 		<meta property="og:image:width" content="1200">
 		<meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="eye-of-the-beholder · l'Aicluse Agent Fieldkit">
 		<meta name="twitter:description" content="Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.">
-		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=7052f70606">
+		<meta name="twitter:image" content="https://laicluse.com/assets/og-image.png?v=36c8e253de">
 
 		<link rel="stylesheet" href="../../styles.css?v=a0b40a4110">
 		<script src="../../code-panel-copy.js?v=3ee1e4c503"></script>
@@ -53,8 +53,8 @@
 						<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.31</span>
-							<span class="meta-fact">5 skills</span>
+							<span class="meta-fact">2.0.32</span>
+							<span class="meta-fact">6 skills</span>
 						</div>
 					</div>
 					<aside class="detail-install" aria-label="Install">
@@ -96,7 +96,7 @@
 </table>
 <p>The surfaces log is what makes sameness visible across projects: a look that returns on unrelated surfaces is a default, whatever it consists of. A small or disposable project is decided by the agent and recorded as an agent decision; it is not a reason to ask and not a reason to skip.</p>
 <h2 id="skills">Skills</h2>
-<p>The entry point selects <code>explore</code>, <code>define</code> and <code>review</code> as internal stages. In Claude Code only <code>eye-of-the-beholder</code> and <code>eye-of-the-beholder:obvious</code> appear in the slash menu; the stages are hidden (<code>user-invocable: false</code>) and stay available to the model. Codex has no setting that hides a skill from its <code>$</code> picker while keeping it available to the model, so the stages remain listed there.</p>
+<p>The entry point selects <code>explore</code>, <code>define</code> and <code>review</code> as internal stages. In Claude Code only <code>eye-of-the-beholder</code>, <code>eye-of-the-beholder:obvious</code> and <code>eye-of-the-beholder:unslop</code> appear in the slash menu; the stages are hidden (<code>user-invocable: false</code>) and stay available to the model. Codex has no setting that hides a skill from its <code>$</code> picker while keeping it available to the model, so the stages remain listed there.</p>
 <table>
 <thead>
 <tr><th>Skill</th><th>Purpose</th></tr>
@@ -104,6 +104,7 @@
 <tbody>
 <tr><td data-label="Skill"><code>eye-of-the-beholder</code></td><td data-label="Purpose">The single entry point: inspect context, route the request and carry accepted decisions through to the real render.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:obvious</code></td><td data-label="Purpose">Resolve the current confusing interaction from context and reduce avoidable cognitive load through clearer controls, state and feedback.</td></tr>
+<tr><td data-label="Skill"><code>eye-of-the-beholder:unslop</code></td><td data-label="Purpose">Replace the averaged, default look of a generated surface: list every default value, derive one style from the product's story with a source for every value, decide each value by the role of its element, rebuild the styles and show old and new side by side. Features and structure stay. One word replaces a paragraph of instructions.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:explore</code> (internal stage)</td><td data-label="Purpose">Form distinct design hypotheses from the product and real references, make them visible in the medium that suits the open question, interpret reactions and establish an accepted target.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:define</code> (internal stage)</td><td data-label="Purpose">Establish identity and design-system foundations when the product needs them.</td></tr>
 <tr><td data-label="Skill"><code>eye-of-the-beholder:review</code> (internal stage)</td><td data-label="Purpose">Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately.</td></tr>

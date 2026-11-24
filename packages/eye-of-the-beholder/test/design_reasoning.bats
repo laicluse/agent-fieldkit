@@ -3,7 +3,7 @@
 SKILLS="$BATS_TEST_DIRNAME/../skills"
 
 @test "every public skill applies the shared design reasoning" {
-  for skill in eye-of-the-beholder explore review define obvious; do
+  for skill in eye-of-the-beholder explore review define obvious unslop; do
     grep -q 'design-reasoning.md' "$SKILLS/$skill/SKILL.md" || return 1
   done
 }

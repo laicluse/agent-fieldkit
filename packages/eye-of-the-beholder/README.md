@@ -21,12 +21,13 @@ The surfaces log is what makes sameness visible across projects: a look that ret
 
 ## Skills
 
-The entry point selects `explore`, `define` and `review` as internal stages. In Claude Code only `eye-of-the-beholder` and `eye-of-the-beholder:obvious` appear in the slash menu; the stages are hidden (`user-invocable: false`) and stay available to the model. Codex has no setting that hides a skill from its `$` picker while keeping it available to the model, so the stages remain listed there.
+The entry point selects `explore`, `define` and `review` as internal stages. In Claude Code only `eye-of-the-beholder`, `eye-of-the-beholder:obvious` and `eye-of-the-beholder:unslop` appear in the slash menu; the stages are hidden (`user-invocable: false`) and stay available to the model. Codex has no setting that hides a skill from its `$` picker while keeping it available to the model, so the stages remain listed there.
 
 | Skill | Purpose |
 | --- | --- |
 | `eye-of-the-beholder` | The single entry point: inspect context, route the request and carry accepted decisions through to the real render. |
 | `eye-of-the-beholder:obvious` | Resolve the current confusing interaction from context and reduce avoidable cognitive load through clearer controls, state and feedback. |
+| `eye-of-the-beholder:unslop` | Replace the averaged, default look of a generated surface: list every default value, derive one style from the product's story with a source for every value, decide each value by the role of its element, rebuild the styles and show old and new side by side. Features and structure stay. One word replaces a paragraph of instructions. |
 | `eye-of-the-beholder:explore` (internal stage) | Form distinct design hypotheses from the product and real references, make them visible in the medium that suits the open question, interpret reactions and establish an accepted target. |
 | `eye-of-the-beholder:define` (internal stage) | Establish identity and design-system foundations when the product needs them. |
 | `eye-of-the-beholder:review` (internal stage) | Diagnose concrete rendering defects and verify aesthetics, fidelity, meaning and interaction separately. |

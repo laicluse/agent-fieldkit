@@ -93,7 +93,7 @@
 		"codexPackages": 21,
 		"claudeOnlyPackages": 1,
 		"changelogEntries": 22,
-		"skillEntries": 87,
+		"skillEntries": 88,
 		"hookFiles": 85
 	},
 	"install": {
@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.31",
+			"version": "2.0.32",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -293,13 +293,13 @@
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
 			"sourcePath": "packages/eye-of-the-beholder",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/eye-of-the-beholder",
-			"skillCount": 5,
+			"skillCount": 6,
 			"commandCount": 1,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.30",
+				"version": "v2.0.32",
 				"type": "Added",
-				"summary": "A first-surface hook holds the first stylesheet, or the first inline styles, that an agent writes with its file-writing tool for a new page, app or site, until the project has a visual-language record."
+				"summary": "unslop replaces the averaged look of a generated surface."
 			}
 		},
 		{
@@ -707,11 +707,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.31",
+			"packageVersion": "2.0.32",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.30",
+			"version": "v2.0.32",
 			"type": "Added",
-			"summary": "A first-surface hook holds the first stylesheet, or the first inline styles, that an agent writes with its file-writing tool for a new page, app or site, until the project has a visual-language record.",
+			"summary": "unslop replaces the averaged look of a generated surface.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{

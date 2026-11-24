@@ -25,6 +25,7 @@ Read the project's visual-language document and inspect the actual current rende
 | --- | --- |
 | Confusing controls, over-explaining UI, cognitive load, a task that requires avoidable interpretation, or where an action belongs: inline, modal, or its own page or cell | [obvious](../obvious/SKILL.md) |
 | Building a new page, app or site whose look nobody has decided, including a small or disposable one requested only as a working thing | [Starting a new surface](design-reasoning.md#starting-a-new-surface), before the first styles |
+| "Unslop", "slop", defaultism, a surface that looks generated or like every other one, or requests to improve a look that only produced small adjustments | [unslop](../unslop/SKILL.md) |
 | New visual treatment, explicitly unresolved appearance, a request to make an existing surface better, nicer or more convincing without a named defect, or a direction that remains rejected after diagnosis | [explore](../explore/SKILL.md) |
 | Explicit identity work or missing foundations necessary for the current product decision | [define](../define/SKILL.md), which uses explore as needed |
 | A first complaint about an existing render, exact correction, component reuse, rendering defect, or target verification | [review](../review/SKILL.md) |
