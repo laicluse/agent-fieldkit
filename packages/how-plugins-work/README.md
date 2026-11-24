@@ -14,6 +14,12 @@ claude plugins install how-plugins-work@laicluse-agent-fieldkit
 codex plugin add how-plugins-work@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install how-plugins-work --marketplace laicluse/agent-fieldkit
+```
+
 ## Commands
 
 ### `/how-plugins-work`

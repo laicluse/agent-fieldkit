@@ -17,6 +17,12 @@ claude plugins install gurus@laicluse-agent-fieldkit
 codex plugin add gurus@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install gurus --marketplace laicluse/agent-fieldkit
+```
+
 ## Sub-skills
 
 | Skill | Use for | Panel |

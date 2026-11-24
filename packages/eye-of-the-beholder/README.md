@@ -52,6 +52,12 @@ claude plugins install eye-of-the-beholder@laicluse-agent-fieldkit
 codex plugin add eye-of-the-beholder@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install eye-of-the-beholder --marketplace laicluse/agent-fieldkit
+```
+
 Both Claude Code and Codex use the same instructions and the same `first-surface` hook (on `Write` in Claude Code, on `apply_patch` in Codex; it needs `node`); available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow [backend resolution](skills/explore/generation.md) before starting. Reload the plugin catalog or start a fresh session after an update.
 
 ## Migration

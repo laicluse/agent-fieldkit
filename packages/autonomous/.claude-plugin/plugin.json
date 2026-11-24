@@ -1,5 +1,5 @@
 {
   "name": "autonomous",
   "description": "Keep autonomous missions running across turns with a host capability probe, heartbeat backoff, auto-stop, and wake/restore where needed. Persistent hosts need no heartbeat machinery.",
-  "version": "2.0.12"
+  "version": "2.0.13"
 }

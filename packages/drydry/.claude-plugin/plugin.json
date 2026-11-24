@@ -1,5 +1,5 @@
 {
   "name": "drydry",
   "description": "Find duplicated logic and parallel paths in code, prose, or design. Run a quick scoped check or a whole-codebase parity audit, then converge verified divergence and check the result.",
-  "version": "2.0.9"
+  "version": "2.0.10"
 }

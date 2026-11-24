@@ -17,6 +17,12 @@ claude plugins install circus@laicluse-agent-fieldkit
 codex plugin add circus@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install circus --marketplace laicluse/agent-fieldkit
+```
+
 Circus supports Claude Code and Codex from the same package source. Restart an
 existing Codex session after installation; Claude Code can reload the installed
 plugin with `/reload-plugins` and `/reload-skills`.

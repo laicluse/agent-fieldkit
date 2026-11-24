@@ -29,6 +29,12 @@ claude plugins install anger-management@laicluse-agent-fieldkit
 codex plugin add anger-management@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install anger-management --marketplace laicluse/agent-fieldkit
+```
+
 ## When to use which lane
 
 - Use a **cuss command** when the agent behavior was frustrating but the current

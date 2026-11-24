@@ -1,6 +1,6 @@
 {
   "name": "anger-management",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "Capture friction with /fuck, /fucking, /fucked, /shit, /crap, /wtf, or /bullshit for later background investigation. Fix now with /safeword, /pineapple, /pineapplejuice, /pinapplejuice, /flugelhorn, or /banana. /anger-management:repair reviews captured notes and applies or routes high-confidence fixes; /anger-management shows the tally. State stays local.",
   "author": {
     "name": "local"

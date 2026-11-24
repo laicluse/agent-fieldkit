@@ -23,6 +23,12 @@ claude plugins install bonsai@laicluse-agent-fieldkit
 codex plugin add bonsai@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install bonsai --marketplace laicluse/agent-fieldkit
+```
+
 ## CLI
 
 ```

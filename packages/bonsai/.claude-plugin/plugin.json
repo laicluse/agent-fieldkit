@@ -1,5 +1,5 @@
 {
   "name": "bonsai",
   "description": "Create worktrees from the freshest default branch, set them up from `.bonsai` files, and safely remove finished worktrees while preserving unintegrated work.",
-  "version": "2.0.41"
+  "version": "2.0.42"
 }

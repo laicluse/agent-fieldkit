@@ -15,6 +15,12 @@ claude plugins install drydry@laicluse-agent-fieldkit
 codex plugin add drydry@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install drydry --marketplace laicluse/agent-fieldkit
+```
+
 ## How to invoke
 
 Two user-invocable skills are available: `drydry` for duplication checks and `parity-audit` for divergence across entry points. The `drydry` orchestrator routes between two modes:

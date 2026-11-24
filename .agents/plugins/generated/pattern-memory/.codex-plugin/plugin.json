@@ -1,6 +1,6 @@
 {
   "name": "pattern-memory",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Local-first Pattern Memory for reusable implementation recipes. Stores personal patterns as Markdown and keeps private precedents out of public artifacts.",
   "author": {
     "name": "local"

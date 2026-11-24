@@ -1,6 +1,6 @@
 {
   "name": "saysay",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Speak agent responses aloud on macOS, translating screen content into spoken language rather than reading it verbatim. Includes on/off commands, a phonetic dictionary, and serialized playback across sessions.",
   "author": {
     "name": "local"

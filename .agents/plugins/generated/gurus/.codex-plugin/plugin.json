@@ -1,6 +1,6 @@
 {
   "name": "gurus",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "Review software, decisions, and writing through opinionated panels. Claude and Codex receive host-specific review workflows; Claude also receives the sonnet-max panel agent.",
   "author": {
     "name": "local"

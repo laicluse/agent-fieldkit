@@ -53,7 +53,7 @@
 						<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.30</span>
+							<span class="meta-fact">2.0.31</span>
 							<span class="meta-fact">5 skills</span>
 						</div>
 					</div>
@@ -130,6 +130,8 @@
 <pre class="agent-command-panel" data-agent-panel="codex" hidden><code id="commands-cd26904522-codex">codex plugin add eye-of-the-beholder@laicluse-agent-fieldkit</code></pre>
 	</div>
 </div>
+<p>In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:</p>
+<pre><code><span class="code-line">/plugin install eye-of-the-beholder <span class="code-unit">--marketplace</span> laicluse/agent-fieldkit</span></code></pre>
 <p>Both Claude Code and Codex use the same instructions and the same <code>first-surface</code> hook (on <code>Write</code> in Claude Code, on <code>apply_patch</code> in Codex; it needs <code>node</code>); available tools must be verified per host. Image generation is supplied by the host's available tools or skills; this plugin does not bundle a generation backend. The backend must support the reference-image operation needed for the proposal; follow <a href="skills/explore/generation.md">backend resolution</a> before starting. Reload the plugin catalog or start a fresh session after an update.</p>
 <h2 id="migration">Migration</h2>
 <p>The old public skills <code>taste-test</code>, <code>art-director</code>, <code>fat-marker-sketch</code> and <code>visual-inspection</code> are retired. Use <code>eye-of-the-beholder</code> as the entry point; it selects the <code>explore</code>, <code>define</code> and <code>review</code> stages. Update saved instructions that invoke the old names. Image classification and reference matching remain internal protocols under <code>skills/review</code>; their useful measurement tools and fixtures are retained.</p>

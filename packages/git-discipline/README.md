@@ -16,6 +16,12 @@ claude plugins install git-discipline@laicluse-agent-fieldkit
 codex plugin add git-discipline@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install git-discipline --marketplace laicluse/agent-fieldkit
+```
+
 Claude Code and Codex register their tool guards automatically. Codex also ships the four operator toggles through `UserPromptSubmit`; the Claude-only status skill is omitted. Install the git-native hooks in each repo to protect direct terminal commits and pushes too:
 
 ```bash

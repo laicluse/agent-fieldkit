@@ -20,6 +20,12 @@ Claude Code session needs a cron heartbeat for rover missions:
 claude plugins install autonomous@laicluse-agent-fieldkit rover@laicluse-agent-fieldkit gurus@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install autonomous --marketplace laicluse/agent-fieldkit
+```
+
 ## Agent support
 
 Codex does not currently receive this plugin because it has no compatible cron

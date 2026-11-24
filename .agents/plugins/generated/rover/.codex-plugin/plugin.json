@@ -1,6 +1,6 @@
 {
   "name": "rover",
-  "version": "2.0.34",
+  "version": "2.0.35",
   "description": "Execute bounded autonomous missions with evidence, independent review, explicit stop conditions and honest negative outcomes. Supports continuation, preparation, verification and focused subtraction review.",
   "author": {
     "name": "local"

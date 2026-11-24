@@ -13,6 +13,12 @@ claude plugins install vaultsync@laicluse-agent-fieldkit
 codex plugin add vaultsync@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install vaultsync --marketplace laicluse/agent-fieldkit
+```
+
 Starting or resuming a coding-agent session publishes the newest installed plugin runtime to `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync/runtime` and installs one stable launcher at `${VAULTSYNC_BIN_DIR:-$HOME/.local/bin}/vaultsync`. Add that bin directory to `PATH` once; CLI calls, the macOS LaunchAgent, and per-vault callback commands can then use the same version-independent entrypoint. The daemon holds a machine-level singleton lease, and LaunchAgent reconciliation removes stale Vaultsync daemon processes from older releases before starting the current runtime.
 
 Runtime releases are immutable and the active pointer only moves forward by version. An older parallel coding-agent session therefore cannot downgrade a newer machine runtime. Vaultsync never removes old runtime releases or coding-agent plugin caches; cache lifecycle remains the plugin host's responsibility.

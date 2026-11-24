@@ -14,6 +14,12 @@ claude plugins install laicluse-agent-fieldkit@laicluse-agent-fieldkit
 codex plugin add laicluse-agent-fieldkit@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install laicluse-agent-fieldkit --marketplace laicluse/agent-fieldkit
+```
+
 This command covers plugins installed from `@laicluse-agent-fieldkit`.
 Existing installs under the previous marketplace identity need to be removed
 and reinstalled from Fieldkit.

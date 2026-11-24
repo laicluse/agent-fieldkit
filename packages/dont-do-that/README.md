@@ -14,6 +14,12 @@ claude plugins install dont-do-that@laicluse-agent-fieldkit
 codex plugin add dont-do-that@laicluse-agent-fieldkit
 ```
 
+In a Claude Code session, version 2.1.275 or later, one line installs it straight from the marketplace repository:
+
+```
+/plugin install dont-do-that --marketplace laicluse/agent-fieldkit
+```
+
 ## What it installs
 
 - PreToolUse guards that can deny risky shell commands or file edits before
