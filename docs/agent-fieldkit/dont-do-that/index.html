@@ -53,7 +53,7 @@
 						<p class="lede">Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.99</span>
+							<span class="meta-fact">2.0.100</span>
 							<span class="meta-fact">4 skills</span>
 						</div>
 					</div>
@@ -230,7 +230,7 @@
 <h3 id="repair-gate"><code>repair-gate</code></h3>
 <p>Blocks Stop when the <code>🚦</code> line, or the line after it, asks for a go to repair, fix, herstellen or corrigeren something, unless it also names a gate the rules own: push, merge, deploy, publishing, spending or review costs, or another external irreversible action. A repair inside the assignment is verified and carried out without asking. Pass condition: do the repair, or name the real gate.</p>
 <h3 id="left-behind"><code>left-behind</code></h3>
-<p>Blocks Stop when the answer names a defect it found and leaves it: &quot;niet in deze PR&quot;, &quot;heb ik laten liggen&quot;, &quot;niet aangeraakt&quot;, &quot;not in this PR&quot;. A defect found in the work at hand gets fixed in that work, and an unexplained finding gets investigated. Quoted spans and code are ignored. Pass condition: fix or investigate it, or start the sentence with <code>Bewust uitgesteld:</code> and name the gate the agent cannot pass itself, such as a host change that needs a go. What happens to parts that coding agents built is the agent's judgement, not a gate to hand to the operator.</p>
+<p>Blocks Stop when the answer names a defect it found and leaves it: &quot;niet in deze PR&quot;, &quot;heb ik laten liggen&quot;, &quot;niet aangeraakt&quot;, &quot;not in this PR&quot;. A defect found in the work at hand gets fixed in that work, and an unexplained finding gets investigated. Quoted spans and code are ignored. Pass condition: fix or investigate it, or start the sentence with <code>Bewust uitgesteld:</code> and name the gate the agent cannot pass itself, such as a host change that needs a go. A decision that belongs to someone else is not such a gate: a deferral that names one (&quot;dat besluit is van …&quot;, &quot;moet … nog beslissen&quot;) is blocked, and the agent looks up what was already decided and puts the rest to the operator with a recommendation. A choice addressed to the operator (&quot;aan jou&quot;) passes. What happens to parts that coding agents built is the agent's judgement, not a gate to hand to the operator.</p>
 <h3 id="verify"><code>verify</code></h3>
 <p>Blocks Stop when the assistant delegates verification to the operator with phrases like &quot;zou moeten werken&quot;, &quot;check of het werkt&quot;, or &quot;refresh de pagina&quot; instead of verifying directly. Meta-references in backticks, quotes, and table cells are stripped before matching. Pass condition: actually verify with a test, curl, grep, screenshot, browser check, or other available tool, then prefix the conclusion with <code>Geverifieerd:</code>.</p>
 <h3 id="duh"><code>duh</code></h3>
