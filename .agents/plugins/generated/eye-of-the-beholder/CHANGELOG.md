@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.36]
+
+### Added
+
+- Four more foundations: space, grouping and layout; motion and response; icons; and the words on a surface. Like typography and colour, each gives the rules with their reasons, their sources and what neglect looks like, and separates what is required for accessibility from what may be broken on purpose.
+
 ## [v2.0.35]
 
 ### Added

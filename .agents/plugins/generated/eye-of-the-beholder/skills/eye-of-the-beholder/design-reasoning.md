@@ -10,7 +10,7 @@ Left without direction, a model produces the most common answer in its training 
 
 Design has had rules for a long time, with reasons behind them. How they are filled in is what makes one design differ from the next; each design still follows them or breaks them deliberately. Anything that looks unintended is a defect. A default is neither following nor breaking: it does not know the rule exists.
 
-Before deciding on a plane, read its foundation: [typography](foundations/typography.md), [colour](foundations/colour.md). Each states the rule, its reason and what its neglect looks like. Record in the project's record every rule you broke and why. Requirements of accessibility and of law are not rules of this kind: they are met, not weighed. Then read the render for anything that looks unintended, and treat each as a defect until it has a reason.
+Before deciding on a plane, read its foundation: [typography](foundations/typography.md), [colour](foundations/colour.md), [space, grouping and layout](foundations/space.md), [motion and response](foundations/motion.md), [icons](foundations/icons.md), [words on the surface](foundations/wording.md). Each states the rule, its reason and what its neglect looks like. Record in the project's record every rule you broke and why. Requirements of accessibility and of law are not rules of this kind: they are met, not weighed. Then read the render for anything that looks unintended, and treat each as a defect until it has a reason.
 
 ## Reason from the material
 

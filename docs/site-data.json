@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.35",
+			"version": "2.0.36",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 2,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.35",
+				"version": "v2.0.36",
 				"type": "Added",
-				"summary": "Foundations of typography and of colour."
+				"summary": "Four more foundations: space, grouping and layout; motion and response; icons; and the words on a surface."
 			}
 		},
 		{
@@ -680,11 +680,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.35",
+			"packageVersion": "2.0.36",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.35",
+			"version": "v2.0.36",
 			"type": "Added",
-			"summary": "Foundations of typography and of colour.",
+			"summary": "Four more foundations: space, grouping and layout; motion and response; icons; and the words on a surface.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{

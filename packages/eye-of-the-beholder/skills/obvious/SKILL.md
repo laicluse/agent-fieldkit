@@ -9,7 +9,7 @@ description: >-
 
 Design language is not written language. Reduce the work of understanding and operating the interface; do not merely shorten its explanation. A paragraph beside an ambiguous button is a reason to inspect the interaction, not a request for a better paragraph.
 
-Recall and record [the user's taste](../eye-of-the-beholder/taste.md) as it describes before changing anything visible.
+Recall and record [the user's taste](../eye-of-the-beholder/taste.md) as it describes before changing anything visible. The rules behind this skill are in the foundations of [space and grouping](../eye-of-the-beholder/foundations/space.md), [icons](../eye-of-the-beholder/foundations/icons.md) and [wording](../eye-of-the-beholder/foundations/wording.md).
 
 ## Resolve the live target
 

@@ -93,7 +93,7 @@ setup() {
   skills="$BATS_TEST_DIRNAME/../skills"
   grep -q "break them on purpose" "$skills/eye-of-the-beholder/design-reasoning.md"
   grep -q "Anything that looks unintended is a defect" "$skills/eye-of-the-beholder/design-reasoning.md"
-  for plane in typography colour; do
+  for plane in typography colour space motion icons wording; do
     grep -q "foundations/$plane.md" "$skills/eye-of-the-beholder/design-reasoning.md"
     grep -q "An oversight looks like" "$skills/eye-of-the-beholder/foundations/$plane.md"
     grep -q "^## Sources" "$skills/eye-of-the-beholder/foundations/$plane.md"
