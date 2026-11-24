@@ -7,7 +7,7 @@ description: >-
 
 # Review
 
-Inspect the actual render and accepted target before explaining code. Separate observations, hypotheses and measured facts. A passing test or correct semantic encoding does not prove aesthetic success. Judge with [design reasoning](../eye-of-the-beholder/design-reasoning.md); a review without an accepted target can find defects but cannot establish that a surface is convincing.
+Inspect the actual render and accepted target before explaining code. Recall and record [the user's taste](../eye-of-the-beholder/taste.md) as it describes; before the user sees a new look or a broad change, let a [judge](judge.md) see it. Separate observations, hypotheses and measured facts. A passing test or correct semantic encoding does not prove aesthetic success. Judge with [design reasoning](../eye-of-the-beholder/design-reasoning.md); a review without an accepted target can find defects but cannot establish that a surface is convincing.
 
 Before reviewing a change, inventory what it can reach: shared components and tokens, the surfaces that use them, states, breakpoints and transitions. A surface outside the sample you were optimizing for still has to be looked at when a shared primitive under it changed.
 

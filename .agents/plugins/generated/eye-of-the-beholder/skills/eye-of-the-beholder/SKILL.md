@@ -16,7 +16,7 @@ If a retired invocation appears as text, explain the migration and route it: tas
 
 ## Start from evidence
 
-Read the project's visual-language document and inspect the actual current render, accepted reference images and prior decisions. Classify supplied images with [the image-input protocol](../review/image-input/protocol.md); a capture filename is never match intent. Inspect the implementation for questions the code can answer. State the observable outcome, qualities to preserve and most consequential unresolved decision. Do not reinterview decisions already established in the conversation.
+Read [the user's taste](taste.md): recall their verdicts before any design decision, and record every verdict they give. Read the project's visual-language document and inspect the actual current render, accepted reference images and prior decisions. Classify supplied images with [the image-input protocol](../review/image-input/protocol.md); a capture filename is never match intent. Inspect the implementation for questions the code can answer. State the observable outcome, qualities to preserve and most consequential unresolved decision. Do not reinterview decisions already established in the conversation.
 
 ## Choose the route
 

@@ -19,6 +19,12 @@ A page, app or site built from nothing gets the model's default look unless some
 
 The surfaces log is what makes sameness visible across projects: a look that returns on unrelated surfaces is a default, whatever it consists of. A small or disposable project is decided by the agent and recorded as an agent decision; it is not a reason to ask and not a reason to skip.
 
+## Your taste, kept between projects
+
+Every verdict you give on something visual is recorded with your own words and the part you judged, in `~/.laicluse/slow-taste/evidence/eye-of-the-beholder.jsonl`, outside any project. Before a design decision the agent reads it back. What you stated as general holds everywhere; what you said about one surface is shown for other projects as a hint. The agent's interpretation is stored beside your words and marked as a reading. `bin/taste` does the recording and the recall, in the same format for Claude and Codex.
+
+Before you see a new look, a judge that did not build it gets the captures and your verdicts and names what you would ask to correct. Colours, typefaces and imagery are not carried over: each product derives those from its own material.
+
 ## Skills
 
 The entry point selects `explore`, `define` and `review` as internal stages. In Claude Code only `eye-of-the-beholder`, `eye-of-the-beholder:obvious` and `eye-of-the-beholder:unslop` appear in the slash menu; the stages are hidden (`user-invocable: false`) and stay available to the model. Codex has no setting that hides a skill from its `$` picker while keeping it available to the model, so the stages remain listed there.

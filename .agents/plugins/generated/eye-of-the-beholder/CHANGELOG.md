@@ -1,5 +1,12 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.34]
+
+### Added
+
+- Your verdicts on visual work are kept and reused. Every time you accept, reject or steer something visual, the agent records your words with the part you judged, outside any project. Before a design decision in any route it reads them back: what you stated as general holds, what you said about one other surface is a hint. A new `bin/taste` helper does both for Claude and Codex in the same format.
+- A judge sees a new look before you do. A context that did not build the surface gets the captures and your verdicts, and names what you would ask to correct.
+
 ## [v2.0.33]
 
 ### Changed

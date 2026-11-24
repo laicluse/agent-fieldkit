@@ -10,7 +10,7 @@ Slop is defaultism: convergence on the mode. A model asked for a number says 7; 
 
 Unslop replaces those values with decisions a craftsman would make for this surface. It covers appearance, colour, shape, on-screen wording, behaviour and repeated patterns. It leaves alone what the product does: features, information order, structure and data are the owner's, and stay as they are. Wording, feedback and transitions may change; their meaning, the states, the conditions and the steps of a task may not. Where design reasoning advises changing the order or the copy of a generic page, this boundary takes precedence. Moving to the second most likely value is not unslop; neither is adding things on top of what is there.
 
-Apply [design reasoning](../eye-of-the-beholder/design-reasoning.md) throughout. A request that names unslop or slop delegates the visual decisions: decide yourself, build it, show it. An invocation without a pointer means the surface the conversation or the working directory is about.
+Apply [design reasoning](../eye-of-the-beholder/design-reasoning.md) throughout. A request that names unslop or slop delegates the visual decisions: decide yourself, build it, show it. An invocation without a pointer means the surface the conversation or the working directory is about. Recall and record [the user's taste](../eye-of-the-beholder/taste.md) as it describes, and let a [judge](../review/judge.md) see the result before the user does, sized as that file describes.
 
 ## Procedure
 

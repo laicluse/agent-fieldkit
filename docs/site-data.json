@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.33",
+			"version": "2.0.34",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -294,12 +294,12 @@
 			"sourcePath": "packages/eye-of-the-beholder",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/tree/main/packages/eye-of-the-beholder",
 			"skillCount": 6,
-			"commandCount": 1,
+			"commandCount": 2,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.33",
-				"type": "Changed",
-				"summary": "unslop sets the level of a redesign from current work that was opened and captured, next to the product's own material."
+				"version": "v2.0.34",
+				"type": "Added",
+				"summary": "Your verdicts on visual work are kept and reused."
 			}
 		},
 		{
@@ -697,6 +697,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/vaultsync/CHANGELOG.md"
 		},
 		{
+			"plugin": "eye-of-the-beholder",
+			"packageVersion": "2.0.34",
+			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
+			"version": "v2.0.34",
+			"type": "Added",
+			"summary": "Your verdicts on visual work are kept and reused.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
+		},
+		{
 			"plugin": "house-rules",
 			"packageVersion": "2.0.34",
 			"detailPath": "agent-fieldkit/house-rules/",
@@ -704,15 +713,6 @@
 			"type": "Added",
 			"summary": "Exhaust inhalation.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/house-rules/CHANGELOG.md"
-		},
-		{
-			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.33",
-			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.33",
-			"type": "Changed",
-			"summary": "unslop sets the level of a redesign from current work that was opened and captured, next to the product's own material.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{
 			"plugin": "intervision",

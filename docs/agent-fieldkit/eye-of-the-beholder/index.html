@@ -53,7 +53,7 @@
 						<p class="lede">Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.33</span>
+							<span class="meta-fact">2.0.34</span>
 							<span class="meta-fact">6 skills</span>
 						</div>
 					</div>
@@ -95,6 +95,9 @@
 </tbody>
 </table>
 <p>The surfaces log is what makes sameness visible across projects: a look that returns on unrelated surfaces is a default, whatever it consists of. A small or disposable project is decided by the agent and recorded as an agent decision; it is not a reason to ask and not a reason to skip.</p>
+<h2 id="your-taste-kept-between-projects">Your taste, kept between projects</h2>
+<p>Every verdict you give on something visual is recorded with your own words and the part you judged, in <code>~/.laicluse/slow-taste/evidence/eye-of-the-beholder.jsonl</code>, outside any project. Before a design decision the agent reads it back. What you stated as general holds everywhere; what you said about one surface is shown for other projects as a hint. The agent's interpretation is stored beside your words and marked as a reading. <code>bin/taste</code> does the recording and the recall, in the same format for Claude and Codex.</p>
+<p>Before you see a new look, a judge that did not build it gets the captures and your verdicts and names what you would ask to correct. Colours, typefaces and imagery are not carried over: each product derives those from its own material.</p>
 <h2 id="skills">Skills</h2>
 <p>The entry point selects <code>explore</code>, <code>define</code> and <code>review</code> as internal stages. In Claude Code only <code>eye-of-the-beholder</code>, <code>eye-of-the-beholder:obvious</code> and <code>eye-of-the-beholder:unslop</code> appear in the slash menu; the stages are hidden (<code>user-invocable: false</code>) and stay available to the model. Codex has no setting that hides a skill from its <code>$</code> picker while keeping it available to the model, so the stages remain listed there.</p>
 <table>
@@ -142,7 +145,7 @@
 <span class="code-line">node packages/eye-of-the-beholder/skills/review/reference-match/scripts/run-corpus.mjs</span></code></pre>
 <p>The manual workflow scenarios in <code>test/workflow-scenarios.md</code> exercise routing and approval boundaries. They are behavior probes, not proof of aesthetic quality. Test the installed workflow with an actual visual request before judging the design outcomes.</p>
 				</article>
-				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#design-reasoning">Design reasoning</a></li><li><a href="#new-surfaces">New surfaces</a></li><li><a href="#skills">Skills</a></li><li><a href="#obvious">Obvious</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#design-reasoning">Design reasoning</a></li><li><a href="#new-surfaces">New surfaces</a></li><li><a href="#your-taste-kept-between-projects">Your taste, kept between projects</a></li><li><a href="#skills">Skills</a></li><li><a href="#obvious">Obvious</a></li><li><a href="#workflow">Workflow</a></li><li><a href="#host-support">Host support</a></li><li><a href="#migration">Migration</a></li><li><a href="#verification">Verification</a></li></ol></nav>
 			</section>
 		</main>
 

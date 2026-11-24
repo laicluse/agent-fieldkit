@@ -7,7 +7,7 @@ description: >-
 
 # Explore
 
-Apply [design reasoning](../eye-of-the-beholder/design-reasoning.md) throughout.
+Apply [design reasoning](../eye-of-the-beholder/design-reasoning.md) throughout, and recall and record [the user's taste](../eye-of-the-beholder/taste.md) as it describes. Proposals for a new look pass a [judge](../review/judge.md) before the user sees them.
 
 ## Establish the brief
 

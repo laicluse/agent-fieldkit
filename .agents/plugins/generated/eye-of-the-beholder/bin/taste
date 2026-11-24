@@ -1,0 +1,181 @@
+#!/usr/bin/env node
+// Keeps the user's design verdicts as evidence and returns the ones that apply
+// before a design decision. Evidence lives in the slow-taste store, outside any project.
+import crypto from "node:crypto";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
+const HOME = process.env.LAICLUSE_HOME || path.join(os.homedir(), ".laicluse");
+const STORE = path.join(HOME, "slow-taste");
+const EVIDENCE = path.join(STORE, "evidence", "eye-of-the-beholder.jsonl");
+const STATEMENTS = path.join(STORE, "statements.json");
+const CHOICES = new Set(["yes", "no", "steer"]);
+const SCOPES = new Set(["everywhere", "project"]);
+const LINKS = new Set(["certain", "inferred"]);
+
+function fail(message) {
+  process.stderr.write(`taste: ${message}\n`);
+  process.exit(1);
+}
+
+function options(argv) {
+  const found = {};
+  for (let i = 0; i < argv.length; i += 1) {
+    const name = argv[i];
+    if (!name.startsWith("--")) fail(`unexpected argument ${name}`);
+    const value = argv[i + 1];
+    if (value === undefined || value.startsWith("--")) fail(`${name} needs a value`);
+    found[name.slice(2)] = value;
+    i += 1;
+  }
+  return found;
+}
+
+function readEvidence() {
+  if (!fs.existsSync(EVIDENCE)) return [];
+  const seen = new Set();
+  const records = [];
+  let unreadable = 0;
+  for (const line of fs.readFileSync(EVIDENCE, "utf8").split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      const record = JSON.parse(line);
+      if (!seen.has(record.id) && seen.add(record.id)) records.push(record);
+    } catch {
+      unreadable += 1;
+    }
+  }
+  if (unreadable) process.stderr.write(`taste: skipped ${unreadable} unreadable line(s) in ${EVIDENCE}\n`);
+  return records;
+}
+
+function entry(given) {
+  const words = (given.words ?? "").trim();
+  if (!words) fail("--words holds what the user said, verbatim; it cannot be empty");
+  if (!given.aspect) fail("--aspect names what the verdict is about, such as colour, type, space, shape, icons, motion, copy, states, density, data display or layout stability");
+  if (!CHOICES.has(given.choice)) fail("--choice is yes (accepted), no (rejected) or steer (a direction given)");
+  const scope = given.scope ?? "project";
+  if (!SCOPES.has(scope)) fail("--scope is everywhere (the user stated it as holding beyond this surface) or project");
+  if (scope === "project" && !given.project) fail("--scope project needs --project, so the verdict stays with that product");
+  const link = given.link ?? "certain";
+  if (!LINKS.has(link)) fail("--link is certain (the judged version and part are known) or inferred");
+  const judgedAt = given.at ?? new Date().toISOString().slice(0, 10);
+  const record = {
+    id: crypto
+      .createHash("sha256")
+      .update([judgedAt, words, given.aspect, given.subject ?? "", given.project ?? ""].join("\n"))
+      .digest("hex")
+      .slice(0, 16),
+    judged_at: judgedAt,
+    source: "eye-of-the-beholder",
+    host: given.host ?? "unknown",
+    domain: "design",
+    aspect: given.aspect,
+    choice: given.choice,
+    note: words,
+    subject: given.subject ?? "",
+    surface: given.surface ?? "",
+    scope,
+    link,
+  };
+  if (given.project) record.project = given.project;
+  if (given.capture) record.capture = given.capture;
+  if (given.reading) {
+    record.reading = given.reading;
+    record.reading_by = given.host ?? "unknown";
+  }
+  return record;
+}
+
+function append(records) {
+  const known = new Set(readEvidence().map(record => record.id));
+  const fresh = records.filter(record => !known.has(record.id) && known.add(record.id));
+  if (fresh.length) {
+    fs.mkdirSync(path.dirname(EVIDENCE), { recursive: true });
+    const tail = fs.existsSync(EVIDENCE) && fs.statSync(EVIDENCE).size && !fs.readFileSync(EVIDENCE, "utf8").endsWith("\n") ? "\n" : "";
+    fs.appendFileSync(EVIDENCE, tail + fresh.map(record => `${JSON.stringify(record)}\n`).join(""));
+  }
+  return fresh.length;
+}
+
+function distilled() {
+  try {
+    const statements = JSON.parse(fs.readFileSync(STATEMENTS, "utf8"));
+    return Array.isArray(statements) ? statements.filter(statement => statement.domain === "design") : [];
+  } catch {
+    return [];
+  }
+}
+
+const VERDICT = { yes: "accepted", no: "rejected", steer: "asked for" };
+
+function recall(given) {
+  const aspects = given.aspect ? new Set(given.aspect.split(",").map(name => name.trim())) : null;
+  const wanted = readEvidence().filter(record => !aspects || aspects.has(record.aspect));
+  const applies = record => record.scope === "everywhere" || (given.project && record.project === given.project);
+  const evidence = wanted.filter(applies);
+  const elsewhere = wanted.filter(record => !applies(record));
+  const statements = distilled();
+  if (!evidence.length && !elsewhere.length && !statements.length) {
+    process.stdout.write("No design verdicts of this user are on record yet. Decide from the material, and record the first verdict they give.\n");
+    return;
+  }
+  const lines = [
+    "# What this user has said about design",
+    "",
+    "Their words are evidence. A line marked reading is an agent's interpretation and may be wrong. These are opinions about how to decide; the palette, typeface and imagery of this product still come from this product.",
+  ];
+  if (statements.length) {
+    lines.push("", "## Distilled statements");
+    for (const statement of statements) lines.push(`- ${statement.statement ?? statement.text ?? JSON.stringify(statement)}`);
+  }
+  const list = (records, level) => {
+    const groups = new Map();
+    for (const record of records) groups.set(record.aspect, [...(groups.get(record.aspect) ?? []), record]);
+    for (const [aspect, group] of [...groups].sort(([a], [b]) => a.localeCompare(b))) {
+      lines.push("", `${level} ${aspect}`);
+      for (const record of group.sort((a, b) => b.judged_at.localeCompare(a.judged_at))) {
+        const where = [record.surface, record.subject].filter(Boolean).join(", ");
+        lines.push(`- ${VERDICT[record.choice]} on ${record.judged_at}${where ? ` (${where})` : ""}: "${record.note}"`);
+        if (record.reading) lines.push(`  reading${record.link === "inferred" ? ", link to the judged part inferred" : ""}: ${record.reading}`);
+      }
+    }
+  };
+  if (evidence.length) {
+    lines.push("", "## Holds here", "", "Stated as general, or said about this product.");
+    list(evidence, "###");
+  }
+  if (elsewhere.length) {
+    lines.push("", "## Said about one other surface", "", "A hint about what they notice, not a rule for this product.");
+    list(elsewhere, "###");
+  }
+  process.stdout.write(`${lines.join("\n")}\n`);
+}
+
+const [command, ...rest] = process.argv.slice(2);
+if (command === "record") {
+  const added = append([entry(options(rest))]);
+  process.stdout.write(added ? `recorded in ${EVIDENCE}\n` : "already on record\n");
+} else if (command === "import") {
+  const [file, ...flags] = rest;
+  if (!file) fail("import needs a JSON file holding an array of verdicts");
+  const shared = options(flags);
+  const rows = JSON.parse(fs.readFileSync(file, "utf8"));
+  if (!Array.isArray(rows)) fail("the import file must hold an array");
+  const added = append(rows.map(row => entry({ ...shared, ...row })));
+  process.stdout.write(`${added} recorded, ${rows.length - added} already on record\n`);
+} else if (command === "recall") {
+  recall(options(rest));
+} else {
+  process.stdout.write(
+    [
+      "taste record --aspect <aspect> --choice yes|no|steer --words <verbatim> [--subject <part judged>] [--surface <kind of surface>]",
+      "             [--scope everywhere|project] [--project <name>] [--capture <path>] [--reading <interpretation>] [--link certain|inferred] [--host claude|codex] [--at YYYY-MM-DD]",
+      "taste import <file.json> [shared flags]",
+      "taste recall [--aspect a,b] [--project <name>]",
+      "",
+    ].join("\n"),
+  );
+  process.exit(command ? 1 : 0);
+}

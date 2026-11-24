@@ -145,12 +145,13 @@ for (const { file, content, repository, root } of written) {
   if (find(root, name => RECORD.test(name), 3)) continue;
   if (find(root, name => STYLESHEET.test(name), 6)) continue;
 
+  const taste = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../bin/taste");
   const reasoning = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../skills/eye-of-the-beholder/design-reasoning.md");
   const record = path.join(root, fs.existsSync(path.join(root, "docs")) ? "docs" : "", "visual-language.md");
   const log = path.join(process.env.LAICLUSE_HOME || path.join(os.homedir(), ".laicluse"), "eye-of-the-beholder", "references", "surfaces.md");
   const earlier = fs.existsSync(log) ? ` and the looks of earlier surfaces in ${log}` : "";
   process.stderr.write(
-    `[eye-of-the-beholder/first-surface] ${path.relative(root, file)} gives ${root} its first styles, and nothing there records what this surface should look like. Styles written now come from model defaults, so the page will resemble every other generated page. Before writing them: write down the look you were about to produce; read "Starting a new surface" in ${reasoning}${earlier}; then choose a look that this surface's material calls for and that differs from both, and record it in ${record}. A look explained afterwards from the material is still the default. Styles nobody looks at, such as a fixture or a vendored copy, belong under a test, fixtures or vendor directory.\n`,
+    `[eye-of-the-beholder/first-surface] ${path.relative(root, file)} gives ${root} its first styles, and nothing there records what this surface should look like. Styles written now come from model defaults, so the page will resemble every other generated page. Before writing them: run "${taste}" recall --project <this project's name> and read what this user has said about design; write down the look you were about to produce; read "Starting a new surface" in ${reasoning}${earlier}; then choose a look that this surface's material calls for and that differs from both, and record it in ${record}. A look explained afterwards from the material is still the default. Styles nobody looks at, such as a fixture or a vendored copy, belong under a test, fixtures or vendor directory.\n`,
   );
   process.exit(2);
 }
