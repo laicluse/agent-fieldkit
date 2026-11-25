@@ -183,6 +183,12 @@ export function holderPid(env = process.env, start = process.ppid) {
   let pid = start;
   for (let hops = 0; pid > 1 && hops < MAX_ANCESTOR_HOPS; hops += 1) {
     if (AGENT_PROCESS.test(basename(processField(pid, 'comm')))) return pid;
+    if (process.platform === 'linux') {
+      try {
+        const executable = readFileSync(`/proc/${pid}/cmdline`, 'utf8').split('\0', 1)[0];
+        if (AGENT_PROCESS.test(basename(executable))) return pid;
+      } catch { /* The process may have exited or hidden its command line. */ }
+    }
     const parent = Number(processField(pid, 'ppid'));
     if (!Number.isInteger(parent) || parent <= 0) break;
     pid = parent;
