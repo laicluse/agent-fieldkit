@@ -273,3 +273,14 @@ dibs() {
 	holder_pid="$(printf '%s' "$output" | jq -r .claim.holder.pid)"
 	[ "$holder_pid" = "$agent_pid" ]
 }
+
+@test "the hook resolves the nearest agent through its executable name" {
+  local agent="$BATS_TEST_TMPDIR/codex"
+  ln -s "$("$NODE_BIN" -p process.execPath)" "$agent"
+  run "$agent" -e '
+    const { execFileSync } = require("node:child_process");
+    const pid = execFileSync("bash", ["-c", "source \"$1\"; dibs_holder_pid", "bash", process.argv[1]], { encoding: "utf8" });
+    if (Number(pid) !== process.pid) process.exit(1);
+  ' "$REPO_ROOT/packages/dibs/bin/holder-pid.sh"
+  [ "$status" -eq 0 ]
+}
