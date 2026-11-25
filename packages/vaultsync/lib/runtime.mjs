@@ -1541,7 +1541,7 @@ function emit(data, json = false) {
   else process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 }
 
-async function commandInstall(args, env = process.env) {
+async function commandInstall(args, env, version) {
   const parsed = parseArgs({
     args,
     allowPositionals: true,
@@ -1596,7 +1596,7 @@ async function commandInstall(args, env = process.env) {
   const registrationDibsBin = registrationDibsBinForInstall(dibsBin);
   if (registrationDibsBin) registration.dibsBin = registrationDibsBin;
   const skipService = parsed.values['no-service'] || parsed.values['no-launchd'];
-  const service = skipService ? { skipped: true } : installDaemonService(env);
+  const service = skipService ? { skipped: true } : installDaemonService(env, version);
   const savedRegistration = saveRegistration(registration, env, { create: true });
   emit({
     installed: true,
@@ -2226,9 +2226,9 @@ export function daemonServiceNeedsReconciliation(version, env = process.env, os 
   catch { return true; }
 }
 
-export async function runCommand(command, args, env = process.env) {
+export async function runCommand(command, args, env = process.env, version = null) {
   switch (command) {
-    case 'install': return commandInstall(args, env);
+    case 'install': return commandInstall(args, env, version);
     case 'managed': return commandManaged(args, env);
     case 'status': return commandStatus(args, env);
     case 'pause': return commandPause(args, env);

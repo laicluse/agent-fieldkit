@@ -1,5 +1,5 @@
 {
   "name": "vaultsync",
   "description": "Automatically commit and verify Markdown vault changes locally, then rebase and push when an upstream exists, with conflict handling and Dibs coordination.",
-  "version": "2.0.36"
+  "version": "2.0.37"
 }
