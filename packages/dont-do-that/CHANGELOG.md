@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.101] - 2026-11-25
+
+### Fixed
+
+- Repository creation checks read the selected Herdr answer separately from its question, options and explanation. Explicit approval survives explanatory negation and long tool-only turns; refusals, unanswered cards and malformed replies remain blocked in Claude and Codex.
+
 ## [v2.0.98] - 2026-11-24
 
 ### Changed

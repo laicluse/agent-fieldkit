@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.100",
+			"version": "2.0.101",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 39,
 			"latestChange": {
-				"version": "v2.0.98",
-				"type": "Changed",
-				"summary": "The pr-discipline guard accepts an inline image that links to its own file page, ![alt](page), and no longer recommends release assets for PR images: it points to the publication route of the project."
+				"version": "v2.0.101",
+				"type": "Fixed",
+				"summary": "Repository creation checks read the selected Herdr answer separately from its question, options and explanation."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.100",
+			"packageVersion": "2.0.101",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.98",
-			"type": "Changed",
-			"summary": "The pr-discipline guard accepts an inline image that links to its own file page, ![alt](page), and no longer recommends release assets for PR images: it points to the publication route of the project.",
+			"version": "v2.0.101",
+			"type": "Fixed",
+			"summary": "Repository creation checks read the selected Herdr answer separately from its question, options and explanation.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

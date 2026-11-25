@@ -1138,10 +1138,10 @@ expect_deny "pr-discipline: gh pr create with Ship title" \
   "pr-discipline"
 
 expect_allow "pr-discipline: capability-shape title passes" \
-  "$(pretool_bash 'gh pr create --title "Read planning rows beyond one site" --body "honest body text"')"
+  "$(pretool_bash 'gh pr create --title "Read planning rows beyond one site" --body "honest body text"' | jq --arg cwd "${TMPDIR:-/tmp}" '. + {cwd:$cwd}')"
 
 expect_allow "pr-discipline: title beginning with The passes" \
-  "$(pretool_bash 'gh pr create --title "The cache survives a daemon restart" --body "honest body text"')"
+  "$(pretool_bash 'gh pr create --title "The cache survives a daemon restart" --body "honest body text"' | jq --arg cwd "${TMPDIR:-/tmp}" '. + {cwd:$cwd}')"
 
 expect_deny "pr-discipline: body with ## Summary header" \
   "$(pretool_bash $'gh pr create --title "Honest title here" --body "## Summary\n- foo\n- bar"')" \

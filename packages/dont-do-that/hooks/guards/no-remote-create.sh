@@ -1,18 +1,17 @@
 #!/bin/bash
 # PreToolUse:Bash guard that blocks forge-side remote creation (gh repo create, gh repo fork). allow-comment: hook-header documenting the matchers and the operator escape, same pattern as sibling no-remote.sh and no-worktree-deploy.sh in this directory. Creating account-bound forge state carries permission, billing, visibility and team implications; changing a checkout's local remote configuration does not and is intentionally outside this guard.
 
+DD_NRC_NEGATION="\\b(niet|geen|never|not|don['’]t|do not)\\b"
+
 dd_nrc_last_user_text() {
-  local input="$1" direct tr
+  local input="$1" direct tr messages
   direct=$(jq -r '.last_user_message // .user_message // empty' <<< "$input" 2>/dev/null)
   if [ -n "$direct" ]; then
-    printf '%s\n' "$direct" | tail -c 1000
-    return 0
-  fi
-
-  tr=$(dd_transcript "$input") || return 1
-  [ -f "$tr" ] || return 1
-  tail -200 "$tr" \
-    | jq -s -r '
+    messages=$(jq -cn --arg text "$direct" '[$text]')
+  else
+    tr=$(dd_transcript "$input") || return 1
+    [ -f "$tr" ] || return 1
+    messages=$(jq -n '
 def textify:
 if . == null then ""
 elif type == "string" then .
@@ -24,15 +23,42 @@ else "" end
 ) | join("\n")
 elif type == "object" then (.text? // (.content? | textify) // "")
 else "" end;
-[
-.[]
+reduce inputs as $event ([]; (. + [
+$event
+| select(.isMeta != true)
 | select(.type == "user" or .role == "user" or .message.role == "user" or (.payload.type == "message" and .payload.role == "user"))
 | select(((.payload.content? // .message.content? // .content?) | type) != "array"
     or (((.payload.content? // .message.content? // .content?) | map(.type? // "")) | index("tool_result") | not))
 | (.payload.content? // .message.content? // .content? // .text? // empty | textify)
 | select(length > 0)
-] | .[-3:] | join("\n")
-' 2>/dev/null \
+| select((test("^(# AGENTS\\.md instructions for |<environment_context>|<INSTRUCTIONS>)")) | not)
+]) | .[-3:])
+' "$tr" 2>/dev/null) || return 1
+  fi
+  jq -r --arg negative "$DD_NRC_NEGATION" '
+def approval_text:
+  if test("Herdr (Tijdlijn|Timeline)|herdr-timeline receive"; "i") then
+    try (
+      ([capture("^[[:space:]:\u0027]*Herdr Tijdlijn · (?<card>\\{.*\\}) · Lees de actuele kaart met herdr-timeline receive ")] | first // error("Invalid timeline reply")).card
+      | fromjson
+      | if (.antwoord | type) != "string" or (.vraag | type) != "string" then
+          "geen repo toestemming"
+        elif (.antwoord | test($negative; "i")) or (.antwoord | test("\\b(nee|no|nope|stop|nooit|niks|niets|wacht|later|annuleer|cancel)\\b"; "i")) then
+          "geen repo toestemming"
+        elif ([.vraag, (.opties // [] | .[])] | join(" ") | test("\\b(repo(s)?|repository|repositories|fork(s|en)?|remote(s)?|github|gitlab|forge)\\b"; "i")) then
+          if ((.antwoord | test("^[[:space:]]*(yes|yep|ja|akkoord|goedgekeurd|approved|go ahead|do it|doe maar|go)[[:space:].!]*$"; "i"))
+            and ((.vraag | test($negative; "i")) | not)
+            and (.vraag | test("\\b(aanmaken|maken|create|creation|fork|forken)\\b[^,;.]{0,60}\\b(repo(s)?|repository|repositories|github|gitlab)\\b|\\b(repo(s)?|repository|repositories|github|gitlab)\\b[^,;.]{0,60}\\b(aanmaken|maken|create|creation|fork|forken)\\b"; "i")))
+            or (.antwoord | test("^[[:space:]]*(maak|create|fork|make)\\b[^,;.]{0,40}\\b(repo(s)?|repository|repositories|fork(s|en)?|remote(s)?|github|gitlab)\\b"; "i")) then
+            "create repository approved"
+          else "geen repo toestemming" end
+        else "" end
+    ) catch "geen repo toestemming"
+  else . end;
+reduce .[] as $message ([]; ($message | approval_text) as $text |
+  if $text == "create repository approved" or $text == "geen repo toestemming" then [$text]
+  elif $text == "" then . else . + [$text] end) | join("\n")
+' <<< "$messages" \
     | tail -c 1000
 }
 
@@ -41,7 +67,7 @@ dd_nrc_operator_approved() {
   user=$(dd_nrc_last_user_text "$input") || return 1
   [ -n "$user" ] || return 1
 
-  if grep -qiE '\b(niet|geen|never|not|don'\''t|do not)\b.{0,80}\b(gh[[:space:]]+repo|repo|fork|remote)\b' <<< "$user"; then
+  if grep -qiE "${DD_NRC_NEGATION}.{0,80}\\b(gh[[:space:]]+repo|repo|fork|remote)\\b" <<< "$user"; then
     return 1
   fi
 
