@@ -114,6 +114,8 @@ Important differences from Claude:
 
 ## Multi-agent runtime closeout
 
+When delivery to the source marketplace is requested, verify that its remote default branch contains the tested change and serves the updated plugin payload. A working local runtime establishes only local activation.
+
 A change to a plugin that ships to both Claude Code and Codex includes verified adapters, refresh of existing installations and an explicit report of both hosts' state.
 
 1. Build and check generated adapters.
@@ -593,6 +595,10 @@ Then a decision table driven by `state`, not by markdown prose:
 Empirically observed in whywhy v1.0.10 (2026-04-22): the reveal-PS appeared for a user who had had `WHYWHY_JINGLE=on` in settings for 3 days, while the jingle did not play. Both symptoms of Claude not having read the env value: the reveal condition guessed "unset", and the afplay fence was not executed.
 
 **Session-lifetime footnote.** Env updates in `settings.json` are only seen by new Claude Code sessions. A session that started before a settings commit keeps the old values until restart. When diagnosing strange behavior ("var is set to on but skill behaves as unset"), compare the session start time with the commit that added the var before blaming the skill itself.
+
+## Extending platform support
+
+Read the existing implementation and regression tests in the source repository first. Preserve its public contract, isolate the new platform integration, and exercise the new entry point on the target system. Request access to another machine only when a specific remaining verification depends on it.
 
 ## Symlinks and cross-platform
 
