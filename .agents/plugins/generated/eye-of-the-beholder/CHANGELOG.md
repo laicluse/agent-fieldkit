@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.37]
+
+### Changed
+
+- Obvious checks conventional symbols and recognizable destination icons before rewriting repeated labels.
+
 ## [v2.0.36]
 
 ### Added
