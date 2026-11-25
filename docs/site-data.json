@@ -282,7 +282,7 @@
 		},
 		{
 			"name": "eye-of-the-beholder",
-			"version": "2.0.37",
+			"version": "2.0.38",
 			"category": "review",
 			"summary": "Makes visual work observable: screenshot, describe, measure, and compare layout, color, animation, and reference matches before declaring done.",
 			"support": [
@@ -297,9 +297,9 @@
 			"commandCount": 2,
 			"hookFileCount": 3,
 			"latestChange": {
-				"version": "v2.0.37",
+				"version": "v2.0.38",
 				"type": "Changed",
-				"summary": "Obvious checks conventional symbols and recognizable destination icons before rewriting repeated labels."
+				"summary": "Review read-only status and metadata alongside controls before delivering a repeated surface."
 			}
 		},
 		{
@@ -680,11 +680,11 @@
 		},
 		{
 			"plugin": "eye-of-the-beholder",
-			"packageVersion": "2.0.37",
+			"packageVersion": "2.0.38",
 			"detailPath": "agent-fieldkit/eye-of-the-beholder/",
-			"version": "v2.0.37",
+			"version": "v2.0.38",
 			"type": "Changed",
-			"summary": "Obvious checks conventional symbols and recognizable destination icons before rewriting repeated labels.",
+			"summary": "Review read-only status and metadata alongside controls before delivering a repeated surface.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/eye-of-the-beholder/CHANGELOG.md"
 		},
 		{

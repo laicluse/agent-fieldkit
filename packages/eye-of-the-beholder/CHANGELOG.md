@@ -1,5 +1,11 @@
 # eye-of-the-beholder changelog
 
+## [v2.0.38]
+
+### Changed
+
+- Review read-only status and metadata alongside controls before delivering a repeated surface.
+
 ## [v2.0.37]
 
 ### Changed
