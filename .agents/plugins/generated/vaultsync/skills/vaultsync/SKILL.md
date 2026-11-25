@@ -83,7 +83,7 @@ Vaultsync includes the validator name in the request and only accepts repairs fo
 - `vaultsync pause [path]` pauses with an automatic resume deadline; default is 120 minutes. Use `--minutes <n>` or `--until <time>` for a different deadline.
 - `vaultsync resume [path]` clears a pause.
 - `vaultsync now [path]` runs one immediate cycle without bypassing safety gates.
-- `vaultsync daemon` runs the long-lived loop. The install command writes a user-level LaunchAgent on macOS.
+- `vaultsync daemon` runs the long-lived loop. Installation runs the daemon at login through a macOS LaunchAgent or a Linux systemd user service. On Linux, inspect it with `systemctl --user status vaultsync.service`.
 - `vaultsync doctor [path] --llm-command '<command>'` runs preflight checks without registering the checkout. On a managed vault without `--llm-command`, it probes the registered LLM command.
 - `vaultsync uninstall [path]` stops managing a checkout, also when it is already gone from disk. Status reports such a checkout as `missing`.
 - `vaultsync llm-claude` is the bundled LLM command; register it as `"$HOME/.local/bin/vaultsync" llm-claude` so runtime upgrades keep the path stable.

@@ -56,6 +56,21 @@ assemble() {
     cat "$f"
     printf '\n\n'
   done
+  local layers=() layer
+  case "${CIRCUS_PLATFORM:-$(uname -s)}" in
+    Darwin|macos) layers=(macos) ;;
+    Linux) layers=(linux); if [ -d /usr/share/omarchy ] || [ -d "$HOME/.local/share/omarchy" ]; then layers+=(omarchy); fi ;;
+    linux) layers=(linux) ;;
+    omarchy) layers=(linux omarchy) ;;
+    windows|MINGW*|MSYS*|CYGWIN*) layers=(windows) ;;
+  esac
+  for layer in ${layers[@]+"${layers[@]}"}; do
+    for f in "$ROOT/machine/$layer"/*.md; do
+      [ -f "$f" ] || continue
+      cat "$f"
+      printf '\n\n'
+    done
+  done
   local specific="$SPECIFIC_DIR/$1.md"
   [ -f "$specific" ] && { cat "$specific"; printf '\n'; }
   return 0
