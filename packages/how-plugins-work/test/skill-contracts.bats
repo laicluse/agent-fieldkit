@@ -24,13 +24,15 @@ runtime_closeout_section() {
 	[[ "$output" == *"codex plugin list --json"* ]]
 }
 
-@test "the runtime closeout verifies candidates without automatic shared-runtime mutation" {
+@test "the runtime closeout refreshes existing installations and leaves a first install to its own authorization" {
 	run ruby -ryaml -e '
 		parts = File.read(ARGV.fetch(0)).split(/^---\s*$/)
 		puts YAML.safe_load(parts.fetch(1)).fetch("description")
 	' "$CLOSEOUT"
 	[ "$status" -eq 0 ]
-	[[ "$output" == *"without automatically mutating shared agent runtimes"* ]]
+	[[ "$output" == *"refresh existing installations"* ]]
+	grep -q 'Refreshing an already-installed plugin is part of authorized plugin work' "$CLOSEOUT"
+	grep -q 'A first install remains a separate action requiring authorization' "$CLOSEOUT"
 }
 
 @test "the runtime closeout validates the staged candidate before integration" {
@@ -40,6 +42,6 @@ runtime_closeout_section() {
 	grep -q 'plugins versions --check .' "$CLOSEOUT"
 	grep -q 'rev-parse --path-format=absolute --git-common-dir' "$CLOSEOUT"
 	grep -q 'marketplaceSource.sourceType == "local"' "$CLOSEOUT"
-	grep -q 'explicit operator approval in the current turn' "$CLOSEOUT"
+	grep -q 'Keep new installations, removals, enablement changes and marketplace identity/source changes within their own authorization boundaries' "$CLOSEOUT"
 	! grep -q 'marketplace add ./' "$CLOSEOUT"
 }
