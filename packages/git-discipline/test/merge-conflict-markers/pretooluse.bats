@@ -115,6 +115,92 @@ load helpers
   [[ "$output" != *"[git-discipline/merge-conflict-markers]"* ]]
 }
 
+@test "a setext underline of exactly seven equals signs does not trip the guard" {
+  seed_conflict
+  resolve_clean
+  printf 'Notulen\n=======\nbody\n' > "$TEST_REPO/notes.md"
+  git -C "$TEST_REPO" add notes.md
+  run_dispatch_in_repo 'git commit -m "resolve"'
+
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"[git-discipline/merge-conflict-markers]"* ]]
+}
+
+@test "a staged conflict region still trips the guard after the working tree is cleaned" {
+  seed_conflict
+  git -C "$TEST_REPO" add f.txt
+  printf 'resolved\n' > "$TEST_REPO/f.txt"
+  run_dispatch_in_repo 'git commit -m "resolve"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"f.txt"* ]]
+}
+
+@test "a leftover diff3 base marker still trips the guard" {
+  seed_conflict
+  printf 'l1\n||||||| base\nMERGED\nl3\n' > "$TEST_REPO/f.txt"
+  git -C "$TEST_REPO" add f.txt
+  run_dispatch_in_repo 'git commit -m "resolve"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"f.txt"* ]]
+}
+
+@test "an unstaged conflict is found from a subdirectory" {
+  mkdir -p "$TEST_REPO/docs"
+  seed_conflict
+  pretool_json 'git commit -am "resolve"' > "$BATS_TEST_TMPDIR/payload.json"
+  run bash -c "cd '$TEST_REPO/docs' && bash '$DISPATCH' < '$BATS_TEST_TMPDIR/payload.json'"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"f.txt"* ]]
+}
+
+@test "a new setext underline beside a quoted conflict example passes" {
+  printf 'Example\n\n```\n<<<<<<< ours\n```\n' > "$TEST_REPO/notes.md"
+  git -C "$TEST_REPO" add notes.md
+  git -C "$TEST_REPO" commit -q -m "example" --no-verify
+  printf 'Example\n\n```\n<<<<<<< ours\n```\n\nNotulen\n=======\n' > "$TEST_REPO/notes.md"
+  git -C "$TEST_REPO" add notes.md
+  run_dispatch_in_repo 'git commit -m "notes"'
+
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"[git-discipline/merge-conflict-markers]"* ]]
+}
+
+@test "a lone separator left in a non-markdown file still trips the guard" {
+  seed_conflict
+  printf 'l1\nMERGED\n=======\nl3\n' > "$TEST_REPO/f.txt"
+  git -C "$TEST_REPO" add f.txt
+  run_dispatch_in_repo 'git commit -m "resolve"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"f.txt"* ]]
+}
+
+@test "a separator under an ATX heading or a fence still trips the guard" {
+  printf '# Inleiding\n=======\n' > "$TEST_REPO/intro.md"
+  printf '```\nvalue = 1\n=======\n```\n' > "$TEST_REPO/fence.md"
+  git -C "$TEST_REPO" add intro.md fence.md
+  run_dispatch_in_repo 'git commit -m "notes"'
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"intro.md"* ]]
+  [[ "$output" == *"fence.md"* ]]
+}
+
+@test "a setext underline passes from a subdirectory with relative diff paths" {
+  mkdir -p "$TEST_REPO/docs"
+  git -C "$TEST_REPO" config diff.relative true
+  printf 'Notulen\n=======\n' > "$TEST_REPO/docs/notes.md"
+  git -C "$TEST_REPO" add docs/notes.md
+  pretool_json 'git commit -m "notes"' > "$BATS_TEST_TMPDIR/payload.json"
+  run bash -c "cd '$TEST_REPO/docs' && bash '$DISPATCH' < '$BATS_TEST_TMPDIR/payload.json'"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"[git-discipline/merge-conflict-markers]"* ]]
+}
+
 @test "magic-comment escape allows the commit despite markers" {
   seed_conflict
   run_dispatch_in_repo 'git commit -m "resolve" # allow-conflict-markers'
