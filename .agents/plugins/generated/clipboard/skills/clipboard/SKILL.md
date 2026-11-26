@@ -1,7 +1,7 @@
 ---
 name: clipboard
 description: >-
-  Explicit /clipboard handoff: copy the core of the last answer via the clipboard-copy helper.
+  Copy requested content to the clipboard. Use for explicit clipboard requests, including explicit requests to copy shell commands and /clipboard; never copy unsolicited.
 allowed-tools:
   - Bash(*clipboard-copy*)
 ---
@@ -32,7 +32,7 @@ guard's purpose, not an oversight.
 
 # Clipboard
 
-Copy the core content of your last answer to the macOS clipboard via `clipboard-copy` (the helper that invokes `pbcopy` and `pbcopy-html` under the hood). No confirmation, no explanation. Just copy.
+Only write to the clipboard after an explicit request to copy content. Copy the requested content, or the core of the last answer for `/clipboard`, via `clipboard-copy`. A useful command or an answer to a question alone is not permission to replace the clipboard.
 
 ## Arguments
 
@@ -45,7 +45,7 @@ Copy the core content of your last answer to the macOS clipboard via `clipboard-
 
 1. **Identify the core** of your last substantive answer, the useful content, not the meta-communication around it. If the last answer was itself a clipboard action, login, or other meta-operation, look further back for the last answer with actual content
 2. **Determine the content type** (see table)
-3. **Check the argument**: `slack` → generate HTML and use `clipboard-copy --html` (see section "Slack mode"). No argument → plain text via `clipboard-copy`
+3. **Choose the mode**: terminal commands always use plain text through `clipboard-copy --command`, including when `slack` was requested. For other content, `slack` uses `clipboard-copy --html`; otherwise use `clipboard-copy`.
 4. **Format and copy**
 5. **Confirm briefly** what was copied (type + first few words)
 
@@ -54,8 +54,8 @@ Copy the core content of your last answer to the macOS clipboard via `clipboard-
 | Type | Recognition | Formatting |
 |------|-------------|------------|
 | **JSON** | JSON object/array in answer | Pretty-printed JSON, leave intact |
-| **Code** | Literal source, commands, or JSON in a code block (NOT prose/a prompt that merely happens to be fenced) | Exact code without markdown fences |
-| **Command** | Shell command(s) | Commands, one per line |
+| **Code** | Literal source or a script to save as a file; not fenced prose or LLM prompts | Exact code without markdown fences |
+| **Command** | Input intended for a shell prompt, including fenced commands | Use `--command`; preserve internal lines, omit terminal CR/LF |
 | **Email/letter** | Salutation, sign-off, formal tone | Paragraphs separated by double newline |
 | **Slack/chat** | Informal tone, short message | Continuous text, single newlines between paragraphs |
 | **List** | Enumeration, bullet points | Preserve list formatting with `- ` prefix |
@@ -64,7 +64,7 @@ Copy the core content of your last answer to the macOS clipboard via `clipboard-
 
 **Mixed content:** When an answer contains code blocks with surrounding explanation, "Code" always wins over "Explanation/prose". The user wants to copy the code, not read the explanation in another window. Copy only the code blocks, leave the prose out.
 
-"Code wins" decides *which* content to copy, not whether to preserve wrapping. A fenced block that is actually a prompt, an email, or instructions is prose, not Code: copy it (it is the core content) and reflow its hard wraps per the reflow rule above. Only literal source/commands/JSON stay byte-for-byte.
+"Code wins" decides *which* content to copy, not whether to preserve wrapping. A fenced block that is actually a prompt, an email, or instructions is prose, not Code: copy it (it is the core content) and reflow its hard wraps per the reflow rule above. Literal source and JSON stay byte-for-byte. Shell commands preserve their internal bytes but never end with a carriage return or newline.
 
 ## Formatting Rules
 
@@ -113,7 +113,7 @@ Claude Code output often contains:
 
 **Code:** Exact code from the code block. No markdown fences. With multiple blocks: separate with one blank line.
 
-**Command:** Only the command itself, no explanation. Multiple commands on separate lines.
+**Command:** For input intended for a terminal, always use `clipboard-copy --command`, including fenced snippets and copies requested outside `/clipboard`. This mode removes terminal CR/LF bytes, including a heredoc’s final newline, while preserving internal line breaks. Never send terminal input through the default or HTML mode. A script meant to be saved as a file is Code and retains its final newline. Shell code explicitly requested for sharing as a message or snippet is also Code and may use HTML with `slack`; the `slack` argument alone does not change a terminal command into a shared message. Removing a trailing Enter does not make arbitrary multiline shell input safe to execute.
 
 **Email/letter:** Plain text with paragraphs. No markdown. Double newline between paragraphs.
 
@@ -138,6 +138,16 @@ points at the active install, so there is no stale-cache or
 uninstalled-plugin failure mode to defend against. Run the resolver and the
 helper call in the same shell invocation.
 
+### Shell commands
+
+Use command mode for every shell-command handoff:
+
+```bash
+"${CLIPBOARD_PLUGIN_ROOT}/bin/clipboard-copy" --command <<'CLIPBOARD'
+[shell command here]
+CLIPBOARD
+```
+
 ### Default (plain text)
 
 Use a heredoc to avoid formatting issues:
@@ -148,7 +158,7 @@ Use a heredoc to avoid formatting issues:
 CLIPBOARD
 ```
 
-**Note:** `<<'CLIPBOARD'` (single quotes) is literal; variables, command substitution, and backticks are not expanded. This is usually what you want. Only use `<<"CLIPBOARD"` (double quotes) when you explicitly want `$VAR`, `$(...)` or backticks to be evaluated; then content with literal `$`, `` ` `` or `\` must be escaped. Choose the heredoc variant that requires the least escaping for the specific content.
+**Note:** Keep the heredoc delimiter quoted so variables, command substitutions and backticks remain literal. Do not evaluate the content while copying it. If a content line equals the delimiter, choose a different quoted delimiter.
 
 ### Slack mode
 

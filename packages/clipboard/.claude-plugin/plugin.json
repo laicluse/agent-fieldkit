@@ -1,5 +1,5 @@
 {
   "name": "clipboard",
   "description": "Copy the core of the last answer to the macOS clipboard, as plain text or Slack-compatible rich text.",
-  "version": "2.0.13"
+  "version": "2.0.14"
 }

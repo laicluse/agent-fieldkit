@@ -53,7 +53,7 @@
 						<p class="lede">Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.13</span>
+							<span class="meta-fact">2.0.14</span>
 							<span class="meta-fact">1 skill</span>
 						</div>
 					</div>
@@ -85,6 +85,7 @@
 <div class="readme-scan">
 <h3 id="clipboard"><code>/clipboard</code></h3>
 <p>Copies the relevant content of the last answer to the clipboard as plain text via the <code>clipboard-copy</code> helper (which wraps <code>pbcopy</code>). The skill picks the core content (code block, summary, answer body) rather than the full response wrapper.</p>
+<p>Shell commands use <code>clipboard-copy --command</code>: trailing carriage returns and newlines are removed so the payload does not end with an Enter. Internal line breaks and literal shell syntax remain intact. The default helper mode does not modify its input bytes; the skill may format prose before invoking it. Scripts intended to be saved as files use that default mode.</p>
 <h3 id="clipboard-slack"><code>/clipboard slack</code></h3>
 <p>Copies as Slack rich text via <code>clipboard-copy --html</code> (which wraps <code>pbcopy-html</code>), preserving bold, italic, code spans, and code blocks when pasted into Slack.</p>
 </div>
@@ -103,8 +104,11 @@
 <span class="code-line">  printf 'content' | &quot;$IP/bin/clipboard-copy&quot;</span>
 <span class="code-line">fi</span></code></pre>
 <p>Copy this idiom rather than inventing a variant; it is the one place the install key lives outside this plugin.</p>
+<p>When handing off shell commands, pass <code>--command</code> to the helper, including commands supplied through a heredoc. Do not combine it with <code>--html</code>.</p>
+<h2 id="tests">Tests</h2>
+<p>Run <code>node --test test/clipboard/command-copy.test.mjs</code> from the repository root on macOS. The tests capture calls through a fake <code>pbcopy</code>; they do not change the system clipboard.</p>
 				</article>
-				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#commands">Commands</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#consuming-from-another-plugin">Consuming from another plugin</a></li></ol></nav>
+				<nav class="detail-toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#commands">Commands</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#consuming-from-another-plugin">Consuming from another plugin</a></li><li><a href="#tests">Tests</a></li></ol></nav>
 			</section>
 		</main>
 

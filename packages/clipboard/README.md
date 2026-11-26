@@ -26,6 +26,8 @@ In a Claude Code session, version 2.1.275 or later, one line installs it straigh
 
 Copies the relevant content of the last answer to the clipboard as plain text via the `clipboard-copy` helper (which wraps `pbcopy`). The skill picks the core content (code block, summary, answer body) rather than the full response wrapper.
 
+Shell commands use `clipboard-copy --command`: trailing carriage returns and newlines are removed so the payload does not end with an Enter. Internal line breaks and literal shell syntax remain intact. The default helper mode does not modify its input bytes; the skill may format prose before invoking it. Scripts intended to be saved as files use that default mode.
+
 ### `/clipboard slack`
 
 Copies as Slack rich text via `clipboard-copy --html` (which wraps `pbcopy-html`), preserving bold, italic, code spans, and code blocks when pasted into Slack.
@@ -67,3 +69,9 @@ fi
 
 Copy this idiom rather than inventing a variant; it is the one place the
 install key lives outside this plugin.
+
+When handing off shell commands, pass `--command` to the helper, including commands supplied through a heredoc. Do not combine it with `--html`.
+
+## Tests
+
+Run `node --test test/clipboard/command-copy.test.mjs` from the repository root on macOS. The tests capture calls through a fake `pbcopy`; they do not change the system clipboard.

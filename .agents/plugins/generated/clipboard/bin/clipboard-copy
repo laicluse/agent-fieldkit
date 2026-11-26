@@ -12,13 +12,23 @@ if (process.platform !== 'darwin') {
 
 const args = process.argv.slice(2);
 const html = args.includes('--html');
-const unknown = args.filter(a => a !== '--html');
+const command = args.includes('--command');
+const unknown = args.filter(a => !['--html', '--command'].includes(a));
 if (unknown.length > 0) {
-  process.stderr.write(`clipboard-copy: unknown argument "${unknown[0]}". Usage: clipboard-copy [--html]\n`);
+  process.stderr.write(`clipboard-copy: unknown argument "${unknown[0]}". Usage: clipboard-copy [--html | --command]\n`);
+  process.exit(2);
+}
+if (html && command) {
+  process.stderr.write('clipboard-copy: --command and --html cannot be combined.\n');
   process.exit(2);
 }
 
-const stdin = readFileSync(0);
+let stdin = readFileSync(0);
+if (command) {
+  let end = stdin.length;
+  while (end > 0 && (stdin[end - 1] === 10 || stdin[end - 1] === 13)) end -= 1;
+  stdin = stdin.subarray(0, end);
+}
 if (stdin.length === 0) {
   process.stderr.write('clipboard-copy: empty stdin.\n');
   process.exit(3);

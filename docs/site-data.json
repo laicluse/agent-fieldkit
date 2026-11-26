@@ -457,7 +457,7 @@
 		},
 		{
 			"name": "clipboard",
-			"version": "2.0.13",
+			"version": "2.0.14",
 			"category": "feedback",
 			"summary": "Copies the useful part of the last answer to the macOS clipboard as plain text or Slack-rich text.",
 			"support": [
@@ -472,9 +472,9 @@
 			"commandCount": 2,
 			"hookFileCount": 0,
 			"latestChange": {
-				"version": "v2.0.8",
+				"version": "v2.0.14",
 				"type": "Fixed",
-				"summary": "Codex now gets its own /clipboard helper-resolution instructions."
+				"summary": "Shell-command handoffs use --command to remove trailing newlines and carriage returns."
 			}
 		},
 		{
@@ -742,6 +742,15 @@
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/circus/CHANGELOG.md"
 		},
 		{
+			"plugin": "clipboard",
+			"packageVersion": "2.0.14",
+			"detailPath": "agent-fieldkit/clipboard/",
+			"version": "v2.0.14",
+			"type": "Fixed",
+			"summary": "Shell-command handoffs use --command to remove trailing newlines and carriage returns.",
+			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/clipboard/CHANGELOG.md"
+		},
+		{
 			"plugin": "autonomous",
 			"packageVersion": "2.0.13",
 			"detailPath": "agent-fieldkit/autonomous/",
@@ -749,15 +758,6 @@
 			"type": "Breaking",
 			"summary": "autonomous is no longer advertised to Codex.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/autonomous/CHANGELOG.md"
-		},
-		{
-			"plugin": "clipboard",
-			"packageVersion": "2.0.13",
-			"detailPath": "agent-fieldkit/clipboard/",
-			"version": "v2.0.8",
-			"type": "Fixed",
-			"summary": "Codex now gets its own /clipboard helper-resolution instructions.",
-			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/clipboard/CHANGELOG.md"
 		},
 		{
 			"plugin": "gurus",

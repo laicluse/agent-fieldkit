@@ -20,6 +20,13 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.14]
+
+### Fixed
+
+- Shell-command handoffs use `--command` to remove trailing newlines and carriage returns. Internal formatting and ordinary text or JSON remain unchanged.
+- Explicit requests to copy commands now select the skill without requiring `/clipboard`. Copying remains opt-in; quoted heredocs keep the supplied command literal.
+
 ## [v2.0.8]
 
 ### Fixed
