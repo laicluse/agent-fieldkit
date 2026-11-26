@@ -834,6 +834,78 @@ it('reruns pre-sync after integrating remote changes', () => {
   assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
 });
 
+it('integrates and publishes without FETCH_HEAD, which another git fetch in the checkout may be rewriting', () => {
+  const fixture = syncFixture('foreign-fetch-head');
+  const peer = join(tmp, 'foreign-fetch-head-peer');
+  git(tmp, ['clone', '-q', fixture.remote, peer]);
+  writeFileSync(join(peer, 'remote.md'), '# Remote\n');
+  git(peer, ['add', 'remote.md']);
+  git(peer, ['commit', '-q', '-m', 'Add remote note']);
+  git(peer, ['push', '-q']);
+  writeFileSync(join(fixture.local, 'local.md'), '# Local\n');
+  mkdirSync(join(fixture.local, '.git', 'FETCH_HEAD'));
+
+  const cycle = JSON.parse(runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env }).stdout);
+
+  assert.equal(cycle.result.rebased, true, JSON.stringify(cycle));
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+  assert.deepEqual(git(fixture.remote, ['ls-tree', '--name-only', 'HEAD']).split('\n').sort(), ['local.md', 'note.md', 'remote.md']);
+});
+
+it('integrates a push that a peer makes while the local checkpoint is being written', () => {
+  const fixture = syncFixture('push-during-checkpoint');
+  const peer = join(tmp, 'push-during-checkpoint-peer');
+  git(tmp, ['clone', '-q', fixture.remote, peer]);
+  const llm = join(tmp, 'push-during-checkpoint-llm.mjs');
+  writeFileSync(llm, [
+    '#!/usr/bin/env node',
+    'import { execFileSync } from "node:child_process";',
+    'import { writeFileSync } from "node:fs";',
+    'let input = "";',
+    'process.stdin.on("data", (chunk) => input += chunk);',
+    'process.stdin.on("end", () => {',
+    '  const payload = JSON.parse(input);',
+    `  const peer = ${JSON.stringify(peer)};`,
+    '  if (payload.task === "commit_message") {',
+    '    writeFileSync(`${peer}/remote.md`, "# Remote\\n");',
+    '    execFileSync("git", ["-C", peer, "add", "remote.md"]);',
+    '    execFileSync("git", ["-C", peer, "-c", "core.hooksPath=/dev/null", "commit", "-q", "-m", "Add remote note"]);',
+    '    execFileSync("git", ["-C", peer, "push", "-q"]);',
+    '    process.stdout.write(JSON.stringify({ message: "Update vault note\\n\\nRecord the portable vault content.\\n\\nSlice: docs-only" }));',
+    '  } else if (payload.task === "resolve_conflict") process.stdout.write(JSON.stringify({ resolved: "Remote truth line.\\n" }));',
+    '  else process.exit(2);',
+    '});',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  const registrationPath = registrationPathForRoot(realpathSync(fixture.local), fixture.env);
+  const installed = JSON.parse(readFileSync(registrationPath, 'utf8'));
+  writeFileSync(registrationPath, `${JSON.stringify({ ...installed, llmCommand: `${process.execPath} ${llm}` }, null, 2)}\n`);
+  writeFileSync(join(fixture.local, 'local.md'), '# Local\n');
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+  assert.deepEqual(git(fixture.remote, ['ls-tree', '--name-only', 'HEAD']).split('\n').sort(), ['local.md', 'note.md', 'remote.md']);
+});
+
+it('fast-forwards a checkout that is only behind without running a rebase', () => {
+  const fixture = syncFixture('behind-only');
+  const peer = join(tmp, 'behind-only-peer');
+  git(tmp, ['clone', '-q', fixture.remote, peer]);
+  writeFileSync(join(peer, 'remote.md'), '# Remote\n');
+  git(peer, ['add', 'remote.md']);
+  git(peer, ['commit', '-q', '-m', 'Add remote note']);
+  git(peer, ['push', '-q']);
+  const hooks = join(fixture.local, '.git', 'hooks');
+  mkdirSync(hooks, { recursive: true });
+  writeFileSync(join(hooks, 'pre-rebase'), '#!/bin/sh\necho "rebase refused" >&2\nexit 1\n', { mode: 0o755 });
+
+  runNode([fixture.cli, 'now', fixture.local, '--json'], { env: fixture.env });
+
+  assert.equal(git(fixture.local, ['rev-list', '--left-right', '--count', 'HEAD...@{u}']), '0\t0');
+  assert.equal(readFileSync(join(fixture.local, 'remote.md'), 'utf8'), '# Remote\n');
+});
+
 it('generates after rebasing when both peers changed the generated file', () => {
   const fixture = syncFixture('pre-sync-two-writers');
   writeFileSync(join(fixture.local, 'viewer.html'), '<main>baseline</main>\n');

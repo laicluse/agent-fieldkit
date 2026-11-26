@@ -2,6 +2,16 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
+## [v2.0.36]
+
+### Fixed
+
+- A sync cycle rebases onto the upstream it fetched instead of running `git pull --rebase`, and its fetch no longer writes `FETCH_HEAD`. Another `git fetch` in the same checkout could rewrite `FETCH_HEAD` mid-cycle and block the sync with "Cannot rebase onto multiple branches".
+
+### Changed
+
+- The skill names `vaultsync now` as the way to publish when a next step needs the change on the remote, and forbids waiting on it with a `git fetch` or `git pull` loop.
+
 ## [v2.0.33]
 
 ### Fixed

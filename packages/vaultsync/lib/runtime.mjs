@@ -906,13 +906,30 @@ function abortRebase(root) {
   git(root, ['rebase', '--abort'], { allowFailure: true });
 }
 
-function pullRebaseWithLlm(registration) {
+// allow-comment: integration fetches again right before it, as git pull --rebase did, but reads the upstream ref instead of FETCH_HEAD, which any other git fetch in the checkout can rewrite underneath it ("Cannot rebase onto multiple branches"). Like pull, a checkout that is only behind fast-forwards without a rebase, the fork point stays in use, and submodules follow when submodule.recurse is set.
+function rebaseOntoUpstreamWithLlm(registration) {
   const root = registration.rootRealpath;
-  const pull = git(root, ['pull', '--rebase'], { allowFailure: true });
-  if (pull.status === 0) return { rebased: true, conflictsResolved: 0 };
+  fetchRemote(root);
+  const relation = aheadBehind(root);
+  let result;
+  if (relation.known && relation.ahead === 0) {
+    git(root, ['merge', '--ff-only', '--quiet', '@{u}']);
+    result = { rebased: true, conflictsResolved: 0 };
+  } else {
+    result = replayOntoUpstream(registration);
+  }
+  const recurse = git(root, ['config', '--bool', 'submodule.recurse'], { allowFailure: true });
+  if (recurse.stdout.trim() === 'true') git(root, ['submodule', 'update', '--recursive']);
+  return result;
+}
+
+function replayOntoUpstream(registration) {
+  const root = registration.rootRealpath;
+  const rebase = git(root, ['rebase', '--fork-point', '@{u}'], { allowFailure: true });
+  if (rebase.status === 0) return { rebased: true, conflictsResolved: 0 };
   if (!rebaseInProgress(root)) {
-    const err = new Error((pull.stderr || pull.stdout || 'git pull --rebase failed').trim());
-    err.exitCode = pull.status || 1;
+    const err = new Error((rebase.stderr || rebase.stdout || 'git rebase onto the upstream failed').trim());
+    err.exitCode = rebase.status || 1;
     throw err;
   }
   let resolved = 0;
@@ -1293,7 +1310,12 @@ function remoteAuthenticationAvailability(root, env = process.env) {
 
 function fetchRemote(root) {
   if (!optionalUpstreamName(root)) return { skipped: true };
-  return git(root, ['fetch', '--quiet']);
+  const fetched = git(root, ['fetch', '--quiet', '--no-write-fetch-head'], { allowFailure: true });
+  if (fetched.status === 0) return fetched;
+  if (/no-write-fetch-head/.test(fetched.stderr)) return git(root, ['fetch', '--quiet']);
+  const err = new Error((fetched.stderr || fetched.stdout || 'git fetch failed').trim());
+  err.exitCode = fetched.status || 1;
+  throw err;
 }
 
 function aheadChangedPaths(root) {
@@ -1432,7 +1454,7 @@ export async function runCycle(registration, { reason = 'daemon', force = false,
     let afterCommitRelation = aheadBehind(reg.rootRealpath);
     let rebase = { rebased: false, conflictsResolved: 0 };
     if (remoteAuthentication.available && afterCommitRelation.known && (afterCommitRelation.behind > 0 || committedPaths.length > 0)) {
-      rebase = withPhase('rebase', () => pullRebaseWithLlm(reg));
+      rebase = withPhase('rebase', () => rebaseOntoUpstreamWithLlm(reg));
       afterCommitRelation = aheadBehind(reg.rootRealpath);
     }
     runRegisteredPreSync();
