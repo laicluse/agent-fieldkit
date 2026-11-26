@@ -53,7 +53,7 @@
 						<p class="lede">Automatically commit and verify Markdown vault changes locally, then rebase and push when an upstream exists, with conflict handling and Dibs coordination.</p>
 						<div class="plugin-meta detail-meta" aria-label="Package metadata">
 							<span class="support-pill both">Claude + Codex</span>
-							<span class="meta-fact">2.0.36</span>
+							<span class="meta-fact">2.0.40</span>
 							<span class="meta-fact">1 skill</span>
 						</div>
 					</div>
@@ -88,7 +88,7 @@
 <li>Reports whether a checkout is vaultsync-managed through <code>vaultsync managed</code>, so other tools can ask the CLI instead of reading vaultsync storage directly.</li>
 <li>Stores runtime state under <code>${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync</code>.</li>
 <li>Publishes complete immutable runtime releases behind one stable machine launcher without depending on a coding-agent plugin cache path.</li>
-<li>Installs a user-level macOS LaunchAgent for the daemon loop.</li>
+<li>Starts the daemon through a macOS LaunchAgent or a Linux systemd user service. Use <code>--no-service</code> for manual startup.</li>
 <li>Debounces dirty Git state before committing.</li>
 <li>Refuses machine-local home paths in new commits and outgoing history before shared content can be pushed.</li>
 <li>Generates substantive English commit messages through the configured LLM command, with deterministic git-discipline-safe trailers.</li>

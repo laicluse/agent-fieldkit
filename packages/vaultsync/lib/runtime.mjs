@@ -1563,7 +1563,7 @@ function emit(data, json = false) {
   else process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 }
 
-async function commandInstall(args, env = process.env) {
+async function commandInstall(args, env, version) {
   const parsed = parseArgs({
     args,
     allowPositionals: true,
@@ -1574,6 +1574,7 @@ async function commandInstall(args, env = process.env) {
       'debounce-seconds': { type: 'string' },
       'idle-poll-seconds': { type: 'string' },
       json: { type: 'boolean', default: false },
+      'no-service': { type: 'boolean', default: false },
       'no-launchd': { type: 'boolean', default: false },
     },
   });
@@ -1616,8 +1617,9 @@ async function commandInstall(args, env = process.env) {
   if (existing?.validators) registration.validators = existing.validators;
   const registrationDibsBin = registrationDibsBinForInstall(dibsBin);
   if (registrationDibsBin) registration.dibsBin = registrationDibsBin;
+  const skipService = parsed.values['no-service'] || parsed.values['no-launchd'];
+  const service = skipService ? { skipped: true } : installDaemonService(env, version);
   const savedRegistration = saveRegistration(registration, env, { create: true });
-  const launchd = parsed.values['no-launchd'] ? { skipped: true } : installLaunchAgent(env);
   emit({
     installed: true,
     requestedCwd: preflight.requestedCwd,
@@ -1625,7 +1627,8 @@ async function commandInstall(args, env = process.env) {
     branch: preflight.branch,
     upstream: preflight.upstream,
     registration: registrationPathForKey(savedRegistration.key, env),
-    launchd,
+    launchd: platform() === 'linux' ? { skipped: true } : service,
+    ...(platform() === 'linux' ? { systemd: service } : {}),
   }, parsed.values.json);
 }
 
@@ -2200,9 +2203,54 @@ export function launchAgentIsInstalled(env = process.env) {
   return existsSync(join(env.HOME || homedir(), 'Library', 'LaunchAgents', `${SERVICE_LABEL}.plist`));
 }
 
-export async function runCommand(command, args, env = process.env) {
+function systemdUnitPath(env) {
+  return join(env.XDG_CONFIG_HOME || join(env.HOME || homedir(), '.config'), 'systemd/user/vaultsync.service');
+}
+
+export function systemdUserUnit(env) {
+  function quote(value) {
+    if (/[\r\n\0]/.test(value)) throw new Error('Invalid service path');
+    return '"' + value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('%', '%%') + '"';
+  }
+  const path = [dirname(process.execPath), env.PATH].filter(Boolean).join(delimiter);
+  return [
+    '[Unit]', 'Description=Vaultsync checkout synchronization', '[Service]',
+    'ExecStart=' + quote(machineLauncherPath(env).replaceAll('$', () => '$$')) + ' daemon',
+    'Environment=' + quote('PATH=' + path),
+    'Environment=' + quote('LAICLUSE_HOME=' + laicluseHome(env)),
+    'Restart=on-failure', 'RestartSec=5', '[Install]', 'WantedBy=default.target', '',
+  ].join('\n');
+}
+
+export function installSystemdService(env, version, run = spawnSync) {
+  const unit = systemdUnitPath(env);
+  mkdirSync(dirname(unit), { recursive: true });
+  writeFileSync(unit, systemdUserUnit(env));
+  for (const args of [['daemon-reload'], ['enable', 'vaultsync.service'], ['restart', 'vaultsync.service']]) {
+    const result = run('systemctl', ['--user', ...args], { env, encoding: 'utf8' });
+    if (result.status !== 0) throw new Error(result.stderr?.trim() || result.error?.message || 'systemctl failed');
+  }
+  if (version) writeJsonAtomic(join(vaultsyncDir(env), 'systemd.json'), { version });
+  return { installed: true, unit };
+}
+
+export function installDaemonService(env, version) {
+  return platform() === 'linux' ? installSystemdService(env, version) : installLaunchAgent(env, version);
+}
+
+export function daemonServiceIsInstalled(env = process.env, os = platform()) {
+  return os === 'linux' ? existsSync(systemdUnitPath(env)) : launchAgentIsInstalled(env);
+}
+
+export function daemonServiceNeedsReconciliation(version, env = process.env, os = platform()) {
+  if (os !== 'linux') return launchAgentNeedsReconciliation(version, env);
+  try { return readJsonFile(join(vaultsyncDir(env), 'systemd.json')).version !== version; }
+  catch { return true; }
+}
+
+export async function runCommand(command, args, env = process.env, version = null) {
   switch (command) {
-    case 'install': return commandInstall(args, env);
+    case 'install': return commandInstall(args, env, version);
     case 'managed': return commandManaged(args, env);
     case 'status': return commandStatus(args, env);
     case 'pause': return commandPause(args, env);

@@ -12,6 +12,12 @@ dibs_holder_pid() {
     case "$comm" in
       *[Cc]laude*|*[Cc]odex*) match="$pid"; break ;;
     esac
+    local executable
+    if [ -r "/proc/$pid/cmdline" ] && IFS= read -r -d '' executable < "/proc/$pid/cmdline"; then
+      case "${executable##*/}" in
+        *[Cc]laude*|*[Cc]odex*) match="$pid"; break ;;
+      esac
+    fi
     parent=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
     [ -z "$parent" ] && break
     pid="$parent"

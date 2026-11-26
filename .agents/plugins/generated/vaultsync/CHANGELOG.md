@@ -2,7 +2,11 @@
 
 The post-update broadcast shows the topmost section once per machine whenever the installed `version` in `.claude-plugin/plugin.json` changes. Keep entries short; categories are Breaking, Added, Changed, Fixed.
 
-## [v2.0.36]
+## [v2.0.40]
+
+### Added
+
+- Linux installations can run Vaultsync as a systemd user service. The existing macOS LaunchAgent and install output remain compatible.
 
 ### Fixed
 
@@ -11,6 +15,10 @@ The post-update broadcast shows the topmost section once per machine whenever th
 ### Changed
 
 - The skill names `vaultsync now` as the way to publish when a next step needs the change on the remote, and forbids waiting on it with a `git fetch` or `git pull` loop.
+
+## [v2.0.36]
+
+Linux installations can run Vaultsync as a systemd user service. The existing macOS LaunchAgent and install output remain compatible.
 
 ## [v2.0.33]
 

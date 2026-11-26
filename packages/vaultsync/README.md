@@ -32,7 +32,7 @@ When registration targets the verified default branch, Vaultsync records local t
   so other tools can ask the CLI instead of reading vaultsync storage directly.
 - Stores runtime state under `${LAICLUSE_HOME:-$HOME/.laicluse}/vaultsync`.
 - Publishes complete immutable runtime releases behind one stable machine launcher without depending on a coding-agent plugin cache path.
-- Installs a user-level macOS LaunchAgent for the daemon loop.
+- Starts the daemon through a macOS LaunchAgent or a Linux systemd user service. Use `--no-service` for manual startup.
 - Debounces dirty Git state before committing.
 - Refuses machine-local home paths in new commits and outgoing history before shared content can be pushed.
 - Generates substantive English commit messages through the configured LLM command, with deterministic git-discipline-safe trailers.

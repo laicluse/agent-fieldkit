@@ -5,6 +5,10 @@
 - `circus project build|check|diff` derives a Codex project stack from `CLAUDE.md` files and plugin-less `.claude/skills/`. Each generated file names its original in a banner, skills that mention Claude Code facilities are skipped with a reason, and `.gitignore` decides who sees the output.
 - Codex hooks use the installed plugin root directly. Removed runtime snapshots and sibling-version recovery, which did not prevent the reproduced missing-bundle trust failure in Codex 0.166.0. Missing-entry denial and warning behavior is preserved. Plugin updates during active work remain subject to the host lifecycle.
 
+## [v2.0.16]
+
+User prompts can now include instructions for macOS, Linux, Omarchy or Windows. Omarchy inherits Linux instructions.
+
 ## [v2.0.7]
 
 ### Fixed

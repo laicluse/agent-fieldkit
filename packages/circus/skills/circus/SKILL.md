@@ -44,6 +44,7 @@ Source lives in `~/.laicluse/circus/`:
 
 - `shared/*.md` is shared doctrine, agent-agnostic and
   concatenated in order.
+- Optional `machine/{macos,linux,omarchy,windows}/*.md` supplies instructions for the current platform. Omarchy includes Linux first. Use `CIRCUS_PLATFORM` to preview another profile.
 - `specific/<agent>.md` is per-agent guidance such as tool names, hooks, and
   escape hatches.
 - `targets` is the `name=output_path` mapping. A target line may add

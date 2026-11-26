@@ -20,6 +20,10 @@ omitted; the broadcast budget is for things the user benefits from knowing.
 The helper writes the sentinel only when stdout is non-empty, so a CHANGELOG
 without a `## [vX.Y.Z]` section stays silent on every update.
 
+## [v2.0.53]
+
+Platform extensions now start from repository evidence and verify delivery through the source marketplace.
+
 ## [v2.0.46]
 
 ### Added
