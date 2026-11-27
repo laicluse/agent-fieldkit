@@ -312,11 +312,14 @@ function tokenize(source) {
 	return tokens;
 }
 
+// allow-comment: `${NAME:?}` and `${NAME?}` expand to the value when NAME is set and abort otherwise, so they resolve like `${NAME}`.
 function expandWord(word, activeEnvironment) {
 	let unresolved = false;
 	let text = word.parts.map((part) => {
 		if (!part.expandsVariables) return part.text;
-		return part.text.replace(/\$(?:\{([A-Za-z_][A-Za-z0-9_]*)\}|([A-Za-z_][A-Za-z0-9_]*))/g, (match, braced, bare) => {
+		// allow-comment: any other parameter expansion (`${NAME:-x}`, a nested guard message) keeps its literal text, so the word is unresolved rather than a path.
+		if (/\$\{(?![A-Za-z_][A-Za-z0-9_]*(?::?\?[^}${]*)?\})/.test(part.text)) unresolved = true;
+		return part.text.replace(/\$(?:\{([A-Za-z_][A-Za-z0-9_]*)(?::?\?[^}${]*)?\}|([A-Za-z_][A-Za-z0-9_]*))/g, (match, braced, bare) => {
 			const name = braced || bare;
 			if (!Object.prototype.hasOwnProperty.call(activeEnvironment, name)) {
 				unresolved = true;

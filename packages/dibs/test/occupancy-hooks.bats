@@ -994,6 +994,24 @@ cp a.docx b.docx'
 	[ "$output" = "$DIR/t" ]
 }
 
+@test "Bash rm expands a guarded variable target without gating cwd" {
+	run bash -c "printf '%s' 'S=/private/tmp/dibs-guard; rm -rf \"\${S:?}/a\" \"\${S?}/b\"' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$(printf '%s\n%s' /private/tmp/dibs-guard/a /private/tmp/dibs-guard/b)" ]
+}
+
+@test "Bash guarded variable with a nested message stays unresolved" {
+	run bash -c "printf '%s' 'S=/private/tmp/dibs-guard; rm -rf \"\${S:?\${OTHER}}/a\"' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$DIR" ]
+}
+
+@test "Bash nested guard message after an absolute prefix stays unresolved" {
+	run bash -c "printf '%s' 'S=x; OTHER=y; rm -rf \"/private/tmp/dibs-guard/\${S:?\${OTHER}}/a\"' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$DIR" ]
+}
+
 @test "Bash mktemp with a relative template stays attributed to the working directory" {
 	run bash -c "printf '%s' 'cd \"\$(mktemp -d build.XXXX)\"; echo a > t' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
 	[ "$status" -eq 0 ]
