@@ -31,21 +31,31 @@ if [ -f ".claude-plugin/marketplace.json" ]; then
     echo "ERROR: $circus_script plugins build failed." >&2
     exit 1
   fi
-  if [ -d ".agents/plugins" ]; then
-    git add -A -f ".agents/plugins"
+  # allow-comment: generated output reflects the working tree, so stage it only for plugins this commit stages; another session's dirty plugin must not ride along.
+  staged_plugins=$(git diff --cached --name-only -- packages | awk -F/ 'NF > 2 { print $2 }' | sort -u)
+  for plugin in $staged_plugins; do
+    unstaged=$(git diff --name-only -- "packages/$plugin"; git ls-files --others --exclude-standard -- "packages/$plugin")
+    if [ -n "$unstaged" ]; then
+      echo "ERROR: packages/$plugin is partially staged; its generated adapter would mix staged and unstaged source. Stage or set aside the rest first." >&2
+      printf '%s\n' "$unstaged" >&2
+      exit 1
+    fi
+    if [ -d ".agents/plugins/generated/$plugin" ]; then
+      git add -A -f ".agents/plugins/generated/$plugin"
+    fi
+    if [ -f "packages/$plugin/.codex-plugin/plugin.json" ]; then
+      git add -A "packages/$plugin/.codex-plugin/plugin.json"
+    fi
+    git ls-files "packages/$plugin/skills/*/SKILL.claude.md" | while IFS= read -r claude_skill; do
+      git add -A "$(dirname "$claude_skill")/SKILL.md"
+    done
+    find "packages/$plugin" -path "*/skills/*/SKILL.claude.md" -type f | while IFS= read -r claude_skill; do
+      git add "$(dirname "$claude_skill")/SKILL.md"
+    done
+  done
+  if [ -n "$staged_plugins" ] && [ -f ".agents/plugins/marketplace.json" ]; then
+    git add -f ".agents/plugins/marketplace.json"
   fi
-  git ls-files "packages/*/.codex-plugin/plugin.json" | while IFS= read -r codex_manifest; do
-    git add -A "$codex_manifest"
-  done
-  find packages -path "*/.codex-plugin/plugin.json" -type f | while IFS= read -r codex_manifest; do
-    git add "$codex_manifest"
-  done
-  git ls-files "packages/*/skills/*/SKILL.claude.md" | while IFS= read -r claude_skill; do
-    git add -A "$(dirname "$claude_skill")/SKILL.md"
-  done
-  find packages -path "*/skills/*/SKILL.claude.md" -type f | while IFS= read -r claude_skill; do
-    git add "$(dirname "$claude_skill")/SKILL.md"
-  done
   if ! "$circus_script" plugins check . >/dev/null; then
     echo "ERROR: $circus_script plugins check failed." >&2
     "$circus_script" plugins check . >&2
