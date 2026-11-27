@@ -260,7 +260,7 @@
 		},
 		{
 			"name": "dont-do-that",
-			"version": "2.0.101",
+			"version": "2.0.102",
 			"category": "workflow",
 			"summary": "Runs guardrail hooks and correction skills for common agent reflexes before they become repository damage.",
 			"support": [
@@ -275,9 +275,9 @@
 			"commandCount": 2,
 			"hookFileCount": 39,
 			"latestChange": {
-				"version": "v2.0.101",
+				"version": "v2.0.102",
 				"type": "Fixed",
-				"summary": "Repository creation checks read the selected Herdr answer separately from its question, options and explanation."
+				"summary": "Repository creation checks ignore messages relayed by other agents (<hc from=…>), goal continuations, hook prompts, skill bodies and shell or subagent notices."
 			}
 		},
 		{
@@ -644,11 +644,11 @@
 		},
 		{
 			"plugin": "dont-do-that",
-			"packageVersion": "2.0.101",
+			"packageVersion": "2.0.102",
 			"detailPath": "agent-fieldkit/dont-do-that/",
-			"version": "v2.0.101",
+			"version": "v2.0.102",
 			"type": "Fixed",
-			"summary": "Repository creation checks read the selected Herdr answer separately from its question, options and explanation.",
+			"summary": "Repository creation checks ignore messages relayed by other agents (<hc from=…>), goal continuations, hook prompts, skill bodies and shell or subagent notices.",
 			"sourceUrl": "https://github.com/laicluse/agent-fieldkit/blob/main/packages/dont-do-that/CHANGELOG.md"
 		},
 		{

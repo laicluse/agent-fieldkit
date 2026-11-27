@@ -32,6 +32,7 @@ $event
 | (.payload.content? // .message.content? // .content? // .text? // empty | textify)
 | select(length > 0)
 | select((test("^(# AGENTS\\.md instructions for |<environment_context>|<INSTRUCTIONS>)")) | not)
+| select((test("^[[:space:]]*<(hc from=|codex_internal_context|goal_context|hook_prompt|skill>|subagent_notification|user_action|user_shell_command)")) | not)
 ]) | .[-3:])
 ' "$tr" 2>/dev/null) || return 1
   fi

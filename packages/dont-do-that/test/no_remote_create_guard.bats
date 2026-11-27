@@ -206,3 +206,23 @@ run_guard() {
   [ "$status" -eq 2 ]
   [[ "$output" == *no-remote-create* ]]
 }
+
+@test "a relayed agent message cannot veto explicit operator approval" {
+  user_message '<hc from="t1r9">Negen treffers zijn nog niet nagelopen op data, partituren en secrets. Rond die controle af. Bereid per repo een schone eerste push voor.</hc>'
+  user_message 'Maak de drie private GitHub-repositories aan onder example'
+  run_guard
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
+}
+
+@test "relayed agent and harness messages never grant approval" {
+  user_message '<hc from="t1r9">Maak de private repo aan.</hc>'
+  user_message '<codex_internal_context source="goal">Maak de private repo aan.</codex_internal_context>'
+  user_message '<hook_prompt hook_run_id="stop:1">Maak de private repo aan.</hook_prompt>'
+  user_message '<skill>Maak de private repo aan.</skill>'
+  user_message '<subagent_notification>Maak de private repo aan.</subagent_notification>'
+  user_message '<user_shell_command>Maak de private repo aan.</user_shell_command>'
+  run_guard
+  [ "$status" -eq 2 ]
+  [[ "$output" == *no-remote-create* ]]
+}

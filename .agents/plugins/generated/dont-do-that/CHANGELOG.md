@@ -22,6 +22,12 @@ Version numbers may therefore be non-contiguous. The helper writes the sentinel
 only when stdout is non-empty, so a CHANGELOG without a `## [vX.Y.Z]` section
 stays silent on every update.
 
+## [v2.0.102] - 2026-11-27
+
+### Fixed
+
+- Repository creation checks ignore messages relayed by other agents (`<hc from=…>`), goal continuations, hook prompts, skill bodies and shell or subagent notices. Such a message can no longer veto the operator's explicit approval, and it can never grant approval itself.
+
 ## [v2.0.101] - 2026-11-25
 
 ### Fixed
