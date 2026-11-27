@@ -180,3 +180,168 @@ run_gate() {
   run_gate claude 'git commit -m "Tune skill" # ack-rule9:word # peer-reviewed: gpt-6.1-sol'
   [ "$status" -eq 0 ]
 }
+
+@test "the marker on the commit line counts when other commands follow" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -m "Tune skill" # peer-reviewed: gpt-6.1-sol' 'git log --oneline -1')"
+  [ "$status" -eq 0 ]
+}
+
+@test "a heredoc commit keeps its marker when commands follow the body" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' "git commit -q -F - <<'EOF' # peer-reviewed: gpt-6.1-sol" 'Tune skill' '' "The tool's body" 'EOF' 'git status --short')"
+  [ "$status" -eq 0 ]
+}
+
+@test "an apostrophe in a backslash-quoted heredoc body keeps the marker valid" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -F - <<\EOF # peer-reviewed: gpt-6.1-sol' "The tool's body" 'EOF')"
+  [ "$status" -eq 0 ]
+}
+
+@test "a marker inside a heredoc body does not count" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' "git commit -F - <<'EOF'" 'Tune skill' '# peer-reviewed: gpt-6.1-sol' 'EOF')"
+  [ "$status" -eq 2 ]
+}
+
+@test "a marker on a command after the commit does not count" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -m "Tune skill"' 'git log --oneline -1 # peer-reviewed: gpt-6.1-sol')"
+  [ "$status" -eq 2 ]
+}
+
+@test "adding named paths counts only those paths, not other pending changes" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude 'git add notes.txt && git commit -m "Add notes"'
+  [ "$status" -eq 0 ]
+}
+
+@test "adding everything still counts every pending change" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  run_gate claude 'git add -A && git commit -m "Regenerate"'
+  [ "$status" -eq 2 ]
+}
+
+@test "a marker after a later command on the same line does not count" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude 'git commit -m "Tune skill" && git log -1 # peer-reviewed: gpt-6.1-sol'
+  [ "$status" -eq 2 ]
+}
+
+@test "every commit in one command needs its own marker" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -m "One"' 'git commit -m "Two" # peer-reviewed: gpt-6.1-sol')"
+  [ "$status" -eq 2 ]
+}
+
+@test "a stderr redirect does not split the commit from its marker" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude 'git commit -m "Tune skill" 2>&1 # peer-reviewed: gpt-6.1-sol'
+  [ "$status" -eq 0 ]
+}
+
+@test "a tab-indented heredoc terminator ends the body" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf 'git commit -F - <<-EOF # peer-reviewed: gpt-6.1-sol\n\tTune skill\n\tEOF\ngit status\n')"
+  [ "$status" -eq 0 ]
+}
+
+@test "an added path with shell expansion counts every pending change" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude 'git add "$PWD/notes.txt" && git commit -m "Add notes"'
+  [ "$status" -eq 2 ]
+}
+
+@test "an earlier commit with an invalid reviewer fails even when the last one is valid" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -m "One" # peer-reviewed: banana' 'git commit -m "Two" # peer-reviewed: gpt-6.1-sol')"
+  [ "$status" -eq 2 ]
+}
+
+@test "a trailing backslash inside the marker comment still closes the commit" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude 'git commit -m "Tune skill" # peer-reviewed: gpt-6.1-sol \'
+  [ "$status" -eq 0 ]
+}
+
+@test "an added path with backslash escapes counts every pending change" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > "my notes.txt"
+  run_gate claude 'git add my\ notes.txt && git commit -m "Add notes"'
+  [ "$status" -eq 2 ]
+}
+
+@test "heredoc syntax inside a quoted message does not hide a later commit" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -m "Explain <<EOF" # peer-reviewed: gpt-6.1-sol' 'git commit -m "Two"' 'EOF')"
+  [ "$status" -eq 2 ]
+}
+
+@test "a here-string does not hide a later commit" {
+  stage packages/p/skills/s/SKILL.md
+  run_gate claude "$(printf '%s\n' 'git commit -m "One" # peer-reviewed: gpt-6.1-sol' 'cat <<<EOF' 'git commit -m "Two"' 'EOF')"
+  [ "$status" -eq 2 ]
+}
+
+@test "an added path with a hash counts every pending change" {
+  mkdir -p packages/q/skills/t
+  echo pending > "packages/q/skills/t/SKILL#1.md"
+  echo note > notes.txt
+  run_gate claude 'git add notes.txt "packages/q/skills/t/SKILL#1.md" && git commit -m "Add notes"'
+  [ "$status" -eq 2 ]
+}
+
+@test "combined add flags that stage everything count every pending change" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude 'git add -Av notes.txt && git commit -m "Update"'
+  [ "$status" -eq 2 ]
+}
+
+@test "an earlier add of everything still counts when a later add names a path" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude 'git add -A && git add notes.txt && git commit -m "Update"'
+  [ "$status" -eq 2 ]
+}
+
+@test "a path named add does not hide an earlier stage-all flag" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude 'git add -A add notes.txt && git commit -m "Update"'
+  [ "$status" -eq 2 ]
+}
+
+@test "a directory change before a named add counts every pending change" {
+  mkdir -p packages/q/skills/t sub
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > sub/notes.txt
+  run_gate claude 'true && cd sub && git add notes.txt && git commit -m "Update"'
+  [ "$status" -eq 2 ]
+}
+
+@test "a git option before add counts every pending change" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude 'git -c core.quotepath=off add notes.txt && git commit -m "Update"'
+  [ "$status" -eq 2 ]
+}
+
+@test "a leading cd before a named add still narrows to that path" {
+  mkdir -p packages/q/skills/t
+  echo pending > packages/q/skills/t/SKILL.md
+  echo note > notes.txt
+  run_gate claude "cd $WORK && git add notes.txt && git commit -m \"Add notes\""
+  [ "$status" -eq 0 ]
+}

@@ -9,34 +9,64 @@ CMD=$(jq -r '.tool_input.command // empty' <<< "$INPUT" 2>/dev/null)
 GIT='(^|&&|;|\|\||[[:space:]])[[:space:]]*git([[:space:]]+-[^[:space:]]+([[:space:]]+("[^"]*"|'"'"'[^'"'"']*'"'"'|[^-][^[:space:]]*))?)*[[:space:]]+'
 grep -Eq "${GIT}commit([[:space:]]|$)" <<< "$CMD" || exit 0
 
-# allow-comment: the marker counts only as a trailing comment outside every quote, with heredoc bodies set aside, naming a model of the other lab.
+# allow-comment: the marker counts only as a comment that ends the git commit command itself, outside every quote and with heredoc bodies set aside, naming a model of the other lab. Commands before or after the commit cannot carry it.
 OUTSIDE=$(awk '
-  delim != "" { if ($0 == delim) delim = ""; next }
-  { print }
-  match($0, /<<-?[[:space:]]*["'"'"']?[A-Za-z_][A-Za-z0-9_]*/) {
-    d = substr($0, RSTART, RLENGTH); sub(/^<<-?[[:space:]]*["'"'"']?/, "", d); delim = d
-  }' <<< "$CMD")
-# allow-comment: a quote-aware scan finds the shell comment on the last line; a `#` inside quotes is text, not a comment.
-COMMENT=$(awk '
-  { line = $0; comment = ""; prev = " "
-    for (i = 1; i <= length(line); i++) {
-      c = substr(line, i, 1)
+  delim != "" { l = $0; if (tabs) sub(/^\t+/, "", l); if (l == delim) delim = ""; next }
+  { print
+    for (i = 1; i <= length($0); i++) {
+      c = substr($0, i, 1)
       if (sq) { if (c == "\047") sq = 0 }
       else if (dq) { if (c == "\\") i++; else if (c == "\"") dq = 0 }
       else if (c == "\\") i++
       else if (c == "\047") sq = 1
       else if (c == "\"") dq = 1
+      else if (c == "#" && (i == 1 || substr($0, i - 1, 1) ~ /[[:space:];&|]/)) break
+      else if (substr($0, i, 3) == "<<<") i += 2
+      else if (substr($0, i, 2) == "<<") {
+        rest = substr($0, i + 2)
+        if (match(rest, /^-?[[:space:]]*\\?["'"'"']?[A-Za-z_][A-Za-z0-9_]*/)) {
+          d = substr(rest, RSTART, RLENGTH); tabs = (d ~ /^-/); sub(/^-?[[:space:]]*\\?["'"'"']?/, "", d); delim = d
+        }
+        i++
+      }
+    }
+  }' <<< "$CMD")
+# allow-comment: quote state carries across lines, so a multi-line message or `$(cat <<EOF ...)` ends on the line where its command ends. Each `;`, `&&`, `||` or `|` starts a new command, and every git commit command must itself end in a marker naming a model of the other lab; a comment after a later command proves nothing about the commit.
+if [ "$HOST" = codex ]; then PEER_MODELS='^(claude|opus|sonnet|haiku|fable)'; else PEER_MODELS='^(gpt-|codex|o[0-9])'; fi
+REVIEWED=$(awk -v models="$PEER_MODELS" '
+  function close_command(comment,   model) {
+    if (seen) {
+      commits++
+      if (match(comment, /#[[:space:]]*peer-reviewed:[[:space:]]*[^[:space:]#]+/)) {
+        model = substr(comment, RSTART, RLENGTH); sub(/^#[[:space:]]*peer-reviewed:[[:space:]]*/, "", model)
+        if (tolower(model) ~ models) marked++
+      }
+    }
+    cmd = ""; seen = 0
+  }
+  { line = $0; comment = ""; prev = " "; cont = 0
+    for (i = 1; i <= length(line); i++) {
+      c = substr(line, i, 1); nx = substr(line, i + 1, 1)
+      if (sq) { if (c == "\047") { sq = 0; cmd = cmd "Q" } }
+      else if (dq) { if (c == "\\") i++; else if (c == "\"") { dq = 0; cmd = cmd "Q" } }
+      else if (c == "\\") { if (i == length(line)) cont = 1; i++ }
+      else if (c == "\047") sq = 1
+      else if (c == "\"") dq = 1
       else if (c == "#" && prev ~ /[[:space:];&|]/) { comment = substr(line, i); break }
+      else if (c == ";" || c == "|" || (c == "&" && prev !~ /[<>]/ && nx != ">")) {
+        if (cmd ~ /(^|[[:space:]])git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+commit([[:space:]]|$)/) seen = 1
+        close_command("")
+        if ((c == "&" || c == "|") && nx == c) i++
+      }
+      else cmd = cmd c
       prev = c
     }
-    last = comment }
-  END { print last }' <<< "$OUTSIDE")
-if [[ "$COMMENT" =~ \#[[:space:]]*peer-reviewed:[[:space:]]*([^[:space:]#]+) ]]; then
-  MODEL="${BASH_REMATCH[1]}"
-  if [ "$HOST" = codex ]; then grep -Eiq '^(claude|opus|sonnet|haiku|fable)' <<< "$MODEL" && exit 0
-  else grep -Eiq '^(gpt-|codex|o[0-9])' <<< "$MODEL" && exit 0
-  fi
-fi
+    cmd = cmd " "
+    if (cmd ~ /(^|[[:space:]])git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+commit([[:space:]]|$)/) seen = 1
+    if (!sq && !dq && !cont) close_command(comment)
+  }
+  END { if (commits > 0 && marked == commits) print "yes" }' <<< "$OUTSIDE")
+[ "$REVIEWED" = yes ] && exit 0
 
 DIR=$(jq -r '.tool_input.workdir // .cwd // empty' <<< "$INPUT" 2>/dev/null)
 [ -n "$DIR" ] || DIR=$PWD
@@ -59,8 +89,40 @@ fi
 
 FILES=$(git -C "$ROOT" diff --cached --name-only 2>/dev/null)
 # allow-comment: `git add … && git commit` and `git commit -a` commit files that are not staged yet when this hook runs, so count every pending change.
-if grep -Eq "${GIT}add([[:space:]]|$)" <<< "$CMD" || grep -Eq "${GIT}commit([[:space:]]+[^#]*)?[[:space:]](-[a-zA-Z]*a[a-zA-Z]*|--all)([[:space:]]|$)" <<< "$CMD"; then
+# allow-comment: `git add` with plain named paths stages only those paths, so only their pending changes count. Anything the shell could reinterpret (quotes, escapes, expansion, comments) or `-A`, `-u`, `.` or no path counts every pending change.
+ADD_ALL=0; ADD_SPECS=()
+if grep -Eq "${GIT}add([[:space:]]|$)" <<< "$CMD"; then
+  while IFS= read -r piece; do
+    grep -Eq "${GIT}add([[:space:]]|$)" <<< "$piece" || continue
+    if ! [[ "$piece" =~ ^[A-Za-z0-9._/@+=:,\ -]*$ ]]; then ADD_ALL=1; continue; fi
+    after_add=0
+    for word in $piece; do
+      if [ "$after_add" = 0 ]; then
+        [ "$word" = add ] && after_add=1
+        case "$word" in -*) ADD_ALL=1 ;; esac
+        continue
+      fi
+      case "$word" in
+        -f|-v|--force|--verbose|--) ;;
+        -*|.|:/) ADD_ALL=1 ;;
+        *) ADD_SPECS+=("$word") ;;
+      esac
+    done
+  done < <(awk '{ gsub(/&&|\|\||;|\|/, "\n"); print }' <<< "$CMD")
+  [ "${#ADD_SPECS[@]}" -gt 0 ] || ADD_ALL=1
+  # allow-comment: named paths resolve against $DIR, which follows only a leading cd; any other directory change makes their base uncertain.
+  DIR_CHANGES=$(grep -Eo '(^|[;&|[:space:]])(cd|pushd|popd)([[:space:]]|$)' <<< "$CMD" | wc -l | tr -d ' ')
+  LEADING_CD=$(head -1 <<< "$CMD" | grep -Ec '^[[:space:]]*cd[[:space:]]')
+  [ "$DIR_CHANGES" -le "$LEADING_CD" ] || ADD_ALL=1
+fi
+if [ "$ADD_ALL" = 1 ] || grep -Eq "${GIT}commit([[:space:]]+[^#]*)?[[:space:]](-[a-zA-Z]*a[a-zA-Z]*|--all)([[:space:]]|$)" <<< "$CMD"; then
   FILES+=$'\n'$(git -C "$ROOT" status --porcelain --untracked-files=all 2>/dev/null | sed -E 's/^.. //; s/.* -> //')
+elif [ "${#ADD_SPECS[@]}" -gt 0 ]; then
+  if NAMED=$(git -C "$DIR" status --porcelain --untracked-files=all -- "${ADD_SPECS[@]}" 2>/dev/null); then
+    FILES+=$'\n'$(sed -E 's/^.. //; s/.* -> //' <<< "$NAMED")
+  else
+    FILES+=$'\n'$(git -C "$ROOT" status --porcelain --untracked-files=all 2>/dev/null | sed -E 's/^.. //; s/.* -> //')
+  fi
 fi
 FILES=$(grep -Ev '^$|^packages/[^/]+/(test|tests)/|/README\.md$|/CHANGELOG\.md$' <<< "$FILES" | sort -u)
 
