@@ -951,6 +951,55 @@ cp a.docx b.docx'
 	[ "$output" = "$DIR" ]
 }
 
+@test "Bash relative write after cd into a fresh mktemp directory is no write target" {
+	export TMPDIR="$BATS_TEST_TMPDIR/tmp"
+	mkdir -p "$TMPDIR"
+	run bash -c "printf '%s' 'cd \"\$(mktemp -d)\"; echo a > t.jsonl' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ -z "$output" ]
+}
+
+@test "Bash write under a variable from a plain mktemp is no write target" {
+	export TMPDIR="$BATS_TEST_TMPDIR/tmp"
+	mkdir -p "$TMPDIR"
+	run bash -c "printf '%s' 'D=\$(mktemp -d); echo a > \"\$D/x\"' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ -z "$output" ]
+}
+
+@test "Bash write to a path named like the fresh-temp sentinel stays a target" {
+	export TMPDIR="$BATS_TEST_TMPDIR/tmp"
+	mkdir -p "$TMPDIR"
+	run bash -c "printf '%s' 'echo a > \"\$TMPDIR/dibs-fresh-mktemp/1/x\"' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$TMPDIR/dibs-fresh-mktemp/1/x" ]
+}
+
+@test "Bash cd into a plain mktemp file keeps the next write in the working directory" {
+	run bash -c "printf '%s' 'cd \"\$(mktemp)\"; echo a > t' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$DIR/t" ]
+}
+
+@test "Bash cd into a dry-run mktemp keeps the next write in the working directory" {
+	run bash -c "printf '%s' 'cd \"\$(mktemp -du)\"; echo a > t' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$DIR/t" ]
+}
+
+@test "Bash cd into mktemp under a missing TMPDIR keeps the next write in the working directory" {
+	export TMPDIR="$BATS_TEST_TMPDIR/missing"
+	run bash -c "printf '%s' 'cd \"\$(mktemp -d)\"; echo a > t' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$DIR/t" ]
+}
+
+@test "Bash mktemp with a relative template stays attributed to the working directory" {
+	run bash -c "printf '%s' 'cd \"\$(mktemp -d build.XXXX)\"; echo a > t' | '$NODE_BIN' '$REPO_ROOT/packages/dibs/bin/bash-write-targets' '$DIR'"
+	[ "$status" -eq 0 ]
+	[ "$output" = "$DIR/t" ]
+}
+
 @test "Bash git commit ignores message-file and heredoc path text" {
 	local cwd_repo="$BATS_TEST_TMPDIR/cwd"
 	local decoy_repo="$BATS_TEST_TMPDIR/decoy"

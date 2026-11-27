@@ -3,6 +3,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 const { execFileSync } = require("child_process");
 
 const command = fs.readFileSync(0, "utf8");
@@ -116,6 +117,61 @@ function stripHeredocBodies(source) {
 	return kept.join("\n");
 }
 
+// allow-comment: a plain `mktemp` or `mktemp -d` creates a fresh path under the system temp directory that no session can hold, so writes beneath it are no write targets at all. A template or -p argument can point anywhere, including the working directory, and stays unresolved.
+function substitutionText(source, start) {
+	let depth = 1;
+	for (let index = start; index < source.length; index += 1) {
+		if (source[index] === "(") depth += 1;
+		else if (source[index] === ")" && --depth === 0) return source.slice(start, index);
+	}
+	return source.slice(start);
+}
+
+let mktempCount = 0;
+function plainMktempPath(substitution) {
+	const words = substitution.trim().split(/\s+/);
+	if (words[0] !== "mktemp") return null;
+	let directory = false;
+	for (let index = 1; index < words.length; index += 1) {
+		const word = words[index];
+		if (/^-[dq]+$/.test(word) || ["--directory", "--quiet"].includes(word)) {
+			if (word === "--directory" || (word !== "--quiet" && word.includes("d"))) directory = true;
+			continue;
+		}
+		if (word === "-t" && words[index + 1] && !words[index + 1].includes("/")) { index += 1; continue; }
+		return null;
+	}
+	if (!systemTempIsUsable() || systemTempIsInsideRepository()) return null;
+	mktempCount += 1;
+	return path.join(freshTempRoot, directory ? "directory" : "file", String(mktempCount));
+}
+// allow-comment: the NUL byte keeps the sentinel apart from every real path a command could name.
+const freshTempRoot = "/\0dibs-fresh-mktemp";
+function systemTempIsUsable() {
+	try {
+		if (!fs.statSync(os.tmpdir()).isDirectory()) return false;
+		fs.accessSync(os.tmpdir(), fs.constants.W_OK | fs.constants.X_OK);
+		return true;
+	} catch {
+		return false;
+	}
+}
+let tempInsideRepository = null;
+function systemTempIsInsideRepository() {
+	if (tempInsideRepository === null) {
+		try {
+			execFileSync("git", ["-C", os.tmpdir(), "rev-parse", "--show-toplevel"], { stdio: ["ignore", "pipe", "ignore"] });
+			tempInsideRepository = true;
+		} catch {
+			tempInsideRepository = false;
+		}
+	}
+	return tempInsideRepository;
+}
+function insideFreshTemp(target) {
+	return target === freshTempRoot || target.startsWith(freshTempRoot + path.sep);
+}
+
 function tokenize(source) {
 	const tokens = [];
 	const returnModes = [];
@@ -165,7 +221,10 @@ function tokenize(source) {
 				continue;
 			}
 			if (character === "$" && next === "(") {
-				if (word) word.commandSubstitution = true;
+				if (word) {
+					word.commandSubstitution = true;
+					word.substitutions = [...(word.substitutions || []), substitutionText(source, index + 2)];
+				}
 				separator();
 				returnModes.push("double");
 				mode = "normal";
@@ -195,7 +254,9 @@ function tokenize(source) {
 			continue;
 		}
 		if (character === "$" && next === "(") {
-			if (word) word.commandSubstitution = true;
+			if (!word) word = { type: "word", parts: [], tildeEligible: false };
+			word.commandSubstitution = true;
+			word.substitutions = [...(word.substitutions || []), substitutionText(source, index + 2)];
 			separator();
 			returnModes.push("normal");
 			index += 2;
@@ -267,6 +328,10 @@ function expandWord(word, activeEnvironment) {
 	if (word.tildeEligible && (text === "~" || text.startsWith("~/"))) {
 		if (activeEnvironment.HOME) text = path.join(activeEnvironment.HOME, text.slice(2));
 		else unresolved = true;
+	}
+	if (word.commandSubstitution && word.substitutions?.length === 1 && (text === "" || /^[A-Za-z_][A-Za-z0-9_]*=$/.test(text))) {
+		const fresh = plainMktempPath(word.substitutions[0]);
+		if (fresh) return { text: text + fresh, unresolved, commandSubstitution: false };
 	}
 	return { text, unresolved, commandSubstitution: Boolean(word.commandSubstitution) };
 }
@@ -560,7 +625,8 @@ function changedDirectory(words, base, activeEnvironment) {
 		return { path: base, explicit: false };
 	}
 	if (operands.length === 0) return { path: activeEnvironment.HOME ? path.resolve(activeEnvironment.HOME) : base, explicit: Boolean(activeEnvironment.HOME && path.isAbsolute(activeEnvironment.HOME)) };
-	if (operands[0].unresolved || operands[0].text === "-") {
+	// allow-comment: `mktemp` without -d creates a file, so a cd into it fails and the next relative write lands in the current directory.
+	if (operands[0].unresolved || operands[0].text === "-" || operands[0].text.startsWith(path.join(freshTempRoot, "file"))) {
 		implicitTargetSeen = true;
 		return { path: base, explicit: false };
 	}
@@ -612,7 +678,7 @@ function extractTargets(source) {
 		}
 		targets.push(...commandTargets(words, base, hasExplicitDirectoryContext));
 	}
-	return [...new Set(targets.filter(Boolean))];
+	return [...new Set(targets.filter((target) => target && !insideFreshTemp(target)))];
 }
 
 const targets = extractTargets(command);
